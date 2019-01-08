@@ -213,7 +213,7 @@ const segmentDetail = `
 `;
 const headTags = `
   query headTags {
-    tagsFields {
+    tags {
       ${tagFields}
     }
   }
