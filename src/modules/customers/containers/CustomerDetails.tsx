@@ -22,6 +22,24 @@ type FinalProps = {
 } & Props;
 
 class CustomerDetailsContainer extends React.Component<FinalProps, {}> {
+  componentDidMount() {
+    const { NODE_ENV } = process.env;
+
+    if (NODE_ENV === 'production') {
+      const win = window as any;
+
+      win.APM_CUSTOMER_DETAIL_TRANSACTION = win.apm.startTransaction(
+        'Customer detail',
+        'Customers'
+      );
+
+      win.APM_CUSTOMER_DETAIL = win.APM_CUSTOMER_DETAIL_TRANSACTION.startSpan(
+        'In did mount',
+        'http'
+      );
+    }
+  }
+
   render() {
     const {
       id,
@@ -49,6 +67,15 @@ class CustomerDetailsContainer extends React.Component<FinalProps, {}> {
       taggerRefetchQueries,
       currentUser
     };
+
+    const { NODE_ENV } = process.env;
+
+    if (NODE_ENV === 'production') {
+      const win = window as any;
+
+      win.APM_CUSTOMER_DETAIL_TRANSACTION.end();
+      win.APM_CUSTOMER_DETAIL.end();
+    }
 
     return <CustomerDetails {...updatedProps} />;
   }
