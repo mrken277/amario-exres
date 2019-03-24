@@ -60,7 +60,7 @@ class PipelineForm extends React.Component<Props, State> {
       () => {
         closeModal();
 
-        this.setState({ stages: [] });
+        this.setState({ stages: this.state.stages });
       },
       pipeline
     );
