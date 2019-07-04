@@ -1,4 +1,4 @@
-import { withCurrentUser } from 'modules/auth/containers';
+import withCurrentUser from 'modules/auth/containers/withCurrentUser';
 import asyncComponent from 'modules/common/components/AsyncComponent';
 import { MainWrapper } from 'modules/layout/styles';
 import { userConfirmation } from 'modules/settings/team/routes';
