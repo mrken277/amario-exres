@@ -1,4 +1,3 @@
-import { getDefaultBoardAndPipelines } from 'modules/boards/utils';
 import asyncComponent from 'modules/common/components/AsyncComponent';
 import queryString from 'query-string';
 import React from 'react';
@@ -11,6 +10,7 @@ const TicketBoard = asyncComponent(() =>
 const tickets = () => {
   let link = '/inbox/ticket/board';
 
+  const { getDefaultBoardAndPipelines } = require('modules/boards/utils');
   const { defaultBoards, defaultPipelines } = getDefaultBoardAndPipelines();
 
   const [defaultBoardId, defaultPipelineId] = [
