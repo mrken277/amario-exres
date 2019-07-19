@@ -1,19 +1,18 @@
 import Button from 'modules/common/components/Button';
 import FormControl from 'modules/common/components/form/Control';
-import Form from 'modules/common/components/form/Form';
+import CommonForm from 'modules/common/components/form/Form';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
 import Icon from 'modules/common/components/Icon';
-import { ModalFooter } from 'modules/common/styles/main';
 import { IButtonMutateProps, IFormProps } from 'modules/common/types';
 import React from 'react';
+import { Modal } from 'react-bootstrap';
 import Select from 'react-select-plus';
-import { ICONS } from '../../icons.constant';
-import { ICategory } from '../../types';
+import { TASK_ICONS } from '../constants';
+import { ITaskType } from '../types';
 
 type Props = {
-  currentTopicId: string;
-  category: ICategory;
+  taskType?: ITaskType;
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   closeModal: () => void;
 };
@@ -22,7 +21,7 @@ type State = {
   selectedIcon: string;
 };
 
-class CategoryForm extends React.Component<Props, State> {
+class Form extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -31,17 +30,17 @@ class CategoryForm extends React.Component<Props, State> {
     };
   }
 
-  getSelectedIcon() {
-    const { category } = this.props;
-
-    return category ? category.icon : '';
-  }
-
   onChangeIcon = obj => {
     this.setState({
       selectedIcon: obj ? obj.value : ''
     });
   };
+
+  getSelectedIcon() {
+    const { taskType } = this.props;
+
+    return taskType ? taskType.icon : '';
+  }
 
   renderOption = option => {
     return (
@@ -52,52 +51,35 @@ class CategoryForm extends React.Component<Props, State> {
     );
   };
 
-  generateDoc = (values: {
-    _id?: string;
-    title: string;
-    description: string;
-  }) => {
-    const { category, currentTopicId } = this.props;
-    const finalValues = values;
+  generateDoc = (values: { _id?: string; name: string }) => {
+    const { taskType } = this.props;
 
-    if (category) {
-      finalValues._id = category._id;
+    if (taskType) {
+      values._id = taskType._id;
     }
 
     return {
-      _id: finalValues._id,
-      doc: {
-        title: finalValues.title,
-        description: finalValues.description,
-        icon: this.state.selectedIcon,
-        topicIds: [currentTopicId]
-      }
+      _id: values._id,
+      name: values.name,
+      icon: this.state.selectedIcon
     };
   };
 
   renderContent = (formProps: IFormProps) => {
-    const { category, closeModal, renderButton } = this.props;
-    const object = category || ({} as ICategory);
+    const { renderButton, closeModal, taskType } = this.props;
     const { values, isSubmitted } = formProps;
+    const object = taskType || ({} as ITaskType);
 
     return (
       <>
         <FormGroup>
-          <ControlLabel required={true}>Title</ControlLabel>
+          <ControlLabel required={true}>Name</ControlLabel>
           <FormControl
             {...formProps}
-            name="title"
-            defaultValue={object.title}
+            name="name"
+            defaultValue={object.name}
+            autoFocus={true}
             required={true}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <ControlLabel>Description</ControlLabel>
-          <FormControl
-            {...formProps}
-            name="description"
-            defaultValue={object.description}
           />
         </FormGroup>
 
@@ -106,38 +88,33 @@ class CategoryForm extends React.Component<Props, State> {
           <Select
             isRequired={true}
             value={this.state.selectedIcon}
-            options={ICONS}
+            options={TASK_ICONS}
             onChange={this.onChangeIcon}
             optionRenderer={this.renderOption}
             valueRenderer={this.renderOption}
           />
         </FormGroup>
 
-        <ModalFooter>
-          <Button
-            btnStyle="simple"
-            type="button"
-            onClick={closeModal}
-            icon="cancel-1"
-          >
-            Cancel
+        <Modal.Footer>
+          <Button btnStyle="simple" onClick={closeModal} icon="cancel-1">
+            Close
           </Button>
 
           {renderButton({
-            name: 'category',
+            name: 'task type',
             values: this.generateDoc(values),
             isSubmitted,
             callback: closeModal,
-            object: category
+            object: taskType
           })}
-        </ModalFooter>
+        </Modal.Footer>
       </>
     );
   };
 
   render() {
-    return <Form renderContent={this.renderContent} />;
+    return <CommonForm renderContent={this.renderContent} />;
   }
 }
 
-export default CategoryForm;
+export default Form;
