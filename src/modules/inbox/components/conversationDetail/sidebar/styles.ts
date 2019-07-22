@@ -58,7 +58,6 @@ const Actions = styled.div`
 const SectionContainer = styled.div`
   position: relative;
   border-top: 1px solid ${colors.borderPrimary};
-
   > div {
     margin-bottom: 0;
   }
@@ -75,7 +74,9 @@ const SectionContainer = styled.div`
     height: 40px;
   }
 `;
-
+const SectionContainerStyled = styled(SectionContainer)`
+  margin-bottom: 10px;
+`;
 const NoteFormContainer = styled.div`
   border-bottom: 1px solid ${colors.borderPrimary};
 
@@ -165,5 +166,6 @@ export {
   ActivityLogContent,
   BasicInfo,
   SidebarCollapse,
-  TabContent
+  TabContent,
+  SectionContainerStyled
 };

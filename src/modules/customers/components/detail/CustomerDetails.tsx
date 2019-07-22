@@ -1,19 +1,26 @@
+import client from 'apolloClient';
+import gql from 'graphql-tag';
 import ActivityInputs from 'modules/activityLogs/components/ActivityInputs';
 import ActivityLogs from 'modules/activityLogs/containers/ActivityLogs';
 import Icon from 'modules/common/components/Icon';
 import { TabTitle } from 'modules/common/components/tabs';
 import { __, renderFullName } from 'modules/common/utils';
 import Widget from 'modules/engage/containers/Widget';
+import { queries } from 'modules/inbox/graphql';
+import { IConversation } from 'modules/inbox/types';
+import { getConfig, setConfig } from 'modules/inbox/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
 import React from 'react';
 import { ICustomer } from '../../types';
 import LeftSidebar from './LeftSidebar';
 import RightSidebar from './RightSidebar';
-
 type Props = {
   customer: ICustomer;
   taggerRefetchQueries?: any[];
+  conversation: IConversation;
 };
+
+const STORAGE_KEY = `erxes_sidebar_section_config`;
 
 class CustomerDetails extends React.Component<Props> {
   renderEmailTab = () => {
@@ -57,6 +64,44 @@ class CustomerDetails extends React.Component<Props> {
     );
   };
 
+  getCustomerDetail(customerId?: string) {
+    if (!customerId) {
+      return null;
+    }
+
+    const sectionParams = getConfig(STORAGE_KEY);
+
+    this.setState({ loading: true });
+
+    client
+      .query({
+        query: gql(queries.generateCustomerDetailQuery(sectionParams)),
+        fetchPolicy: 'network-only',
+        variables: { _id: customerId }
+      })
+      .then(({ data }: { data: any }) => {
+        if (data && data.customerDetail) {
+          this.setState({ customer: data.customerDetail, loading: false });
+        }
+      })
+      .catch(error => {
+        console.log(error.message); // tslint:disable-line
+      });
+
+    return;
+  }
+
+  toggleSection = ({ name, isOpen }: { name: string; isOpen: boolean }) => {
+    // const customerId = this.props.conversation.customerId;
+    const config = getConfig(STORAGE_KEY);
+
+    config[name] = isOpen;
+
+    setConfig(STORAGE_KEY, config);
+
+    // this.getCustomerDetail(customerId);
+  };
+
   render() {
     const { customer, taggerRefetchQueries } = this.props;
 
@@ -87,6 +132,12 @@ class CustomerDetails extends React.Component<Props> {
       </>
     );
 
+    const updatedProps = {
+      customer,
+      toggleSection: this.toggleSection,
+      config: getConfig(STORAGE_KEY)
+    };
+
     return (
       <Wrapper
         header={
@@ -102,7 +153,8 @@ class CustomerDetails extends React.Component<Props> {
             taggerRefetchQueries={taggerRefetchQueries}
           />
         }
-        rightSidebar={<RightSidebar customer={customer} />}
+        rightSidebar={<RightSidebar {...updatedProps} />}
+        // rightSidebar={<RightSidebar customer={customer} />}
         content={content}
         transparent={true}
       />
