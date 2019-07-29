@@ -1,33 +1,61 @@
 const commonVariables = `
   $name: String!,
+  $isDone: Boolean
   $stageId: String,
+  $dealId: String,
+  $ticketId: String,
+  $typeId: String,
+  $assignedUserIds: [String],
+  $companyIds: [String],
+  $attachments: [AttachmentInput]
+  $customerIds: [String],
   $closeDate: Date,
   $description: String,
-  $companyIds: [String],
-  $customerIds: [String],
-  $assignedUserIds: [String],
   $order: Int,
   $priority: String,
-  $attachments: [AttachmentInput]
 `;
 
 const commonParams = `
   name: $name,
+  isDone: $isDone,
   stageId: $stageId,
+  dealId: $dealId,
+  ticketId: $ticketId,
+  typeId: $typeId,
+  assignedUserIds: $assignedUserIds,
   companyIds: $companyIds,
+  attachments: $attachments,
   customerIds: $customerIds,
   closeDate: $closeDate,
   description: $description,
-  assignedUserIds: $assignedUserIds,
   order: $order,
-  priority: $priority,
-  attachments: $attachments
+  priority: $priority
 `;
 
 const commonReturn = `
   _id
   name
   stageId
+  boardId
+  dealId
+  ticketId
+  typeId
+  companyIds
+  customerIds
+  assignedUserIds
+  deal {
+    _id
+    name
+  }
+  ticket {
+    _id
+    name
+  }
+  type {
+    _id
+    name
+    icon
+  }
   companies {
     _id
     primaryName
@@ -47,9 +75,14 @@ const commonReturn = `
       avatar
     }
   }
+  isWatched
+  isDone
+  attachments
+  stage
   priority
   modifiedAt
   modifiedBy
+  createdAt
 `;
 
 const tasksAdd = `

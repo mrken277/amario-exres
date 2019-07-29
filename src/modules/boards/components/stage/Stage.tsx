@@ -31,6 +31,7 @@ type Props = {
   loadMore: () => void;
   options: IOptions;
 };
+
 export default class Stage extends React.Component<Props, {}> {
   private bodyRef;
 

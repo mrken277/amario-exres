@@ -1,4 +1,6 @@
 const commonParams = `
+  $dealId: String
+  $ticketId: String
   $customerIds: [String],
   $companyIds: [String],
   $assignedUserIds: [String],
@@ -11,6 +13,8 @@ const commonParams = `
 `;
 
 const commonParamDefs = `
+  dealId: $dealId,
+  ticketId: $ticketId,
   customerIds: $customerIds,
   companyIds: $companyIds,
   assignedUserIds: $assignedUserIds,
@@ -31,6 +35,9 @@ const taskFields = `
     name
   }
   boardId
+  dealId
+  ticketId
+  typeId
   companies {
     _id
     primaryName
