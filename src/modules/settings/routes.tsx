@@ -17,6 +17,7 @@ import PropertiesRoutes from './properties/routes';
 import ResponseTemplatesRoutes from './responseTemplates/routes';
 import ScriptsRoutes from './scripts/routes';
 import StatusRoutes from './status/routes';
+import TaskTypes from './taskType/routes';
 import TeamRoutes from './team/routes';
 
 const routes = () => (
@@ -38,6 +39,7 @@ const routes = () => (
     <ImportHistory key="ImportHistory" />
     <StatusRoutes key="StatusRoutes" />
     <PermissionRoutes key="PermissionRoutes" />
+    <TaskTypes key="TaskType" />
     <LogRoutes key="LogRoutes" />
   </React.Fragment>
 );

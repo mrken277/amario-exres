@@ -1,4 +1,4 @@
-export const icons = [
+export const ICONS = [
   { value: 'alarm', label: 'alarm' },
   { value: 'briefcase', label: 'briefcase' },
   { value: 'cloudcomputing', label: 'cloudcomputing' },

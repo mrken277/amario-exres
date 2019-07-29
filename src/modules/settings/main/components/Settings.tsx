@@ -144,6 +144,11 @@ class Settings extends React.PureComponent {
               '/images/icons/erxes-19.svg',
               '/settings/boards/ticket'
             )}
+            {this.renderBox(
+              'Task types',
+              '/images/icons/erxes-19.svg',
+              '/settings/task-types'
+            )}
           </div>
         </Row>
         <Divider />
