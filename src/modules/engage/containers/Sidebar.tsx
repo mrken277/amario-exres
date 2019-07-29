@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import { IRouterProps } from 'modules/common/types';
+import { getConfig, setConfig } from 'modules/inbox/utils';
 import { queries as tagQueries } from 'modules/tags/graphql';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
@@ -21,6 +22,8 @@ type FinalProps = {
   tagCountsQuery: TagCountQueryResponse;
 } & IRouterProps;
 
+const STORAGE_KEY = `erxes_sidebar_section_config`;
+
 const SidebarContainer = (props: FinalProps) => {
   const {
     kindCountsQuery,
@@ -29,12 +32,31 @@ const SidebarContainer = (props: FinalProps) => {
     tagCountsQuery
   } = props;
 
+  const toggleSection = ({
+    name,
+    isOpen
+  }: {
+    name: string;
+    isOpen: boolean;
+  }) => {
+    // const customerId = this.props.conversation.customerId;
+    const config = getConfig(STORAGE_KEY);
+
+    config[name] = isOpen;
+
+    setConfig(STORAGE_KEY, config);
+
+    // this.getCustomerDetail(customerId);
+  };
+
   const updatedProps = {
     ...props,
     kindCounts: kindCountsQuery.engageMessageCounts || {},
     statusCounts: statusCountsQuery.engageMessageCounts || {},
     tags: tagsQuery.tags || [],
-    tagCounts: tagCountsQuery.engageMessageCounts || {}
+    tagCounts: tagCountsQuery.engageMessageCounts || {},
+    toggleSection,
+    config: getConfig(STORAGE_KEY)
   };
 
   return <Sidebar {...updatedProps} />;

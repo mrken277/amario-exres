@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { getConfig, setConfig } from 'modules/inbox/utils';
 import { queries } from 'modules/settings/brands/graphql';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
@@ -13,6 +14,19 @@ type Props = {
   customersCountQuery?: CountQueryResponse;
 };
 
+const STORAGE_KEY = `erxes_sidebar_section_config`;
+
+const toggleSection = ({ name, isOpen }: { name: string; isOpen: boolean }) => {
+  // const customerId = this.props.conversation.customerId;
+  const config = getConfig(STORAGE_KEY);
+
+  config[name] = isOpen;
+
+  setConfig(STORAGE_KEY, config);
+
+  // this.getCustomerDetail(customerId);
+};
+
 class BrandFilterContainer extends React.Component<Props> {
   render() {
     const { brandsQuery, customersCountQuery } = this.props;
@@ -25,7 +39,9 @@ class BrandFilterContainer extends React.Component<Props> {
       ...this.props,
       brands: (brandsQuery ? brandsQuery.brands : []) || [],
       loading: (brandsQuery && brandsQuery.loading) || false,
-      counts: counts.byBrand
+      counts: counts.byBrand,
+      toggleSection,
+      config: getConfig(STORAGE_KEY)
     };
 
     return <BrandFilter {...updatedProps} />;

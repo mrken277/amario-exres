@@ -1,5 +1,7 @@
+import Box from 'modules/common/components/Box';
 import DataWithLoader from 'modules/common/components/DataWithLoader';
 import { IRouterProps } from 'modules/common/types';
+
 import { __, router } from 'modules/common/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
 import { SidebarCounter, SidebarList } from 'modules/layout/styles';
@@ -11,9 +13,18 @@ interface IProps extends IRouterProps {
   counts: { [key: string]: number };
   integrations: IIntegration[];
   loading: boolean;
+  toggleSection: (params: { name: string; isOpen: boolean }) => void;
+  config: { [key: string]: boolean };
 }
 
-function Forms({ history, counts, integrations, loading }: IProps) {
+function Forms({
+  history,
+  counts,
+  integrations,
+  loading,
+  toggleSection,
+  config
+}: IProps) {
   const { Section, Header } = Wrapper.Sidebar;
 
   const onClick = formId => {
@@ -45,19 +56,26 @@ function Forms({ history, counts, integrations, loading }: IProps) {
   );
 
   return (
-    <Section collapsible={integrations.length > 5}>
-      <Header uppercase={true}>{__('Filter by form')}</Header>
+    <Box
+      title={__('Filter by form')}
+      name="showForms"
+      isOpen={config.showForms || false}
+      toggle={toggleSection}
+    >
+      <Section collapsible={integrations.length > 5}>
+        <Header uppercase={true}>{__('Filter by form')}</Header>
 
-      <DataWithLoader
-        data={data}
-        loading={loading}
-        count={integrations.length}
-        emptyText="Search and filter customers by form"
-        emptyIcon="monitor"
-        size="small"
-        objective={true}
-      />
-    </Section>
+        <DataWithLoader
+          data={data}
+          loading={loading}
+          count={integrations.length}
+          emptyText="Search and filter customers by form"
+          emptyIcon="monitor"
+          size="small"
+          objective={true}
+        />
+      </Section>
+    </Box>
   );
 }
 

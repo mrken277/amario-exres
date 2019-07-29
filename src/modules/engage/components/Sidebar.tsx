@@ -1,3 +1,4 @@
+import Box from 'modules/common/components/Box';
 import CountsByTag from 'modules/common/components/CountsByTag';
 import { __, router } from 'modules/common/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
@@ -15,6 +16,8 @@ type Props = {
   tagCounts: any;
   tags: ITag[];
   history?: any;
+  toggleSection: (params: { name: string; isOpen: boolean }) => void;
+  config: { [key: string]: boolean };
 };
 
 class Sidebar extends React.Component<Props> {
@@ -82,19 +85,39 @@ class Sidebar extends React.Component<Props> {
   }
 
   render() {
-    const { tags, tagCounts } = this.props;
+    const { tags, tagCounts, config, toggleSection } = this.props;
 
     return (
       <Wrapper.Sidebar>
-        {this.renderKindFilter()}
-        {this.renderStatusFilter()}
-
-        <CountsByTag
-          tags={tags}
-          manageUrl="tags/engageMessage"
-          counts={tagCounts}
-          loading={false}
-        />
+        <Box
+          title={__('Kind')}
+          name="showKinds"
+          isOpen={config.showKinds || false}
+          toggle={toggleSection}
+        >
+          {this.renderKindFilter()}
+        </Box>
+        <Box
+          title={__('Status')}
+          name="showStatus"
+          isOpen={config.showStatus || false}
+          toggle={toggleSection}
+        >
+          {this.renderStatusFilter()}
+        </Box>
+        <Box
+          title={__('Filter by tags')}
+          name="showFilter"
+          isOpen={config.showFilter || false}
+          toggle={toggleSection}
+        >
+          <CountsByTag
+            tags={tags}
+            manageUrl="tags/engageMessage"
+            counts={tagCounts}
+            loading={false}
+          />
+        </Box>
       </Wrapper.Sidebar>
     );
   }

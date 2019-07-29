@@ -1,3 +1,4 @@
+import Box from 'modules/common/components/Box';
 import DataWithLoader from 'modules/common/components/DataWithLoader';
 import DropdownToggle from 'modules/common/components/DropdownToggle';
 import Icon from 'modules/common/components/Icon';
@@ -17,6 +18,8 @@ type Props = {
   counts?: any;
   segments: ISegment[];
   loading: boolean;
+  toggleSection: (params: { name: string; isOpen: boolean }) => void;
+  config: { [key: string]: boolean };
 };
 
 class Segments extends React.Component<Props> {
@@ -114,25 +117,32 @@ class Segments extends React.Component<Props> {
   }
 
   render() {
-    const { segments, loading } = this.props;
+    const { segments, loading, config, toggleSection } = this.props;
 
     const { Section, Header } = Wrapper.Sidebar;
 
     return (
       <Section collapsible={segments.length > 5}>
-        <Header uppercase={true}>{__('Filter by segments')}</Header>
+        <Box
+          title={__('Customers')}
+          name="showCustomers"
+          isOpen={config.showCustomers || false}
+          toggle={toggleSection}
+        >
+          <Header uppercase={true}>{__('Filter by segments')}</Header>
 
-        {this.renderQuickBtns()}
+          {this.renderQuickBtns()}
 
-        <DataWithLoader
-          data={this.renderData()}
-          loading={loading}
-          count={segments.length}
-          emptyText="Open segments and starting add details"
-          emptyIcon="pie-chart"
-          size="small"
-          objective={true}
-        />
+          <DataWithLoader
+            data={this.renderData()}
+            loading={loading}
+            count={segments.length}
+            emptyText="Open segments and starting add details"
+            emptyIcon="pie-chart"
+            size="small"
+            objective={true}
+          />
+        </Box>
       </Section>
     );
   }

@@ -1,3 +1,4 @@
+import Box from 'modules/common/components/Box';
 import DataWithLoader from 'modules/common/components/DataWithLoader';
 import { IRouterProps } from 'modules/common/types';
 import { __, router } from 'modules/common/utils';
@@ -6,14 +7,22 @@ import { SidebarCounter, SidebarList } from 'modules/layout/styles';
 import { IBrand } from 'modules/settings/brands/types';
 import React from 'react';
 import { withRouter } from 'react-router';
-
 interface IProps extends IRouterProps {
   counts: { [key: string]: number };
   brands: IBrand[];
   loading: boolean;
+  toggleSection: (params: { name: string; isOpen: boolean }) => void;
+  config: { [key: string]: boolean };
 }
 
-function Brands({ history, counts, brands, loading }: IProps) {
+function Brands({
+  history,
+  counts,
+  brands,
+  loading,
+  config,
+  toggleSection
+}: IProps) {
   const { Section, Header } = Wrapper.Sidebar;
 
   const data = (
@@ -44,17 +53,24 @@ function Brands({ history, counts, brands, loading }: IProps) {
 
   return (
     <Section collapsible={brands.length > 5}>
-      <Header uppercase={true}>{__('Filter by brand')}</Header>
+      <Box
+        title={__('Filter by brand')}
+        name="showBrands"
+        isOpen={config.showCustomers || false}
+        toggle={toggleSection}
+      >
+        <Header uppercase={true}>{__('Filter by brand')}</Header>
 
-      <DataWithLoader
-        data={data}
-        loading={loading}
-        count={brands.length}
-        emptyText="Now easier to find contacts according to your brand"
-        emptyIcon="leaf"
-        size="small"
-        objective={true}
-      />
+        <DataWithLoader
+          data={data}
+          loading={loading}
+          count={brands.length}
+          emptyText="Now easier to find contacts according to your brand"
+          emptyIcon="leaf"
+          size="small"
+          objective={true}
+        />
+      </Box>
     </Section>
   );
 }

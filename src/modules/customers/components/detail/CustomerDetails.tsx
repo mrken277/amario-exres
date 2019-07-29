@@ -7,7 +7,6 @@ import { TabTitle } from 'modules/common/components/tabs';
 import { __, renderFullName } from 'modules/common/utils';
 import Widget from 'modules/engage/containers/Widget';
 import { queries } from 'modules/inbox/graphql';
-import { IConversation } from 'modules/inbox/types';
 import { getConfig, setConfig } from 'modules/inbox/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
 import React from 'react';
@@ -17,7 +16,6 @@ import RightSidebar from './RightSidebar';
 type Props = {
   customer: ICustomer;
   taggerRefetchQueries?: any[];
-  conversation: IConversation;
 };
 
 const STORAGE_KEY = `erxes_sidebar_section_config`;
@@ -151,6 +149,8 @@ class CustomerDetails extends React.Component<Props> {
             wide={true}
             customer={customer}
             taggerRefetchQueries={taggerRefetchQueries}
+            toggleSection={this.toggleSection}
+            config={getConfig(STORAGE_KEY)}
           />
         }
         rightSidebar={<RightSidebar {...updatedProps} />}

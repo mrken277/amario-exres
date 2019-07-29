@@ -76,6 +76,11 @@ const SectionContainer = styled.div`
 `;
 const SectionContainerStyled = styled(SectionContainer)`
   margin-bottom: 10px;
+  box-shadow: 0 0 6px 1px rgba(221, 221, 221, 0.7);
+
+  ${SidebarTitle} {
+    height: 50px;
+  }
 `;
 const NoteFormContainer = styled.div`
   border-bottom: 1px solid ${colors.borderPrimary};

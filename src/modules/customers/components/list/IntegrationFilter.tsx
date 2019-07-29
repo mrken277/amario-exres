@@ -1,3 +1,4 @@
+import Box from 'modules/common/components/Box';
 import DataWithLoader from 'modules/common/components/DataWithLoader';
 import { IRouterProps } from 'modules/common/types';
 import { __, router } from 'modules/common/utils';
@@ -9,9 +10,11 @@ import { withRouter } from 'react-router';
 
 interface IProps extends IRouterProps {
   counts: { [key: string]: number };
+  toggleSection: (params: { name: string; isOpen: boolean }) => void;
+  config: { [key: string]: boolean };
 }
 
-function IntegrationFilter({ history, counts }: IProps) {
+function IntegrationFilter({ history, counts, toggleSection, config }: IProps) {
   const { Section, Header } = Wrapper.Sidebar;
 
   const onClick = kind => {
@@ -42,17 +45,24 @@ function IntegrationFilter({ history, counts }: IProps) {
 
   return (
     <Section>
-      <Header uppercase={true}>{__('Filter by integrations')}</Header>
+      <Box
+        title={__('Filter by integrations')}
+        name="showIntegrations"
+        isOpen={config.showIntegrations || false}
+        toggle={toggleSection}
+      >
+        <Header uppercase={true}>{__('Filter by integrations')}</Header>
 
-      <DataWithLoader
-        data={data}
-        loading={false}
-        count={KIND_CHOICES.ALL_LIST.length}
-        emptyText="No integrations"
-        emptyIcon="puzzle"
-        size="small"
-        objective={true}
-      />
+        <DataWithLoader
+          data={data}
+          loading={false}
+          count={KIND_CHOICES.ALL_LIST.length}
+          emptyText="No integrations"
+          emptyIcon="puzzle"
+          size="small"
+          objective={true}
+        />
+      </Box>
     </Section>
   );
 }

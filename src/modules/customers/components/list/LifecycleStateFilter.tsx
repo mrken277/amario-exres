@@ -1,3 +1,4 @@
+import Box from 'modules/common/components/Box';
 import React from 'react';
 import { withRouter } from 'react-router';
 
@@ -14,6 +15,8 @@ interface IProps extends IRouterProps {
   counts: { [key: string]: number };
   loading: boolean;
   searchable?: boolean;
+  toggleSection: (params: { name: string; isOpen: boolean }) => void;
+  config: { [key: string]: boolean };
 }
 
 class LifecycleStateFilter extends React.Component<IProps> {
@@ -55,33 +58,40 @@ class LifecycleStateFilter extends React.Component<IProps> {
 
   render() {
     const { Section } = Wrapper.Sidebar;
-    const { history } = this.props;
+    const { history, config, toggleSection } = this.props;
 
     const onClear = () => {
       router.setParams(history, { lifecycleState: null });
     };
 
     return (
-      <Section collapsible={true}>
-        <Section.Title>{__('Filter by lifecycle states')}</Section.Title>
-        <Section.QuickButtons>
-          {router.getParam(history, 'lifecycleState') ? (
-            <a href="#cancel" tabIndex={0} onClick={onClear}>
-              <Icon icon="cancel-1" />
-            </a>
-          ) : null}
-        </Section.QuickButtons>
+      <Box
+        title={__('Filter by lifecycle states')}
+        name="showLifecycles"
+        isOpen={config.showLifecycles || false}
+        toggle={toggleSection}
+      >
+        <Section collapsible={true}>
+          <Section.Title>{__('Filter by lifecycle states')}</Section.Title>
+          <Section.QuickButtons>
+            {router.getParam(history, 'lifecycleState') ? (
+              <a href="#cancel" tabIndex={0} onClick={onClear}>
+                <Icon icon="cancel-1" />
+              </a>
+            ) : null}
+          </Section.QuickButtons>
 
-        <DataWithLoader
-          loading={this.props.loading}
-          count={Object.keys(LIFECYCLE_STATE_TYPES).length}
-          data={this.renderCounts()}
-          emptyText="No lifecycle states"
-          emptyIcon="type"
-          size="small"
-          objective={true}
-        />
-      </Section>
+          <DataWithLoader
+            loading={this.props.loading}
+            count={Object.keys(LIFECYCLE_STATE_TYPES).length}
+            data={this.renderCounts()}
+            emptyText="No lifecycle states"
+            emptyIcon="type"
+            size="small"
+            objective={true}
+          />
+        </Section>
+      </Box>
     );
   }
 }

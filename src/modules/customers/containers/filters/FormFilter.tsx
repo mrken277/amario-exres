@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { getConfig, setConfig } from 'modules/inbox/utils';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { withProps } from '../../../common/utils';
@@ -10,6 +11,18 @@ import { CountQueryResponse } from '../../types';
 type Props = {
   integrationsQuery?: IntegrationsQueryResponse;
   customersCountQuery?: CountQueryResponse;
+};
+const STORAGE_KEY = `erxes_sidebar_section_config`;
+
+const toggleSection = ({ name, isOpen }: { name: string; isOpen: boolean }) => {
+  // const customerId = this.props.conversation.customerId;
+  const config = getConfig(STORAGE_KEY);
+
+  config[name] = isOpen;
+
+  setConfig(STORAGE_KEY, config);
+
+  // this.getCustomerDetail(customerId);
 };
 
 const FormFilterContainer = (props: Props) => {
@@ -25,7 +38,9 @@ const FormFilterContainer = (props: Props) => {
     ...props,
     counts: counts.byForm || {},
     integrations,
-    loading: integrationsQuery ? integrationsQuery.loading : false
+    loading: integrationsQuery ? integrationsQuery.loading : false,
+    toggleSection,
+    config: getConfig(STORAGE_KEY)
   };
 
   return <FormFilter {...updatedProps} />;

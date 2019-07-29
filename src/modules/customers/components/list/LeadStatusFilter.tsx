@@ -1,11 +1,11 @@
-import React from 'react';
-import { withRouter } from 'react-router';
-
+import Box from 'modules/common/components/Box';
 import DataWithLoader from 'modules/common/components/DataWithLoader';
 import Icon from 'modules/common/components/Icon';
 import { __, router } from 'modules/common/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
 import { SidebarCounter, SidebarList } from 'modules/layout/styles';
+import React from 'react';
+import { withRouter } from 'react-router';
 import { IRouterProps } from '../../../common/types';
 import { LEAD_STATUS_TYPES } from '../../constants';
 import { leadStatusChoices } from '../../utils';
@@ -14,6 +14,8 @@ interface IProps extends IRouterProps {
   counts: { [key: string]: number };
   loading: boolean;
   searchable?: boolean;
+  toggleSection: (params: { name: string; isOpen: boolean }) => void;
+  config: { [key: string]: boolean };
 }
 
 class LeadStatusFilter extends React.Component<IProps> {
@@ -54,33 +56,40 @@ class LeadStatusFilter extends React.Component<IProps> {
 
   render() {
     const { Section } = Wrapper.Sidebar;
-    const { history } = this.props;
+    const { history, config, toggleSection } = this.props;
 
     const onClear = () => {
       router.setParams(history, { leadStatus: null });
     };
 
     return (
-      <Section collapsible={true}>
-        <Section.Title>{__('Filter by lead status')}</Section.Title>
-        <Section.QuickButtons>
-          {router.getParam(history, 'leadStatus') ? (
-            <a href="#cancel" tabIndex={0} onClick={onClear}>
-              <Icon icon="cancel-1" />
-            </a>
-          ) : null}
-        </Section.QuickButtons>
+      <Box
+        title={__('Filter by lead status')}
+        name="showLeadStatus"
+        isOpen={config.showLeadStatus || false}
+        toggle={toggleSection}
+      >
+        <Section collapsible={true}>
+          <Section.Title>{__('Filter by lead status')}</Section.Title>
+          <Section.QuickButtons>
+            {router.getParam(history, 'leadStatus') ? (
+              <a href="#cancel" tabIndex={0} onClick={onClear}>
+                <Icon icon="cancel-1" />
+              </a>
+            ) : null}
+          </Section.QuickButtons>
 
-        <DataWithLoader
-          loading={this.props.loading}
-          count={Object.keys(LEAD_STATUS_TYPES).length}
-          data={this.renderCounts()}
-          emptyText="No leads"
-          emptyIcon="type"
-          size="small"
-          objective={true}
-        />
-      </Section>
+          <DataWithLoader
+            loading={this.props.loading}
+            count={Object.keys(LEAD_STATUS_TYPES).length}
+            data={this.renderCounts()}
+            emptyText="No leads"
+            emptyIcon="type"
+            size="small"
+            objective={true}
+          />
+        </Section>
+      </Box>
     );
   }
 }

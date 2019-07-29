@@ -251,6 +251,35 @@ const HelperButtons = styledTS<{ isSidebarOpen?: boolean }>(styled.div)`
     }
   }
 `;
+const SidebarHelperButtons = styledTS(styled.div)`
+  position: absolute;
+  right: ${dimensions.coreSpacing}px;
+  top: 10px;
+  color: ${colors.colorCoreLightGray};
+
+  a, button {
+    float: left;
+    color: ${colors.colorCoreLightGray};
+    text-transform: none;
+    cursor: pointer;
+    margin-left: ${dimensions.unitSpacing}px;
+    font-size: ${typography.fontSizeHeading8}px;
+    font-weight: ${typography.fontWeightLight};
+    outline: 0;
+    padding: 0;
+    border: none;
+    background: none;
+
+    > i {
+      font-size: 14px;
+      margin-right: 25px;
+
+      &:hover {
+        color: ${colors.colorCoreBlack};
+      }
+    }
+  }
+`;
 
 const SidebarList = styledTS<{ capitalize?: boolean }>(styled.ul)`
   margin: 0;
@@ -543,6 +572,7 @@ export {
   SidebarCounter,
   SidebarFlexRow,
   HelperButtons,
+  SidebarHelperButtons,
   SidebarTitle,
   UserHelper,
   SidebarList,

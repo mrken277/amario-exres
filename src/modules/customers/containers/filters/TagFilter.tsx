@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import CountsByTag from 'modules/common/components/CountsByTag';
+import { getConfig, setConfig } from 'modules/inbox/utils';
 import { TAG_TYPES } from 'modules/tags/constants';
 import { queries as tagQueries } from 'modules/tags/graphql';
 import React from 'react';
@@ -8,6 +9,19 @@ import { withProps } from '../../../common/utils';
 import { ITag, TagsQueryResponse } from '../../../tags/types';
 import { queries as customerQueries } from '../../graphql';
 import { CountQueryResponse } from '../../types';
+
+const STORAGE_KEY = `erxes_sidebar_section_config`;
+
+const toggleSection = ({ name, isOpen }: { name: string; isOpen: boolean }) => {
+  // const customerId = this.props.conversation.customerId;
+  const config = getConfig(STORAGE_KEY);
+
+  config[name] = isOpen;
+
+  setConfig(STORAGE_KEY, config);
+
+  // this.getCustomerDetail(customerId);
+};
 
 const TagFilterContainer = (props: {
   customersCountQuery?: CountQueryResponse;
@@ -30,6 +44,8 @@ const TagFilterContainer = (props: {
   return (
     <CountsByTag
       tags={tags}
+      toggleSection={toggleSection}
+      config={getConfig(STORAGE_KEY)}
       counts={counts.byTag || {}}
       manageUrl="/tags/customer"
       loading={tagsLoading}

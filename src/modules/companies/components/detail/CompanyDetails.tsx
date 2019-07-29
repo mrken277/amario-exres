@@ -3,18 +3,31 @@ import ActivityLogs from 'modules/activityLogs/containers/ActivityLogs';
 import { IUser } from 'modules/auth/types';
 import { __ } from 'modules/common/utils';
 import { ICompany } from 'modules/companies/types';
+import { getConfig, setConfig } from 'modules/inbox/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
 import React from 'react';
 import LeftSidebar from './LeftSidebar';
 import RightSidebar from './RightSidebar';
-
 type Props = {
   company: ICompany;
   currentUser: IUser;
   taggerRefetchQueries?: any[];
 };
 
+const STORAGE_KEY = `erxes_sidebar_section_config`;
+
 class CompanyDetails extends React.Component<Props> {
+  toggleSection = ({ name, isOpen }: { name: string; isOpen: boolean }) => {
+    // const customerId = this.props.conversation.customerId;
+    const config = getConfig(STORAGE_KEY);
+
+    config[name] = isOpen;
+
+    setConfig(STORAGE_KEY, config);
+
+    // this.getCustomerDetail(customerId);
+  };
+
   render() {
     const { company, taggerRefetchQueries } = this.props;
 
@@ -53,9 +66,17 @@ class CompanyDetails extends React.Component<Props> {
           <LeftSidebar
             {...this.props}
             taggerRefetchQueries={taggerRefetchQueries}
+            toggleSection={this.toggleSection}
+            config={getConfig(STORAGE_KEY)}
           />
         }
-        rightSidebar={<RightSidebar company={company} />}
+        rightSidebar={
+          <RightSidebar
+            company={company}
+            toggleSection={this.toggleSection}
+            config={getConfig(STORAGE_KEY)}
+          />
+        }
         content={content}
         transparent={true}
       />
