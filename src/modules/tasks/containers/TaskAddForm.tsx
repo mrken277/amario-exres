@@ -10,9 +10,8 @@ import { queries } from '../graphql';
 
 type IProps = {
   options: IOptions;
-  boardId?: string;
-  pipelineId?: string;
-  stageId?: string;
+  customerIds?: string[];
+  companyIds?: string[];
   saveItem: (doc: IItemParams, callback: (item: IItem) => void) => void;
   showSelect?: boolean;
   closeModal: () => void;

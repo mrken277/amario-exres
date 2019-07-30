@@ -22,6 +22,8 @@ type Props = {
   options: IOptions;
   boardId?: string;
   pipelineId?: string;
+  customerIds?: string[];
+  companyIds?: string[];
   stageId?: string;
   saveItem: (doc: IItemParams, callback: (item: IItem) => void) => void;
   showSelect?: boolean;
@@ -69,16 +71,19 @@ class TaskAddForm extends React.Component<Props, State> {
   };
 
   save = (values: any) => {
-    const { stageId, closeDate, typeId, assignedUserIds, isDone } = this.state;
-    const { saveItem, closeModal, callback } = this.props;
+    const {
+      saveItem,
+      closeModal,
+      callback,
+      companyIds,
+      customerIds
+    } = this.props;
 
     const doc = {
+      ...this.state,
       name: values.name,
-      stageId,
-      closeDate,
-      typeId,
-      assignedUserIds,
-      isDone
+      customerIds: customerIds || [],
+      companyIds: companyIds || []
     };
 
     // before save, disable save button
@@ -150,18 +155,17 @@ class TaskAddForm extends React.Component<Props, State> {
   }
 
   renderContent = (formProps: IFormProps) => {
-    const dateOnChange = date => this.onChangeField('closeDate', date);
     const userOnChange = usrs => this.onChangeField('assignedUserIds', usrs);
+    const dateOnChange = date => this.onChangeField('closeDate', date);
 
     return (
       <AddContainer>
-        {this.renderSelect()}
-
-        <div>
+        <>
           <FormGroup>
             <ControlLabel>Task type</ControlLabel>
             <TaskTypes>{this.renderTaskType()}</TaskTypes>
           </FormGroup>
+
           <FormGroup>
             <ControlLabel required={true}>Name</ControlLabel>
             <FormControl
@@ -171,6 +175,9 @@ class TaskAddForm extends React.Component<Props, State> {
               required={true}
             />
           </FormGroup>
+
+          {this.renderSelect()}
+
           <FormGroup>
             <ControlLabel>Close date</ControlLabel>
             <DueDate>
@@ -188,6 +195,7 @@ class TaskAddForm extends React.Component<Props, State> {
               </DateIcon>
             </DueDate>
           </FormGroup>
+
           <FormGroup>
             <ControlLabel>Assigned to</ControlLabel>
             <SelectTeamMembers
@@ -198,6 +206,7 @@ class TaskAddForm extends React.Component<Props, State> {
               filterParams={{ status: 'verified' }}
             />
           </FormGroup>
+
           <FormGroup>
             <FormControl
               id="isDone"
@@ -207,7 +216,7 @@ class TaskAddForm extends React.Component<Props, State> {
               {__('Finished')}
             </FormControl>
           </FormGroup>
-        </div>
+        </>
 
         <FormFooter>
           <Button
