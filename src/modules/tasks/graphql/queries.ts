@@ -63,6 +63,11 @@ const taskFields = `
   stage {
     probability
   }
+  type {
+    _id
+    name
+    icon
+  }
   isWatched
   attachments {
     name
@@ -104,7 +109,18 @@ const taskDetail = `
   }
 `;
 
+const taskTypes = `
+  query taskTypes {
+    taskTypes {
+      _id
+      name
+      icon
+    }
+  }
+`;
+
 export default {
   tasks,
-  taskDetail
+  taskDetail,
+  taskTypes
 };

@@ -77,8 +77,6 @@ const commonReturn = `
   }
   isWatched
   isDone
-  attachments
-  stage
   priority
   modifiedAt
   modifiedBy

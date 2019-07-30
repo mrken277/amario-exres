@@ -6,6 +6,11 @@ export type ActivityLogQueryResponse = {
   loading: boolean;
 };
 
+export type TasksQueryResponse = {
+  tasks: ITask[];
+  loading: boolean;
+};
+
 export interface ITask extends IItem {
   priority?: string;
 }

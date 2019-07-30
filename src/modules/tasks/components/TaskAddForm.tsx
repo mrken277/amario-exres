@@ -8,16 +8,18 @@ import FormControl from 'modules/common/components/form/Control';
 import Form from 'modules/common/components/form/Form';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
+import Icon from 'modules/common/components/Icon';
+import Tip from 'modules/common/components/Tip';
 import { IFormProps } from 'modules/common/types';
-import { Alert } from 'modules/common/utils';
+import { __ } from 'modules/common/utils';
+import { ITaskType } from 'modules/settings/taskType/types';
+import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMembers';
 import React from 'react';
-import Select from 'react-select-plus';
-import Toggle from 'react-toggle';
+import { Link } from 'react-router-dom';
+import { DateIcon, DueDate, TaskTypes, TypeIcon } from '../styles';
 
 type Props = {
   options: IOptions;
-  customerIds?: string[];
-  companyIds?: string[];
   boardId?: string;
   pipelineId?: string;
   stageId?: string;
@@ -25,26 +27,30 @@ type Props = {
   showSelect?: boolean;
   closeModal: () => void;
   callback?: (item?: IItem) => void;
+  types: ITaskType[];
 };
 
 type State = {
   stageId: string;
-  name: string;
   disabled: boolean;
   boardId: string;
   pipelineId: string;
+  typeId?: string;
+  closeDate?: Date;
+  assignedUserIds?: string[];
+  isDone: boolean;
 };
 
-class TaskForm extends React.Component<Props, State> {
+class TaskAddForm extends React.Component<Props, State> {
   constructor(props) {
     super(props);
 
     this.state = {
       disabled: false,
-      boardId: '',
-      pipelineId: '',
+      isDone: false,
       stageId: props.stageId || '',
-      name: ''
+      boardId: '',
+      pipelineId: ''
     };
   }
 
@@ -52,29 +58,27 @@ class TaskForm extends React.Component<Props, State> {
     this.setState({ [name]: value } as Pick<State, keyof State>);
   };
 
+  onTypeClick = (id: string) => {
+    this.setState({ typeId: id });
+  };
+
+  onFinishClick = () => {
+    const { isDone } = this.state;
+
+    this.setState({ isDone: !isDone });
+  };
+
   save = (values: any) => {
-    const { stageId } = this.state;
-    const {
-      companyIds,
-      customerIds,
-      saveItem,
-      closeModal,
-      callback
-    } = this.props;
-
-    // if (!stageId) {
-    //   return Alert.error('No stage');
-    // }
-
-    // if (!name) {
-    //   return Alert.error('Enter name');
-    // }
+    const { stageId, closeDate, typeId, assignedUserIds, isDone } = this.state;
+    const { saveItem, closeModal, callback } = this.props;
 
     const doc = {
       name: values.name,
       stageId,
-      customerIds: customerIds || [],
-      companyIds: companyIds || []
+      closeDate,
+      typeId,
+      assignedUserIds,
+      isDone
     };
 
     // before save, disable save button
@@ -120,7 +124,35 @@ class TaskForm extends React.Component<Props, State> {
     );
   }
 
+  renderTaskType() {
+    const { types } = this.props;
+
+    if (types.length === 0) {
+      return (
+        <Link to="/settings/task-types">
+          <Button btnStyle="primary" size="small" icon="add">
+            {__('Create task type')}
+          </Button>
+        </Link>
+      );
+    }
+
+    return types.map(type => (
+      <Tip key={type._id} text={type.name} placement="bottom">
+        <TypeIcon
+          className={this.state.typeId === type._id ? 'active' : ''}
+          onClick={this.onTypeClick.bind(this, type._id)}
+        >
+          <Icon icon={type.icon} size={15} />
+        </TypeIcon>
+      </Tip>
+    ));
+  }
+
   renderContent = (formProps: IFormProps) => {
+    const dateOnChange = date => this.onChangeField('closeDate', date);
+    const userOnChange = usrs => this.onChangeField('assignedUserIds', usrs);
+
     return (
       <AddContainer>
         {this.renderSelect()}
@@ -128,10 +160,7 @@ class TaskForm extends React.Component<Props, State> {
         <div>
           <FormGroup>
             <ControlLabel>Task type</ControlLabel>
-            <FormControl componentClass="select">
-              <option value="email">Email</option>
-              <option value="messenger">Messenger</option>
-            </FormControl>
+            <TaskTypes>{this.renderTaskType()}</TaskTypes>
           </FormGroup>
           <FormGroup>
             <ControlLabel required={true}>Name</ControlLabel>
@@ -144,53 +173,39 @@ class TaskForm extends React.Component<Props, State> {
           </FormGroup>
           <FormGroup>
             <ControlLabel>Close date</ControlLabel>
-            <Datetime
-              inputProps={{ placeholder: 'Click to select a date' }}
-              dateFormat="YYYY/MM/DD"
-              timeFormat={false}
-              closeOnSelect={true}
-              utc={true}
-            />
-          </FormGroup>
-          <FormGroup>
-            <ControlLabel>Deal</ControlLabel>
-            <FormControl componentClass="select">
-              <option value="email">Email</option>
-              <option value="messenger">Messenger</option>
-            </FormControl>
-          </FormGroup>
-          <FormGroup>
-            <ControlLabel>Companies</ControlLabel>
-            <Select removeSelected={false} multi={true}>
-              <option value="email">Email</option>
-              <option value="messenger">Messenger</option>
-            </Select>
-          </FormGroup>
-          <FormGroup>
-            <ControlLabel>Customers</ControlLabel>
-            <Select removeSelected={false} multi={true}>
-              <option value="email">Email</option>
-              <option value="messenger">Messenger</option>
-            </Select>
+            <DueDate>
+              <Datetime
+                inputProps={{ placeholder: 'Click to select a date' }}
+                dateFormat="YYYY/MM/DD"
+                timeFormat={false}
+                closeOnSelect={true}
+                value={this.state.closeDate}
+                onChange={dateOnChange}
+                utc={true}
+              />
+              <DateIcon>
+                <Icon icon="calendar" size={15} />
+              </DateIcon>
+            </DueDate>
           </FormGroup>
           <FormGroup>
             <ControlLabel>Assigned to</ControlLabel>
-            <FormControl componentClass="select">
-              <option value="email">Email</option>
-              <option value="messenger">Messenger</option>
-            </FormControl>
+            <SelectTeamMembers
+              label="Choose users"
+              name="assignedUserIds"
+              value={this.state.assignedUserIds}
+              onSelect={userOnChange}
+              filterParams={{ status: 'verified' }}
+            />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Finished</ControlLabel>
-            <div>
-              <Toggle
-                checked={false}
-                icons={{
-                  checked: <span>Yes</span>,
-                  unchecked: <span>No</span>
-                }}
-              />
-            </div>
+            <FormControl
+              id="isDone"
+              componentClass="checkbox"
+              onClick={this.onFinishClick}
+            >
+              {__('Finished')}
+            </FormControl>
           </FormGroup>
         </div>
 
@@ -221,4 +236,4 @@ class TaskForm extends React.Component<Props, State> {
   }
 }
 
-export default TaskForm;
+export default TaskAddForm;
