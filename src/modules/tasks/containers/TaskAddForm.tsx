@@ -1,23 +1,15 @@
 import gql from 'graphql-tag';
-import {
-  IItem,
-  IItemParams,
-  IOptions,
-  SaveMutation
-} from 'modules/boards/types';
+import { IItem, IItemParams, IOptions } from 'modules/boards/types';
 import Spinner from 'modules/common/components/Spinner';
-import { Alert, withProps } from 'modules/common/utils';
+import { withProps } from 'modules/common/utils';
 import { TaskTypeQueryResponse } from 'modules/settings/taskType/types';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import TaskAddForm from '../components/TaskAddForm';
 import { queries } from '../graphql';
-import { TasksQueryResponse } from '../types';
 
 type IProps = {
   options: IOptions;
-  customerIds?: string[];
-  companyIds?: string[];
   boardId?: string;
   pipelineId?: string;
   stageId?: string;
