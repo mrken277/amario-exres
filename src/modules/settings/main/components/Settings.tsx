@@ -144,11 +144,6 @@ class Settings extends React.PureComponent {
               '/images/icons/erxes-19.svg',
               '/settings/boards/ticket'
             )}
-            {this.renderBox(
-              'Task types',
-              '/images/icons/erxes-19.svg',
-              '/settings/task-types'
-            )}
           </div>
         </Row>
         <Divider />
@@ -159,6 +154,11 @@ class Settings extends React.PureComponent {
               'Boards & Pipelines',
               '/images/icons/erxes-19.svg',
               '/settings/boards/task'
+            )}
+            {this.renderBox(
+              'Task types',
+              '/images/icons/erxes-21.svg',
+              '/settings/task-types'
             )}
           </div>
         </Row>
