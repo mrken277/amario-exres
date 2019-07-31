@@ -12,6 +12,8 @@ type IProps = {
   options: IOptions;
   customerIds?: string[];
   companyIds?: string[];
+  dealId?: string;
+  ticketId?: string;
   saveItem: (doc: IItemParams, callback: (item: IItem) => void) => void;
   showSelect?: boolean;
   closeModal: () => void;

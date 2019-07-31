@@ -1,6 +1,6 @@
 import Datetime from '@nateradebaugh/react-datetime';
 import BoardSelect from 'modules/boards/containers/BoardSelect';
-import { AddContainer, FormFooter } from 'modules/boards/styles/item';
+import { FormFooter } from 'modules/boards/styles/item';
 import { IItem, IItemParams, IOptions } from 'modules/boards/types';
 import { invalidateCache } from 'modules/boards/utils';
 import Button from 'modules/common/components/Button';
@@ -16,7 +16,7 @@ import { ITaskType } from 'modules/settings/taskType/types';
 import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMembers';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { DateIcon, DueDate, TaskTypes, TypeIcon } from '../styles';
+import { Container, DateIcon, DueDate, TaskTypes, TypeIcon } from '../styles';
 
 type Props = {
   options: IOptions;
@@ -24,6 +24,8 @@ type Props = {
   pipelineId?: string;
   customerIds?: string[];
   companyIds?: string[];
+  dealId?: string;
+  ticketId?: string;
   stageId?: string;
   saveItem: (doc: IItemParams, callback: (item: IItem) => void) => void;
   showSelect?: boolean;
@@ -75,6 +77,8 @@ class TaskAddForm extends React.Component<Props, State> {
       saveItem,
       closeModal,
       callback,
+      dealId,
+      ticketId,
       companyIds,
       customerIds
     } = this.props;
@@ -83,7 +87,9 @@ class TaskAddForm extends React.Component<Props, State> {
       ...this.state,
       name: values.name,
       customerIds: customerIds || [],
-      companyIds: companyIds || []
+      companyIds: companyIds || [],
+      dealId: dealId || '',
+      ticketId: ticketId || ''
     };
 
     // before save, disable save button
@@ -159,64 +165,62 @@ class TaskAddForm extends React.Component<Props, State> {
     const dateOnChange = date => this.onChangeField('closeDate', date);
 
     return (
-      <AddContainer>
-        <>
-          <FormGroup>
-            <ControlLabel>Task type</ControlLabel>
-            <TaskTypes>{this.renderTaskType()}</TaskTypes>
-          </FormGroup>
+      <Container>
+        <FormGroup>
+          <ControlLabel>Task type</ControlLabel>
+          <TaskTypes>{this.renderTaskType()}</TaskTypes>
+        </FormGroup>
 
-          <FormGroup>
-            <ControlLabel required={true}>Name</ControlLabel>
-            <FormControl
-              {...formProps}
-              name="name"
-              autoFocus={true}
-              required={true}
+        <FormGroup>
+          <ControlLabel required={true}>Name</ControlLabel>
+          <FormControl
+            {...formProps}
+            name="name"
+            autoFocus={true}
+            required={true}
+          />
+        </FormGroup>
+
+        {this.renderSelect()}
+
+        <FormGroup>
+          <ControlLabel>Close date</ControlLabel>
+          <DueDate>
+            <Datetime
+              inputProps={{ placeholder: 'Click to select a date' }}
+              dateFormat="YYYY/MM/DD"
+              timeFormat={false}
+              closeOnSelect={true}
+              value={this.state.closeDate}
+              onChange={dateOnChange}
+              utc={true}
             />
-          </FormGroup>
+            <DateIcon>
+              <Icon icon="calendar" size={15} />
+            </DateIcon>
+          </DueDate>
+        </FormGroup>
 
-          {this.renderSelect()}
+        <FormGroup>
+          <ControlLabel>Assigned to</ControlLabel>
+          <SelectTeamMembers
+            label="Choose users"
+            name="assignedUserIds"
+            value={this.state.assignedUserIds}
+            onSelect={userOnChange}
+            filterParams={{ status: 'verified' }}
+          />
+        </FormGroup>
 
-          <FormGroup>
-            <ControlLabel>Close date</ControlLabel>
-            <DueDate>
-              <Datetime
-                inputProps={{ placeholder: 'Click to select a date' }}
-                dateFormat="YYYY/MM/DD"
-                timeFormat={false}
-                closeOnSelect={true}
-                value={this.state.closeDate}
-                onChange={dateOnChange}
-                utc={true}
-              />
-              <DateIcon>
-                <Icon icon="calendar" size={15} />
-              </DateIcon>
-            </DueDate>
-          </FormGroup>
-
-          <FormGroup>
-            <ControlLabel>Assigned to</ControlLabel>
-            <SelectTeamMembers
-              label="Choose users"
-              name="assignedUserIds"
-              value={this.state.assignedUserIds}
-              onSelect={userOnChange}
-              filterParams={{ status: 'verified' }}
-            />
-          </FormGroup>
-
-          <FormGroup>
-            <FormControl
-              id="isDone"
-              componentClass="checkbox"
-              onClick={this.onFinishClick}
-            >
-              {__('Finished')}
-            </FormControl>
-          </FormGroup>
-        </>
+        <FormGroup>
+          <FormControl
+            id="isDone"
+            componentClass="checkbox"
+            onClick={this.onFinishClick}
+          >
+            {__('Finished')}
+          </FormControl>
+        </FormGroup>
 
         <FormFooter>
           <Button
@@ -236,7 +240,7 @@ class TaskAddForm extends React.Component<Props, State> {
             Save
           </Button>
         </FormFooter>
-      </AddContainer>
+      </Container>
     );
   };
 

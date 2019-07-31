@@ -6,10 +6,12 @@ import { ICompany } from 'modules/companies/types';
 import CustomerSection from 'modules/customers/components/common/CustomerSection';
 import { ICustomer } from 'modules/customers/types';
 import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMembers';
+import PortableTasks from 'modules/tasks/components/PortableTasks';
 import React from 'react';
 import { Watch } from '../../containers/editForm/';
 import { RightContent } from '../../styles/item';
 import { IItem, IOptions } from '../../types';
+
 type Props = {
   item: IItem;
   customers: ICustomer[];
@@ -23,6 +25,7 @@ type Props = {
   removeItem: (itemId: string) => void;
   sidebar?: () => React.ReactNode;
   options: IOptions;
+  type?: string;
 };
 
 class Sidebar extends React.Component<Props> {
@@ -43,13 +46,26 @@ class Sidebar extends React.Component<Props> {
       removeItem,
       sidebar,
       options,
+      type,
       assignedUserIds
     } = this.props;
+
+    let dealId = '';
+    let ticketId = '';
+
+    if (type === 'deal') {
+      dealId = item._id;
+    }
+
+    if (type === 'ticket') {
+      ticketId = item._id;
+    }
 
     const cmpsChange = cmps => this.onChange('companies', cmps);
     const cmrsChange = cmrs => this.onChange('customers', cmrs);
     const onClick = () => removeItem(item._id);
     const userOnChange = usrs => this.onChange('assignedUserIds', usrs);
+
     return (
       <RightContent>
         <FormGroup>
@@ -75,6 +91,8 @@ class Sidebar extends React.Component<Props> {
           customers={customers}
           onSelect={cmrsChange}
         />
+
+        <PortableTasks dealId={dealId} ticketId={ticketId} />
 
         <Watch item={item} options={options} />
 

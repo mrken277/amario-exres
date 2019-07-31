@@ -12,6 +12,8 @@ type IProps = {
   customerIds?: string[];
   companyIds?: string[];
   boardId?: string;
+  dealId?: string;
+  ticketId?: string;
   pipelineId?: string;
   stageId?: string;
   showSelect?: boolean;

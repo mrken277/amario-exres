@@ -49,6 +49,18 @@ const taskFields = `
     primaryEmail
     primaryPhone
   }
+  deal {
+    _id
+    name
+    stageId
+    boardId
+  }
+  ticket {
+    _id
+    name
+    stageId
+    boardId
+  }
   closeDate
   description
   priority

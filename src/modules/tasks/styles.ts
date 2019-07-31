@@ -1,3 +1,4 @@
+import { AddContainer } from 'modules/boards/styles/item';
 import { colors, dimensions } from 'modules/common/styles';
 import styled from 'styled-components';
 
@@ -60,4 +61,8 @@ const DateIcon = styled.div`
   border: 1px solid ${colors.colorShadowGray};
 `;
 
-export { TypeIcon, DateIcon, DueDate, TaskTypes };
+const Container = styled(AddContainer.withComponent('div'))`
+  position: relative;
+`;
+
+export { TypeIcon, DateIcon, DueDate, TaskTypes, Container };

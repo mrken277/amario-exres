@@ -13,6 +13,8 @@ type Props = {
   items: IItem[];
   customerIds?: string[];
   companyIds?: string[];
+  dealId?: string;
+  ticketId?: string;
   onChangeItems: () => void;
   isOpen?: boolean;
 };
@@ -46,6 +48,8 @@ class Items extends React.Component<Props> {
     const {
       customerIds,
       companyIds,
+      dealId,
+      ticketId,
       isOpen,
       options,
       onChangeItems
@@ -64,6 +68,8 @@ class Items extends React.Component<Props> {
         callback={onChangeItems}
         customerIds={customerIds}
         companyIds={companyIds}
+        dealId={dealId}
+        ticketId={ticketId}
         showSelect={true}
       />
     );

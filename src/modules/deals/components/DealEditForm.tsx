@@ -125,6 +125,7 @@ export default class DealEditForm extends React.Component<Props, State> {
 
     const extendedProps = {
       ...this.props,
+      type: 'deal',
       extraFieldsCheck: this.checkProductsData,
       extraFields: { productsData },
       amount: this.renderAmount,
