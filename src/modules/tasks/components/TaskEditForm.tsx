@@ -36,8 +36,8 @@ export default class TaskEditForm extends React.Component<Props, State> {
 
     this.state = {
       priority: item.priority || '',
-      type: item.type.name || '',
-      isDone: item.isDone || false
+      type: '',
+      isDone: false
     };
   }
 

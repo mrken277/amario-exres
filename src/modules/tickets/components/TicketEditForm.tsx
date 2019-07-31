@@ -104,7 +104,6 @@ export default class TicketEditForm extends React.Component<Props, State> {
   render() {
     const extendedProps = {
       ...this.props,
-      type: 'ticket',
       sidebar: this.renderSidebarFields,
       extraFields: this.state
     };

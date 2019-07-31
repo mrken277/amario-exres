@@ -118,7 +118,7 @@ class EditFormContainer extends React.Component<FinalProps> {
 
     const users = usersQuery.allUsers;
     const item = detailQuery[options.queriesName.detailQuery];
-
+    // tslint:disable-next-line:no-console
     if (!item) {
       return null;
     }

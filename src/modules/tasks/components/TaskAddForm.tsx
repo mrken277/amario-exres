@@ -24,8 +24,8 @@ type Props = {
   pipelineId?: string;
   customerIds?: string[];
   companyIds?: string[];
-  dealId?: string;
-  ticketId?: string;
+  contentType?: string;
+  contentId?: string;
   stageId?: string;
   saveItem: (doc: IItemParams, callback: (item: IItem) => void) => void;
   showSelect?: boolean;
@@ -77,8 +77,8 @@ class TaskAddForm extends React.Component<Props, State> {
       saveItem,
       closeModal,
       callback,
-      dealId,
-      ticketId,
+      contentId,
+      contentType,
       companyIds,
       customerIds
     } = this.props;
@@ -88,8 +88,8 @@ class TaskAddForm extends React.Component<Props, State> {
       name: values.name,
       customerIds: customerIds || [],
       companyIds: companyIds || [],
-      dealId: dealId || '',
-      ticketId: ticketId || ''
+      contentId: contentId || '',
+      contentType: contentType || ''
     };
 
     // before save, disable save button

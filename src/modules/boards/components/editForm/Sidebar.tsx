@@ -17,6 +17,7 @@ type Props = {
   customers: ICustomer[];
   companies: ICompany[];
   assignedUserIds: string[];
+  contentType?: string;
   onChangeField?: (
     name: 'companies' | 'customers' | 'assignedUserIds',
     value: any
@@ -25,7 +26,6 @@ type Props = {
   removeItem: (itemId: string) => void;
   sidebar?: () => React.ReactNode;
   options: IOptions;
-  type?: string;
 };
 
 class Sidebar extends React.Component<Props> {
@@ -46,20 +46,9 @@ class Sidebar extends React.Component<Props> {
       removeItem,
       sidebar,
       options,
-      type,
+      contentType,
       assignedUserIds
     } = this.props;
-
-    let dealId = '';
-    let ticketId = '';
-
-    if (type === 'deal') {
-      dealId = item._id;
-    }
-
-    if (type === 'ticket') {
-      ticketId = item._id;
-    }
 
     const cmpsChange = cmps => this.onChange('companies', cmps);
     const cmrsChange = cmrs => this.onChange('customers', cmrs);
@@ -92,7 +81,7 @@ class Sidebar extends React.Component<Props> {
           onSelect={cmrsChange}
         />
 
-        <PortableTasks dealId={dealId} ticketId={ticketId} />
+        <PortableTasks contentType={contentType} contentId={item._id} />
 
         <Watch item={item} options={options} />
 

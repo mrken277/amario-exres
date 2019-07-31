@@ -63,12 +63,10 @@ const ticketFields = `
   inProgressTasks {
     _id
     name
-    dealId
   }
   doneTasks {
     _id
     name
-    dealId
   }
   attachments {
     name

@@ -33,6 +33,7 @@ const taskFields = `
   boardId
   typeId
   contentType
+  contentId
   content
   closeDate
   description

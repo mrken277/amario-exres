@@ -8,8 +8,8 @@ import { IOptions, ItemsQueryResponse } from '../../types';
 type IProps = {
   customerIds?: string[];
   companyIds?: string[];
-  dealId?: string;
-  ticketId?: string;
+  contentType?: string;
+  contentId?: string;
   isOpen?: boolean;
   options: IOptions;
 };
@@ -54,19 +54,17 @@ export default (props: IProps) =>
         {
           customerIds?: string[];
           companyIds?: string[];
-          dealId?: string;
-          ticketId?: string;
+          contentId?: string;
         }
       >(gql(props.options.queries.itemsQuery), {
         name: 'itemsQuery',
-        skip: ({ customerIds, companyIds, dealId, ticketId }) =>
-          !customerIds && !companyIds && !dealId && !ticketId,
-        options: ({ customerIds, companyIds, dealId, ticketId }) => ({
+        skip: ({ customerIds, companyIds, contentId }) =>
+          !customerIds && !companyIds && !contentId,
+        options: ({ customerIds, companyIds, contentId }) => ({
           variables: {
             customerIds,
             companyIds,
-            dealId,
-            ticketId
+            contentId
           }
         })
       })

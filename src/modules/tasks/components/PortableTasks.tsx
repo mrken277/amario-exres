@@ -5,8 +5,8 @@ import options from '../options';
 type IProps = {
   customerIds?: string[];
   companyIds?: string[];
-  dealId?: string;
-  ticketId?: string;
+  contentType?: string;
+  contentId?: string;
   isOpen?: boolean;
 };
 

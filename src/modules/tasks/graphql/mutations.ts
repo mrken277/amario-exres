@@ -2,13 +2,11 @@ const commonVariables = `
   $name: String!,
   $isDone: Boolean
   $stageId: String,
-  $dealId: String,
-  $ticketId: String,
+  $contentType: String
+  $contentId: String
   $typeId: String,
   $assignedUserIds: [String],
-  $companyIds: [String],
   $attachments: [AttachmentInput]
-  $customerIds: [String],
   $closeDate: Date,
   $description: String,
   $order: Int,
@@ -19,13 +17,11 @@ const commonParams = `
   name: $name,
   isDone: $isDone,
   stageId: $stageId,
-  dealId: $dealId,
-  ticketId: $ticketId,
   typeId: $typeId,
+  contentType: $contentType,
+  contentId: $contentId
   assignedUserIds: $assignedUserIds,
-  companyIds: $companyIds,
   attachments: $attachments,
-  customerIds: $customerIds,
   closeDate: $closeDate,
   description: $description,
   order: $order,
@@ -37,34 +33,16 @@ const commonReturn = `
   name
   stageId
   boardId
-  dealId
-  ticketId
   typeId
-  companyIds
-  customerIds
   assignedUserIds
-  deal {
-    _id
-    name
-  }
-  ticket {
-    _id
-    name
-  }
   type {
     _id
     name
     icon
   }
-  companies {
-    _id
-    primaryName
-  }
-  customers {
-    _id
-    firstName
-    primaryEmail
-  }
+  content
+  contentId
+  contentType
   closeDate
   description
   assignedUsers {
