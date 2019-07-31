@@ -31,8 +31,6 @@ const taskFields = `
     name
   }
   boardId
-  dealId
-  ticketId
   typeId
   contentType
   content
