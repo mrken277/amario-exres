@@ -66,7 +66,7 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
         variables: {
           stageId: stage._id,
           skip: items.length,
-          ...getFilterParams(queryParams, options.getExtraParams)
+          ...getFilterParams(options.type, queryParams, options.getExtraParams)
         }
       })
       .then(({ data }: any) => {
@@ -108,10 +108,15 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
 }
 
 const getFilterParams = (
+  type: string,
   queryParams: IFilterParams,
   getExtraParams: (queryParams) => any
 ) => {
   if (!queryParams) {
+    return {};
+  }
+
+  if (type === 'task') {
     return {};
   }
 
@@ -138,7 +143,11 @@ const withQuery = ({ options }) => {
         options: ({ stage, queryParams, loadingState }) => ({
           variables: {
             stageId: stage._id,
-            ...getFilterParams(queryParams, options.getExtraParams)
+            ...getFilterParams(
+              options.type,
+              queryParams,
+              options.getExtraParams
+            )
           },
           fetchPolicy:
             loadingState === 'readyToLoad' ? 'network-only' : 'cache-only',

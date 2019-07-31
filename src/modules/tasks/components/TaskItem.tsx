@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import EditForm from 'modules/boards/containers/editForm/EditForm';
 import { ItemContainer, ItemDate } from 'modules/boards/styles/common';
 import { Footer, PriceContainer, Right } from 'modules/boards/styles/item';
-import { Content, ItemIndicator } from 'modules/boards/styles/stage';
+import { Content } from 'modules/boards/styles/stage';
 import { IOptions } from 'modules/boards/types';
 import { renderPriority } from 'modules/boards/utils';
 import { __, getUserAvatar } from 'modules/common/utils';
@@ -78,7 +78,7 @@ export default class TaskItem extends React.PureComponent<
 
   render() {
     const { item, isDragging, provided } = this.props;
-    const { customers, companies } = item;
+    // const { customers, companies } = item;
 
     return (
       <ItemContainer
@@ -93,7 +93,7 @@ export default class TaskItem extends React.PureComponent<
             {item.name}
           </h5>
 
-          {customers.map((customer, index) => (
+          {/* {customers.map((customer, index) => (
             <div key={index}>
               <ItemIndicator color="#F7CE53" />
               {customer.firstName || customer.primaryEmail}
@@ -105,7 +105,7 @@ export default class TaskItem extends React.PureComponent<
               <ItemIndicator color="#EA475D" />
               {company.primaryName}
             </div>
-          ))}
+          ))} */}
 
           <PriceContainer>
             <Right>
