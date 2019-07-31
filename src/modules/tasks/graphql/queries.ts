@@ -1,8 +1,6 @@
 const commonParams = `
-  $dealId: String
-  $ticketId: String
-  $customerIds: [String],
-  $companyIds: [String],
+  $contentType: String
+  $contentId: String
   $assignedUserIds: [String],
   $nextDay: String,
   $nextWeek: String,
@@ -13,10 +11,8 @@ const commonParams = `
 `;
 
 const commonParamDefs = `
-  dealId: $dealId,
-  ticketId: $ticketId,
-  customerIds: $customerIds,
-  companyIds: $companyIds,
+  contentType: $contentType,
+  contentId: $contentId,
   assignedUserIds: $assignedUserIds,
   nextDay: $nextDay,
   nextWeek: $nextWeek,
@@ -38,29 +34,8 @@ const taskFields = `
   dealId
   ticketId
   typeId
-  companies {
-    _id
-    primaryName
-    website
-  }
-  customers {
-    _id
-    firstName
-    primaryEmail
-    primaryPhone
-  }
-  deal {
-    _id
-    name
-    stageId
-    boardId
-  }
-  ticket {
-    _id
-    name
-    stageId
-    boardId
-  }
+  contentType
+  content
   closeDate
   description
   priority
