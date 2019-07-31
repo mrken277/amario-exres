@@ -1,6 +1,6 @@
 import { toArray } from 'modules/boards/utils';
-import PortableTask from 'modules/tasks/components/PortableTask';
-import TaskEditForm from 'modules/tasks/components/TaskEditForm';
+import PortableTask from './components/PortableTask';
+import TaskEditForm from './components/TaskEditForm';
 import TaskItem from './containers/TaskItem';
 import { mutations, queries } from './graphql';
 

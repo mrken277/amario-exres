@@ -3,9 +3,11 @@ import EditForm from 'modules/boards/components/editForm/EditForm';
 import PriorityIndicator from 'modules/boards/components/editForm/PriorityIndicator';
 import { PRIORITIES } from 'modules/boards/constants';
 import { IOptions } from 'modules/boards/types';
+import FormControl from 'modules/common/components/form/Control';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
 import { ISelectedOption } from 'modules/common/types';
+import { __ } from 'modules/common/utils';
 import React from 'react';
 import Select from 'react-select-plus';
 import { ITask, ITaskParams } from '../types';
@@ -22,6 +24,8 @@ type Props = {
 
 type State = {
   priority: string;
+  type: string;
+  isDone: boolean;
 };
 
 export default class TaskEditForm extends React.Component<Props, State> {
@@ -31,7 +35,9 @@ export default class TaskEditForm extends React.Component<Props, State> {
     const item = props.item;
 
     this.state = {
-      priority: item.priority || ''
+      priority: item.priority || '',
+      type: item.type.name || '',
+      isDone: item.isDone || false
     };
   }
 
@@ -40,7 +46,7 @@ export default class TaskEditForm extends React.Component<Props, State> {
   };
 
   renderSidebarFields = () => {
-    const { priority } = this.state;
+    const { priority, type } = this.state;
 
     const priorityValues = PRIORITIES.map(p => ({ label: p, value: p }));
 
@@ -67,6 +73,24 @@ export default class TaskEditForm extends React.Component<Props, State> {
             optionRenderer={priorityValueRenderer}
             valueRenderer={priorityValueRenderer}
           />
+        </FormGroup>
+
+        <FormGroup>
+          <ControlLabel>Type</ControlLabel>
+          <Select
+            placeholder="Select a type"
+            value={type}
+            options={priorityValues}
+            onChange={onChangePriority}
+            optionRenderer={priorityValueRenderer}
+            valueRenderer={priorityValueRenderer}
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <FormControl id="isDone" componentClass="checkbox">
+            {__('Finished')}
+          </FormControl>
         </FormGroup>
       </>
     );

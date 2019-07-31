@@ -29,6 +29,10 @@ class Task extends React.Component<Props, { isFormVisible: boolean }> {
   renderFormTrigger = (trigger: React.ReactNode) => {
     const { item, onAdd, onRemove, onUpdate, options } = this.props;
 
+    if (item.isDone === false) {
+      return null;
+    }
+
     const content = props => (
       <EditForm
         {...props}

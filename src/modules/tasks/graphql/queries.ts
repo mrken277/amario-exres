@@ -80,6 +80,7 @@ const taskFields = `
     name
     icon
   }
+  isDone
   isWatched
   attachments {
     name

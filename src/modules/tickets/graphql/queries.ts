@@ -60,6 +60,16 @@ const ticketFields = `
     probability
   }
   isWatched
+  inProgressTasks {
+    _id
+    name
+    dealId
+  }
+  doneTasks {
+    _id
+    name
+    dealId
+  }
   attachments {
     name
     url
