@@ -23,7 +23,7 @@ import { IDeal } from '../types';
 
 type Props = {
   item: IDeal;
-  options: IOptions;
+  options?: IOptions;
   onAdd?: (stageId: string, item: IDeal) => void;
   onRemove?: (dealId: string, stageId: string) => void;
   onUpdate?: (item: IDeal) => void;
@@ -108,7 +108,7 @@ class Deal extends React.Component<Props, { isFormVisible: boolean }> {
           <Details color="#EA475D" items={item.companies || []} />
         </Content>
         <PriceContainer>
-          {renderAmount(item.amount)}
+          {renderAmount(item.amount || 0)}
 
           <Right>
             <UserCounter users={item.assignedUsers || []} />

@@ -11,6 +11,7 @@ import React from 'react';
 import { Watch } from '../../containers/editForm/';
 import { RightContent } from '../../styles/item';
 import { IItem, IOptions } from '../../types';
+import CommonSection from './CommonSection';
 
 type Props = {
   item: IItem;
@@ -18,6 +19,7 @@ type Props = {
   companies: ICompany[];
   assignedUserIds: string[];
   contentType?: string;
+  type?: string;
   onChangeField?: (
     name: 'companies' | 'customers' | 'assignedUserIds',
     value: any
@@ -37,21 +39,52 @@ class Sidebar extends React.Component<Props> {
     }
   };
 
-  render() {
+  renderRelatedSection() {
     const {
+      options,
+      type,
+      item,
       customers,
       companies,
+      contentType
+    } = this.props;
+
+    const cmpsChange = cmps => this.onChange('companies', cmps);
+    const cmrsChange = cmrs => this.onChange('customers', cmrs);
+
+    if (type === 'task') {
+      return <CommonSection item={item} />;
+    }
+
+    return (
+      <>
+        <CompanySection
+          name={options.title}
+          companies={companies}
+          onSelect={cmpsChange}
+        />
+
+        <CustomerSection
+          name={options.title}
+          customers={customers}
+          onSelect={cmrsChange}
+        />
+
+        <PortableTasks contentType={contentType} contentId={item._id} />
+      </>
+    );
+  }
+
+  render() {
+    const {
       item,
       copyItem,
       removeItem,
       sidebar,
       options,
-      contentType,
       assignedUserIds
     } = this.props;
 
-    const cmpsChange = cmps => this.onChange('companies', cmps);
-    const cmrsChange = cmrs => this.onChange('customers', cmrs);
     const onClick = () => removeItem(item._id);
     const userOnChange = usrs => this.onChange('assignedUserIds', usrs);
 
@@ -69,19 +102,7 @@ class Sidebar extends React.Component<Props> {
         </FormGroup>
         {sidebar && sidebar()}
 
-        <CompanySection
-          name={options.title}
-          companies={companies}
-          onSelect={cmpsChange}
-        />
-
-        <CustomerSection
-          name={options.title}
-          customers={customers}
-          onSelect={cmrsChange}
-        />
-
-        <PortableTasks contentType={contentType} contentId={item._id} />
+        {this.renderRelatedSection()}
 
         <Watch item={item} options={options} />
 

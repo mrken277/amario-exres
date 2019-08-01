@@ -22,7 +22,7 @@ type Props = {
   onAdd?: (stageId: string, item: ITicket) => void;
   onRemove?: (dealId: string, stageId: string) => void;
   onUpdate?: (item: ITicket) => void;
-  options: IOptions;
+  options?: IOptions;
 };
 
 class Ticket extends React.Component<Props, { isFormVisible: boolean }> {

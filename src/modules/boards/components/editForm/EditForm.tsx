@@ -27,6 +27,7 @@ type Props = {
   closeModal: () => void;
   extraFields?: any;
   contentType?: string;
+  type?: string;
   extraFieldsCheck?: () => boolean;
   amount?: () => React.ReactNode;
   sidebar?: () => React.ReactNode;
@@ -134,7 +135,15 @@ class EditForm extends React.Component<Props, State> {
   };
 
   renderFormContent() {
-    const { item, users, options, amount, sidebar, contentType } = this.props;
+    const {
+      item,
+      users,
+      options,
+      amount,
+      sidebar,
+      contentType,
+      type
+    } = this.props;
 
     const {
       name,
@@ -220,6 +229,7 @@ class EditForm extends React.Component<Props, State> {
             onChangeField={this.onChangeField}
             copyItem={this.copy}
             removeItem={this.remove}
+            type={type}
           />
         </FlexContent>
       </>

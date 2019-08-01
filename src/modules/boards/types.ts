@@ -100,6 +100,8 @@ export interface IItem {
   companies: ICompany[];
   customers: ICustomer[];
   pipeline: IPipeline;
+  contentType: string;
+  content: any;
   stage?: IStage;
   isWatched?: boolean;
   priority?: string;

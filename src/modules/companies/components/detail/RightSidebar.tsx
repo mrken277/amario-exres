@@ -36,7 +36,7 @@ export default class RightSidebar extends React.Component<{
         <CustomerAssociate data={company} />
         <PortableDeals companyIds={[company._id]} />
         <PortableTickets companyIds={[company._id]} />
-        <PortableTasks companyIds={[company._id]} />
+        <PortableTasks contentId={company._id} contentType="company" />
 
         <Section>
           <Title>{__('Other')}</Title>
