@@ -3,6 +3,8 @@ import React from 'react';
 import options from '../options';
 
 type IProps = {
+  customerIds?: string[];
+  companyIds?: string[];
   contentType?: string;
   contentId?: string;
   isOpen?: boolean;
