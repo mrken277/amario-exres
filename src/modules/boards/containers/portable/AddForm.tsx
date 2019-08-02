@@ -1,6 +1,5 @@
 import gql from 'graphql-tag';
 import { Alert, renderWithProps } from 'modules/common/utils';
-import TaskAddForm from 'modules/tasks/containers/TaskAddForm';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import AddForm from '../../components/portable/AddForm';
@@ -41,13 +40,15 @@ class AddFormContainer extends React.Component<FinalProps> {
   };
 
   render() {
+    const { options } = this.props;
+
     const extendedProps = {
       ...this.props,
       saveItem: this.saveItem
     };
 
-    if (this.props.options.type === 'task') {
-      return <TaskAddForm {...extendedProps} />;
+    if (options.AddForm) {
+      return <options.AddForm {...extendedProps} />;
     }
 
     return <AddForm {...extendedProps} />;
