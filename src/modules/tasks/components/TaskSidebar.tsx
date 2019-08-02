@@ -1,3 +1,4 @@
+import { IItem } from 'modules/boards/types';
 import Icon from 'modules/common/components/Icon';
 import Tip from 'modules/common/components/Tip';
 import { __, renderFullName, urlParser } from 'modules/common/utils';
@@ -7,13 +8,12 @@ import { SectionBody, SectionBodyItem } from 'modules/layout/styles';
 import PortableTicket from 'modules/tickets/components/PortableTicket';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IItem } from '../../types';
 
 type Props = {
   item: IItem;
 };
 
-export default class CommonSection extends React.Component<Props, {}> {
+export default class TaskSidebar extends React.Component<Props, {}> {
   renderContactItem() {
     const { contentType, content } = this.props.item;
 

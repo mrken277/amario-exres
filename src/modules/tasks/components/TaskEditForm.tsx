@@ -12,14 +12,18 @@ import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
 import { ISelectedOption } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
+import { ITaskType } from 'modules/settings/taskType/types';
 import React from 'react';
 import Select from 'react-select-plus';
 import { ITask, ITaskParams } from '../types';
+import ChooseType from './ChooseType';
+import TaskSidebar from './TaskSidebar';
 
 type Props = {
   options: IOptions;
   item: ITask;
   users: IUser[];
+  types: ITaskType[];
   addItem: (doc: ITaskParams, callback: () => void, msg?: string) => void;
   saveItem: (doc: ITaskParams, callback: () => void) => void;
   removeItem: (itemId: string, callback: () => void) => void;
@@ -28,7 +32,7 @@ type Props = {
 
 type State = {
   priority: string;
-  type: string;
+  typeId: string;
   isDone: boolean;
 };
 
@@ -40,8 +44,8 @@ export default class TaskEditForm extends React.Component<Props, State> {
 
     this.state = {
       priority: item.priority || '',
-      type: '',
-      isDone: false
+      typeId: item.type._id,
+      isDone: item.isDone
     };
   }
 
@@ -50,7 +54,7 @@ export default class TaskEditForm extends React.Component<Props, State> {
   };
 
   renderSidebarFields = () => {
-    const { priority, type } = this.state;
+    const { priority, typeId, isDone } = this.state;
 
     const priorityValues = PRIORITIES.map(p => ({ label: p, value: p }));
 
@@ -79,20 +83,19 @@ export default class TaskEditForm extends React.Component<Props, State> {
           />
         </FormGroup>
 
-        <FormGroup>
-          <ControlLabel>Type</ControlLabel>
-          <Select
-            placeholder="Select a type"
-            value={type}
-            options={priorityValues}
-            onChange={onChangePriority}
-            optionRenderer={priorityValueRenderer}
-            valueRenderer={priorityValueRenderer}
-          />
-        </FormGroup>
+        <ChooseType
+          currentType={typeId}
+          types={this.props.types}
+          onChange={this.onChangeField}
+        />
 
         <FormGroup>
-          <FormControl id="isDone" componentClass="checkbox">
+          <FormControl
+            id="isDone"
+            componentClass="checkbox"
+            checked={isDone}
+            onChange={this.onChangeField.bind(this, 'isDone', !isDone)}
+          >
             {__('Finished')}
           </FormControl>
         </FormGroup>
@@ -150,6 +153,7 @@ export default class TaskEditForm extends React.Component<Props, State> {
             assignedUserIds={assignedUserIds}
             item={item}
             sidebar={this.renderSidebarFields}
+            extraContent={<TaskSidebar item={item} />}
             onChangeField={onChangeField}
             copyItem={copy}
             removeItem={remove}

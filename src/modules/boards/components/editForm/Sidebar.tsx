@@ -11,7 +11,6 @@ import React from 'react';
 import { Watch } from '../../containers/editForm/';
 import { RightContent } from '../../styles/item';
 import { IItem, IOptions } from '../../types';
-import CommonSection from './CommonSection';
 
 type Props = {
   item: IItem;
@@ -19,7 +18,6 @@ type Props = {
   companies: ICompany[];
   assignedUserIds: string[];
   contentType?: string;
-  type?: string;
   onChangeField?: (
     name: 'companies' | 'customers' | 'assignedUserIds',
     value: any
@@ -27,6 +25,7 @@ type Props = {
   copyItem: () => void;
   removeItem: (itemId: string) => void;
   sidebar?: () => React.ReactNode;
+  extraContent?: React.ReactNode;
   options: IOptions;
 };
 
@@ -39,21 +38,21 @@ class Sidebar extends React.Component<Props> {
     }
   };
 
-  renderRelatedSection() {
+  renderAdditionalContent() {
     const {
       options,
-      type,
       item,
       customers,
       companies,
-      contentType
+      contentType,
+      extraContent
     } = this.props;
 
     const cmpsChange = cmps => this.onChange('companies', cmps);
     const cmrsChange = cmrs => this.onChange('customers', cmrs);
 
-    if (type === 'task') {
-      return <CommonSection item={item} />;
+    if (extraContent) {
+      return extraContent;
     }
 
     return (
@@ -102,7 +101,7 @@ class Sidebar extends React.Component<Props> {
         </FormGroup>
         {sidebar && sidebar()}
 
-        {this.renderRelatedSection()}
+        {this.renderAdditionalContent()}
 
         <Watch item={item} options={options} />
 

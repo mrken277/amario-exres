@@ -1,7 +1,7 @@
 import Datetime from '@nateradebaugh/react-datetime';
 import BoardSelect from 'modules/boards/containers/BoardSelect';
 import { FormFooter } from 'modules/boards/styles/item';
-import { IItem, IItemParams, IOptions } from 'modules/boards/types';
+import { IItem, IOptions } from 'modules/boards/types';
 import { invalidateCache } from 'modules/boards/utils';
 import Button from 'modules/common/components/Button';
 import FormControl from 'modules/common/components/form/Control';
@@ -9,14 +9,14 @@ import Form from 'modules/common/components/form/Form';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
 import Icon from 'modules/common/components/Icon';
-import Tip from 'modules/common/components/Tip';
 import { IFormProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
 import { ITaskType } from 'modules/settings/taskType/types';
 import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMembers';
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Container, DateIcon, DueDate, TaskTypes, TypeIcon } from '../styles';
+import { Container, DateIcon, DueDate } from '../styles';
+import { ITaskParams } from '../types';
+import ChooseType from './ChooseType';
 
 type Props = {
   options: IOptions;
@@ -27,7 +27,7 @@ type Props = {
   contentType?: string;
   contentId?: string;
   stageId?: string;
-  saveItem: (doc: IItemParams, callback: (item: IItem) => void) => void;
+  saveItem: (doc: ITaskParams, callback: (item: IItem) => void) => void;
   showSelect?: boolean;
   closeModal: () => void;
   callback?: (item?: IItem) => void;
@@ -60,10 +60,6 @@ class TaskAddForm extends React.Component<Props, State> {
 
   onChangeField = <T extends keyof State>(name: T, value: State[T]) => {
     this.setState({ [name]: value } as Pick<State, keyof State>);
-  };
-
-  onTypeClick = (id: string) => {
-    this.setState({ typeId: id });
   };
 
   onFinishClick = () => {
@@ -135,41 +131,17 @@ class TaskAddForm extends React.Component<Props, State> {
     );
   }
 
-  renderTaskType() {
-    const { types } = this.props;
-
-    if (types.length === 0) {
-      return (
-        <Link to="/settings/task-types">
-          <Button btnStyle="primary" size="small" icon="add">
-            {__('Create task type')}
-          </Button>
-        </Link>
-      );
-    }
-
-    return types.map(type => (
-      <Tip key={type._id} text={type.name} placement="bottom">
-        <TypeIcon
-          className={this.state.typeId === type._id ? 'active' : ''}
-          onClick={this.onTypeClick.bind(this, type._id)}
-        >
-          <Icon icon={type.icon} size={15} />
-        </TypeIcon>
-      </Tip>
-    ));
-  }
-
   renderContent = (formProps: IFormProps) => {
     const userOnChange = usrs => this.onChangeField('assignedUserIds', usrs);
     const dateOnChange = date => this.onChangeField('closeDate', date);
 
     return (
       <Container>
-        <FormGroup>
-          <ControlLabel>Task type</ControlLabel>
-          <TaskTypes>{this.renderTaskType()}</TaskTypes>
-        </FormGroup>
+        <ChooseType
+          currentType={this.state.typeId}
+          types={this.props.types}
+          onChange={this.onChangeField}
+        />
 
         <FormGroup>
           <ControlLabel required={true}>Name</ControlLabel>
