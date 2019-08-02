@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import EditForm from 'modules/boards/containers/editForm/EditForm';
 import { ItemContainer, ItemDate } from 'modules/boards/styles/common';
 import { Footer, PriceContainer, Right } from 'modules/boards/styles/item';
-import { Content } from 'modules/boards/styles/stage';
+import { Content, ItemIndicator } from 'modules/boards/styles/stage';
 import { IOptions } from 'modules/boards/types';
 import { renderPriority } from 'modules/boards/utils';
 import { __, getUserAvatar } from 'modules/common/utils';
@@ -76,9 +76,39 @@ export default class TaskItem extends React.PureComponent<
     );
   };
 
+  renderInnerItem() {
+    const { content, contentType } = this.props.item;
+
+    if (!content) {
+      return null;
+    }
+
+    let value;
+    switch (contentType) {
+      case 'deal':
+        value = content.name;
+        break;
+      case 'ticket':
+        value = content.name;
+        break;
+      case 'customer':
+        value = content.firstName || content.primaryEmail;
+        break;
+      case 'company':
+        value = content.primaryName;
+        break;
+    }
+
+    return (
+      <div>
+        <ItemIndicator color="#AAAEB3" />
+        {value}
+      </div>
+    );
+  }
+
   render() {
     const { item, isDragging, provided } = this.props;
-    // const { customers, companies } = item;
 
     return (
       <ItemContainer
@@ -93,20 +123,7 @@ export default class TaskItem extends React.PureComponent<
             {item.name}
           </h5>
 
-          {/* {customers.map((customer, index) => (
-            <div key={index}>
-              <ItemIndicator color="#F7CE53" />
-              {customer.firstName || customer.primaryEmail}
-            </div>
-          ))}
-
-          {companies.map((company, index) => (
-            <div key={index}>
-              <ItemIndicator color="#EA475D" />
-              {company.primaryName}
-            </div>
-          ))} */}
-
+          {this.renderInnerItem()}
           <PriceContainer>
             <Right>
               {(item.assignedUsers || []).map((user, index) => (

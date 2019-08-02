@@ -166,7 +166,6 @@ export default class TaskEditForm extends React.Component<Props, State> {
   render() {
     const extendedProps = {
       ...this.props,
-      type: 'task',
       formContent: this.renderFormContent,
       sidebar: this.renderSidebarFields,
       extraFields: this.state

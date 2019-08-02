@@ -17,8 +17,6 @@ type Props = {
   removeItem: (itemId: string, callback: () => void) => void;
   closeModal: () => void;
   extraFields?: any;
-  contentType?: string;
-  type?: string;
   extraFieldsCheck?: () => boolean;
   amount?: () => React.ReactNode;
   sidebar?: () => React.ReactNode;
