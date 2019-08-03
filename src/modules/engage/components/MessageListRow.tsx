@@ -178,10 +178,7 @@ class Row extends React.Component<Props> {
         </td>
 
         <td>
-          <ActionButtons>
-            {this.renderLinks()}
-            {this.renderRemoveButton(message, remove)}
-          </ActionButtons>
+          <ActionButtons>{this.renderLinks()}</ActionButtons>
         </td>
       </tr>
     );

@@ -44,9 +44,6 @@ class PipelineRow extends React.Component<Props, State> {
         <Tip text="Edit">
           <Button btnStyle="link" onClick={edit} icon="edit" />
         </Tip>
-        <Tip text="Delete">
-          <Button btnStyle="link" onClick={onClick} icon="cancel-1" />
-        </Tip>
       </ActionButtons>
     );
   }

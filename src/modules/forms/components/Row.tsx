@@ -124,9 +124,6 @@ class Row extends React.Component<Props, {}> {
           <ActionButtons>
             {this.manageAction(integration)}
             {this.renderEditAction(integration)}
-            <Tip text={__('Delete')}>
-              <Button btnStyle="link" onClick={this.remove} icon="cancel-1" />
-            </Tip>
           </ActionButtons>
         </td>
       </tr>

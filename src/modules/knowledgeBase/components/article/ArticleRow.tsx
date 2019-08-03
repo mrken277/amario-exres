@@ -107,12 +107,7 @@ const ArticleRow = (props: Props) => {
           <ReactionCounts>{renderReactions()}</ReactionCounts>
         </ArticleMeta>
       </ArticleColumn>
-      <ActionButtons>
-        {renderEditAction('')}
-        <Tip text={__('Delete')}>
-          <Button btnStyle="link" onClick={remove} icon="cancel-1" />
-        </Tip>
-      </ActionButtons>
+      <ActionButtons>{renderEditAction('')}</ActionButtons>
     </RowArticle>
   );
 };

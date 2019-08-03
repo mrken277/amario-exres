@@ -128,16 +128,6 @@ const QuickNavigation = ({
             </li>
 
             <ModalTrigger
-              title="Change Password"
-              trigger={
-                <li>
-                  <a href="#change-password">{__('Change Password')}</a>
-                </li>
-              }
-              content={passContent}
-            />
-
-            <ModalTrigger
               title="Email signatures"
               trigger={
                 <li>

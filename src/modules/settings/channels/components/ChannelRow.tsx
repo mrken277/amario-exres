@@ -64,12 +64,7 @@ class ChannelRow extends React.Component<Props, {}> {
             selectedMemberIds={selectedMemberIds}
           />
         </Link>
-        <ActionButtons>
-          {this.renderEditAction()}
-          <Tip text="Delete">
-            <Button btnStyle="link" onClick={this.remove} icon="cancel-1" />
-          </Tip>
-        </ActionButtons>
+        <ActionButtons>{this.renderEditAction()}</ActionButtons>
       </SidebarListItem>
     );
   }

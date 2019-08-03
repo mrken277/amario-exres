@@ -104,7 +104,6 @@ class IntegrationList extends React.Component<Props> {
         <td>
           <ActionButtons>
             {this.renderMessengerActions(integration)}
-            {this.renderRemoveAction(integration)}
           </ActionButtons>
         </td>
       </tr>

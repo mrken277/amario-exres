@@ -291,16 +291,6 @@ class KnowledgeForm extends React.Component<Props, State> {
           >
             Cancel
           </Button>
-          {topic && (
-            <Button
-              btnStyle="danger"
-              type="button"
-              onClick={this.remove}
-              icon="cancel-1"
-            >
-              Delete
-            </Button>
-          )}
           {renderButton({
             name: 'knowledge base',
             values: this.generateDoc(values),

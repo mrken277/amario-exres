@@ -48,12 +48,7 @@ class BrandRow extends React.Component<Props> {
     return (
       <SidebarListItem key={brand._id} isActive={isActive}>
         <Link to={`?_id=${brand._id}`}>{brand.name}</Link>
-        <ActionButtons>
-          {this.renderEditAction()}
-          <Tip text="Delete">
-            <Button btnStyle="link" onClick={this.remove} icon="cancel-1" />
-          </Tip>
-        </ActionButtons>
+        <ActionButtons>{this.renderEditAction()}</ActionButtons>
       </SidebarListItem>
     );
   }

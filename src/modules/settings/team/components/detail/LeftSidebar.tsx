@@ -64,12 +64,6 @@ class LeftSidebar extends React.Component<Props> {
               avatarSize={50}
               secondLine={this.renderLinks(links)}
             />
-            <ModalTrigger
-              title="Edit"
-              trigger={<Icon icon="edit" />}
-              size="lg"
-              content={content}
-            />
           </InfoWrapper>
           <SidebarList className="no-link">
             <li>

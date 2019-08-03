@@ -31,9 +31,6 @@ class SegmentsList extends React.Component<Props> {
             <Button btnStyle="link" icon="edit" />
           </Link>
         </Tip>
-        <Tip text={__('Delete')}>
-          <Button btnStyle="link" onClick={onClick} icon="cancel-1" />
-        </Tip>
       </ActionButtons>
     );
   }
