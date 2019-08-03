@@ -7,5 +7,5 @@ node_modules
 scripts
 Dockerfile*
 public
-*.json
+package-lock.json
 yarn.lock
