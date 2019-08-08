@@ -71,12 +71,14 @@ const WorkFlowImage = styled.img`
 const QuickNavigation = ({
   logout,
   currentUser,
+  showBrands,
   brands,
   selectedBrands,
   onChangeBrands
 }: {
   logout: () => void;
   currentUser: IUser;
+  showBrands: boolean;
   brands: IBrand[];
   selectedBrands: IOption[];
   onChangeBrands: (options: IOption[]) => void;
@@ -100,13 +102,13 @@ const QuickNavigation = ({
     label: brand.name
   }));
 
-  const display = brands.length === 1 ? 'none' : 'inherit';
+  let brandsCombo;
 
-  return (
-    <nav>
+  if (showBrands && brands.length > 1) {
+    brandsCombo = (
       <NavItem>
         <Select
-          style={{ maxWidth: '400px', minWidth: '150px', display }}
+          style={{ maxWidth: '400px', minWidth: '150px' }}
           placeholder={__('Choose brands')}
           value={selectedBrands}
           options={brandOptions}
@@ -114,6 +116,12 @@ const QuickNavigation = ({
           multi={true}
         />
       </NavItem>
+    );
+  }
+
+  return (
+    <nav>
+      {brandsCombo}
 
       <Tip text={__('Task')} placement="bottom">
         <NavItem odd={true}>
