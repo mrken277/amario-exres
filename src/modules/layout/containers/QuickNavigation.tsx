@@ -56,6 +56,8 @@ class QuickNavigationContainer extends React.Component<Props, State> {
     setCookie('scopeBrandIds', JSON.stringify(ids));
 
     this.setState({ selectedBrands: options });
+
+    window.location.reload();
   };
 
   render() {
