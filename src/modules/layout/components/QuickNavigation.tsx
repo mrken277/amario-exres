@@ -100,11 +100,13 @@ const QuickNavigation = ({
     label: brand.name
   }));
 
+  const display = brands.length === 1 ? 'none' : 'inherit';
+
   return (
     <nav>
       <NavItem>
         <Select
-          style={{ maxWidth: '400px', minWidth: '100px' }}
+          style={{ maxWidth: '400px', minWidth: '150px', display }}
           placeholder={__('Choose brands')}
           value={selectedBrands}
           options={brandOptions}
