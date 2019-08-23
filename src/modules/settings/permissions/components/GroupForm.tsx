@@ -27,6 +27,9 @@ class GroupForm extends React.Component<Props, State> {
     this.state = {
       selectedMembers: (props.object && props.object.memberIds) || []
     };
+
+    // tslint:disable
+    console.log(this.state.selectedMembers);
   }
 
   generateDoc = (values: {

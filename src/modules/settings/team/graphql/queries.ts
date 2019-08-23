@@ -49,12 +49,14 @@ const userConversations = `
 `;
 
 const listParamsDef = `
+  $noPaginate: Boolean,
   $searchValue: String,
   $isActive: Boolean,
   $ids: [String]
 `;
 
 const listParamsValue = `
+  noPaginate: $noPaginate,
   searchValue: $searchValue,
   isActive: $isActive,
   ids: $ids

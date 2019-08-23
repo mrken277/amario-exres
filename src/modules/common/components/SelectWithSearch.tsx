@@ -83,6 +83,8 @@ class SelectWithSearch extends React.Component<
     const { selectedOptions } = this.state;
 
     const datas = customQuery[queryName] || [];
+    // tslint:disable
+    console.log(datas);
 
     const selectMultiple = (ops: IOption[]) => {
       onSelect(ops.map(option => option.value), name);
@@ -156,19 +158,26 @@ const withQuery = ({ customQuery }) =>
         options: ({ searchValue, filterParams, values }) => {
           if (searchValue === 'reload') {
             return {
-              variables: { searchValue: '', ...filterParams },
+              variables: {
+                searchValue: '',
+                noPaginate: true,
+                ...filterParams
+              },
               fetchPolicy: 'network-only',
               notifyOnNetworkStatusChange: true
             };
           }
 
           if (searchValue) {
-            return { variables: { searchValue, ...filterParams } };
+            return {
+              variables: { noPaginate: true, searchValue, ...filterParams }
+            };
           }
 
           return {
             variables: {
               ids: typeof values === 'string' ? [values] : values,
+              noPaginate: true,
               ...filterParams
             }
           };
