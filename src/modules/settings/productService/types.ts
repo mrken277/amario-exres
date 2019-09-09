@@ -13,6 +13,7 @@ export interface IProduct {
   type: string;
   description: string;
   sku: string;
+  customFieldsData?: { [key: string]: any };
   createdAt: Date;
 }
 

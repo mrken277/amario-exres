@@ -6,6 +6,7 @@ const products = `
       type
       description
       sku
+      customFieldsData
       createdAt
     }
   }

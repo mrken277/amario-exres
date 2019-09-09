@@ -1,5 +1,9 @@
 import { COMPANY_INFO } from 'modules/companies/constants';
 import { CUSTOMER_BASIC_INFO } from 'modules/customers/constants';
+import {
+  PRODUCT_INFO,
+  SERVICE_INFO
+} from 'modules/settings/productService/constants';
 import { FIELDS_GROUPS_CONTENT_TYPES } from './constants';
 import { IField } from './types';
 
@@ -52,9 +56,25 @@ const customerBasicInfos = generateGroup(
   CUSTOMER_BASIC_INFO.ALL,
   FIELDS_GROUPS_CONTENT_TYPES.CUSTOMER
 );
+
 const companyBasicInfos = generateGroup(
   COMPANY_INFO.ALL,
   FIELDS_GROUPS_CONTENT_TYPES.COMPANY
 );
 
-export { customerBasicInfos, companyBasicInfos };
+const productBasicInfos = generateGroup(
+  PRODUCT_INFO.ALL,
+  FIELDS_GROUPS_CONTENT_TYPES.PRODUCT
+);
+
+const serviceBasicInfos = generateGroup(
+  SERVICE_INFO.ALL,
+  FIELDS_GROUPS_CONTENT_TYPES.SERVICE
+);
+
+export {
+  customerBasicInfos,
+  companyBasicInfos,
+  productBasicInfos,
+  serviceBasicInfos
+};

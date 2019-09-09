@@ -15,7 +15,12 @@ import {
   FieldsRemoveMutationResponse,
   FieldsUpdateVisibleMutationResponse
 } from '../types';
-import { companyBasicInfos, customerBasicInfos } from '../utils';
+import {
+  companyBasicInfos,
+  customerBasicInfos,
+  productBasicInfos,
+  serviceBasicInfos
+} from '../utils';
 
 type Props = {
   queryParams: any;
@@ -101,13 +106,34 @@ const PropertiesContainer = (props: FinalProps) => {
   const fieldsGroups = [...(fieldsGroupsQuery.fieldsGroups || [])];
 
   // Initializing default properties for customer and company
-  let defaultGroup = companyBasicInfos;
+  let defaultGroup;
 
-  if (queryParams.type === FIELDS_GROUPS_CONTENT_TYPES.CUSTOMER) {
-    defaultGroup = customerBasicInfos;
+  switch (queryParams.type) {
+    case FIELDS_GROUPS_CONTENT_TYPES.CUSTOMER: {
+      defaultGroup = customerBasicInfos;
+
+      break;
+    }
+    case FIELDS_GROUPS_CONTENT_TYPES.COMPANY: {
+      defaultGroup = companyBasicInfos;
+
+      break;
+    }
+    case FIELDS_GROUPS_CONTENT_TYPES.PRODUCT: {
+      defaultGroup = productBasicInfos;
+
+      break;
+    }
+    case FIELDS_GROUPS_CONTENT_TYPES.SERVICE: {
+      defaultGroup = serviceBasicInfos;
+
+      break;
+    }
   }
 
-  fieldsGroups.unshift(defaultGroup);
+  if (defaultGroup) {
+    fieldsGroups.unshift(defaultGroup);
+  }
 
   const updatedProps = {
     ...props,

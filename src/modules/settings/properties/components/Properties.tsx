@@ -40,10 +40,7 @@ class Properties extends React.Component<Props> {
 
     if (fieldsGroups.length === 0) {
       return (
-        <EmptyState
-          icon="circular"
-          text="There arent't any groups and fields"
-        />
+        <EmptyState icon="circular" text="There aren't any groups and fields" />
       );
     }
 

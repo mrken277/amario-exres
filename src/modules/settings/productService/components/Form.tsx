@@ -7,6 +7,7 @@ import { IButtonMutateProps, IFormProps } from 'modules/common/types';
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import { TYPES } from '../constants';
+import CustomFieldsSection from '../containers/CustomFieldsSection';
 import { IProduct } from '../types';
 
 type Props = {
@@ -15,7 +16,27 @@ type Props = {
   closeModal: () => void;
 };
 
-class Form extends React.Component<Props> {
+type State = {
+  type: string;
+};
+
+class Form extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
+
+    const { product } = props;
+
+    this.state = {
+      type: product.type || 'product'
+    };
+  }
+
+  onChangeType = e => {
+    this.setState({
+      type: e.target.value
+    });
+  };
+
   renderContent = (formProps: IFormProps) => {
     const { renderButton, closeModal, product } = this.props;
     const { values, isSubmitted } = formProps;
@@ -47,6 +68,7 @@ class Form extends React.Component<Props> {
             name="type"
             componentClass="select"
             defaultValue={object.type}
+            onChange={this.onChangeType}
             required={true}
           >
             {types.map((typeName, index) => (
@@ -72,6 +94,10 @@ class Form extends React.Component<Props> {
           <ControlLabel>SKU</ControlLabel>
           <FormControl {...formProps} name="sku" defaultValue={object.sku} />
         </FormGroup>
+
+        {object._id ? (
+          <CustomFieldsSection product={object} contentType={this.state.type} />
+        ) : null}
 
         <Modal.Footer>
           <Button btnStyle="simple" onClick={closeModal} icon="cancel-1">

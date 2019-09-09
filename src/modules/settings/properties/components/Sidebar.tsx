@@ -49,6 +49,22 @@ class Sidebar extends React.Component<Props> {
                 {__('Company')}
               </Link>
             </li>
+            <li>
+              <Link
+                className={this.getClassName('product')}
+                to={`?type=${FIELDS_GROUPS_CONTENT_TYPES.PRODUCT}`}
+              >
+                {__('Product')}
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={this.getClassName('service')}
+                to={`?type=${FIELDS_GROUPS_CONTENT_TYPES.SERVICE}`}
+              >
+                {__('Service')}
+              </Link>
+            </li>
           </List>
         </LeftSidebar.Section>
       </LeftSidebar>
