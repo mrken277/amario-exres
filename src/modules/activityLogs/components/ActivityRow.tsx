@@ -26,20 +26,19 @@ const ActivityRowComponent = (props: Props) => {
       <ActivityIcon color={data.color}>
         <Icon icon={data.icon || ''} />
       </ActivityIcon>
-      <React.Fragment>
-        <FlexContent>
-          <AvatarWrapper>
-            <NameCard.Avatar user={data.by} size={32} />
-          </AvatarWrapper>
-          <FlexBody>{body}</FlexBody>
-          <Tip text={dayjs(data.createdAt).format('llll')}>
-            <ActivityDate>
-              {dayjs(data.createdAt).format('MMM Do, h:mm A')}
-            </ActivityDate>
-          </Tip>
-        </FlexContent>
-        {data.content && content}
-      </React.Fragment>
+
+      <FlexContent>
+        <AvatarWrapper>
+          <NameCard.Avatar user={data.by} size={32} />
+        </AvatarWrapper>
+        <FlexBody>{body}</FlexBody>
+        <Tip text={dayjs(data.createdAt).format('llll')}>
+          <ActivityDate>
+            {dayjs(data.createdAt).format('MMM Do, h:mm A')}
+          </ActivityDate>
+        </Tip>
+      </FlexContent>
+      {data.content && content}
     </ActivityRow>
   );
 };

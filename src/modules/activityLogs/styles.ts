@@ -46,6 +46,7 @@ const FlexContent = styled.div`
 const FlexBody = styled.div`
   flex: 1;
   align-self: center;
+  max-width: 300px;
 
   p {
     margin: 0;
