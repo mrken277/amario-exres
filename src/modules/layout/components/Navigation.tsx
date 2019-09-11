@@ -134,8 +134,33 @@ class Navigation extends React.Component<{
     }
   }
 
+  renderNavItem = (
+    permission: string,
+    text: string,
+    url: string,
+    icon: string,
+    label?: React.ReactNode
+  ) => {
+    return (
+      <WithPermission action={permission}>
+        <Tip placement="right" text={text}>
+          <NavLink to={url}>
+            <NavIcon className={icon} />
+            {label}
+          </NavLink>
+        </Tip>
+      </WithPermission>
+    );
+  };
+
   render() {
     const { unreadConversationsCount } = this.props;
+
+    const unreadIndicator = unreadConversationsCount !== 0 && (
+      <Label shake={true} lblStyle="danger" ignoreTrans={true}>
+        {unreadConversationsCount}
+      </Label>
+    );
 
     return (
       <LeftNavigation>
@@ -143,60 +168,43 @@ class Navigation extends React.Component<{
           <img src="/images/erxes.png" alt="erxes" />
         </NavLink>
         <Nav>
-          <WithPermission action="showConversations">
-            <Tip placement="right" text={__('Conversation').toString()}>
-              <NavLink to="/inbox">
-                <NavIcon className="icon-chat" />
-                {unreadConversationsCount !== 0 && (
-                  <Label shake={true} lblStyle="danger" ignoreTrans={true}>
-                    {unreadConversationsCount}
-                  </Label>
-                )}
-              </NavLink>
-            </Tip>
-          </WithPermission>
-          <WithPermission action="showDeals">
-            <Tip placement="right" text={__('Sales').toString()}>
-              <NavLink to="/deal">
-                <NavIcon className="icon-piggy-bank" />
-              </NavLink>
-            </Tip>
-          </WithPermission>
-          <WithPermission action="showCustomers">
-            <Tip placement="right" text={__('Contacts').toString()}>
-              <NavLink to="/contacts">
-                <NavIcon className="icon-users" />
-              </NavLink>
-            </Tip>
-          </WithPermission>
-          <WithPermission action="showForms">
-            <Tip placement="right" text={__('Leads').toString()}>
-              <NavLink to="/forms">
-                <NavIcon className="icon-laptop" />
-              </NavLink>
-            </Tip>
-          </WithPermission>
-          <WithPermission action="showEngagesMessages">
-            <Tip placement="right" text={__('Engage').toString()}>
-              <NavLink to="/engage">
-                <NavIcon className="icon-megaphone" />
-              </NavLink>
-            </Tip>
-          </WithPermission>
-          <WithPermission action="showKnowledgeBase">
-            <Tip placement="right" text={__('Knowledge Base').toString()}>
-              <NavLink to="/knowledgeBase">
-                <NavIcon className="icon-book" />
-              </NavLink>
-            </Tip>
-            <WithPermission action="showIntegrations">
-              <Tip placement="right" text={__('App store').toString()}>
-                <NavLink to="/settings/integrations" className="bottom">
-                  <NavIcon className="icon-menu" />
-                </NavLink>
-              </Tip>
-            </WithPermission>
-          </WithPermission>
+          {this.renderNavItem(
+            'showConversations',
+            __('Conversation'),
+            '/inbox',
+            'icon-chat',
+            unreadIndicator
+          )}
+          {this.renderNavItem(
+            'showDeals',
+            __('Sales'),
+            '/deal',
+            'icon-piggy-bank'
+          )}
+          {this.renderNavItem(
+            'showCustomers',
+            __('Contacts'),
+            '/contacts',
+            'icon-users'
+          )}
+          {this.renderNavItem(
+            'showForms',
+            __('Leads'),
+            '/forms',
+            'icon-laptop'
+          )}
+          {this.renderNavItem(
+            'showEngagesMessages',
+            __('Engage'),
+            '/engage',
+            'icon-megaphone'
+          )}
+          {this.renderNavItem(
+            'showKnowledgeBase',
+            __('Knowledge Base'),
+            '/knowledgeBase',
+            'icon-book'
+          )}
         </Nav>
       </LeftNavigation>
     );
