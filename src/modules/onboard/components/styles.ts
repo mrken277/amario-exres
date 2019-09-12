@@ -72,26 +72,6 @@ const LeftContent = styled.div`
   display: flex;
   padding: 70px;
 
-  .slide-in-appear,
-  .slide-in-enter {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  .slide-in-appear-active,
-  .slide-in-enter-active {
-    opacity: 1;
-    transform: translateY(0);
-    transition: all 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95) 0.2s;
-  }
-
-  .slide-in-exit,
-  .slide-in-exit-active {
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: all 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
-  }
-
   > form {
     position: absolute;
     width: 640px;

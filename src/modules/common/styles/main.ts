@@ -160,6 +160,16 @@ const DropIcon = styledTS<{ isOpen: boolean }>(styled.span)`
   }
 `;
 
+const Popover = styled.div`
+  border-radius: 10px;
+  color: ${colors.textPrimary};
+  box-shadow: 0 0 20px 3px rgba(0, 0, 0, 0.15);
+  width: 320px;
+  position: absolute;
+  background: ${colors.bgLight};
+  z-index: 1060;
+`;
+
 export {
   BoxRoot,
   FullContent,
@@ -172,5 +182,6 @@ export {
   CenterContent,
   ActivityContent,
   DropIcon,
-  MiddleContent
+  MiddleContent,
+  Popover
 };
