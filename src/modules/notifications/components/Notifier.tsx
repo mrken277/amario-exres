@@ -12,11 +12,29 @@ class Notifier extends React.Component<{}> {
   renderNotifications() {
     return (
       <>
-        <NotifierItem delay={3000}>
-          <div>Content</div>
-        </NotifierItem>
         <NotifierItem>
-          <div>Content</div>
+          <span role="img" aria-label="Wave">
+            👋
+          </span>
+          <div>
+            <h3>Hello Ganzorig</h3>
+            <p>
+              Hello I'm erxes. Make sure <a href="#test">save your profile</a>{' '}
+              information
+            </p>
+          </div>
+        </NotifierItem>
+        <NotifierItem closable={false}>
+          <span role="img" aria-label="Wave">
+            👋
+          </span>
+          <div>
+            <h3>Hello Ganzorig</h3>
+            <p>
+              Hello I'm erxes. Make sure <a href="#test">save your profile</a>{' '}
+              information
+            </p>
+          </div>
         </NotifierItem>
       </>
     );

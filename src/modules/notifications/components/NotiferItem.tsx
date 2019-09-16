@@ -14,12 +14,39 @@ const Item = styled.div`
   box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.1);
   margin-top: 10px;
   position: relative;
+  display: flex;
+  font-size: 12px;
+
+  > span {
+    margin-right: 10px;
+  }
+
+  a {
+    color: ${colors.colorWhite};
+    text-decoration: underline;
+  }
+
+  h3 {
+    margin-top: 0;
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+  }
 `;
 
 const Close = styled.div`
   position: absolute;
   right: 10px;
-  top: 10px;
+  top: 5px;
+  font-size: 16px;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+  }
 `;
 
 type Props = {
@@ -34,7 +61,7 @@ type State = {
 
 class NotifierItem extends React.Component<Props, State> {
   static defaultProps = {
-    delay: 2000
+    delay: 1000
   };
 
   constructor(props) {
