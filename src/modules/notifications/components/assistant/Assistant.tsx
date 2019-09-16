@@ -1,7 +1,9 @@
 import { Popover } from 'modules/common/styles/main';
 import * as React from 'react';
 import { OverlayTrigger } from 'react-bootstrap';
-import { Bot, PopoverContent } from './styles';
+import { PopoverContent } from '../styles';
+import ActionGroup from './ActionGroup';
+import { Bot } from './styles';
 
 class Assistant extends React.Component<{}> {
   constructor(props) {
@@ -18,7 +20,7 @@ class Assistant extends React.Component<{}> {
   renderPopoverContent() {
     return (
       <PopoverContent>
-        <div>qweqwqweqwe</div>
+        <ActionGroup />
       </PopoverContent>
     );
   }

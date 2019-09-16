@@ -140,22 +140,6 @@ const InfoSection = styled.div`
   flex: 1;
 `;
 
-const Bot = styled.div`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 10px 0;
-  text-align: center;
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  img {
-    width: 45px;
-  }
-`;
-
 export {
   NotifList,
   NotificationList,
@@ -163,11 +147,10 @@ export {
   NotificationSeeAll,
   NotifButton,
   PopoverHeader,
-  PopoverContent,
   CreatedUser,
   CreatedDate,
   Content,
   AvatarSection,
   InfoSection,
-  Bot
+  PopoverContent
 };

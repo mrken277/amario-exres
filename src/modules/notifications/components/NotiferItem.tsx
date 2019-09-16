@@ -15,7 +15,6 @@ const Item = styled.div`
   margin-top: 10px;
   position: relative;
   display: flex;
-  font-size: 12px;
 
   > span {
     margin-right: 10px;
