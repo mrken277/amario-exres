@@ -178,10 +178,17 @@ class Navigation extends React.Component<{
             unreadIndicator
           )}
           {this.renderNavItem(
+            'showGrowthHacks',
+            __('Conversation'),
+            '/inbox',
+            'icon-chat',
+            unreadIndicator
+          )}
+          {this.renderNavItem(
             'showDeals',
-            __('Sales'),
-            '/deal',
-            'icon-piggy-bank'
+            __('Growth Hack'),
+            '/growthHack',
+            'icon-idea'
           )}
           {this.renderNavItem(
             'showCustomers',

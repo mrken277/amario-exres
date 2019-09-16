@@ -19,15 +19,20 @@ const MiddleContent = styledTS<{ transparent?: boolean }>(styled.div)`
   margin: 10px 0;
 `;
 
-const BoxRoot = styled.div`
+const BoxRoot = styledTS<{ selected?: boolean }>(styled.div)`
   text-align: center;
   float: left;
   background: ${colors.colorLightBlue};
-  box-shadow: 0 6px 10px 1px ${rgba(colors.colorCoreGray, 0.08)};
+  box-shadow: ${props =>
+    props.selected
+      ? `0 10px 20px ${rgba(colors.colorCoreDarkGray, 0.12)}`
+      : `0 6px 10px 1px ${rgba(colors.colorCoreGray, 0.08)}`} ;
   margin-right: ${dimensions.coreSpacing}px;
   margin-bottom: ${dimensions.coreSpacing}px;
   border-radius: ${dimensions.unitSpacing / 2 - 1}px;
   transition: all 0.25s ease;
+  border: 1px solid
+    ${props => (props.selected ? colors.colorSecondary : colors.borderPrimary)};
 
   > a {
     display: block;
@@ -170,6 +175,23 @@ const Popover = styled.div`
   z-index: 1060;
 `;
 
+const CloseModal = styled.div`
+  position: absolute;
+  right: -40px;
+  width: 30px;
+  height: 30px;
+  background: ${rgba(colors.colorBlack, 0.3)};
+  line-height: 30px;
+  border-radius: 15px;
+  text-align: center;
+  color: ${colors.colorWhite};
+
+  &:hover {
+    background: ${rgba(colors.colorBlack, 0.4)};
+    cursor: pointer;
+  }
+`;
+
 export {
   BoxRoot,
   FullContent,
@@ -183,5 +205,6 @@ export {
   ActivityContent,
   DropIcon,
   MiddleContent,
-  Popover
+  Popover,
+  CloseModal
 };

@@ -76,10 +76,6 @@ const NotificationList = styled(NotifList)`
   max-height: 420px !important;
 `;
 
-const ConversationContent = styled.div`
-  margin-bottom: -${dimensions.coreSpacing}px;
-`;
-
 const NotifButton = styled.div`
   cursor: pointer;
   text-align: center;
@@ -173,6 +169,5 @@ export {
   Content,
   AvatarSection,
   InfoSection,
-  ConversationContent,
   Bot
 };

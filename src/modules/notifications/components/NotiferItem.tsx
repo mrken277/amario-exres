@@ -6,7 +6,7 @@ import RTG from 'react-transition-group';
 import styled from 'styled-components';
 
 const Item = styled.div`
-  padding: 15px ${dimensions.coreSpacing}px;
+  padding: ${dimensions.coreSpacing}px;
   border-radius: 10px;
   color: ${colors.colorWhite};
   background: ${colors.colorCoreBlue};
