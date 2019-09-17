@@ -1,6 +1,8 @@
+import { colors } from 'modules/common/styles';
 import { Popover } from 'modules/common/styles/main';
 import * as React from 'react';
 import { OverlayTrigger } from 'react-bootstrap';
+import NotifierItem from '../NotiferItem';
 import { PopoverContent } from '../styles';
 import ActionGroup from './ActionGroup';
 import { Bot } from './styles';
@@ -20,7 +22,23 @@ class Assistant extends React.Component<{}> {
   renderPopoverContent() {
     return (
       <PopoverContent>
-        <ActionGroup />
+        <ActionGroup label="Customer auto merge" />
+        <ActionGroup
+          label="Company log, meta description"
+          color={colors.colorCoreGreen}
+        />
+        <NotifierItem>
+          <span role="img" aria-label="Wave">
+            👋
+          </span>
+          <div>
+            <h3>Hello Ganzorig</h3>
+            <p>
+              Hello I'm erxes. Make sure <a href="#test">save your profile</a>{' '}
+              information
+            </p>
+          </div>
+        </NotifierItem>
       </PopoverContent>
     );
   }

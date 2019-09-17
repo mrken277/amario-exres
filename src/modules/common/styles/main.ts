@@ -172,6 +172,7 @@ const Popover = styled.div`
   width: 320px;
   position: absolute;
   background: ${colors.bgLight};
+  overflow: auto;
   z-index: 1060;
 `;
 

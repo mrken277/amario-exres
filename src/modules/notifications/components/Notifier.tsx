@@ -4,7 +4,7 @@ import NotifierItem from './NotiferItem';
 
 const NotifierContainer = styled.div`
   position: fixed;
-  bottom: 65px;
+  bottom: 55px;
   left: 15px;
 `;
 

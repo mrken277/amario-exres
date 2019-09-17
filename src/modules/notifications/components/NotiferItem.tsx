@@ -10,9 +10,9 @@ const Item = styled.div`
   border-radius: 10px;
   color: ${colors.colorWhite};
   background: ${colors.colorCoreBlue};
-  width: 300px;
+  max-width: 300px;
   box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.1);
-  margin-top: 10px;
+  margin-bottom: 10px;
   position: relative;
   display: flex;
 
