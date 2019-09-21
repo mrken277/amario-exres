@@ -8,7 +8,6 @@ import { ProjectVersions, Version } from '../types';
 
 class Status extends React.PureComponent<{
   versions: ProjectVersions;
-  robotEntries: any[];
 }> {
   renderData(title: string, version?: Version) {
     const ver = version || ({} as Version);
@@ -47,7 +46,7 @@ class Status extends React.PureComponent<{
       { title: __('System status') }
     ];
 
-    const { versions, robotEntries } = this.props;
+    const { versions } = this.props;
 
     const {
       erxesVersion,
@@ -58,15 +57,6 @@ class Status extends React.PureComponent<{
 
     const content = (
       <div>
-        {robotEntries.map(entry => {
-          return (
-            <div key={Math.random()}>
-              <span>{entry.action}</span>
-              <span>{JSON.stringify(entry.data)}</span>
-            </div>
-          );
-        })}
-
         {this.renderData('Erxes Status', erxesVersion)}
 
         {this.renderData('Erxes API Status', apiVersion)}

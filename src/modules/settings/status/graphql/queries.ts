@@ -28,16 +28,6 @@ const configsVersions = `
   }
 `;
 
-const configsRobotEntries = `
-  query configsRobotEntries {
-    configsRobotEntries {
-      action
-      data
-    }
-  }
-`;
-
 export default {
-  configsVersions,
-  configsRobotEntries
+  configsVersions
 };

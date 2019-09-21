@@ -9,20 +9,18 @@ import { VersionsQueryResponse } from '../types';
 
 type Props = {
   versionsQuery: VersionsQueryResponse;
-  robotEntriesQuery: any;
 };
 
 const StatusContainer = (props: Props) => {
-  const { versionsQuery, robotEntriesQuery } = props;
+  const { versionsQuery } = props;
 
-  if (versionsQuery.loading || robotEntriesQuery.loading) {
+  if (versionsQuery.loading) {
     return <Spinner objective={true} />;
   }
 
   const updatedProps = {
     ...props,
-    versions: versionsQuery.configsVersions || {},
-    robotEntries: robotEntriesQuery.configsRobotEntries || []
+    versions: versionsQuery.configsVersions || {}
   };
 
   return <Status {...updatedProps} />;
@@ -32,9 +30,6 @@ export default withProps<{}>(
   compose(
     graphql<{}, VersionsQueryResponse>(gql(queries.configsVersions), {
       name: 'versionsQuery'
-    }),
-    graphql<{}, any>(gql(queries.configsRobotEntries), {
-      name: 'robotEntriesQuery'
     })
   )(StatusContainer)
 );

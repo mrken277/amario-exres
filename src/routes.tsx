@@ -20,6 +20,7 @@ import LeadRoutes from './modules/leads/routes';
 import { NotifProvider } from './modules/notifications/context';
 import NotificationRoutes from './modules/notifications/routes';
 import OnboardRoutes from './modules/onboard/routes';
+import RobotRoutes from './modules/robot/routes';
 import SegmentsRoutes from './modules/segments/routes';
 import SettingsRoutes from './modules/settings/routes';
 import TagsRoutes from './modules/tags/routes';
@@ -59,6 +60,7 @@ const renderRoutes = currentUser => {
             <TicketRoutes />
             <TaskRoutes />
             <GrowthHackRoutes />
+            <RobotRoutes />
           </MainWrapper>
         </MainLayout>
       </>
