@@ -1,18 +1,18 @@
 import { __ } from 'modules/common/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
 import React from 'react';
-import Onboarding from './Onboarding';
+import Onboarding from '../containers/Onboarding';
 
 class Robot extends React.PureComponent<{
-  robotEntries: any[];
+  entries: any[];
 }> {
   render() {
-    const { robotEntries } = this.props;
+    const { entries } = this.props;
 
     const content = (
       <>
         <div>
-          {robotEntries.map(entry => {
+          {entries.map(entry => {
             return (
               <div key={Math.random()}>
                 <span>{entry.action}</span>

@@ -13,7 +13,17 @@ const settingsCompleteness = `
   }
 `;
 
+const onboardingGetAvailableFeatures = `
+  query robotOnboardingGetAvailableFeatures {
+    robotOnboardingGetAvailableFeatures {
+      name
+      text
+    }
+  }
+`;
+
 export default {
   entries,
+  onboardingGetAvailableFeatures,
   settingsCompleteness
 };

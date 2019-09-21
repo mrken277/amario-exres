@@ -1,4 +1,3 @@
-import { __ } from 'modules/common/utils';
 import React from 'react';
 import { IFeature } from '../types';
 import { FEATURE_DETAILS } from './constants';

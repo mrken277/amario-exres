@@ -1,4 +1,3 @@
-import { __ } from 'modules/common/utils';
 import React from 'react';
 import FeatureDetail from '../containers/FeatureDetail';
 import { IFeature } from '../types';
@@ -8,7 +7,10 @@ type Feature = {
   text: string;
 };
 
-class Onboarding extends React.Component<{}, { selectedFeature?: Feature }> {
+class Onboarding extends React.Component<
+  { availableFeatures: IFeature[] },
+  { selectedFeature?: Feature }
+> {
   constructor(props) {
     super(props);
 
@@ -26,6 +28,7 @@ class Onboarding extends React.Component<{}, { selectedFeature?: Feature }> {
 
     return (
       <div
+        key={feature.name}
         style={{
           width: '150px',
           height: '150px',
@@ -53,6 +56,7 @@ class Onboarding extends React.Component<{}, { selectedFeature?: Feature }> {
 
   render() {
     const { selectedFeature } = this.state;
+    const { availableFeatures } = this.props;
 
     if (selectedFeature) {
       return (
@@ -67,24 +71,7 @@ class Onboarding extends React.Component<{}, { selectedFeature?: Feature }> {
     }
 
     return (
-      <div>
-        {this.renderFeature({ name: 'inbox', text: 'Inbox' })}
-        {this.renderFeature({ name: 'contacts', text: 'Contact' })}
-        {this.renderFeature({ name: 'deals', text: 'Deals' })}
-        {this.renderFeature({ name: 'tasks', text: 'Tasks' })}
-        {this.renderFeature({ name: 'tickets', text: 'Tickets' })}
-        {this.renderFeature({ name: 'growthHacks', text: 'Growth Hacks' })}
-        {this.renderFeature({ name: 'engages', text: 'Engages' })}
-        {this.renderFeature({ name: 'leads', text: 'Leads' })}
-        {this.renderFeature({ name: 'knowledgebase', text: 'Knowledgebase' })}
-        {this.renderFeature({ name: 'insights', text: 'Insights' })}
-        {this.renderFeature({ name: 'imports', text: 'Imports' })}
-        {this.renderFeature({ name: 'tags', text: 'Tags' })}
-        {this.renderFeature({ name: 'segments', text: 'Segments' })}
-        {this.renderFeature({ name: 'propertes', text: 'Properties' })}
-        {this.renderFeature({ name: 'permissions', text: 'Permissions' })}
-        {this.renderFeature({ name: 'integrations', text: 'Integrations' })}
-      </div>
+      <div>{availableFeatures.map(feature => this.renderFeature(feature))}</div>
     );
   }
 }

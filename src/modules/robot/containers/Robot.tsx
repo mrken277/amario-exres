@@ -1,5 +1,4 @@
 import gql from 'graphql-tag';
-import Spinner from 'modules/common/components/Spinner';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
@@ -7,19 +6,15 @@ import Robot from '../components/Robot';
 import { queries } from '../graphql';
 
 type Props = {
-  robotEntriesQuery: any;
+  entriesQuery: any;
 };
 
-const StatusContainer = (props: Props) => {
-  const { robotEntriesQuery } = props;
-
-  if (robotEntriesQuery.loading) {
-    return <Spinner objective={true} />;
-  }
+const RobotContainer = (props: Props) => {
+  const { entriesQuery } = props;
 
   const updatedProps = {
     ...props,
-    robotEntries: robotEntriesQuery.robotEntries || []
+    entries: entriesQuery.robotEntries || []
   };
 
   return <Robot {...updatedProps} />;
@@ -28,7 +23,7 @@ const StatusContainer = (props: Props) => {
 export default withProps<{}>(
   compose(
     graphql<{}, any>(gql(queries.entries), {
-      name: 'robotEntriesQuery'
+      name: 'entriesQuery'
     })
-  )(StatusContainer)
+  )(RobotContainer)
 );
