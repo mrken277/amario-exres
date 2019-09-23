@@ -40,8 +40,11 @@ class OnboardingContainer extends React.Component<
         if (onboardingChanged) {
           const { type } = onboardingChanged;
 
-          if (type === 'initial' && !this.state.currentStep) {
-            this.setState({ currentStep: 'initial' });
+          if (
+            ['initial', 'inComplete'].includes(type) &&
+            !this.state.currentStep
+          ) {
+            this.setState({ currentStep: type });
           }
         }
       }

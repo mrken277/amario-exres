@@ -38,7 +38,7 @@ class FeatureDetail extends React.Component<{
             return (
               <li key={index}>
                 <h5>
-                  <a href={action.url} target="__blank" style={{ color }}>
+                  <a href={action.url} style={{ color }}>
                     {action.name}
                   </a>
                 </h5>

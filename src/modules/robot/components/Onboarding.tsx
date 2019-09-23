@@ -69,6 +69,21 @@ class Onboarding extends React.Component<Props, { selectedFeature?: Feature }> {
       );
     }
 
+    if (currentStep === 'inComplete') {
+      const onClick = () => {
+        changeStep('featureList');
+      };
+
+      return (
+        <div>
+          <p>Hi, You haven't fully configured. Would you like to configure</p>
+
+          <button onClick={onClick}>Yes, Resume</button>
+          <button>No</button>
+        </div>
+      );
+    }
+
     if (currentStep === 'featureDetail') {
       const onBack = () => {
         this.setState({ selectedFeature: undefined }, () => {
