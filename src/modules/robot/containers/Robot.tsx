@@ -9,16 +9,18 @@ type Props = {
   entriesQuery: any;
 };
 
-const RobotContainer = (props: Props) => {
-  const { entriesQuery } = props;
+class RobotContainer extends React.Component<Props> {
+  render() {
+    const { entriesQuery } = this.props;
 
-  const updatedProps = {
-    ...props,
-    entries: entriesQuery.robotEntries || []
-  };
+    const updatedProps = {
+      ...this.props,
+      entries: entriesQuery.robotEntries || []
+    };
 
-  return <Robot {...updatedProps} />;
-};
+    return <Robot {...updatedProps} />;
+  }
+}
 
 export default withProps<{}>(
   compose(

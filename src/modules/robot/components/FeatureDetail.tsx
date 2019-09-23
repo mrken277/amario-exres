@@ -18,7 +18,7 @@ class FeatureDetail extends React.Component<{
         </div>
 
         <div>
-          <video width="600" height="400" controls={true}>
+          <video width="300" height="100" controls={true}>
             <source src={detail.videoUrl} />
           </video>
         </div>

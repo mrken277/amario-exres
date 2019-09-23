@@ -7,31 +7,35 @@ type Feature = {
   text: string;
 };
 
-class Onboarding extends React.Component<
-  { availableFeatures: IFeature[] },
-  { selectedFeature?: Feature }
-> {
+type Props = {
+  availableFeatures: IFeature[];
+  currentStep?: string;
+  changeStep: (step: string) => void;
+};
+
+class Onboarding extends React.Component<Props, { selectedFeature?: Feature }> {
   constructor(props) {
     super(props);
 
-    this.state = {
-      selectedFeature: undefined
-    };
+    this.state = { selectedFeature: undefined };
   }
 
   renderFeature(feature: Feature) {
+    const { changeStep } = this.props;
     const { text } = feature;
 
     const onClick = () => {
-      this.setState({ selectedFeature: feature });
+      this.setState({ selectedFeature: feature }, () => {
+        changeStep('featureDetail');
+      });
     };
 
     return (
       <div
         key={feature.name}
         style={{
-          width: '150px',
-          height: '150px',
+          width: '100px',
+          height: '100px',
           float: 'left',
           border: '1px solid',
           marginRight: '10px',
@@ -46,32 +50,69 @@ class Onboarding extends React.Component<
     );
   }
 
-  onFeatureClick = (feature: IFeature) => {
-    this.setState({ selectedFeature: feature });
-  };
-
-  onBack = () => {
-    this.setState({ selectedFeature: undefined });
-  };
-
-  render() {
+  renderContent() {
     const { selectedFeature } = this.state;
-    const { availableFeatures } = this.props;
+    const { availableFeatures, currentStep, changeStep } = this.props;
 
-    if (selectedFeature) {
+    if (currentStep === 'initial') {
+      const onClick = () => {
+        changeStep('featureList');
+      };
+
+      return (
+        <div>
+          <p>Hi, You haven't configured. Would you like to configure</p>
+
+          <button onClick={onClick}>Yes</button>
+          <button>No</button>
+        </div>
+      );
+    }
+
+    if (currentStep === 'featureDetail') {
+      const onBack = () => {
+        this.setState({ selectedFeature: undefined }, () => {
+          changeStep('featureList');
+        });
+      };
+
       return (
         <>
-          <button onClick={this.onBack}>back</button>
-          <FeatureDetail
-            feature={selectedFeature}
-            onClick={this.onFeatureClick}
-          />
+          <button onClick={onBack}>back</button>
+          {selectedFeature && <FeatureDetail feature={selectedFeature} />}
         </>
       );
     }
 
+    if (currentStep === 'featureList') {
+      return availableFeatures.map(feature => this.renderFeature(feature));
+    }
+
+    return null;
+  }
+
+  render() {
+    const { currentStep } = this.props;
+
+    if (!currentStep) {
+      return null;
+    }
+
     return (
-      <div>{availableFeatures.map(feature => this.renderFeature(feature))}</div>
+      <div
+        style={{
+          backgroundColor: '#a5a2a2',
+          position: 'fixed',
+          width: '400px',
+          height: '700px',
+          left: '80px',
+          paddingLeft: '30px',
+          paddingTop: '30px',
+          bottom: '50px'
+        }}
+      >
+        {this.renderContent()}
+      </div>
     );
   }
 }

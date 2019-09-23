@@ -9,7 +9,6 @@ import { IFeature } from '../types';
 
 type Props = {
   feature: IFeature;
-  onClick: (feature: IFeature) => void;
 };
 
 type FinalProps = Props & {
