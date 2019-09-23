@@ -1,72 +1,43 @@
+import { ticketFields } from './queries';
+
 const commonVariables = `
-  $name: String!,
   $stageId: String,
   $closeDate: Date,
   $description: String,
-  $companyIds: [String],
-  $customerIds: [String],
   $assignedUserIds: [String],
   $order: Int,
   $attachments: [AttachmentInput],
   $priority: String,
   $source: String,
+  $reminderMinute: Int,
+  $isComplete: Boolean
 `;
 
 const commonParams = `
-  name: $name,
   stageId: $stageId,
-  companyIds: $companyIds,
-  customerIds: $customerIds,
   closeDate: $closeDate,
   description: $description,
   assignedUserIds: $assignedUserIds,
   order: $order,
   priority: $priority,
   source: $source,
-  attachments: $attachments
-`;
-
-const commonReturn = `
-  _id
-  name
-  stageId
-  companies {
-    _id
-    primaryName
-  }
-  customers {
-    _id
-    firstName
-    primaryEmail
-  }
-  closeDate
-  description
-  assignedUsers {
-    _id
-    email
-    details {
-      fullName
-      avatar
-    }
-  }
-  priority
-  source
-  modifiedAt
-  modifiedBy
+  attachments: $attachments,
+  reminderMinute: $reminderMinute,
+  isComplete: $isComplete
 `;
 
 const ticketsAdd = `
-  mutation ticketsAdd(${commonVariables}) {
-    ticketsAdd(${commonParams}) {
-      ${commonReturn}
+  mutation ticketsAdd($name: String!, ${commonVariables}) {
+    ticketsAdd(name: $name, ${commonParams}) {
+      ${ticketFields}
     }
   }
 `;
 
 const ticketsEdit = `
-  mutation ticketsEdit($_id: String!, ${commonVariables}) {
-    ticketsEdit(_id: $_id, ${commonParams}) {
-      ${commonReturn}
+  mutation ticketsEdit($_id: String!, $name: String, ${commonVariables}) {
+    ticketsEdit(_id: $_id, name: $name, ${commonParams}) {
+      ${ticketFields}
     }
   }
 `;

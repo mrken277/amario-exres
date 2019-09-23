@@ -65,10 +65,18 @@ export const hours = [
 
 export const KIND_CHOICES = {
   MESSENGER: 'messenger',
-  FACEBOOK: 'facebook',
+  FACEBOOK_MESSENGER: 'facebook-messenger',
+  FACEBOOK_POST: 'facebook-post',
   GMAIL: 'gmail',
-  FORM: 'form',
-  ALL_LIST: ['messenger', 'facebook', 'form']
+  LEAD: 'lead',
+  CALLPRO: 'callpro',
+  ALL_LIST: [
+    'messenger',
+    'facebook-post',
+    'facebook-messenger',
+    'lead',
+    'callpro'
+  ]
 };
 
 export const FORM_LOAD_TYPES = {
@@ -90,12 +98,20 @@ export const INTEGRATIONS = [
     name: 'row-1',
     rows: [
       {
+        name: 'Facebook post',
+        description: 'Connect to Facebook posts right from your Team Inbox',
+        inMessenger: false,
+        kind: 'facebook-post',
+        logo: '/images/integrations/facebook.png',
+        createModal: 'facebook-post'
+      },
+      {
         name: 'Facebook messenger',
         description: 'Connect to Facebook messages right from your Team Inbox',
         inMessenger: false,
-        kind: 'facebook',
+        kind: 'facebook-messenger',
         logo: '/images/integrations/fb-messenger.png',
-        createModal: 'facebook'
+        createModal: 'facebook-messenger'
       },
       {
         name: 'Messenger',
@@ -113,7 +129,12 @@ export const INTEGRATIONS = [
         kind: 'gmail',
         logo: '/images/integrations/gmail.png',
         createModal: 'gmail'
-      },
+      }
+    ]
+  },
+  {
+    name: 'row-2',
+    rows: [
       {
         name: 'Lead',
         description: 'Find your lead forms right here in your Widget',
@@ -122,12 +143,7 @@ export const INTEGRATIONS = [
         logo: '/images/integrations/lead.png',
         createModal: 'lead',
         createUrl: '/settings/integrations/lead'
-      }
-    ]
-  },
-  {
-    name: 'row-2',
-    rows: [
+      },
       {
         name: 'Knowledge Base',
         description: 'Get access to your Knowledge Base right in your Widget',
@@ -136,6 +152,23 @@ export const INTEGRATIONS = [
         logo: '/images/integrations/knowledge-base.png',
         createModal: 'knowledgeBase',
         createUrl: '/settings/integrations/knowledgeBase'
+      },
+      {
+        name: 'Engage config',
+        description:
+          'Set up your custome amazon simple email service account here',
+        inMessenger: false,
+        kind: 'amazon-ses',
+        logo: '/images/integrations/aws-ses.png',
+        createModal: 'sesconfig'
+      },
+      {
+        name: 'Call Pro',
+        description: 'Connect your call pro phone number',
+        inMessenger: false,
+        kind: 'callpro',
+        logo: '/images/integrations/callpro.png',
+        createModal: 'callpro'
       }
     ]
   },

@@ -1,37 +1,24 @@
 import dayjs from 'dayjs';
+import DueDateLabel from 'modules/boards/components/DueDateLabel';
 import EditForm from 'modules/boards/containers/editForm/EditForm';
-import { ItemContainer, ItemDate } from 'modules/boards/styles/common';
+import { ItemDate } from 'modules/boards/styles/common';
 import { Footer, PriceContainer, Right } from 'modules/boards/styles/item';
 import { Content, ItemIndicator } from 'modules/boards/styles/stage';
 import { IOptions } from 'modules/boards/types';
 import { renderPriority } from 'modules/boards/utils';
 import { __, getUserAvatar } from 'modules/common/utils';
 import React from 'react';
-import { Modal } from 'react-bootstrap';
 import { ITask } from '../types';
 
 type Props = {
   stageId: string;
   item: ITask;
-  isDragging: boolean;
-  provided;
-  onAdd: (stageId: string, item: ITask) => void;
-  onRemove: (dealId: string, stageId: string) => void;
-  onUpdate: (item: ITask) => void;
-  onTogglePopup: () => void;
-  options: IOptions;
+  onClick: () => void;
+  beforePopupClose: () => void;
+  options?: IOptions;
 };
 
-export default class TaskItem extends React.PureComponent<
-  Props,
-  { isFormVisible: boolean }
-> {
-  constructor(props) {
-    super(props);
-
-    this.state = { isFormVisible: false };
-  }
-
+class TaskItem extends React.PureComponent<Props, {}> {
   renderDate(date) {
     if (!date) {
       return null;
@@ -40,54 +27,26 @@ export default class TaskItem extends React.PureComponent<
     return <ItemDate>{dayjs(date).format('MMM D, h:mm a')}</ItemDate>;
   }
 
-  toggleForm = () => {
-    this.props.onTogglePopup();
-
-    const { isFormVisible } = this.state;
-
-    this.setState({ isFormVisible: !isFormVisible });
-  };
-
   renderForm = () => {
-    const { stageId, item, onAdd, onRemove, onUpdate, options } = this.props;
-    const { isFormVisible } = this.state;
-
-    if (!isFormVisible) {
-      return null;
-    }
+    const { beforePopupClose, stageId, item, options } = this.props;
 
     return (
-      <Modal bsSize="lg" show={true} onHide={this.toggleForm}>
-        <Modal.Header closeButton={true}>
-          <Modal.Title>{__('Edit task')}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <EditForm
-            options={options}
-            stageId={stageId}
-            itemId={item._id}
-            onAdd={onAdd}
-            onRemove={onRemove}
-            onUpdate={onUpdate}
-            closeModal={this.toggleForm}
-          />
-        </Modal.Body>
-      </Modal>
+      <EditForm
+        options={options}
+        stageId={stageId}
+        itemId={item._id}
+        beforePopupClose={beforePopupClose}
+      />
     );
   };
 
   render() {
-    const { item, isDragging, provided } = this.props;
-    const { customers, companies } = item;
+    const { onClick, item } = this.props;
+    const { customers, companies, closeDate, isComplete } = item;
 
     return (
-      <ItemContainer
-        isDragging={isDragging}
-        innerRef={provided.innerRef}
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
-      >
-        <Content onClick={this.toggleForm}>
+      <>
+        <Content onClick={onClick}>
           <h5>
             {renderPriority(item.priority)}
             {item.name}
@@ -122,13 +81,17 @@ export default class TaskItem extends React.PureComponent<
             </Right>
           </PriceContainer>
 
+          <DueDateLabel closeDate={closeDate} isComplete={isComplete} />
+
           <Footer>
             {__('Last updated')}:
             <Right>{this.renderDate(item.modifiedAt)}</Right>
           </Footer>
         </Content>
         {this.renderForm()}
-      </ItemContainer>
+      </>
     );
   }
 }
+
+export default TaskItem;

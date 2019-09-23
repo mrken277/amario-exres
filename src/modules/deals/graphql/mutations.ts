@@ -1,70 +1,41 @@
+import { dealFields } from './queries';
+
 const commonVariables = `
-  $name: String!,
   $stageId: String,
   $productsData: JSON,
-  $companyIds: [String],
-  $customerIds: [String],
   $closeDate: Date,
   $description: String,
   $assignedUserIds: [String],
   $order: Int,
-  $attachments: [AttachmentInput]
+  $attachments: [AttachmentInput],
+  $reminderMinute: Int,
+  $isComplete: Boolean
 `;
 
 const commonParams = `
-  name: $name,
   stageId: $stageId,
   productsData: $productsData,
-  companyIds: $companyIds,
-  customerIds: $customerIds,
   closeDate: $closeDate,
   description: $description,
   assignedUserIds: $assignedUserIds,
   order: $order,
-  attachments: $attachments
-`;
-
-const commonReturn = `
-  _id
-  name
-  stageId
-  companies {
-    _id
-    primaryName
-  }
-  customers {
-    _id
-    firstName
-    primaryEmail
-  }
-  products
-  amount
-  closeDate
-  description
-  assignedUsers {
-    _id
-    email
-    details {
-      fullName
-      avatar
-    }
-  }
-  modifiedAt
-  modifiedBy
+  attachments: $attachments,
+  reminderMinute: $reminderMinute,
+  isComplete: $isComplete
 `;
 
 const dealsAdd = `
-  mutation dealsAdd(${commonVariables}) {
-    dealsAdd(${commonParams}) {
-      ${commonReturn}
+  mutation dealsAdd($name: String!, ${commonVariables}) {
+    dealsAdd(name: $name, ${commonParams}) {
+      ${dealFields}
     }
   }
 `;
 
 const dealsEdit = `
-  mutation dealsEdit($_id: String!, ${commonVariables}) {
-    dealsEdit(_id: $_id, ${commonParams}) {
-      ${commonReturn}
+  mutation dealsEdit($_id: String!, $name: String, ${commonVariables}) {
+    dealsEdit(_id: $_id, name: $name, ${commonParams}) {
+      ${dealFields}
     }
   }
 `;

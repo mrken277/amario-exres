@@ -1,7 +1,7 @@
 import { toArray } from 'modules/boards/utils';
 import PortableTask from 'modules/tasks/components/PortableTask';
 import TaskEditForm from 'modules/tasks/components/TaskEditForm';
-import TaskItem from './containers/TaskItem';
+import TaskItem from './components/TaskItem';
 import { mutations, queries } from './graphql';
 
 const options = {
@@ -40,7 +40,7 @@ const options = {
     updateSuccessText: 'You successfully updated a task',
     deleteSuccessText: 'You successfully deleted a task',
     copySuccessText: 'You successfully copied a task',
-    changeSuccessText: 'You successfully changed a ticket'
+    changeSuccessText: 'You successfully changed a task'
   },
   getExtraParams: (queryParams: any) => {
     const { priority } = queryParams;

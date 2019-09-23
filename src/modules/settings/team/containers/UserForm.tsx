@@ -3,6 +3,7 @@ import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
 import { BrandsQueryResponse, IBrand } from 'modules/settings/brands/types';
 import { ICommonFormProps } from 'modules/settings/common/types';
+import { queries as generalQueries } from 'modules/settings/general/graphql';
 import {
   IUserGroup,
   UsersGroupsQueryResponse
@@ -21,12 +22,20 @@ type Props = {
   channelsQuery: ChannelsQueryResponse;
   brandsQuery: BrandsQueryResponse;
   groupsQuery: UsersGroupsQueryResponse;
+  getEnvQuery: any;
   renderButton: (props: IButtonMutateProps) => JSX.Element;
 };
 
 const UserFormContainer = (props: Props & ICommonFormProps) => {
-  const { channelsQuery, brandsQuery, groupsQuery, renderButton } = props;
+  const {
+    channelsQuery,
+    getEnvQuery,
+    brandsQuery,
+    groupsQuery,
+    renderButton
+  } = props;
 
+  const config = getEnvQuery.configsGetEnv || {};
   const object = props.object || ({} as IUser);
 
   if (channelsQuery.loading || brandsQuery.loading || groupsQuery.loading) {
@@ -42,13 +51,20 @@ const UserFormContainer = (props: Props & ICommonFormProps) => {
   let selectedBrands: IBrand[] = [];
 
   if (object._id) {
-    selectedChannels = channels.filter(c => c.memberIds.includes(object._id));
-    selectedGroups = groups.filter(g => object.groupIds.includes(g._id));
-    selectedBrands = brands.filter(b => object.brandIds.includes(b._id));
+    selectedChannels = channels.filter(c =>
+      (c.memberIds || []).includes(object._id)
+    );
+    selectedGroups = groups.filter(g =>
+      (object.groupIds || []).includes(g._id)
+    );
+    selectedBrands = brands.filter(b =>
+      (object.brandIds || []).includes(b._id)
+    );
   }
 
   const updatedProps = {
     ...props,
+    showBrands: config.USE_BRAND_RESTRICTIONS === 'true',
     selectedChannels,
     selectedGroups,
     selectedBrands,
@@ -63,6 +79,12 @@ const UserFormContainer = (props: Props & ICommonFormProps) => {
 
 export default withProps<ICommonFormProps>(
   compose(
+    graphql(gql(generalQueries.configsGetEnv), {
+      name: 'getEnvQuery',
+      options: () => ({
+        fetchPolicy: 'network-only'
+      })
+    }),
     graphql<{}, BrandsQueryResponse>(gql(brandQueries.brands), {
       name: 'brandsQuery',
       options: () => ({ fetchPolicy: 'network-only' })

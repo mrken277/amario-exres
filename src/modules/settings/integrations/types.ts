@@ -1,4 +1,5 @@
-import { IForm, IFormIntegration } from 'modules/forms/types';
+import { IForm } from 'modules/forms/types';
+import { ILeadData, ILeadIntegration } from 'modules/leads/types';
 import { IBrand } from '../brands/types';
 import { IChannel } from '../channels/types';
 
@@ -66,35 +67,20 @@ export interface IUiOptions {
   logoPreviewUrl?: string;
 }
 
-export interface IFormData {
-  loadType?: string;
-  successAction?: string;
-  fromEmail?: string;
-  userEmailTitle?: string;
-  userEmailContent?: string;
-  adminEmails?: string[];
-  adminEmailTitle?: string;
-  adminEmailContent?: string;
-  thankContent?: string;
-  redirectUrl?: string;
-}
-
 export interface IIntegration {
   _id: string;
   kind: string;
   name: string;
   brandId?: string;
-  description?: string;
   code: string;
   formId: string;
-  form: IForm;
-  logo: string;
   languageCode?: string;
   createUrl: string;
   createModal: string;
   messengerData?: IMessengerData;
+  form: IForm;
   uiOptions?: IUiOptions;
-  formData?: IFormData;
+  leadData: ILeadData;
   brand: IBrand;
   channels: IChannel[];
 }
@@ -119,12 +105,6 @@ export type IntegrationsQueryResponse = {
   refetch: (variables?: QueryVariables) => void;
 };
 
-export type LeadsQueryResponse = {
-  forms: IForm[];
-  loading: boolean;
-  refetch: (variables?: QueryVariables) => void;
-};
-
 export type IntegrationDetailQueryResponse = {
   integrationDetail: IIntegration;
   loading: boolean;
@@ -138,6 +118,7 @@ export type ByKind = {
   form: number;
   facebook: number;
   gmail: number;
+  callpro: number;
 };
 
 type IntegrationsCount = {
@@ -153,6 +134,30 @@ export type IntegrationsCountQueryResponse = {
   loading: boolean;
 };
 
+export interface IEngageConfig {
+  accessKeyId: string;
+  secretAccessKey: string;
+  region: string;
+}
+
+export type EngageConfigQueryResponse = {
+  engagesConfigDetail: IEngageConfig;
+  loading: boolean;
+  refetch: () => void;
+};
+
+export type EngagesConfigSaveMutationResponse = {
+  engagesConfigSave: (
+    params: {
+      variables: {
+        accessKeyId: string;
+        secretAccessKey: string;
+        region: string;
+      };
+    }
+  ) => Promise<any>;
+};
+
 export interface IGmailAttachment {
   filename?: string;
   mimeType?: string;
@@ -165,8 +170,8 @@ export type MessengerAppsCountQueryResponse = {
   loading: boolean;
 };
 
-export type FormIntegrationDetailQueryResponse = {
-  integrationDetail: IFormIntegration;
+export type LeadIntegrationDetailQueryResponse = {
+  integrationDetail: ILeadIntegration;
   loading: boolean;
   refetch: () => void;
 };
@@ -269,7 +274,7 @@ export type MessengerAppsAddKnowledgebaseMutationResponse = {
 };
 
 export type AddIntegrationMutationVariables = {
-  formData: IFormData;
+  leadData: ILeadData;
   brandId: string;
   name: string;
   languageCode: string;
@@ -286,7 +291,7 @@ export type AddIntegrationMutationResponse = {
 
 export type EditIntegrationMutationVariables = {
   _id: string;
-  formData: IFormData;
+  leadData: ILeadData;
   brandId: string;
   name: string;
   languageCode: string;
