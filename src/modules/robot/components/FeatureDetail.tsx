@@ -28,18 +28,18 @@ class FeatureDetail extends React.Component<{
         </div>
 
         <ul>
-          {detail.actions.map((setting, index) => {
+          {detail.actions.map((action, index) => {
             let color;
 
-            if (actionsCompleteness[setting.name]) {
+            if (actionsCompleteness[action.name]) {
               color = 'green';
             }
 
             return (
               <li key={index}>
                 <h5>
-                  <a href={setting.url} target="__blank" style={{ color }}>
-                    {setting.name}
+                  <a href={action.url} target="__blank" style={{ color }}>
+                    {action.name}
                   </a>
                 </h5>
               </li>

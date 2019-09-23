@@ -38,10 +38,10 @@ class OnboardingContainer extends React.Component<
         const { onboardingChanged } = data;
 
         if (onboardingChanged) {
-          const { action } = onboardingChanged;
+          const { type } = onboardingChanged;
 
-          if (!this.state.currentStep) {
-            this.setState({ currentStep: action });
+          if (type === 'initial' && !this.state.currentStep) {
+            this.setState({ currentStep: 'initial' });
           }
         }
       }

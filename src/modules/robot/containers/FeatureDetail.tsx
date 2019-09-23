@@ -1,10 +1,12 @@
 import gql from 'graphql-tag';
+import withCurrentUser from 'modules/auth/containers/withCurrentUser';
+import { IUser } from 'modules/auth/types';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
 import { FEATURE_DETAILS } from '../components/constants';
 import FeatureDetail from '../components/FeatureDetail';
-import { queries } from '../graphql';
+import { queries, subscriptions } from '../graphql';
 import { IFeature } from '../types';
 
 type Props = {
@@ -13,19 +15,34 @@ type Props = {
 
 type FinalProps = Props & {
   actionsCompletenessQuery: any;
+  currentUser: IUser;
 };
 
-const FeatureDetailContainer = (props: FinalProps) => {
-  const { actionsCompletenessQuery } = props;
+class FeatureDetailContainer extends React.Component<FinalProps> {
+  componentWillMount() {
+    const { actionsCompletenessQuery, currentUser } = this.props;
 
-  const updatedProps = {
-    ...props,
-    actionsCompleteness:
-      actionsCompletenessQuery.onboardingActionsCompleteness || {}
-  };
+    actionsCompletenessQuery.subscribeToMore({
+      document: gql(subscriptions.onboardingChanged),
+      variables: { userId: currentUser._id },
+      updateQuery: (prev, { subscriptionData: { data } }) => {
+        actionsCompletenessQuery.refetch();
+      }
+    });
+  }
 
-  return <FeatureDetail {...updatedProps} />;
-};
+  render() {
+    const { actionsCompletenessQuery } = this.props;
+
+    const updatedProps = {
+      ...this.props,
+      actionsCompleteness:
+        actionsCompletenessQuery.onboardingActionsCompleteness || {}
+    };
+
+    return <FeatureDetail {...updatedProps} />;
+  }
+}
 
 export default withProps<Props>(
   compose(
@@ -41,5 +58,5 @@ export default withProps<Props>(
         };
       }
     })
-  )(FeatureDetailContainer)
+  )(withCurrentUser(FeatureDetailContainer))
 );
