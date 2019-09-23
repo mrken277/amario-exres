@@ -4,7 +4,6 @@ import { IUser } from 'modules/auth/types';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
-import { FEATURE_DETAILS } from '../components/constants';
 import FeatureDetail from '../components/FeatureDetail';
 import { queries, subscriptions } from '../graphql';
 import { IFeature } from '../types';
@@ -49,11 +48,9 @@ export default withProps<Props>(
     graphql<Props>(gql(queries.actionsCompleteness), {
       name: 'actionsCompletenessQuery',
       options: ({ feature }) => {
-        const detail = FEATURE_DETAILS[feature.name];
-
         return {
           variables: {
-            actions: detail.actions.map(action => action.name)
+            actions: feature.actions.map(action => action.name)
           }
         };
       }

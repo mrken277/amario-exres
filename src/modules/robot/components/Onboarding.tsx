@@ -2,25 +2,23 @@ import React from 'react';
 import FeatureDetail from '../containers/FeatureDetail';
 import { IFeature } from '../types';
 
-type Feature = {
-  name: string;
-  text: string;
-};
-
 type Props = {
-  availableFeatures: IFeature[];
+  availableFeatures: Array<{ feature: IFeature; isComplete: boolean }>;
   currentStep?: string;
   changeStep: (step: string) => void;
 };
 
-class Onboarding extends React.Component<Props, { selectedFeature?: Feature }> {
+class Onboarding extends React.Component<
+  Props,
+  { selectedFeature?: IFeature }
+> {
   constructor(props) {
     super(props);
 
     this.state = { selectedFeature: undefined };
   }
 
-  renderFeature(feature: Feature) {
+  renderFeature({ feature, isComplete }) {
     const { changeStep } = this.props;
     const { text } = feature;
 
@@ -41,7 +39,8 @@ class Onboarding extends React.Component<Props, { selectedFeature?: Feature }> {
           marginRight: '10px',
           display: 'inline-flex',
           cursor: 'pointer',
-          marginBottom: '10px'
+          marginBottom: '10px',
+          color: isComplete ? 'green' : 'black'
         }}
         onClick={onClick}
       >
@@ -100,7 +99,9 @@ class Onboarding extends React.Component<Props, { selectedFeature?: Feature }> {
     }
 
     if (currentStep === 'featureList') {
-      return availableFeatures.map(feature => this.renderFeature(feature));
+      return availableFeatures.map(availabeFeature =>
+        this.renderFeature(availabeFeature)
+      );
     }
 
     return null;

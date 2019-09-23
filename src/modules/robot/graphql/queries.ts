@@ -16,8 +16,17 @@ const actionsCompleteness = `
 const onboardingGetAvailableFeatures = `
   query onboardingGetAvailableFeatures {
     onboardingGetAvailableFeatures {
-      name
-      text
+      feature {
+        name
+        text
+        description
+        videoUrl
+        actions {
+          name
+          url
+        }
+      }
+      isComplete
     }
   }
 `;
