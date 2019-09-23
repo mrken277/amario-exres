@@ -7,15 +7,15 @@ const entries = `
   }
 `;
 
-const settingsCompleteness = `
-  query robotSettingsCompleteness($settingNames: [String]) {
-    robotSettingsCompleteness(settingNames: $settingNames)
+const actionsCompleteness = `
+  query onboardingActionsCompleteness($actions: [String]) {
+    onboardingActionsCompleteness(actions: $actions)
   }
 `;
 
 const onboardingGetAvailableFeatures = `
-  query robotOnboardingGetAvailableFeatures {
-    robotOnboardingGetAvailableFeatures {
+  query onboardingGetAvailableFeatures {
+    onboardingGetAvailableFeatures {
       name
       text
     }
@@ -25,5 +25,5 @@ const onboardingGetAvailableFeatures = `
 export default {
   entries,
   onboardingGetAvailableFeatures,
-  settingsCompleteness
+  actionsCompleteness
 };

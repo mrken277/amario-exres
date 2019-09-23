@@ -4,10 +4,10 @@ import { FEATURE_DETAILS } from './constants';
 
 class FeatureDetail extends React.Component<{
   feature: IFeature;
-  settingsCompleteness: { [key: string]: boolean };
+  actionsCompleteness: { [key: string]: boolean };
 }> {
   render() {
-    const { feature, settingsCompleteness } = this.props;
+    const { feature, actionsCompleteness } = this.props;
 
     const detail = FEATURE_DETAILS[feature.name];
 
@@ -24,14 +24,14 @@ class FeatureDetail extends React.Component<{
         </div>
 
         <div style={{ margin: '10px 0px', color: '#5629B6' }}>
-          <h2>Related settings:</h2>
+          <h2>Related actions:</h2>
         </div>
 
         <ul>
-          {detail.settings.map((setting, index) => {
+          {detail.actions.map((setting, index) => {
             let color;
 
-            if (settingsCompleteness[setting.name]) {
+            if (actionsCompleteness[setting.name]) {
               color = 'green';
             }
 

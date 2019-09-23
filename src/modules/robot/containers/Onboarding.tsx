@@ -57,7 +57,7 @@ class OnboardingContainer extends React.Component<
         currentStep={currentStep}
         changeStep={this.changeStep}
         availableFeatures={
-          onboardingGetAvailableFeaturesQuery.robotOnboardingGetAvailableFeatures ||
+          onboardingGetAvailableFeaturesQuery.onboardingGetAvailableFeatures ||
           []
         }
       />

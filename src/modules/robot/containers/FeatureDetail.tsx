@@ -12,16 +12,16 @@ type Props = {
 };
 
 type FinalProps = Props & {
-  settingsCompletenessQuery: any;
+  actionsCompletenessQuery: any;
 };
 
 const FeatureDetailContainer = (props: FinalProps) => {
-  const { settingsCompletenessQuery } = props;
+  const { actionsCompletenessQuery } = props;
 
   const updatedProps = {
     ...props,
-    settingsCompleteness:
-      settingsCompletenessQuery.robotSettingsCompleteness || {}
+    actionsCompleteness:
+      actionsCompletenessQuery.onboardingActionsCompleteness || {}
   };
 
   return <FeatureDetail {...updatedProps} />;
@@ -29,14 +29,14 @@ const FeatureDetailContainer = (props: FinalProps) => {
 
 export default withProps<Props>(
   compose(
-    graphql<Props>(gql(queries.settingsCompleteness), {
-      name: 'settingsCompletenessQuery',
+    graphql<Props>(gql(queries.actionsCompleteness), {
+      name: 'actionsCompletenessQuery',
       options: ({ feature }) => {
         const detail = FEATURE_DETAILS[feature.name];
 
         return {
           variables: {
-            settingNames: detail.settings.map(setting => setting.name)
+            actions: detail.actions.map(action => action.name)
           }
         };
       }
