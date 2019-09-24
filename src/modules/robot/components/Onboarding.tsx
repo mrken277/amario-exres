@@ -6,6 +6,7 @@ type Props = {
   availableFeatures: Array<{ feature: IFeature; isComplete: boolean }>;
   currentStep?: string;
   changeStep: (step: string) => void;
+  forceComplete: () => void;
 };
 
 class Onboarding extends React.Component<
@@ -107,8 +108,12 @@ class Onboarding extends React.Component<
     return null;
   }
 
+  onHide = () => {
+    this.props.changeStep('');
+  };
+
   render() {
-    const { currentStep } = this.props;
+    const { currentStep, forceComplete } = this.props;
 
     if (!currentStep) {
       return null;
@@ -127,6 +132,11 @@ class Onboarding extends React.Component<
           bottom: '50px'
         }}
       >
+        <div style={{ float: 'right' }}>
+          <button onClick={forceComplete}>d</button>
+          <button onClick={this.onHide}>x</button>
+        </div>
+
         {this.renderContent()}
       </div>
     );

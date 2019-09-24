@@ -5,12 +5,13 @@ import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
 import Onboarding from '../components/Onboarding';
-import { queries, subscriptions } from '../graphql';
+import { mutations, queries, subscriptions } from '../graphql';
 
 type Props = {};
 
 type FinalProps = Props & {
-  onboardingGetAvailableFeaturesQuery: any;
+  getAvailableFeaturesQuery: any;
+  forceCompleteMutation: any;
   currentUser: IUser;
 };
 
@@ -28,10 +29,16 @@ class OnboardingContainer extends React.Component<
     this.setState({ currentStep: step });
   };
 
-  componentWillMount() {
-    const { onboardingGetAvailableFeaturesQuery, currentUser } = this.props;
+  forceComplete = () => {
+    this.props.forceCompleteMutation().then(() => {
+      this.setState({ currentStep: '' });
+    });
+  };
 
-    onboardingGetAvailableFeaturesQuery.subscribeToMore({
+  componentWillMount() {
+    const { getAvailableFeaturesQuery, currentUser } = this.props;
+
+    getAvailableFeaturesQuery.subscribeToMore({
       document: gql(subscriptions.onboardingChanged),
       variables: { userId: currentUser._id },
       updateQuery: (prev, { subscriptionData: { data } }) => {
@@ -53,15 +60,15 @@ class OnboardingContainer extends React.Component<
 
   render() {
     const { currentStep } = this.state;
-    const { onboardingGetAvailableFeaturesQuery } = this.props;
+    const { getAvailableFeaturesQuery } = this.props;
 
     return (
       <Onboarding
         currentStep={currentStep}
         changeStep={this.changeStep}
+        forceComplete={this.forceComplete}
         availableFeatures={
-          onboardingGetAvailableFeaturesQuery.onboardingGetAvailableFeatures ||
-          []
+          getAvailableFeaturesQuery.onboardingGetAvailableFeatures || []
         }
       />
     );
@@ -70,8 +77,11 @@ class OnboardingContainer extends React.Component<
 
 export default withProps<Props>(
   compose(
-    graphql<{}, any>(gql(queries.onboardingGetAvailableFeatures), {
-      name: 'onboardingGetAvailableFeaturesQuery'
+    graphql<{}>(gql(queries.onboardingGetAvailableFeatures), {
+      name: 'getAvailableFeaturesQuery'
+    }),
+    graphql<{}>(gql(mutations.onboardingForceComplete), {
+      name: 'forceCompleteMutation'
     })
   )(withCurrentUser(OnboardingContainer))
 );
