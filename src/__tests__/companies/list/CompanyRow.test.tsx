@@ -34,6 +34,7 @@ describe('Testing CompanyRow component', () => {
 
   test('renders successfully', () => {
     const wrapper = shallow(<CompanyRow {...defaultProps} />).debug();
+
     expect(wrapper).not.toBe('');
   });
 });
