@@ -1,3 +1,4 @@
+import apolloClient from 'apolloClient';
 import gql from 'graphql-tag';
 import withCurrentUser from 'modules/auth/containers/withCurrentUser';
 import { IUser } from 'modules/auth/types';
@@ -34,6 +35,16 @@ class OnboardingContainer extends React.Component<
       this.setState({ currentStep: '' });
     });
   };
+
+  componentDidMount() {
+    if (window.location.href.includes('signedIn=true')) {
+      setTimeout(() => {
+        apolloClient.mutate({
+          mutation: gql(mutations.checkStatus)
+        });
+      }, 6000);
+    }
+  }
 
   componentWillMount() {
     const { getAvailableFeaturesQuery, currentUser } = this.props;

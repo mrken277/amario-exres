@@ -4,4 +4,10 @@ const onboardingForceComplete = `
   }
 `;
 
-export default { onboardingForceComplete };
+const checkStatus = `
+  mutation onboardingCheckStatus {
+    onboardingCheckStatus
+  }
+`;
+
+export default { checkStatus, onboardingForceComplete };
