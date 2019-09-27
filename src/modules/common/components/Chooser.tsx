@@ -7,6 +7,7 @@ import { __ } from 'modules/common/utils';
 import React from 'react';
 import { Column, Columns, Footer, Title } from '../styles/chooser';
 import { CenterContent, ModalFooter } from '../styles/main';
+import ControlLabel from './form/Label';
 
 export type CommonProps = {
   data: any;
@@ -146,6 +147,7 @@ class CommonChooser extends React.Component<Props, State> {
         <Columns>
           {renderSidebar && renderSidebar()}
           <Column>
+            <ControlLabel>{title}</ControlLabel>
             <FormControl
               placeholder={__('Type to search')}
               onChange={this.search}
