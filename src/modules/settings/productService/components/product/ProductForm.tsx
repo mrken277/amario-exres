@@ -13,13 +13,20 @@ import { generateCategoryOptions } from '../../utils';
 type Props = {
   product?: IProduct;
   productCategories: IProductCategory[];
+  currentCategoryId?: string;
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   closeModal: () => void;
 };
 
 class Form extends React.Component<Props> {
   renderContent = (formProps: IFormProps) => {
-    const { renderButton, closeModal, product, productCategories } = this.props;
+    const {
+      renderButton,
+      closeModal,
+      product,
+      productCategories,
+      currentCategoryId
+    } = this.props;
     const { values, isSubmitted } = formProps;
     const object = product || ({} as IProduct);
 
@@ -75,7 +82,9 @@ class Form extends React.Component<Props> {
             {...formProps}
             name="categoryId"
             componentClass="select"
-            defaultValue={object.categoryId}
+            defaultValue={
+              currentCategoryId ? currentCategoryId : object.categoryId
+            }
             required={true}
           >
             {generateCategoryOptions(productCategories)}

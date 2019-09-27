@@ -6,7 +6,7 @@ import ModalTrigger from 'modules/common/components/ModalTrigger';
 import Pagination from 'modules/common/components/pagination/Pagination';
 import Table from 'modules/common/components/table';
 import { IRouterProps } from 'modules/common/types';
-import { __, Alert, confirm } from 'modules/common/utils';
+import { Alert, confirm, __ } from 'modules/common/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
 import { BarItems } from 'modules/layout/styles';
 import React from 'react';
@@ -81,7 +81,9 @@ class List extends React.Component<IProps> {
       </Button>
     );
 
-    const modalContent = props => <Form {...props} />;
+    const modalContent = props => (
+      <Form {...props} currentCategoryId={queryParams.categoryId} />
+    );
 
     let actionBarRight = (
       <BarItems>

@@ -1,16 +1,16 @@
 import gql from 'graphql-tag';
+import ButtonMutate from 'modules/common/components/ButtonMutate';
 import { IButtonMutateProps } from 'modules/common/types';
 import { withProps } from 'modules/common/utils';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
-import From from '../../components/product/ProductForm';
+import Form from '../../components/product/ProductForm';
 import { mutations, queries } from '../../graphql';
-
-import ButtonMutate from 'modules/common/components/ButtonMutate';
 import { IProduct, ProductCategoriesQueryResponse } from '../../types';
 
 type Props = {
   product?: IProduct;
+  currentCategoryId?: string;
   closeModal: () => void;
 };
 
@@ -20,7 +20,7 @@ type FinalProps = {
 
 class ProductFormContainer extends React.Component<FinalProps> {
   render() {
-    const { productCategoriesQuery } = this.props;
+    const { productCategoriesQuery, currentCategoryId } = this.props;
 
     if (productCategoriesQuery.loading) {
       return null;
@@ -55,10 +55,11 @@ class ProductFormContainer extends React.Component<FinalProps> {
     const updatedProps = {
       ...this.props,
       renderButton,
-      productCategories
+      productCategories,
+      currentCategoryId
     };
 
-    return <From {...updatedProps} />;
+    return <Form {...updatedProps} />;
   }
 }
 
