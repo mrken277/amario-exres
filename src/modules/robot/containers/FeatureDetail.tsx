@@ -13,30 +13,30 @@ type Props = {
 };
 
 type FinalProps = Props & {
-  actionsCompletenessQuery: any;
+  stepsCompletenessQuery: any;
   currentUser: IUser;
 };
 
 class FeatureDetailContainer extends React.Component<FinalProps> {
   componentWillMount() {
-    const { actionsCompletenessQuery, currentUser } = this.props;
+    const { stepsCompletenessQuery, currentUser } = this.props;
 
-    actionsCompletenessQuery.subscribeToMore({
+    stepsCompletenessQuery.subscribeToMore({
       document: gql(subscriptions.onboardingChanged),
       variables: { userId: currentUser._id },
       updateQuery: (prev, { subscriptionData: { data } }) => {
-        actionsCompletenessQuery.refetch();
+        stepsCompletenessQuery.refetch();
       }
     });
   }
 
   render() {
-    const { actionsCompletenessQuery } = this.props;
+    const { stepsCompletenessQuery } = this.props;
 
     const updatedProps = {
       ...this.props,
-      actionsCompleteness:
-        actionsCompletenessQuery.onboardingActionsCompleteness || {}
+      stepsCompleteness:
+        stepsCompletenessQuery.onboardingStepsCompleteness || {}
     };
 
     return <FeatureDetail {...updatedProps} />;
@@ -45,12 +45,12 @@ class FeatureDetailContainer extends React.Component<FinalProps> {
 
 export default withProps<Props>(
   compose(
-    graphql<Props>(gql(queries.actionsCompleteness), {
-      name: 'actionsCompletenessQuery',
+    graphql<Props>(gql(queries.stepsCompleteness), {
+      name: 'stepsCompletenessQuery',
       options: ({ feature }) => {
         return {
           variables: {
-            actions: feature.actions.map(action => action.name)
+            steps: feature.settings
           }
         };
       }

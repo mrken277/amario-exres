@@ -3,8 +3,8 @@ export type IFeature = {
   text: string;
   videoUrl: string;
   description: string;
-  actions: string[];
-  actionDetails: { [key: string]: { name: string; url: string } };
+  settings: string[];
+  settingsDetails: { [key: string]: { name: string; url: string } };
   isComplete: boolean;
-  showActions: boolean;
+  showSettings: boolean;
 };

@@ -4,10 +4,10 @@ import { IFeature } from '../types';
 
 class FeatureDetail extends React.Component<{
   feature: IFeature;
-  actionsCompleteness: { [key: string]: boolean };
+  stepsCompleteness: { [key: string]: boolean };
 }> {
   render() {
-    const { feature, actionsCompleteness } = this.props;
+    const { feature, stepsCompleteness } = this.props;
 
     return (
       <div>
@@ -26,14 +26,14 @@ class FeatureDetail extends React.Component<{
         </div>
 
         <ul>
-          {feature.actions.map((action, index) => {
+          {feature.settings.map((setting, index) => {
             let color;
 
-            if (actionsCompleteness[action]) {
+            if (stepsCompleteness[setting]) {
               color = 'green';
             }
 
-            const detail = feature.actionDetails[action];
+            const detail = feature.settingsDetails[setting];
 
             return (
               <li key={index}>

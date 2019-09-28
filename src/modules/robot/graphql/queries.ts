@@ -7,9 +7,9 @@ const entries = `
   }
 `;
 
-const actionsCompleteness = `
-  query onboardingActionsCompleteness($actions: [String]) {
-    onboardingActionsCompleteness(actions: $actions)
+const stepsCompleteness = `
+  query onboardingStepsCompleteness($steps: [String]) {
+    onboardingStepsCompleteness(steps: $steps)
   }
 `;
 
@@ -17,8 +17,8 @@ const onboardingGetAvailableFeatures = `
   query onboardingGetAvailableFeatures {
     onboardingGetAvailableFeatures {
       name
-      actions
-      showActions
+      settings
+      showSettings
       isComplete
     }
   }
@@ -27,5 +27,5 @@ const onboardingGetAvailableFeatures = `
 export default {
   entries,
   onboardingGetAvailableFeatures,
-  actionsCompleteness
+  stepsCompleteness
 };
