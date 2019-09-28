@@ -29,6 +29,10 @@ class OnboardingContainer extends React.Component<
   }
 
   changeStep = (step: string) => {
+    if (step === 'featureList') {
+      this.props.getAvailableFeaturesQuery.refetch();
+    }
+
     this.setState({ currentStep: step });
   };
 
