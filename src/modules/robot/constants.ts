@@ -119,12 +119,7 @@ export const FEATURE_DETAILS = {
     text: 'Leads',
     description: 'Leads',
     videoUrl: 'url',
-    settingsDetails: {
-      brandCreate: {
-        name: 'Create brand',
-        url: '/settings/brands'
-      }
-    }
+    settingsDetails: {}
   },
   knowledgeBase: {
     text: 'knowledgebase',
