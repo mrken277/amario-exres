@@ -6,23 +6,17 @@ class FeatureDetail extends React.Component<{
   feature: IFeature;
   stepsCompleteness: { [key: string]: boolean };
 }> {
-  render() {
+  renderSettings() {
     const { feature, stepsCompleteness } = this.props;
 
+    if (!feature.showSettings) {
+      return null;
+    }
+
     return (
-      <div>
+      <>
         <div style={{ margin: '10px 0px', color: '#5629B6' }}>
-          <h2>{feature.description}</h2>
-        </div>
-
-        <div>
-          <video width="300" height="100" controls={true}>
-            <source src={feature.videoUrl} />
-          </video>
-        </div>
-
-        <div style={{ margin: '10px 0px', color: '#5629B6' }}>
-          <h2>Related actions:</h2>
+          <h2>Related settings:</h2>
         </div>
 
         <ul>
@@ -46,6 +40,26 @@ class FeatureDetail extends React.Component<{
             );
           })}
         </ul>
+      </>
+    );
+  }
+
+  render() {
+    const { feature } = this.props;
+
+    return (
+      <div>
+        <div style={{ margin: '10px 0px', color: '#5629B6' }}>
+          <h2>{feature.description}</h2>
+        </div>
+
+        <div>
+          <video width="300" height="100" controls={true}>
+            <source src={feature.videoUrl} />
+          </video>
+        </div>
+
+        {this.renderSettings()}
       </div>
     );
   }

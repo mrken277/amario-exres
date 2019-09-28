@@ -197,8 +197,8 @@ class Navigation extends React.Component<{
                 <NavIcon className="icon-book" />
               </NavLink>
             </Tip>
-            <Robot />
           </WithPermission>
+          <Robot />
         </Nav>
       </LeftNavigation>
     );
