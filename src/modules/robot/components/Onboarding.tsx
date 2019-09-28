@@ -3,7 +3,7 @@ import FeatureDetail from '../containers/FeatureDetail';
 import { IFeature } from '../types';
 
 type Props = {
-  availableFeatures: Array<{ feature: IFeature; isComplete: boolean }>;
+  availableFeatures: IFeature[];
   currentStep?: string;
   changeStep: (step: string) => void;
   forceComplete: () => void;
@@ -19,9 +19,9 @@ class Onboarding extends React.Component<
     this.state = { selectedFeature: undefined };
   }
 
-  renderFeature({ feature, isComplete }) {
+  renderFeature(feature: IFeature) {
     const { changeStep } = this.props;
-    const { text } = feature;
+    const { text, isComplete } = feature;
 
     const onClick = () => {
       this.setState({ selectedFeature: feature }, () => {

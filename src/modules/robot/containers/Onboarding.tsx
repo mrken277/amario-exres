@@ -6,7 +6,9 @@ import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
 import Onboarding from '../components/Onboarding';
+import { FEATURE_DETAILS } from '../constants';
 import { mutations, queries, subscriptions } from '../graphql';
+import { IFeature } from '../types';
 
 type Props = {};
 
@@ -73,14 +75,23 @@ class OnboardingContainer extends React.Component<
     const { currentStep } = this.state;
     const { getAvailableFeaturesQuery } = this.props;
 
+    const availableFeatures: IFeature[] = (
+      getAvailableFeaturesQuery.onboardingGetAvailableFeatures || []
+    ).map(feature => {
+      const details = FEATURE_DETAILS[feature.name] || {};
+
+      return {
+        ...feature,
+        ...details
+      };
+    });
+
     return (
       <Onboarding
         currentStep={currentStep}
         changeStep={this.changeStep}
         forceComplete={this.forceComplete}
-        availableFeatures={
-          getAvailableFeaturesQuery.onboardingGetAvailableFeatures || []
-        }
+        availableFeatures={availableFeatures}
       />
     );
   }

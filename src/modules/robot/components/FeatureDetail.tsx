@@ -29,15 +29,17 @@ class FeatureDetail extends React.Component<{
           {feature.actions.map((action, index) => {
             let color;
 
-            if (actionsCompleteness[action.name]) {
+            if (actionsCompleteness[action]) {
               color = 'green';
             }
+
+            const detail = feature.actionDetails[action];
 
             return (
               <li key={index}>
                 <h5>
-                  <Link to={action.url} style={{ color }}>
-                    {action.name}
+                  <Link to={detail.url} style={{ color }}>
+                    {detail.name}
                   </Link>
                 </h5>
               </li>
