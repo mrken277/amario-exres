@@ -13,7 +13,7 @@ const stepsCompleteness = `
   }
 `;
 
-const onboardingGetAvailableFeatures = `
+const getAvailableFeatures = `
   query onboardingGetAvailableFeatures {
     onboardingGetAvailableFeatures {
       name
@@ -26,6 +26,6 @@ const onboardingGetAvailableFeatures = `
 
 export default {
   entries,
-  onboardingGetAvailableFeatures,
+  getAvailableFeatures,
   stepsCompleteness
 };

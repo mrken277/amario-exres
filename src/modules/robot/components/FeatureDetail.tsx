@@ -4,6 +4,7 @@ import { IFeature } from '../types';
 
 class FeatureDetail extends React.Component<{
   feature: IFeature;
+  completeShowStep: () => void;
   stepsCompleteness: { [key: string]: boolean };
 }> {
   renderSettings() {
@@ -44,6 +45,13 @@ class FeatureDetail extends React.Component<{
     );
   }
 
+  onVideoClick = () => {
+    // tslint:disable
+    console.log('on video click');
+
+    this.props.completeShowStep();
+  };
+
   render() {
     const { feature } = this.props;
 
@@ -54,8 +62,13 @@ class FeatureDetail extends React.Component<{
         </div>
 
         <div>
-          <video width="300" height="100" controls={true}>
-            <source src={feature.videoUrl} />
+          <video
+            width="300"
+            height="100"
+            controls={true}
+            onClick={this.onVideoClick}
+          >
+            <source src="https://www.youtube.com/watch?v=fxXfN198rXE&t=965s" />
           </video>
         </div>
 

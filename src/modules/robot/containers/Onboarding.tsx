@@ -99,10 +99,10 @@ class OnboardingContainer extends React.Component<
 
 export default withProps<Props>(
   compose(
-    graphql<{}>(gql(queries.onboardingGetAvailableFeatures), {
+    graphql<{}>(gql(queries.getAvailableFeatures), {
       name: 'getAvailableFeaturesQuery'
     }),
-    graphql<{}>(gql(mutations.onboardingForceComplete), {
+    graphql<{}>(gql(mutations.forceComplete), {
       name: 'forceCompleteMutation'
     })
   )(withCurrentUser(OnboardingContainer))

@@ -1,6 +1,12 @@
-const onboardingForceComplete = `
+const forceComplete = `
   mutation {
     onboardingForceComplete
+  }
+`;
+
+const completeShowStep = `
+  mutation onboardingCompleteShowStep($step: String) {
+    onboardingCompleteShowStep(step: $step)
   }
 `;
 
@@ -10,4 +16,4 @@ const checkStatus = `
   }
 `;
 
-export default { checkStatus, onboardingForceComplete };
+export default { checkStatus, completeShowStep, forceComplete };

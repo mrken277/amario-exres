@@ -5,7 +5,7 @@ import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
 import FeatureDetail from '../components/FeatureDetail';
-import { queries, subscriptions } from '../graphql';
+import { mutations, queries, subscriptions } from '../graphql';
 import { IFeature } from '../types';
 
 type Props = {
@@ -14,6 +14,7 @@ type Props = {
 
 type FinalProps = Props & {
   stepsCompletenessQuery: any;
+  completeShowStepMutation: any;
   currentUser: IUser;
 };
 
@@ -30,11 +31,18 @@ class FeatureDetailContainer extends React.Component<FinalProps> {
     });
   }
 
+  completeShowStep = () => {
+    const { completeShowStepMutation, feature } = this.props;
+
+    completeShowStepMutation({ variables: { step: `${feature.name}Show` } });
+  };
+
   render() {
     const { stepsCompletenessQuery } = this.props;
 
     const updatedProps = {
       ...this.props,
+      completeShowStep: this.completeShowStep,
       stepsCompleteness:
         stepsCompletenessQuery.onboardingStepsCompleteness || {}
     };
@@ -54,6 +62,9 @@ export default withProps<Props>(
           }
         };
       }
+    }),
+    graphql<{}>(gql(mutations.completeShowStep), {
+      name: 'completeShowStepMutation'
     })
   )(withCurrentUser(FeatureDetailContainer))
 );
