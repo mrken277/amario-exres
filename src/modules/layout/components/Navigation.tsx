@@ -5,6 +5,7 @@ import { colors, dimensions } from 'modules/common/styles';
 import { __, setBadge } from 'modules/common/utils';
 import Assistant from 'modules/notifications/components/assistant/Assistant';
 import Notifier from 'modules/notifications/components/Notifier';
+import Onboard from 'modules/robot/components/Onboard';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
@@ -13,7 +14,7 @@ const LeftNavigation = styled.aside`
   width: ${dimensions.headerSpacingWide}px;
   background: ${colors.colorPrimaryDark};
   box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  z-index: 11;
   flex-shrink: 0;
   overflow: hidden;
   position: absolute;
@@ -179,16 +180,15 @@ class Navigation extends React.Component<{
           )}
           {this.renderNavItem(
             'showGrowthHacks',
-            __('Conversation'),
-            '/inbox',
-            'icon-chat',
-            unreadIndicator
+            __('Growth Hacking'),
+            '/growthHack',
+            'icon-idea'
           )}
           {this.renderNavItem(
             'showDeals',
-            __('Growth Hack'),
-            '/growthHack',
-            'icon-idea'
+            __('Deal'),
+            '/deal',
+            'icon-piggy-bank'
           )}
           {this.renderNavItem(
             'showCustomers',
@@ -199,7 +199,7 @@ class Navigation extends React.Component<{
           {this.renderNavItem(
             'showForms',
             __('Leads'),
-            '/forms',
+            '/leads',
             'icon-laptop'
           )}
           {this.renderNavItem(
@@ -217,6 +217,7 @@ class Navigation extends React.Component<{
         </Nav>
         <Notifier />
         <Assistant />
+        <Onboard />
       </LeftNavigation>
     );
   }

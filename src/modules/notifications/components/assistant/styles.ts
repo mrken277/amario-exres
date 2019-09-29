@@ -26,7 +26,7 @@ const Group = styled.div`
 const GroupHead = styled.div`
   display: inline-flex;
   background: ${colors.colorWhite};
-  border-radius: ${dimensions.coreSpacing}px;
+  border-radius: ${dimensions.unitSpacing}px;
   box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   align-items: stretch;
