@@ -1,6 +1,11 @@
+import Icon from 'modules/common/components/Icon';
 import React from 'react';
+import RTG from 'react-transition-group';
 import FeatureDetail from '../containers/FeatureDetail';
 import { IFeature } from '../types';
+import { getAppearance } from '../utils';
+import ModulItem from './ModulItem';
+import { Back, Content, Greeting } from './styles';
 
 type Props = {
   availableFeatures: IFeature[];
@@ -23,6 +28,8 @@ class Onboarding extends React.Component<
     const { changeStep } = this.props;
     const { text, isComplete } = feature;
 
+    console.log(isComplete);
+
     const onClick = () => {
       this.setState({ selectedFeature: feature }, () => {
         changeStep('featureDetail');
@@ -30,23 +37,13 @@ class Onboarding extends React.Component<
     };
 
     return (
-      <div
+      <ModulItem
+        title={text}
+        {...getAppearance(feature.name)}
         key={feature.name}
-        style={{
-          width: '100px',
-          height: '100px',
-          float: 'left',
-          border: '1px solid',
-          marginRight: '10px',
-          display: 'inline-flex',
-          cursor: 'pointer',
-          marginBottom: '10px',
-          color: isComplete ? 'green' : 'black'
-        }}
+        vertical={true}
         onClick={onClick}
-      >
-        <div style={{ margin: 'auto' }}>{text}</div>
-      </div>
+      />
     );
   }
 
@@ -93,15 +90,31 @@ class Onboarding extends React.Component<
 
       return (
         <>
-          <button onClick={onBack}>back</button>
+          <Back onClick={onBack}>
+            <Icon icon="arrow-left" size={24} />
+          </Back>
           {selectedFeature && <FeatureDetail feature={selectedFeature} />}
         </>
       );
     }
 
     if (currentStep === 'featureList') {
-      return availableFeatures.map(availabeFeature =>
-        this.renderFeature(availabeFeature)
+      return (
+        <>
+          <Greeting>
+            Good morning!{' '}
+            <b>
+              Ganzorig{' '}
+              <span role="img" aria-label="Wave">
+                👋
+              </span>
+            </b>
+            <br /> What module do you use usually?
+          </Greeting>
+          {availableFeatures.map(availabeFeature =>
+            this.renderFeature(availabeFeature)
+          )}
+        </>
       );
     }
 
@@ -120,25 +133,19 @@ class Onboarding extends React.Component<
     }
 
     return (
-      <div
-        style={{
-          backgroundColor: '#a5a2a2',
-          position: 'fixed',
-          width: '400px',
-          height: '700px',
-          left: '80px',
-          paddingLeft: '30px',
-          paddingTop: '30px',
-          bottom: '50px'
-        }}
+      <RTG.CSSTransition
+        in={true}
+        appear={true}
+        timeout={500}
+        classNames="slide-in-small"
+        unmountOnExit={true}
       >
-        <div style={{ float: 'right' }}>
+        <Content>
+          {this.renderContent()}
           <button onClick={forceComplete}>d</button>
           <button onClick={this.onHide}>x</button>
-        </div>
-
-        {this.renderContent()}
-      </div>
+        </Content>
+      </RTG.CSSTransition>
     );
   }
 }

@@ -1,4 +1,4 @@
-import { colors } from 'modules/common/styles';
+import { colors, dimensions } from 'modules/common/styles';
 import styled from 'styled-components';
 
 const ModulRow = styled.div`
@@ -33,6 +33,7 @@ const Bot = styled.div`
 const Title = styled.h2`
   margin: 0 0 20px;
   font-size: 16px;
+  text-transform: capitalize;
 `;
 
 const Back = styled.div`
@@ -54,4 +55,19 @@ const Back = styled.div`
   }
 `;
 
-export { Bot, ModulRow, Greeting, Title, Back };
+const Content = styled.div`
+  position: fixed;
+  padding: ${dimensions.coreSpacing}px;
+  border-radius: 10px;
+  background: ${colors.bgLight};
+  min-width: 300px;
+  max-width: 500px;
+  box-shadow: 0 5px 15px 1px rgba(0, 0, 0, 0.15);
+  bottom: 65px;
+  left: 15px;
+  max-height: calc(100% - 75px);
+  overflow: auto;
+  flex-direction: column;
+`;
+
+export { Bot, ModulRow, Greeting, Title, Back, Content };

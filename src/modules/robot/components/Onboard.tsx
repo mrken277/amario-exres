@@ -1,27 +1,10 @@
 import debounce from 'lodash/debounce';
-import { colors, dimensions } from 'modules/common/styles';
+import { colors } from 'modules/common/styles';
 import * as React from 'react';
 import RTG from 'react-transition-group';
-import styled from 'styled-components';
 import ModulDetail from './ModulDetail';
 import ModulItem from './ModulItem';
-import { Greeting, ModulRow } from './styles';
-
-const Content = styled.div`
-  position: fixed;
-  padding: ${dimensions.coreSpacing}px;
-  border-radius: 10px;
-  background: ${colors.bgLight};
-  min-width: 300px;
-  max-width: 500px;
-  box-shadow: 0 5px 15px 1px rgba(0, 0, 0, 0.15);
-  bottom: 65px;
-  left: 15px;
-  display: flex;
-  max-height: calc(100% - 75px);
-  overflow: auto;
-  flex-direction: column;
-`;
+import { Content, Greeting, ModulRow } from './styles';
 
 type Props = {
   delay?: number;
@@ -34,7 +17,7 @@ type State = {
 
 class Onboard extends React.Component<Props, State> {
   static defaultProps = {
-    delay: 12000
+    delay: 120000
   };
 
   constructor(props) {

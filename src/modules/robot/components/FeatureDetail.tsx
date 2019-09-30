@@ -1,6 +1,56 @@
+import colors from 'modules/common/styles/colors';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import styledTS from 'styled-components-ts';
 import { IFeature } from '../types';
+import { Title } from './styles';
+
+const Wrapper = styled.div`
+  width: 315px;
+`;
+
+const Checklist = styled.ul`
+  padding: 0;
+  list-style: none;
+  margin: 0;
+`;
+
+const ChecklistItem = styledTS<{ isComplete?: boolean }>(styled.li)`
+	
+	position: relative;
+	padding-left: 30px;
+	margin-bottom: 10px;
+
+	&:before {
+		content: '\\ea3f';
+		font-style: normal;
+    font-family: 'erxes';
+		width: 20px;
+		height: 20px;
+		border-radius: 10px;
+		border: 1px solid;
+		border-color: ${props =>
+      props.isComplete ? colors.colorCoreGreen : colors.colorCoreGray};
+		background: ${props => props.isComplete && colors.colorCoreGreen};
+		display: block;
+		position: absolute;
+		left: 0;
+		text-align: center;
+		color: ${colors.colorWhite};
+	}
+
+	a {
+    text-decoration: ${props => props.isComplete && 'line-through'};
+	  font-style: ${props => props.isComplete && 'italic'};
+		color: ${props =>
+      props.isComplete ? colors.colorCoreGray : colors.textPrimary};
+
+      &:hover {
+        text-decoration: underline;
+      }
+	}
+`;
 
 class FeatureDetail extends React.Component<{
   feature: IFeature;
@@ -16,31 +66,26 @@ class FeatureDetail extends React.Component<{
 
     return (
       <>
-        <div style={{ margin: '10px 0px', color: '#5629B6' }}>
-          <h2>Related settings:</h2>
-        </div>
-
-        <ul>
+        <Checklist>
           {feature.settings.map((setting, index) => {
-            let color;
-
-            if (stepsCompleteness[setting]) {
-              color = 'green';
-            }
-
             const detail = feature.settingsDetails[setting];
 
             return (
-              <li key={index}>
-                <h5>
-                  <Link to={detail.url} style={{ color }}>
-                    {detail.name}
-                  </Link>
-                </h5>
-              </li>
+              <ChecklistItem
+                key={index}
+                isComplete={stepsCompleteness[setting]}
+              >
+                <Link to={detail.url}>{detail.name}</Link>
+                {stepsCompleteness[setting] && (
+                  <span role="img" aria-label="Wave">
+                    {' '}
+                    👋
+                  </span>
+                )}
+              </ChecklistItem>
             );
           })}
-        </ul>
+        </Checklist>
       </>
     );
   }
@@ -56,24 +101,11 @@ class FeatureDetail extends React.Component<{
     const { feature } = this.props;
 
     return (
-      <div>
-        <div style={{ margin: '10px 0px', color: '#5629B6' }}>
-          <h2>{feature.description}</h2>
-        </div>
-
-        <div>
-          <video
-            width="300"
-            height="100"
-            controls={true}
-            onClick={this.onVideoClick}
-          >
-            <source src="https://www.youtube.com/watch?v=fxXfN198rXE&t=965s" />
-          </video>
-        </div>
+      <Wrapper>
+        <Title>{feature.name}</Title>
 
         {this.renderSettings()}
-      </div>
+      </Wrapper>
     );
   }
 }

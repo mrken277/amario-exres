@@ -18,6 +18,10 @@ const Modul = styled(GroupHead)`
     margin-right: 0;
   }
 
+  &:nth-child(3n + 1) {
+    margin-right: 0;
+  }
+
   ${props =>
     props.vertical &&
     css`
@@ -35,6 +39,7 @@ const Text = styled.div`
   h4 {
     font-size: 13px;
     margin: 0;
+    text-transform: capitalize;
   }
 
   p {

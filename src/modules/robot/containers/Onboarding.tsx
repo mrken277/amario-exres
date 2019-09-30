@@ -48,7 +48,7 @@ class OnboardingContainer extends React.Component<
         apolloClient.mutate({
           mutation: gql(mutations.checkStatus)
         });
-      }, 6000);
+      }, 1000);
     }
   }
 
@@ -84,7 +84,7 @@ class OnboardingContainer extends React.Component<
     const { getAvailableFeaturesQuery } = this.props;
 
     const availableFeatures: IFeature[] = (getAvailableFeaturesQuery
-      ? getAvailableFeaturesQuery.onboardingGetAvailableFeatures
+      ? getAvailableFeaturesQuery.onboardingGetAvailableFeatures || []
       : []
     ).map(feature => {
       const details = FEATURE_DETAILS[feature.name] || {};
