@@ -13,7 +13,7 @@ import { IFeature } from '../types';
 type Props = {};
 
 type FinalProps = Props & {
-  getAvailableFeaturesQuery: any;
+  getAvailableFeaturesQuery?: any;
   forceCompleteMutation: any;
   currentUser: IUser;
 };
@@ -55,6 +55,10 @@ class OnboardingContainer extends React.Component<
   componentWillMount() {
     const { getAvailableFeaturesQuery, currentUser } = this.props;
 
+    if (!getAvailableFeaturesQuery) {
+      return;
+    }
+
     getAvailableFeaturesQuery.subscribeToMore({
       document: gql(subscriptions.onboardingChanged),
       variables: { userId: currentUser._id },
@@ -79,8 +83,9 @@ class OnboardingContainer extends React.Component<
     const { currentStep } = this.state;
     const { getAvailableFeaturesQuery } = this.props;
 
-    const availableFeatures: IFeature[] = (
-      getAvailableFeaturesQuery.onboardingGetAvailableFeatures || []
+    const availableFeatures: IFeature[] = (getAvailableFeaturesQuery
+      ? getAvailableFeaturesQuery.onboardingGetAvailableFeatures
+      : []
     ).map(feature => {
       const details = FEATURE_DETAILS[feature.name] || {};
 
@@ -104,7 +109,8 @@ class OnboardingContainer extends React.Component<
 export default withProps<Props>(
   compose(
     graphql<{}>(gql(queries.getAvailableFeatures), {
-      name: 'getAvailableFeaturesQuery'
+      name: 'getAvailableFeaturesQuery',
+      skip: () => !window.location.href.includes('signedIn=true')
     }),
     graphql<{}>(gql(mutations.forceComplete), {
       name: 'forceCompleteMutation'
