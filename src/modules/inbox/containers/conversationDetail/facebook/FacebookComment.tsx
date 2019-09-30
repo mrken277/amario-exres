@@ -32,7 +32,9 @@ const FacebookCommentContainer = (props: FinalProps) => {
         callback();
       })
       .catch(e => {
-        Alert.error(e.message);
+        Alert.error(
+          'You do not have sufficient permission to perform this action'
+        );
       });
   };
 
