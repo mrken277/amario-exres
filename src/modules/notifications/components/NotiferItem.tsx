@@ -4,12 +4,13 @@ import { colors, dimensions } from 'modules/common/styles';
 import * as React from 'react';
 import RTG from 'react-transition-group';
 import styled from 'styled-components';
+import styledTS from 'styled-components-ts';
 
-const Item = styled.div`
+const Item = styledTS<{ background?: string }>(styled.div)`
   padding: ${dimensions.coreSpacing}px;
   border-radius: 10px;
   color: ${colors.colorWhite};
-  background: ${colors.colorCoreBlue};
+  background: ${props => props.background || colors.colorCoreBlue};
   max-width: 300px;
   box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
@@ -51,6 +52,7 @@ const Close = styled.div`
 type Props = {
   children: React.ReactNode;
   closable?: boolean;
+  background?: string;
   delay?: number;
 };
 
@@ -78,7 +80,7 @@ class NotifierItem extends React.Component<Props, State> {
   };
 
   render() {
-    const { children, closable = true } = this.props;
+    const { children, closable = true, background } = this.props;
 
     return (
       <RTG.CSSTransition
@@ -88,7 +90,7 @@ class NotifierItem extends React.Component<Props, State> {
         classNames="slide-in-small"
         unmountOnExit={true}
       >
-        <Item>
+        <Item background={background}>
           {closable && (
             <Close onClick={this.close}>
               <Icon icon="times" />

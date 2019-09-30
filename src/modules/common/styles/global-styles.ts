@@ -782,7 +782,6 @@ a:hover {
 /* carousel */
 .carousel {
   position: relative;
-  margin-bottom: 10px;
 }
 .carousel-inner {
   position: relative;
@@ -898,21 +897,21 @@ a:hover {
 }
 .carousel-indicators li {
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   margin: 1px;
   text-indent: -999px;
   cursor: pointer;
   background-color: #000;
   background-color: rgba(0, 0, 0, 0);
-  border: 1px solid #6569DF;
-  border-radius: 10px;
+  border: 1px solid #EA475D;
+  border-radius: 8px;
 }
 .carousel-indicators .active {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   margin: 0;
-  background-color: #6569DF;
+  background-color: #EA475D;
 }
 @media screen and (min-width: 768px) {
   .carousel-control .icon-prev,

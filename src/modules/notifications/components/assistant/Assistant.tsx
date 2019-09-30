@@ -1,11 +1,11 @@
 import { colors } from 'modules/common/styles';
-import { Popover } from 'modules/common/styles/main';
+import ModulItem from 'modules/robot/components/ModulItem';
+import { Greeting, ModulRow } from 'modules/robot/components/styles';
 import * as React from 'react';
 import { OverlayTrigger } from 'react-bootstrap';
-import NotifierItem from '../NotiferItem';
 import { PopoverContent } from '../styles';
 import ActionGroup from './ActionGroup';
-import { Bot } from './styles';
+import { Bot, PopoverHome } from './styles';
 
 class Assistant extends React.Component<{}> {
   constructor(props) {
@@ -22,29 +22,46 @@ class Assistant extends React.Component<{}> {
   renderPopoverContent() {
     return (
       <PopoverContent>
-        <ActionGroup label="Customer auto merge" />
+        <Greeting>
+          Good morning! <b>Ganzorig 👋</b>
+          <br /> What module do you use usually?
+        </Greeting>
+        <ModulRow>
+          <ModulItem
+            title="Team Inbox"
+            description="Combine client and team"
+            color="#ec542b"
+          />
+          <ModulItem
+            title="Growth Hack"
+            description="Combine client and team"
+            color="#3599cb"
+            icon="idea"
+          />
+        </ModulRow>
+        <ModulRow>
+          <ModulItem
+            title="Team Inbox"
+            description="Combine client and team"
+            color="#27b553"
+          />
+          <ModulItem
+            title="Growth Hack"
+            description="Combine client and team"
+            color="#de59b2"
+            icon="idea"
+          />
+        </ModulRow>
         <ActionGroup
           label="Company log, meta description"
           color={colors.colorCoreGreen}
         />
-        <NotifierItem>
-          <span role="img" aria-label="Wave">
-            👋
-          </span>
-          <div>
-            <h3>Hello Ganzorig</h3>
-            <p>
-              Hello I'm erxes. Make sure <a href="#test">save your profile</a>{' '}
-              information
-            </p>
-          </div>
-        </NotifierItem>
       </PopoverContent>
     );
   }
 
   render() {
-    const content = <Popover>{this.renderPopoverContent()}</Popover>;
+    const content = <PopoverHome>{this.renderPopoverContent()}</PopoverHome>;
 
     return (
       <OverlayTrigger

@@ -3,9 +3,7 @@ import Tip from 'modules/common/components/Tip';
 import WithPermission from 'modules/common/components/WithPermission';
 import { colors, dimensions } from 'modules/common/styles';
 import { __, setBadge } from 'modules/common/utils';
-import Assistant from 'modules/notifications/components/assistant/Assistant';
-import Notifier from 'modules/notifications/components/Notifier';
-import Onboard from 'modules/robot/components/Onboard';
+import Robot from 'modules/robot/components/Robot';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
@@ -215,9 +213,7 @@ class Navigation extends React.Component<{
             'icon-book'
           )}
         </Nav>
-        <Notifier />
-        <Assistant />
-        <Onboard />
+        <Robot />
       </LeftNavigation>
     );
   }

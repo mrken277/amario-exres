@@ -5,7 +5,7 @@ import RTG from 'react-transition-group';
 import styled from 'styled-components';
 import ModulDetail from './ModulDetail';
 import ModulItem from './ModulItem';
-import { ModulRow } from './styles';
+import { Greeting, ModulRow } from './styles';
 
 const Content = styled.div`
   position: fixed;
@@ -13,6 +13,7 @@ const Content = styled.div`
   border-radius: 10px;
   background: ${colors.bgLight};
   min-width: 300px;
+  max-width: 500px;
   box-shadow: 0 5px 15px 1px rgba(0, 0, 0, 0.15);
   bottom: 65px;
   left: 15px;
@@ -39,7 +40,7 @@ class Onboard extends React.Component<Props, State> {
   constructor(props) {
     super(props);
 
-    this.state = { show: false, activeRoute: 'detail' };
+    this.state = { show: false, activeRoute: 'feature' };
   }
 
   componentDidMount = () => {
@@ -55,6 +56,10 @@ class Onboard extends React.Component<Props, State> {
   renderFeatures = () => {
     return (
       <>
+        <Greeting>
+          Good morning! <b>Ganzorig 👋</b>
+          <br /> What module do you use usually?
+        </Greeting>
         <ModulRow>
           <ModulItem
             onClick={this.onClickItem}
@@ -166,11 +171,8 @@ class Onboard extends React.Component<Props, State> {
       case 'feature':
         return this.renderFeatures();
 
-      case 'detail':
-        return this.renderDetail();
-
       default:
-        return this.renderFeatures();
+        return this.renderDetail();
     }
   };
 

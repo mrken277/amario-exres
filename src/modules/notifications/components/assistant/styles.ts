@@ -1,5 +1,6 @@
 import { colors, dimensions } from 'modules/common/styles';
 import { darken, lighten } from 'modules/common/styles/color';
+import { Popover } from 'modules/common/styles/main';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 
@@ -17,6 +18,10 @@ const Bot = styled.div`
   img {
     width: 45px;
   }
+`;
+
+const PopoverHome = styled(Popover)`
+  width: 493px;
 `;
 
 const Group = styled.div`
@@ -61,4 +66,4 @@ const NotifyItem = styled.div`
   border-bottom: 1px solid #eee;
 `;
 
-export { Bot, GroupHead, Count, Title, Group, NotifyItem };
+export { Bot, GroupHead, Count, Title, Group, NotifyItem, PopoverHome };

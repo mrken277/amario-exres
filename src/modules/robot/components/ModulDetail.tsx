@@ -1,4 +1,5 @@
 import Icon from 'modules/common/components/Icon';
+import ImageWithPreview from 'modules/common/components/ImageWithPreview';
 import ProgressBar from 'modules/common/components/ProgressBar';
 import { colors } from 'modules/common/styles';
 import * as React from 'react';
@@ -23,8 +24,7 @@ const Checklist = styled.ul`
 `;
 
 const ChecklistItem = styledTS<{ isComplete?: boolean }>(styled.li)`
-	text-decoration: ${props => props.isComplete && 'line-through'};
-	font-style: ${props => props.isComplete && 'italic'};
+	
 	position: relative;
 	padding-left: 30px;
 	margin-bottom: 10px;
@@ -38,7 +38,7 @@ const ChecklistItem = styledTS<{ isComplete?: boolean }>(styled.li)`
 		border-radius: 10px;
 		border: 1px solid;
 		border-color: ${props =>
-      props.isComplete ? colors.colorCoreGreen : colors.textPrimary};
+      props.isComplete ? colors.colorCoreGreen : colors.colorCoreGray};
 		background: ${props => props.isComplete && colors.colorCoreGreen};
 		display: block;
 		position: absolute;
@@ -47,13 +47,15 @@ const ChecklistItem = styledTS<{ isComplete?: boolean }>(styled.li)`
 		color: ${colors.colorWhite};
 	}
 
-	&:last-child {
-		margin: 0;
-	}
-
 	a {
+    text-decoration: ${props => props.isComplete && 'line-through'};
+	  font-style: ${props => props.isComplete && 'italic'};
 		color: ${props =>
       props.isComplete ? colors.colorCoreGray : colors.textPrimary};
+
+      &:hover {
+        text-decoration: underline;
+      }
 	}
 `;
 
@@ -68,10 +70,20 @@ const Back = styled.div`
 
   &:hover {
     background: ${colors.bgActive};
+    cursor: pointer;
   }
 
   i {
     line-height: 26px;
+  }
+`;
+
+const CarouselWrapper = styled.div`
+  margin-bottom: 10px;
+  box-shadow: 0 0px 5px 2px rgba(0, 0, 0, 0.15);
+
+  img {
+    width: 100%;
   }
 `;
 
@@ -101,27 +113,28 @@ class ModulDetail extends React.PureComponent<Props, State> {
         </Back>
 
         <Title>Team inbox</Title>
-
-        <Carousel>
-          <Carousel.Item>
-            <img
-              width="100%"
-              src="https://erxes.io/static/images/screens/inbox.jpg"
-            />
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              width="100%"
-              src="https://erxes.io/static/images/screens/inbox.jpg"
-            />
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              width="100%"
-              src="https://erxes.io/static/images/screens/inbox.jpg"
-            />
-          </Carousel.Item>
-        </Carousel>
+        <CarouselWrapper>
+          <Carousel>
+            <Carousel.Item>
+              <ImageWithPreview
+                alt="screenshot"
+                src="https://erxes.io/static/images/screens/inbox.jpg"
+              />
+            </Carousel.Item>
+            <Carousel.Item>
+              <ImageWithPreview
+                alt="screenshot"
+                src="https://erxes.io/static/images/screens/inbox.jpg"
+              />
+            </Carousel.Item>
+            <Carousel.Item>
+              <ImageWithPreview
+                alt="screenshot"
+                src="https://erxes.io/static/images/screens/inbox.jpg"
+              />
+            </Carousel.Item>
+          </Carousel>
+        </CarouselWrapper>
 
         <p>
           Shared inbox for teams. Combine real-time client and team
@@ -140,7 +153,7 @@ class ModulDetail extends React.PureComponent<Props, State> {
 
         <Checklist>
           <ChecklistItem isComplete={true}>
-            <Link to="/deal">Complete profile</Link>
+            <Link to="/deal">Complete profile</Link> 🎉
           </ChecklistItem>
           <ChecklistItem>
             <Link to="/inbox">Create Channel</Link>
