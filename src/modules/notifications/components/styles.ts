@@ -106,8 +106,7 @@ const PopoverHeader = styled.div`
 `;
 
 const PopoverContent = styled.div`
-  padding-bottom: 40px;
-  height: 420px;
+  padding: 20px;
 `;
 
 const CreatedUser = styledTS<{ isList?: boolean }>(styled.div)`
@@ -146,10 +145,10 @@ export {
   NotificationSeeAll,
   NotifButton,
   PopoverHeader,
-  PopoverContent,
   CreatedUser,
   CreatedDate,
   Content,
   AvatarSection,
-  InfoSection
+  InfoSection,
+  PopoverContent
 };
