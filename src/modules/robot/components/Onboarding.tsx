@@ -61,7 +61,6 @@ class Onboarding extends React.Component<
           <p>Hi, You haven't configured. Would you like to configure</p>
 
           <button onClick={onClick}>Yes</button>
-          <button>No</button>
         </div>
       );
     }
@@ -72,12 +71,11 @@ class Onboarding extends React.Component<
       };
 
       return (
-        <div>
+        <>
           <p>Hi, You haven't fully configured. Would you like to configure</p>
 
           <button onClick={onClick}>Yes, Resume</button>
-          <button>No</button>
-        </div>
+        </>
       );
     }
 
