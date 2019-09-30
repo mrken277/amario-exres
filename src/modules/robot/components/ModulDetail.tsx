@@ -7,14 +7,10 @@ import { Carousel } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
+import { Back, Title } from './styles';
 
 const Wrapper = styled.div`
   width: 315px;
-`;
-
-const Title = styled.h2`
-  margin: 0 0 20px;
-  font-size: 16px;
 `;
 
 const Checklist = styled.ul`
@@ -57,25 +53,6 @@ const ChecklistItem = styledTS<{ isComplete?: boolean }>(styled.li)`
         text-decoration: underline;
       }
 	}
-`;
-
-const Back = styled.div`
-  margin-bottom: 10px;
-  border-radius: 20px;
-  display: inline-block;
-  text-align: center;
-  width: 28px;
-  height: 28px;
-  margin-left: -7px;
-
-  &:hover {
-    background: ${colors.bgActive};
-    cursor: pointer;
-  }
-
-  i {
-    line-height: 26px;
-  }
 `;
 
 const CarouselWrapper = styled.div`

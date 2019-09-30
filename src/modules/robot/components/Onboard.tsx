@@ -34,7 +34,7 @@ type State = {
 
 class Onboard extends React.Component<Props, State> {
   static defaultProps = {
-    delay: 1000
+    delay: 12000
   };
 
   constructor(props) {
@@ -57,41 +57,50 @@ class Onboard extends React.Component<Props, State> {
     return (
       <>
         <Greeting>
-          Good morning! <b>Ganzorig 👋</b>
+          Good morning!{' '}
+          <b>
+            Ganzorig{' '}
+            <span role="img" aria-label="Wave">
+              👋
+            </span>
+          </b>
           <br /> What module do you use usually?
         </Greeting>
         <ModulRow>
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Team Inbox"
             description="Combine client and team"
           />
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Growth Hack"
             description="Combine client and team"
             color={colors.colorCoreBlue}
             icon="idea"
           />
-        </ModulRow>
-        <ModulRow>
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Messenger"
             description="Combine client and team"
             color={colors.colorCoreBlack}
             icon="followers"
           />
+        </ModulRow>
+        <ModulRow>
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Deal"
             description="Combine client and team"
             color={colors.colorCoreGreen}
             icon="piggybank"
           />
-        </ModulRow>
-        <ModulRow>
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Lead"
             description="Combine client and team"
@@ -99,6 +108,7 @@ class Onboard extends React.Component<Props, State> {
             icon="laptop"
           />
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Engage"
             description="Combine client and team"
@@ -107,6 +117,7 @@ class Onboard extends React.Component<Props, State> {
         </ModulRow>
         <ModulRow>
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Contacts"
             description="Combine client and team"
@@ -114,31 +125,33 @@ class Onboard extends React.Component<Props, State> {
             icon="users"
           />
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Knowledgebase"
             description="Combine client and team"
             color={colors.colorCoreRed}
             icon="book"
           />
-        </ModulRow>
-        <ModulRow>
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="App Store"
             description="Combine client and team"
             color={colors.colorCoreYellow}
             icon="menu"
           />
+        </ModulRow>
+        <ModulRow>
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Tag"
             description="Combine client and team"
             color={colors.colorCoreDarkBlue}
             icon="bookmark"
           />
-        </ModulRow>
-        <ModulRow>
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Segment"
             description="Combine client and team"
@@ -146,6 +159,7 @@ class Onboard extends React.Component<Props, State> {
             icon="layout"
           />
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Brand"
             description="Combine client and team"
@@ -155,6 +169,7 @@ class Onboard extends React.Component<Props, State> {
         </ModulRow>
         <ModulRow>
           <ModulItem
+            vertical={true}
             onClick={this.onClickItem}
             title="Channels"
             description="Combine client and team"

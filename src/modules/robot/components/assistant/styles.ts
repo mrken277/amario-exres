@@ -4,22 +4,6 @@ import { Popover } from 'modules/common/styles/main';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 
-const Bot = styled.div`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 10px 0;
-  text-align: center;
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  img {
-    width: 45px;
-  }
-`;
-
 const PopoverHome = styled(Popover)`
   width: 493px;
 `;
@@ -28,7 +12,7 @@ const Group = styled.div`
   margin-bottom: 10px;
 `;
 
-const GroupHead = styled.div`
+const GroupHead = styledTS<{ vertical?: boolean }>(styled.div)`
   display: inline-flex;
   background: ${colors.colorWhite};
   border-radius: ${dimensions.unitSpacing}px;
@@ -36,6 +20,7 @@ const GroupHead = styled.div`
   overflow: hidden;
   align-items: stretch;
   font-weight: bold;
+  flex-direction: ${props => props.vertical && 'column'};
 
   &:hover {
     cursor: pointer;
@@ -60,10 +45,27 @@ const Title = styled.div`
   padding: ${dimensions.unitSpacing}px ${dimensions.coreSpacing}px;
 `;
 
-const NotifyItem = styled.div`
-  margin-top: 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+const NotifyList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin-bottom: 0;
 `;
 
-export { Bot, GroupHead, Count, Title, Group, NotifyItem, PopoverHome };
+const NotifyItem = styled.li`
+  margin-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid ${colors.borderPrimary};
+  display: flex;
+  flex-direction: row;
+
+  > i {
+    padding: 0 10px 0 0;
+    color: ${colors.colorCoreBlue};
+  }
+
+  &:last-child {
+    border: none;
+  }
+`;
+
+export { GroupHead, Count, Title, Group, NotifyList, NotifyItem, PopoverHome };

@@ -106,8 +106,6 @@ const PopoverHeader = styled.div`
 `;
 
 const PopoverContent = styled.div`
-  padding-bottom: 40px;
-  height: 420px;
   padding: 20px;
 `;
 

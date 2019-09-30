@@ -1,19 +1,30 @@
 import Icon from 'modules/common/components/Icon';
-import {
-  Count,
-  GroupHead
-} from 'modules/notifications/components/assistant/styles';
 import * as React from 'react';
-import styled from 'styled-components';
-
-const Modul = styled(GroupHead)`
-  &:first-child {
-    margin-right: 20px;
-  }
-`;
+import styled, { css } from 'styled-components';
+import { Count, GroupHead } from './assistant/styles';
 
 const IconContainer = styled(Count)`
   padding: 10px 20px;
+`;
+
+const Modul = styled(GroupHead)`
+  width: 100%;
+  margin-bottom: 15px;
+  margin-right: 20px;
+  max-width: ${props => props.vertical && '30%'};
+  min-width: ${props => props.vertical && '130px'};
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  ${props =>
+    props.vertical &&
+    css`
+      ${IconContainer} {
+        padding: 5px 20px;
+      }
+    `};
 `;
 
 const Text = styled.div`
@@ -23,13 +34,12 @@ const Text = styled.div`
 
   h4 {
     font-size: 13px;
-    margin-top: 0;
-    margin-bottom: 5px;
+    margin: 0;
   }
 
   p {
     font-size: 11px;
-    margin: 0;
+    margin: 5px 0 0;
   }
 `;
 
@@ -37,6 +47,7 @@ type Props = {
   icon?: string;
   color?: string;
   title: string;
+  vertical?: boolean;
   description?: string;
   onClick?: () => void;
 };
@@ -47,15 +58,22 @@ type State = {
 
 class ModulItem extends React.PureComponent<Props, State> {
   render() {
-    const { icon = 'chat', title, description, color, onClick } = this.props;
+    const {
+      icon = 'chat',
+      title,
+      description,
+      color,
+      onClick,
+      vertical
+    } = this.props;
     return (
-      <Modul onClick={onClick}>
+      <Modul onClick={onClick} vertical={vertical}>
         <IconContainer color={color}>
           <Icon icon={icon} />
         </IconContainer>
         <Text>
           <h4>{title}</h4>
-          <p>{description}</p>
+          {!vertical && <p>{description}</p>}
         </Text>
       </Modul>
     );
