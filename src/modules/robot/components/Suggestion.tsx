@@ -3,7 +3,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  width: 250px;
+  width: 280px;
   display: flex;
   margin: 0;
 
@@ -32,6 +32,13 @@ type Props = {
 class Suggestion extends React.PureComponent<Props> {
   render() {
     const { onClick, buttonText, currentUserName, forceComplete } = this.props;
+
+    let message = "You haven't configured yet. Would you like to configure";
+
+    if (buttonText === 'Resume') {
+      message = "You haven't fully configured. Would you like to configure";
+    }
+
     return (
       <Wrapper>
         <span role="img" aria-label="Wave">
@@ -41,7 +48,7 @@ class Suggestion extends React.PureComponent<Props> {
           <h3>
             Hello, <b>{currentUserName}</b>
           </h3>
-          <p>You haven't fully configured. Would you like to configure</p>
+          <p>{message}</p>
           <Button btnStyle="success" size="small" onClick={onClick}>
             {buttonText}
           </Button>
