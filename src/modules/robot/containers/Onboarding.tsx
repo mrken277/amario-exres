@@ -51,7 +51,7 @@ class OnboardingContainer extends React.Component<
         apolloClient.mutate({
           mutation: gql(mutations.checkStatus)
         });
-      }, 1000);
+      }, 4000);
     }
   }
 
