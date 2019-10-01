@@ -7,7 +7,7 @@ import { Carousel } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
-import { Back, Title } from './styles';
+import { NavButton, Title } from './styles';
 
 const Wrapper = styled.div`
   width: 315px;
@@ -85,9 +85,9 @@ class ModulDetail extends React.PureComponent<Props, State> {
   render() {
     return (
       <Wrapper>
-        <Back>
+        <NavButton>
           <Icon icon="arrow-left" size={24} />
-        </Back>
+        </NavButton>
 
         <Title>Team inbox</Title>
         <CarouselWrapper>

@@ -1,5 +1,6 @@
 import { colors, dimensions } from 'modules/common/styles';
 import styled from 'styled-components';
+import styledTS from 'styled-components-ts';
 
 const ModulRow = styled.div`
   display: flex;
@@ -36,7 +37,7 @@ const Title = styled.h2`
   text-transform: capitalize;
 `;
 
-const Back = styled.div`
+const NavButton = styledTS<{ right?: boolean }>(styled.div)`
   margin-bottom: 10px;
   border-radius: 20px;
   display: inline-block;
@@ -44,14 +45,17 @@ const Back = styled.div`
   width: 28px;
   height: 28px;
   margin-left: -7px;
+  float: ${props => props.right && 'right'};
+  background: ${props => props.right && colors.bgActive};
 
   &:hover {
-    background: ${colors.bgActive};
+    background: ${props =>
+      props.right ? colors.borderDarker : colors.bgActive};
     cursor: pointer;
   }
 
   i {
-    line-height: 26px;
+    line-height: 28px;
   }
 `;
 
@@ -70,4 +74,4 @@ const Content = styled.div`
   flex-direction: column;
 `;
 
-export { Bot, ModulRow, Greeting, Title, Back, Content };
+export { Bot, ModulRow, Greeting, Title, NavButton, Content };

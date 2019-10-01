@@ -5,7 +5,7 @@ import FeatureDetail from '../containers/FeatureDetail';
 import { IFeature } from '../types';
 import { getAppearance } from '../utils';
 import ModulItem from './ModulItem';
-import { Back, Content, Greeting } from './styles';
+import { Content, Greeting, NavButton } from './styles';
 
 type Props = {
   availableFeatures: IFeature[];
@@ -88,9 +88,9 @@ class Onboarding extends React.Component<
 
       return (
         <>
-          <Back onClick={onBack}>
+          <NavButton onClick={onBack}>
             <Icon icon="arrow-left" size={24} />
-          </Back>
+          </NavButton>
           {selectedFeature && <FeatureDetail feature={selectedFeature} />}
         </>
       );
@@ -139,9 +139,12 @@ class Onboarding extends React.Component<
         unmountOnExit={true}
       >
         <Content>
+          <NavButton onClick={this.onHide} right={true}>
+            <Icon icon="times" size={18} />
+          </NavButton>
           {this.renderContent()}
-          <button onClick={forceComplete}>d</button>
-          <button onClick={this.onHide}>x</button>
+
+          <button onClick={forceComplete}>x</button>
         </Content>
       </RTG.CSSTransition>
     );

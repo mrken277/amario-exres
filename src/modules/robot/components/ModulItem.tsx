@@ -18,7 +18,7 @@ const Modul = styled(GroupHead)`
     margin-right: 0;
   }
 
-  &:nth-child(3n + 1) {
+  &:nth-child(3n + 2) {
     margin-right: 0;
   }
 

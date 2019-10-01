@@ -23,7 +23,9 @@ export const getAppearance = (name: string) => {
       return {
         title: 'Growth Hacks',
         icon: 'idea',
-        color: '#f7802e'
+        color: '#f7802e',
+        description:
+          ' Manage your entire growth operation. From the ideation and prioritization of hypothesis up to testing and analysis of your learnings, everything centralized, unified and stored under the same workspace, built and designed for growth!'
       };
 
     case 'engages':

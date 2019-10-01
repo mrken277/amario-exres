@@ -1,9 +1,11 @@
+import ProgressBar from 'modules/common/components/ProgressBar';
 import colors from 'modules/common/styles/colors';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { IFeature } from '../types';
+import { getAppearance } from '../utils';
 import { Title } from './styles';
 
 const Wrapper = styled.div`
@@ -52,11 +54,22 @@ const ChecklistItem = styledTS<{ isComplete?: boolean }>(styled.li)`
 	}
 `;
 
-class FeatureDetail extends React.Component<{
+const Progress = styled.div`
+  display: flex;
+  margin: 30px 0 10px;
+
+  span {
+    margin-left: 10px;
+  }
+`;
+
+type Props = {
   feature: IFeature;
   completeShowStep: () => void;
   stepsCompleteness: { [key: string]: boolean };
-}> {
+};
+
+class FeatureDetail extends React.Component<Props> {
   renderSettings() {
     const { feature, stepsCompleteness } = this.props;
 
@@ -103,6 +116,17 @@ class FeatureDetail extends React.Component<{
     return (
       <Wrapper>
         <Title>{feature.name}</Title>
+
+        <p>{getAppearance(feature.name).description}</p>
+
+        <Progress>
+          <ProgressBar
+            percentage={20}
+            color={colors.colorCoreBlue}
+            height="18px"
+          />
+          <span>20%</span>
+        </Progress>
 
         {this.renderSettings()}
       </Wrapper>
