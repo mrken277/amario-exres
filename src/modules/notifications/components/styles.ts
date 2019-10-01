@@ -138,6 +138,36 @@ const InfoSection = styled.div`
   flex: 1;
 `;
 
+const Item = styledTS<{ background?: string }>(styled.div)`
+  padding: ${dimensions.coreSpacing}px;
+  border-radius: 10px;
+  color: ${colors.colorWhite};
+  background: ${props => props.background || colors.colorCoreBlue};
+  max-width: 300px;
+  box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  position: relative;
+  display: flex;
+
+  > span {
+    margin-right: 10px;
+  }
+
+  a {
+    color: ${colors.colorWhite};
+    text-decoration: underline;
+  }
+
+  h3 {
+    margin-top: 0;
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+  }
+`;
+
 export {
   NotifList,
   NotificationList,
@@ -150,5 +180,6 @@ export {
   Content,
   AvatarSection,
   InfoSection,
-  PopoverContent
+  PopoverContent,
+  Item
 };

@@ -11,9 +11,6 @@ class Robot extends React.PureComponent<Props> {
     return (
       <>
         <Onboarding />
-        {/* <Notifier /> */}
-        {/* <Assistant /> */}
-        {/* <Onboard /> */}
         <Bot>
           <img src="/images/erxes-bot.svg" alt="ai robot" />
         </Bot>

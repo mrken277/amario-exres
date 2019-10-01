@@ -13,6 +13,10 @@ const ModulRow = styled.div`
 const Greeting = styled.div`
   margin-bottom: 20px;
   font-size: 15px;
+
+  span {
+    margin-left: 5px;
+  }
 `;
 
 const Bot = styled.div`
@@ -44,7 +48,8 @@ const NavButton = styledTS<{ right?: boolean }>(styled.div)`
   text-align: center;
   width: 28px;
   height: 28px;
-  margin-left: -7px;
+  margin-left: ${props => !props.right && '-7px'};;
+  margin-top: -5px;
   float: ${props => props.right && 'right'};
   background: ${props => props.right && colors.bgActive};
 

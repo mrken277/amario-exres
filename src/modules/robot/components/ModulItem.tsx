@@ -29,6 +29,13 @@ const Modul = styled(GroupHead)`
         padding: 5px 20px;
       }
     `};
+
+  ${props =>
+    props.isComplete &&
+    css`
+      transform: scale(0.9);
+      opacity: 0.6;
+    `};
 `;
 
 const Text = styled.div`
@@ -55,13 +62,14 @@ type Props = {
   vertical?: boolean;
   description?: string;
   onClick?: () => void;
+  isComplete?: boolean;
 };
 
 type State = {
   show: boolean;
 };
 
-class ModulItem extends React.PureComponent<Props, State> {
+class ModulItem extends React.Component<Props, State> {
   render() {
     const {
       icon = 'chat',
@@ -69,10 +77,12 @@ class ModulItem extends React.PureComponent<Props, State> {
       description,
       color,
       onClick,
-      vertical
+      vertical,
+      isComplete
     } = this.props;
+
     return (
-      <Modul onClick={onClick} vertical={vertical}>
+      <Modul onClick={onClick} vertical={vertical} isComplete={isComplete}>
         <IconContainer color={color}>
           <Icon icon={icon} />
         </IconContainer>

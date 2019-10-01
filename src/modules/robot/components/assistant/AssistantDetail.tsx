@@ -1,6 +1,6 @@
 import Icon from 'modules/common/components/Icon';
 import * as React from 'react';
-import { Back, Title } from '../styles';
+import { NavButton, Title } from '../styles';
 import { NotifyItem, NotifyList } from './styles';
 
 type Props = {
@@ -15,9 +15,9 @@ class AssistantDetail extends React.PureComponent<Props, State> {
   render() {
     return (
       <>
-        <Back>
+        <NavButton>
           <Icon icon="arrow-left" size={24} />
-        </Back>
+        </NavButton>
 
         <Title>Customer merge</Title>
         <p>

@@ -1,11 +1,11 @@
 import ProgressBar from 'modules/common/components/ProgressBar';
 import colors from 'modules/common/styles/colors';
+import { roundToTwo } from 'modules/common/utils';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { IFeature } from '../types';
-import { getAppearance } from '../utils';
 import { Title } from './styles';
 
 const Wrapper = styled.div`
@@ -19,7 +19,6 @@ const Checklist = styled.ul`
 `;
 
 const ChecklistItem = styledTS<{ isComplete?: boolean }>(styled.li)`
-	
 	position: relative;
 	padding-left: 30px;
 	margin-bottom: 10px;
@@ -40,7 +39,11 @@ const ChecklistItem = styledTS<{ isComplete?: boolean }>(styled.li)`
 		left: 0;
 		text-align: center;
 		color: ${colors.colorWhite};
-	}
+  }
+  
+  > span {
+    margin-left: 5px;
+  }
 
 	a {
     text-decoration: ${props => props.isComplete && 'line-through'};
@@ -70,6 +73,44 @@ type Props = {
 };
 
 class FeatureDetail extends React.Component<Props> {
+  calculatePercentage = (total: number, done: number) => {
+    return roundToTwo((done * 100) / total);
+  };
+
+  renderProgress = () => {
+    const { feature, stepsCompleteness } = this.props;
+
+    if (!feature.showSettings || feature.settings.length === 0) {
+      return null;
+    }
+
+    let total = 0;
+    let done = 0;
+
+    for (const key in stepsCompleteness) {
+      if (stepsCompleteness.hasOwnProperty(key)) {
+        total++;
+
+        if (stepsCompleteness[key]) {
+          done++;
+        }
+      }
+    }
+
+    const percent = this.calculatePercentage(total, done);
+
+    return (
+      <Progress>
+        <ProgressBar
+          percentage={percent}
+          color={colors.colorCoreBlue}
+          height="18px"
+        />
+        <span>{percent}%</span>
+      </Progress>
+    );
+  };
+
   renderSettings() {
     const { feature, stepsCompleteness } = this.props;
 
@@ -88,11 +129,10 @@ class FeatureDetail extends React.Component<Props> {
                 key={index}
                 isComplete={stepsCompleteness[setting]}
               >
-                <Link to={detail.url}>{detail.name}</Link>
+                <Link to={`${detail.url}#signedIn=true`}>{detail.name}</Link>
                 {stepsCompleteness[setting] && (
-                  <span role="img" aria-label="Wave">
-                    {' '}
-                    👋
+                  <span role="img" aria-label="Selebration">
+                    🎉
                   </span>
                 )}
               </ChecklistItem>
@@ -104,9 +144,6 @@ class FeatureDetail extends React.Component<Props> {
   }
 
   onVideoClick = () => {
-    // tslint:disable
-    console.log('on video click');
-
     this.props.completeShowStep();
   };
 
@@ -115,19 +152,9 @@ class FeatureDetail extends React.Component<Props> {
 
     return (
       <Wrapper>
-        <Title>{feature.name}</Title>
-
-        <p>{getAppearance(feature.name).description}</p>
-
-        <Progress>
-          <ProgressBar
-            percentage={20}
-            color={colors.colorCoreBlue}
-            height="18px"
-          />
-          <span>20%</span>
-        </Progress>
-
+        <Title>{feature.text}</Title>
+        <p>{feature.description}</p>
+        {this.renderProgress()}
         {this.renderSettings()}
       </Wrapper>
     );

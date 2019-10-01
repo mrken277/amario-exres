@@ -1,17 +1,19 @@
+import { IUser } from 'modules/auth/types';
 import Icon from 'modules/common/components/Icon';
 import React from 'react';
 import RTG from 'react-transition-group';
 import FeatureDetail from '../containers/FeatureDetail';
 import { IFeature } from '../types';
-import { getAppearance } from '../utils';
 import ModulItem from './ModulItem';
 import { Content, Greeting, NavButton } from './styles';
+import Suggestion from './Suggestion';
 
 type Props = {
   availableFeatures: IFeature[];
   currentStep?: string;
   changeStep: (step: string) => void;
   forceComplete: () => void;
+  currentUser: IUser;
 };
 
 class Onboarding extends React.Component<
@@ -26,9 +28,7 @@ class Onboarding extends React.Component<
 
   renderFeature(feature: IFeature) {
     const { changeStep } = this.props;
-    const { text, isComplete } = feature;
-
-    console.log(isComplete);
+    const { text, isComplete, description, icon, color } = feature;
 
     const onClick = () => {
       this.setState({ selectedFeature: feature }, () => {
@@ -39,17 +39,40 @@ class Onboarding extends React.Component<
     return (
       <ModulItem
         title={text}
-        {...getAppearance(feature.name)}
+        description={description}
+        icon={icon}
+        color={color}
         key={feature.name}
         vertical={true}
         onClick={onClick}
+        isComplete={isComplete}
       />
     );
   }
 
+  getCurrentUserName = () => {
+    const { currentUser } = this.props;
+
+    if (!currentUser.details) {
+      return 'Dear';
+    }
+
+    return currentUser.details.shortName || currentUser.details.fullName || '';
+  };
+
   renderContent() {
     const { selectedFeature } = this.state;
-    const { availableFeatures, currentStep, changeStep } = this.props;
+    const {
+      availableFeatures,
+      currentStep,
+      changeStep,
+      forceComplete
+    } = this.props;
+
+    const commonProps = {
+      forceComplete,
+      currentUserName: this.getCurrentUserName()
+    };
 
     if (currentStep === 'initial') {
       const onClick = () => {
@@ -57,11 +80,7 @@ class Onboarding extends React.Component<
       };
 
       return (
-        <div>
-          <p>Hi, You haven't configured. Would you like to configure</p>
-
-          <button onClick={onClick}>Yes</button>
-        </div>
+        <Suggestion {...commonProps} buttonText="Start" onClick={onClick} />
       );
     }
 
@@ -71,11 +90,7 @@ class Onboarding extends React.Component<
       };
 
       return (
-        <>
-          <p>Hi, You haven't fully configured. Would you like to configure</p>
-
-          <button onClick={onClick}>Yes, Resume</button>
-        </>
+        <Suggestion {...commonProps} buttonText="Resume" onClick={onClick} />
       );
     }
 
@@ -102,7 +117,7 @@ class Onboarding extends React.Component<
           <Greeting>
             Good morning!{' '}
             <b>
-              Ganzorig{' '}
+              {this.getCurrentUserName()}
               <span role="img" aria-label="Wave">
                 👋
               </span>
@@ -124,7 +139,7 @@ class Onboarding extends React.Component<
   };
 
   render() {
-    const { currentStep, forceComplete } = this.props;
+    const { currentStep } = this.props;
 
     if (!currentStep) {
       return null;
@@ -140,11 +155,9 @@ class Onboarding extends React.Component<
       >
         <Content>
           <NavButton onClick={this.onHide} right={true}>
-            <Icon icon="times" size={18} />
+            <Icon icon="times" size={17} />
           </NavButton>
           {this.renderContent()}
-
-          <button onClick={forceComplete}>x</button>
         </Content>
       </RTG.CSSTransition>
     );

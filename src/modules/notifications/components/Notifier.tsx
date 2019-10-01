@@ -1,5 +1,3 @@
-import { colors } from 'modules/common/styles';
-import GettingStarted from 'modules/robot/components/GettingStarted';
 import * as React from 'react';
 import styled from 'styled-components';
 import NotifierItem from './NotiferItem';
@@ -16,10 +14,6 @@ class Notifier extends React.Component<{}> {
 
     this.state = { show: false, activeRoute: 'feature' };
   }
-
-  gettingStart = () => {
-    return <GettingStarted />;
-  };
 
   renderNotifications() {
     return (
@@ -47,10 +41,6 @@ class Notifier extends React.Component<{}> {
               information
             </p>
           </div>
-        </NotifierItem>
-
-        <NotifierItem background={colors.colorSecondary}>
-          {this.gettingStart()}
         </NotifierItem>
       </>
     );

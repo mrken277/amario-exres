@@ -12,7 +12,9 @@ const Group = styled.div`
   margin-bottom: 10px;
 `;
 
-const GroupHead = styledTS<{ vertical?: boolean }>(styled.div)`
+const GroupHead = styledTS<{ vertical?: boolean; isComplete?: boolean }>(
+  styled.div
+)`
   display: inline-flex;
   background: ${colors.colorWhite};
   border-radius: ${dimensions.unitSpacing}px;
@@ -32,7 +34,7 @@ const Count = styledTS<{ color?: string }>(styled.div)`
   padding: 10px 15px;
   color: ${colors.colorWhite};
   background: ${props =>
-    `linear-gradient(145deg, ${lighten(
+    `linear-gradient(195deg, ${lighten(
       props.color || colors.colorPrimaryDark,
       40
     )} 0%, ${darken(props.color || colors.colorPrimaryDark, 20)} 100%);;`}

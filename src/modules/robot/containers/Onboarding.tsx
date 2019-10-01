@@ -1,4 +1,5 @@
 import apolloClient from 'apolloClient';
+import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
 import withCurrentUser from 'modules/auth/containers/withCurrentUser';
 import { IUser } from 'modules/auth/types';
@@ -98,12 +99,19 @@ class OnboardingContainer extends React.Component<
     });
 
     return (
-      <Onboarding
-        currentStep={currentStep}
-        changeStep={this.changeStep}
-        forceComplete={this.forceComplete}
-        availableFeatures={availableFeatures}
-      />
+      <AppConsumer>
+        {({ currentUser }) =>
+          currentUser && (
+            <Onboarding
+              currentUser={currentUser}
+              currentStep={currentStep}
+              changeStep={this.changeStep}
+              forceComplete={this.forceComplete}
+              availableFeatures={availableFeatures}
+            />
+          )
+        }
+      </AppConsumer>
     );
   }
 }
@@ -111,8 +119,7 @@ class OnboardingContainer extends React.Component<
 export default withProps<Props>(
   compose(
     graphql<{}>(gql(queries.getAvailableFeatures), {
-      name: 'getAvailableFeaturesQuery',
-      skip: () => !window.location.href.includes('signedIn=true')
+      name: 'getAvailableFeaturesQuery'
     }),
     graphql<{}>(gql(mutations.forceComplete), {
       name: 'forceCompleteMutation'
