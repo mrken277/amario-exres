@@ -115,7 +115,7 @@ class Onboarding extends React.Component<
       return (
         <>
           <Greeting>
-            Good morning!{' '}
+            Hello!{' '}
             <b>
               {this.getCurrentUserName()}
               <span role="img" aria-label="Wave">
