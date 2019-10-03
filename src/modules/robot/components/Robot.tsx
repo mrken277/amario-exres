@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Onboarding from '../containers/Onboarding';
-import { Bot } from './styles';
 
 type Props = {
   entries: any[];
@@ -8,14 +7,7 @@ type Props = {
 
 class Robot extends React.PureComponent<Props> {
   render() {
-    return (
-      <>
-        <Onboarding />
-        <Bot>
-          <img src="/images/erxes-bot.svg" alt="ai robot" />
-        </Bot>
-      </>
-    );
+    return <Onboarding />;
   }
 }
 

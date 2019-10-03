@@ -1,4 +1,5 @@
 import { injectGlobal } from 'styled-components';
+import { robotAnimation } from '../utils/animations';
 import { colors, typography } from './';
 
 const style = `
@@ -196,6 +197,24 @@ a:hover {
   opacity: 0;
   transform: translateY(10px);
   transition: all 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.robot-appear,
+.robot-enter {
+  opacity: 0;
+}
+
+.robot-appear-active,
+.robot-enter-active {
+  animation-name: ${robotAnimation};
+  animation-duration: 0.8s;
+}
+
+.robot-exit,
+.robot-exit-active {
+  animation-name: ${robotAnimation};
+  animation-duration: 0.8s;
+  animation-direction: reverse;
 }
 
 /* dropdown */
@@ -564,11 +583,11 @@ a:hover {
 
 .react-toggle-track {
   background-color: ${colors.colorCoreBlack};
-}
+[}
 
 .react-toggle-track span {
   display: none;
-}
+}]
 
 .react-toggle--checked .react-toggle-thumb,
 .react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
