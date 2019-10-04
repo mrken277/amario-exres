@@ -1,6 +1,5 @@
 import { IUser } from 'modules/auth/types';
 import Icon from 'modules/common/components/Icon';
-import ModalTrigger from 'modules/common/components/ModalTrigger';
 import NameCard from 'modules/common/components/nameCard/NameCard';
 import { InfoWrapper, Links } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';
@@ -48,12 +47,8 @@ class LeftSidebar extends React.Component<Props> {
   render() {
     const { Section } = Sidebar;
     const { Title } = Section;
-    const { user, channels, renderEditForm } = this.props;
+    const { user, channels } = this.props;
     const { details = {}, links = {} } = user;
-
-    const content = props => {
-      return renderEditForm({ ...props, user });
-    };
 
     return (
       <Sidebar wide={true}>

@@ -6,6 +6,7 @@ import { IButtonMutateProps } from 'modules/common/types';
 import React from 'react';
 import PipelineForm from '../containers/PipelineForm';
 import { PipelineRowContainer } from '../styles';
+import { IOption } from '../types';
 
 type Props = {
   pipeline: IPipeline;
@@ -13,6 +14,7 @@ type Props = {
   remove: (pipelineId: string) => void;
   onTogglePopup: () => void;
   type: string;
+  options?: IOption;
 };
 
 type State = {
@@ -29,10 +31,6 @@ class PipelineRow extends React.Component<Props, State> {
   }
 
   renderExtraLinks() {
-    const { remove, pipeline } = this.props;
-
-    const onClick = () => remove(pipeline._id);
-
     const edit = () => {
       this.setState({ showModal: true });
 
@@ -49,7 +47,7 @@ class PipelineRow extends React.Component<Props, State> {
   }
 
   renderEditForm() {
-    const { renderButton, type, pipeline } = this.props;
+    const { renderButton, type, pipeline, options } = this.props;
 
     const closeModal = () => {
       this.setState({ showModal: false });
@@ -59,6 +57,7 @@ class PipelineRow extends React.Component<Props, State> {
 
     return (
       <PipelineForm
+        options={options}
         type={type}
         boardId={pipeline.boardId || ''}
         renderButton={renderButton}

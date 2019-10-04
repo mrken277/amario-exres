@@ -1,7 +1,7 @@
 import { toArray } from 'modules/boards/utils';
 import PortableTicket from 'modules/tickets/components/PortableTicket';
 import TicketEditForm from 'modules/tickets/components/TicketEditForm';
-import TicketItem from './containers/TicketItem';
+import TicketItem from './components/TicketItem';
 import { mutations, queries } from './graphql';
 
 const options = {
@@ -42,6 +42,7 @@ const options = {
     copySuccessText: 'You successfully copied a ticket',
     changeSuccessText: 'You successfully changed a ticket'
   },
+  isMove: true,
   getExtraParams: (queryParams: any) => {
     const { priority, source } = queryParams;
     const extraParams: any = {};

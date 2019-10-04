@@ -8,6 +8,7 @@ import Tip from 'modules/common/components/Tip';
 import { colors } from 'modules/common/styles';
 import { __ } from 'modules/common/utils';
 import Widget from 'modules/notifications/containers/Widget';
+import { IBrand } from 'modules/settings/brands/types';
 import NotificationSettings from 'modules/settings/profile/containers/NotificationSettings';
 import React from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
@@ -15,13 +16,10 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { UserHelper } from '../styles';
+import BrandChooser from './BrandChooser';
 
 const Signature = asyncComponent(() =>
   import(/* webpackChunkName:"Signature" */ 'modules/settings/email/containers/Signature')
-);
-
-const ChangePassword = asyncComponent(() =>
-  import(/* webpackChunkName:"ChangePassword" */ 'modules/settings/profile/containers/ChangePassword')
 );
 
 const UserInfo = styled.div`
@@ -61,32 +59,50 @@ const NavItem = styledTS<{ odd?: boolean }>(styled.div)`
   }
 `;
 
-const WorkFlowImage = styled.img`
-  width: 100%;
-`;
-
 const QuickNavigation = ({
   logout,
-  currentUser
+  currentUser,
+  showBrands,
+  brands,
+  selectedBrands,
+  onChangeBrands
 }: {
   logout: () => void;
   currentUser: IUser;
+  showBrands: boolean;
+  brands: IBrand[];
+  selectedBrands: string[];
+  onChangeBrands: (value: string) => void;
 }) => {
-  const passContent = props => <ChangePassword {...props} />;
   const signatureContent = props => <Signature {...props} />;
-  const workflowContent = props => (
-    <WorkFlowImage
-      alt="workflow-diagram"
-      src="/images/workflow-diagram.svg"
-      {...props}
-    />
-  );
+
   const notificationContent = props => (
     <NotificationSettings currentUser={currentUser} {...props} />
   );
 
+  const brandOptions = brands.map(brand => ({
+    value: brand._id,
+    label: brand.name || ''
+  }));
+
+  let brandsCombo;
+
+  if (showBrands && brands.length > 1) {
+    brandsCombo = (
+      <NavItem>
+        <BrandChooser
+          selectedItems={selectedBrands}
+          items={brandOptions}
+          onChange={onChangeBrands}
+        />
+      </NavItem>
+    );
+  }
+
   return (
     <nav>
+      {brandsCombo}
+
       <Tip text={__('Task')} placement="bottom">
         <NavItem odd={true}>
           <Link to="/task">
@@ -96,7 +112,7 @@ const QuickNavigation = ({
       </Tip>
 
       <NavItem>
-        <Widget currentUser={currentUser} />
+        <Widget />
       </NavItem>
       <NavItem>
         <Link to="/settings">
@@ -123,10 +139,6 @@ const QuickNavigation = ({
               <Link to="/profile">{__('View Profile')}</Link>
             </li>
 
-            <li>
-              <Link to="/getting-started">{__('Initial setup')}</Link>
-            </li>
-
             <ModalTrigger
               title="Email signatures"
               trigger={
@@ -145,18 +157,6 @@ const QuickNavigation = ({
                 </li>
               }
               content={notificationContent}
-            />
-
-            <MenuItem divider={true} />
-            <ModalTrigger
-              title="Workflow: Brand > Integration > Channel > Team member > Team Inbox"
-              dialogClassName="middle"
-              trigger={
-                <li>
-                  <a href="#flow">{__('Workflow')}</a>
-                </li>
-              }
-              content={workflowContent}
             />
 
             <MenuItem divider={true} />

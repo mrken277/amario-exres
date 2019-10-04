@@ -69,6 +69,7 @@ const pipelineDetail = `
       name
       bgColor
       isWatched
+      hackScoringType
     }
   }
 `;
@@ -76,7 +77,7 @@ const pipelineDetail = `
 const stages = `
   query stages(
     $isNotLost: Boolean,
-    $pipelineId: String!, 
+    $pipelineId: String!,
     $search: String,
     $customerIds: [String],
     $companyIds: [String],
@@ -90,7 +91,7 @@ const stages = `
   ) {
     stages(
       isNotLost: $isNotLost,
-      pipelineId: $pipelineId, 
+      pipelineId: $pipelineId,
       search: $search,
       customerIds: $customerIds,
       companyIds: $companyIds,

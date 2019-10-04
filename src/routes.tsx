@@ -4,17 +4,20 @@ import { MainWrapper } from 'modules/layout/styles';
 import { userConfirmation } from 'modules/settings/team/routes';
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Router } from 'react-router-dom';
+import history from './browserHistory';
 import AuthRoutes from './modules/auth/routes';
 import { IUser } from './modules/auth/types';
 import CompaniesRoutes from './modules/companies/routes';
 import CustomersRoutes from './modules/customers/routes';
 import DealsRoutes from './modules/deals/routes';
 import EngageRoutes from './modules/engage/routes';
-import FormRoutes from './modules/forms/routes';
+import GrowthHackRoutes from './modules/growthHacks/routes';
 import InboxRoutes from './modules/inbox/routes';
 import InsightsRoutes from './modules/insights/routes';
 import KnowledgeBaseRoutes from './modules/knowledgeBase/routes';
+import LeadRoutes from './modules/leads/routes';
+import { NotifProvider } from './modules/notifications/context';
 import NotificationRoutes from './modules/notifications/routes';
 import OnboardRoutes from './modules/onboard/routes';
 import SegmentsRoutes from './modules/segments/routes';
@@ -38,7 +41,10 @@ const renderRoutes = currentUser => {
         <OnboardRoutes />
         <MainLayout currentUser={currentUser}>
           <MainWrapper>
-            <MainBar />
+            <NotifProvider currentUser={currentUser}>
+              <MainBar />
+              <NotificationRoutes />
+            </NotifProvider>
             <InboxRoutes />
             <SegmentsRoutes />
             <CustomersRoutes />
@@ -46,13 +52,13 @@ const renderRoutes = currentUser => {
             <InsightsRoutes />
             <EngageRoutes />
             <KnowledgeBaseRoutes />
-            <FormRoutes />
+            <LeadRoutes />
             <SettingsRoutes />
             <TagsRoutes />
-            <NotificationRoutes />
             <DealsRoutes />
             <TicketRoutes />
             <TaskRoutes />
+            <GrowthHackRoutes />
           </MainWrapper>
         </MainLayout>
       </>
@@ -73,7 +79,7 @@ const renderRoutes = currentUser => {
 };
 
 const Routes = ({ currentUser }: { currentUser: IUser }) => (
-  <Router>{renderRoutes(currentUser)}</Router>
+  <Router history={history}>{renderRoutes(currentUser)}</Router>
 );
 
 export default withCurrentUser(Routes);

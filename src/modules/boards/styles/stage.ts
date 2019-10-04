@@ -21,6 +21,7 @@ const StageRoot = styledTS<{ isDragging: boolean }>(styled.div)`
   border-radius: 3px;
   transition: box-shadow 0.3s ease;
   background: ${stageGray};
+  overflow: hidden;
 
   ${props => css`
     box-shadow: ${props.isDragging
@@ -36,8 +37,7 @@ const Content = styled('div')`
   flex-direction: column;
 
   h5 {
-    margin-top: 0;
-    margin-bottom: 5px;
+    margin: 0 20px 10px 0;
   }
 `;
 
@@ -59,7 +59,7 @@ const ItemIndicator = styledTS<{ color: string }>(styled.span)`
   height: 8px;
   border-radius: 4px;
   margin: 6px 6px 0 0;
-  background-color: ${props => props.color}
+  background-color: ${props => props.color};
 `;
 
 const StageFooter = styled.div`

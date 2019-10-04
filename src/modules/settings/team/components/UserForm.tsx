@@ -5,6 +5,7 @@ import ControlLabel from 'modules/common/components/form/Label';
 import { ColumnTitle } from 'modules/common/styles/main';
 import { IButtonMutateProps, IFormProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
+import SelectBrands from 'modules/settings/brands/containers/SelectBrands';
 import { IUserGroup } from 'modules/settings/permissions/types';
 import React from 'react';
 import Select from 'react-select-plus';
@@ -14,16 +15,18 @@ import { ICommonFormProps } from '../../common/types';
 
 type Props = {
   channels: IChannel[];
-  groups: any;
+  groups: IUserGroup[];
   selectedChannels: IChannel[];
   selectedGroups: IUserGroup[];
   renderButton: (props: IButtonMutateProps) => JSX.Element;
+  showBrands: boolean;
 } & ICommonFormProps;
 
 type State = {
   avatar: string;
   selectedChannels: IChannel[];
   selectedGroups: IUserGroup[];
+  selectedBrands: string[];
 };
 
 class UserForm extends React.Component<Props, State> {
@@ -35,8 +38,9 @@ class UserForm extends React.Component<Props, State> {
 
     this.state = {
       avatar: user.details.avatar || defaultAvatar,
-      selectedChannels: this.generateChannelsParams(props.selectedChannels),
-      selectedGroups: this.generateGroupsParams(props.selectedGroups)
+      selectedChannels: this.generateParams(props.selectedChannels),
+      selectedGroups: this.generateParams(props.selectedGroups),
+      selectedBrands: user.brandIds || []
     };
   }
 
@@ -44,17 +48,10 @@ class UserForm extends React.Component<Props, State> {
     this.setState({ avatar: url });
   };
 
-  generateChannelsParams = channels => {
-    return channels.map(channel => ({
-      value: channel._id,
-      label: channel.name
-    }));
-  };
-
-  generateGroupsParams = groups => {
-    return groups.map(group => ({
-      value: group._id,
-      label: group.name
+  generateParams = options => {
+    return options.map(option => ({
+      value: option._id,
+      label: option.name
     }));
   };
 
@@ -78,8 +75,36 @@ class UserForm extends React.Component<Props, State> {
         <Select
           placeholder={__('Choose groups')}
           value={self.state.selectedGroups}
-          options={self.generateGroupsParams(groups)}
+          options={self.generateParams(groups)}
           onChange={onChange}
+          multi={true}
+        />
+      </FormGroup>
+    );
+  }
+
+  renderBrands() {
+    const self = this;
+    const { showBrands } = this.props;
+
+    if (!showBrands) {
+      return null;
+    }
+
+    const onChange = selectedBrands => {
+      this.setState({ selectedBrands });
+    };
+
+    return (
+      <FormGroup>
+        <ControlLabel>Choose the brands</ControlLabel>
+        <br />
+
+        <SelectBrands
+          label="Brand"
+          value={self.state.selectedBrands}
+          onSelect={onChange}
+          name="selectedBrands"
           multi={true}
         />
       </FormGroup>
@@ -102,7 +127,7 @@ class UserForm extends React.Component<Props, State> {
         <Select
           placeholder={__('Choose channels')}
           value={self.state.selectedChannels}
-          options={self.generateChannelsParams(channels)}
+          options={self.generateParams(channels)}
           onChange={onChange}
           multi={true}
         />
@@ -112,7 +137,7 @@ class UserForm extends React.Component<Props, State> {
 
   generateDoc = (values: {} & IUser & IUserDetails & IUserLinks) => {
     const { object } = this.props;
-    const { selectedChannels, selectedGroups } = this.state;
+    const { selectedChannels, selectedGroups, selectedBrands } = this.state;
     const finalValues = values;
 
     if (object) {
@@ -140,7 +165,8 @@ class UserForm extends React.Component<Props, State> {
         github: finalValues.github,
         website: finalValues.website
       },
-      groupIds: this.collectValues(selectedGroups)
+      groupIds: this.collectValues(selectedGroups),
+      brandIds: selectedBrands
     };
   };
 
@@ -159,6 +185,7 @@ class UserForm extends React.Component<Props, State> {
 
         {this.renderChannels()}
         {this.renderGroups()}
+        {this.renderBrands()}
       </div>
     );
   };

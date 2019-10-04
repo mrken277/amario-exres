@@ -13,8 +13,9 @@ pipeline:
       - CI=false yarn build
     when:
       branch:
-        - subscription
-        - demo
+        - master
+        - develop
+        - staging
       event:
         - push
 
@@ -30,7 +31,8 @@ pipeline:
       - ${DRONE_BRANCH}
     when:
       branch:
-        - subscription
-        - demo
+        - master
+        - develop
+        - staging
       event:
         - push

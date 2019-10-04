@@ -9,6 +9,7 @@ import { compose, graphql } from 'react-apollo';
 import Pipelines from '../components/Pipelines';
 import { mutations, queries } from '../graphql';
 import {
+  IOption,
   RemovePipelineMutationResponse,
   RemovePipelineMutationVariables,
   UpdateOrderPipelineMutationResponse,
@@ -18,6 +19,7 @@ import {
 type Props = {
   boardId: string;
   type: string;
+  options?: IOption;
 };
 
 type FinalProps = {

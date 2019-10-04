@@ -23,8 +23,10 @@ import {
   SidebarActions
 } from './styles';
 
-const DateFilter = asyncComponent(() =>
-  import(/* webpackChunkName:"Inbox-DateFilter" */ 'modules/common/components/DateFilter')
+const DateFilter = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-DateFilter" */ 'modules/common/components/DateFilter'),
+  { height: '15px', width: '70px' }
 );
 
 const AssignBoxPopover = asyncComponent(() =>
@@ -157,7 +159,7 @@ class LeftSidebar extends React.Component<Props, State> {
 
           <FilterToggler groupText="Brands" toggleName="showBrands">
             <FilterList
-              query={{ queryName: 'brandList', dataName: 'brands' }}
+              query={{ queryName: 'brandList', dataName: 'allBrands' }}
               counts="byBrands"
               queryParams={queryParams}
               paramKey="brandId"

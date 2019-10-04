@@ -13,16 +13,11 @@ import Sidebar from './Sidebar';
 type Props = {
   contentType?: string;
   segments: ISegment[];
-  removeSegment: (segmentId: string) => void;
 };
 
 class SegmentsList extends React.Component<Props> {
   renderActionButtons(segment) {
-    const { contentType, removeSegment } = this.props;
-
-    const onClick = () => {
-      removeSegment(segment._id);
-    };
+    const { contentType } = this.props;
 
     return (
       <ActionButtons>

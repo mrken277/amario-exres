@@ -4,8 +4,7 @@ import FormGroup from 'modules/common/components/form/Group';
 import { IButtonMutateProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { AuthBox, Links } from '../styles';
+import { AuthBox } from '../styles';
 
 type Props = {
   renderButton: (props: IButtonMutateProps) => JSX.Element;

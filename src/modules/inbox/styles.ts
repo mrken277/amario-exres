@@ -290,10 +290,6 @@ const AssignTrigger = styled.div`
       transform: rotate(180deg);
     }
   }
-
-  img {
-    margin: 0;
-  }
 `;
 
 const MaskWrapper = styled.div`
@@ -321,6 +317,10 @@ const Mask = styled.div`
 
 const NoHeight = styled.div`
   height: auto;
+`;
+
+const CallLabel = styledTS<{ type: string }>(styled.span)`
+  color: ${props => (props.type === 'answered' ? 'green' : 'red')};
 `;
 
 export {
@@ -351,5 +351,6 @@ export {
   AssignTrigger,
   Mask,
   MaskWrapper,
-  NoHeight
+  NoHeight,
+  CallLabel
 };

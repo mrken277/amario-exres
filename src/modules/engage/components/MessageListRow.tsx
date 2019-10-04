@@ -19,7 +19,6 @@ type Props = {
   // TODO: add types
   edit: () => void;
   show: () => void;
-  remove: () => void;
   setLive: () => void;
   setLiveManual: () => void;
   setPause: () => void;
@@ -121,7 +120,7 @@ class Row extends React.Component<Props> {
   render() {
     let status = <Label lblStyle="default">Sending</Label>;
 
-    const { isChecked, message, remove } = this.props;
+    const { isChecked, message } = this.props;
     const { stats = { send: '' }, brand = { name: '' } } = message;
 
     const totalCount = stats.total || 0;

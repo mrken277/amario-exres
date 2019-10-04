@@ -31,10 +31,6 @@ const ArticleRow = (props: Props) => {
   const { article } = props;
   const user = article.createdUser;
 
-  const remove = () => {
-    return props.remove(props.article._id);
-  };
-
   const renderReactions = () => {
     const reactions = Object.entries(props.article.reactionCounts || {});
 

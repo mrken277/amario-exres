@@ -14,38 +14,49 @@ import {
 import asyncComponent from 'modules/common/components/AsyncComponent';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { __ } from 'modules/common/utils';
+import CompanySection from 'modules/companies/components/common/CompanySection';
 import { ICustomer } from 'modules/customers/types';
 import MailForm from 'modules/settings/integrations/containers/google/MailForm';
-import PortableTasks from 'modules/tasks/components/PortableTasks';
-import PortableTickets from 'modules/tickets/components/PortableTickets';
 import { IConversation } from '../../../types';
 
-const CompanyAssociate = asyncComponent(() =>
-  import(/* webpackChunkName:"Inbox-Sidebar-CompanyAssociate" */ 'modules/companies/containers/CompanyAssociate')
+const ActionSection = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-Sidebar-ActionSection" */ 'modules/customers/components/common/ActionSection'),
+  { height: '25px', width: '80px' }
 );
 
-const ActionSection = asyncComponent(() =>
-  import(/* webpackChunkName:"Inbox-Sidebar-ActionSection" */ 'modules/customers/components/common/ActionSection')
-);
-
-const CustomFieldsSection = asyncComponent(() =>
-  import(/* webpackChunkName:"Inbox-Sidebar-CustomFieldsSection" */ 'modules/customers/containers/common/CustomFieldsSection')
+const CustomFieldsSection = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-Sidebar-CustomFieldsSection" */ 'modules/customers/containers/common/CustomFieldsSection'),
+  { height: '200px', width: '100%', color: '#fff' }
 );
 
 const PortableDeals = asyncComponent(() =>
   import(/* webpackChunkName:"Inbox-Sidebar-PortableDeals" */ 'modules/deals/components/PortableDeals')
 );
 
+const PortableTasks = asyncComponent(() =>
+  import(/* webpackChunkName:"Inbox-Sidebar-PortableTasks" */ 'modules/tasks/components/PortableTasks')
+);
+
+const PortableTickets = asyncComponent(() =>
+  import(/* webpackChunkName:"Inbox-Sidebar-PortableTickets" */ 'modules/tickets/components/PortableTickets')
+);
+
 const Contacts = asyncComponent(() =>
   import(/* webpackChunkName:"Inbox-Sidebar-Contacts" */ 'modules/companies/components/detail/Contacts')
 );
 
-const DetailInfo = asyncComponent(() =>
-  import(/* webpackChunkName:"Inbox-Sidebar-InfoSection" */ 'modules/customers/components/common/DetailInfo')
+const DetailInfo = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-Sidebar-InfoSection" */ 'modules/customers/components/common/DetailInfo'),
+  { isBox: true }
 );
 
-const InfoSection = asyncComponent(() =>
-  import(/* webpackChunkName:"Inbox-Sidebar-InfoSection" */ 'modules/customers/components/common/InfoSection')
+const InfoSection = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-Sidebar-InfoSection" */ 'modules/customers/components/common/InfoSection'),
+  { withImage: true }
 );
 
 const DevicePropertiesSection = asyncComponent(() =>
@@ -56,16 +67,20 @@ const MessengerSection = asyncComponent(() =>
   import(/* webpackChunkName:"Inbox-Sidebar-MessengerSection" */ 'modules/customers/components/common/MessengerSection')
 );
 
-const TaggerSection = asyncComponent(() =>
-  import(/* webpackChunkName:"Inbox-Sidebar-TaggerSection" */ 'modules/customers/components/common/TaggerSection')
+const TaggerSection = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-Sidebar-TaggerSection" */ 'modules/customers/components/common/TaggerSection'),
+  { height: '200px', width: '100%', color: '#fff' }
 );
 
 const SidebarActivity = asyncComponent(() =>
   import(/* webpackChunkName:"Inbox-Sidebar-SidebarActivity" */ 'modules/inbox/containers/conversationDetail/SidebarActivity')
 );
 
-const ConversationDetails = asyncComponent(() =>
-  import(/* webpackChunkName:"Inbox-Sidebar-ConversationDetails" */ './ConversationDetails')
+const ConversationDetails = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-Sidebar-ConversationDetails" */ './ConversationDetails'),
+  { isBox: true }
 );
 
 type BoxProps = {
@@ -331,7 +346,8 @@ class Index extends React.Component<IndexProps, IndexState> {
           toggle={toggleSection}
         >
           <PortableDeals
-            customerIds={[customer._id]}
+            mainType="customer"
+            mainTypeId={customer._id}
             isOpen={config.showDeals}
           />
         </Box>
@@ -342,7 +358,8 @@ class Index extends React.Component<IndexProps, IndexState> {
           toggle={toggleSection}
         >
           <PortableTickets
-            customerIds={[customer._id]}
+            mainType="customer"
+            mainTypeId={customer._id}
             isOpen={config.showTickets}
           />
         </Box>
@@ -353,7 +370,8 @@ class Index extends React.Component<IndexProps, IndexState> {
           toggle={toggleSection}
         >
           <PortableTasks
-            customerIds={[customer._id]}
+            mainType="customer"
+            mainTypeId={customer._id}
             isOpen={config.showTasks}
           />
         </Box>
@@ -414,7 +432,11 @@ class Index extends React.Component<IndexProps, IndexState> {
           isOpen={config.showCompanies || false}
           toggle={toggleSection}
         >
-          <CompanyAssociate isOpen={config.showCompanies} data={customer} />
+          <CompanySection
+            isOpen={config.showTags}
+            mainType="customer"
+            mainTypeId={customer._id}
+          />
         </Box>
 
         <Box
