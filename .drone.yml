@@ -16,6 +16,7 @@ pipeline:
         - master
         - develop
         - staging
+        - demo
       event:
         - push
 
@@ -34,5 +35,6 @@ pipeline:
         - master
         - develop
         - staging
+        - demo
       event:
         - push
