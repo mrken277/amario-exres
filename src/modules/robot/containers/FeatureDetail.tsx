@@ -6,17 +6,21 @@ import { compose, graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
 import FeatureDetail from '../components/FeatureDetail';
 import { mutations, queries, subscriptions } from '../graphql';
-import { IFeature } from '../types';
+import {
+  CompleteShowStepMutationResponse,
+  IFeature,
+  StepsCompletenessQueryResponse
+} from '../types';
 
 type Props = {
   feature: IFeature;
 };
 
-type FinalProps = Props & {
-  stepsCompletenessQuery: any;
-  completeShowStepMutation: any;
-  currentUser: IUser;
-};
+type FinalProps = Props &
+  CompleteShowStepMutationResponse & {
+    stepsCompletenessQuery: StepsCompletenessQueryResponse;
+    currentUser: IUser;
+  };
 
 class FeatureDetailContainer extends React.Component<FinalProps> {
   componentWillMount() {

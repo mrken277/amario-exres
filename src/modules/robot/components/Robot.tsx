@@ -1,8 +1,9 @@
 import * as React from 'react';
 import Onboarding from '../containers/Onboarding';
+import { IEntry } from '../types';
 
 type Props = {
-  entries: any[];
+  entries: IEntry[];
 };
 
 class Robot extends React.PureComponent<Props> {

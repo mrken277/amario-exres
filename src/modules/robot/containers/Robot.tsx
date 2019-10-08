@@ -4,9 +4,10 @@ import { compose, graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
 import Robot from '../components/Robot';
 import { queries } from '../graphql';
+import { EntriesQueryResponse } from '../types';
 
 type Props = {
-  entriesQuery: any;
+  entriesQuery: EntriesQueryResponse;
 };
 
 class RobotContainer extends React.Component<Props> {
@@ -24,7 +25,7 @@ class RobotContainer extends React.Component<Props> {
 
 export default withProps<{}>(
   compose(
-    graphql<{}, any>(gql(queries.entries), {
+    graphql<{}>(gql(queries.entries), {
       name: 'entriesQuery'
     })
   )(RobotContainer)

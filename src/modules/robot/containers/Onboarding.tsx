@@ -9,15 +9,19 @@ import { withProps } from '../../common/utils';
 import Onboarding from '../components/Onboarding';
 import { FEATURE_DETAILS } from '../constants';
 import { mutations, queries, subscriptions } from '../graphql';
-import { IFeature } from '../types';
+import {
+  ForceCompleteMutationResponse,
+  GetAvailableFeaturesQueryResponse,
+  IFeature
+} from '../types';
 
 type Props = {};
 
-type FinalProps = Props & {
-  getAvailableFeaturesQuery?: any;
-  forceCompleteMutation: any;
-  currentUser: IUser;
-};
+type FinalProps = Props &
+  ForceCompleteMutationResponse & {
+    getAvailableFeaturesQuery?: GetAvailableFeaturesQueryResponse;
+    currentUser: IUser;
+  };
 
 class OnboardingContainer extends React.Component<
   FinalProps,
