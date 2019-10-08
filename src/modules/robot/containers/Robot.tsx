@@ -26,6 +26,9 @@ class RobotContainer extends React.Component<Props> {
 export default withProps<{}>(
   compose(
     graphql<{}>(gql(queries.entries), {
+      options: {
+        variables: { action: 'customerScoring' }
+      },
       name: 'entriesQuery'
     })
   )(RobotContainer)

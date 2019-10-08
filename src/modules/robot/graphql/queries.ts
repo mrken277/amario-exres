@@ -1,7 +1,6 @@
 const entries = `
-  query robotEntries {
-    robotEntries {
-      action
+  query robotEntries($action: String) {
+    robotEntries(action: $action) {
       data
     }
   }
