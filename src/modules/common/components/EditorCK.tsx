@@ -110,7 +110,7 @@ class EditorCK extends React.Component<IEditorProps> {
               feed: mentionDataFeed,
               itemTemplate:
                 '<li data-id="{id}">' +
-                '<img class="editor-avatar" src="{avatar}"' +
+                '<img style="width: 25px;  margin-right: 4px;border-radius: 12px;" src="{avatar}"' +
                 '<strong>{fullName}</strong>' +
                 '</li>',
               outputTemplate:
