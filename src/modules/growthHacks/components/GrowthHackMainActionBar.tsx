@@ -1,4 +1,5 @@
 import MainActionBar from 'modules/boards/components/MainActionBar';
+import { PRIORITIES } from 'modules/boards/constants';
 import { ButtonGroup } from 'modules/boards/styles/header';
 import { IBoard, IPipeline } from 'modules/boards/types';
 import Icon from 'modules/common/components/Icon';
@@ -9,6 +10,7 @@ import queryString from 'query-string';
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Select from 'react-select-plus';
+import { HACKSTAGES } from '../constants';
 
 interface IProps extends IRouterProps {
   onSearch: (search: string) => void;
@@ -28,20 +30,24 @@ interface IProps extends IRouterProps {
 }
 
 const FILTER_PARAMS = [
+  'sortField',
+  'sortDirection',
   'search',
   'assignedUserIds',
   'nextWeek',
   'nextDay',
   'nextMonth',
   'noCloseDate',
-  'overdue'
+  'overdue',
+  'hackStage',
+  'priority'
 ];
 
 const GrowthHackMainActionBar = (props: IProps) => {
+  const currentUrl = window.location.href;
+
   // get selected type from URL
   const getCurrentType = () => {
-    const currentUrl = window.location.href;
-
     if (currentUrl.includes('board')) {
       return 'board';
     } else if (currentUrl.includes('weightedScore')) {
@@ -123,44 +129,96 @@ const GrowthHackMainActionBar = (props: IProps) => {
   };
 
   const onChangeSort = value => {
-    let field;
-    let direction;
+    let field: string = '';
+    let direction: string = '';
 
     if (value) {
       const values = value.value.split(',');
 
       field = values[0];
       direction = values[1];
-    }
 
-    router.setParams(props.history, {
-      sortField: field,
-      sortDirection: direction
-    });
+      router.setParams(props.history, {
+        sortField: field,
+        sortDirection: direction
+      });
+    } else {
+      router.removeParams(props.history, 'sortField', 'sortDirection');
+    }
   };
+
+  const onChangeFilter = (name: string, value: any) => {
+    if (value) {
+      router.setParams(props.history, {
+        [name]: value.value
+      });
+    } else {
+      router.removeParams(props.history, name);
+    }
+  };
+
+  const onChangeHackStage = value => {
+    onChangeFilter('hackStage', value);
+  };
+
+  const onChangePriority = value => {
+    onChangeFilter('priority', value);
+  };
+
+  const { hackScoringType } = props.currentPipeline || {
+    hackScoringType: 'ice'
+  };
+
+  const effort = hackScoringType === 'rice' ? 'effort' : 'ease';
 
   const sortOptions = [
     { value: 'impact,1', label: 'Low impact' },
     { value: 'impact,-1', label: 'High impact' },
-    { value: 'ease,1', label: 'Low effort' },
-    { value: 'ease,-1', label: 'High effort' }
+    { value: 'ease,1', label: `Low ${effort}` },
+    { value: 'ease,-1', label: `High ${effort}` }
   ];
 
   const { sortField, sortDirection } = props.queryParams;
 
+  const growthHackFilter = (
+    <>
+      <Select
+        value={props.queryParams.hackStage}
+        placeholder="Growth funnel"
+        onChange={onChangeHackStage}
+        options={HACKSTAGES.map(hs => ({ value: hs, label: hs }))}
+      />
+
+      <Select
+        value={props.queryParams.priority}
+        placeholder="Priority"
+        onChange={onChangePriority}
+        options={PRIORITIES.map(priority => ({
+          value: priority,
+          label: priority
+        }))}
+      />
+    </>
+  );
+
   const extraFilter = (
-    <Select
-      value={`${sortField},${sortDirection}`}
-      placeholder="Sort"
-      onChange={onChangeSort}
-      options={sortOptions}
-    />
+    <>
+      {growthHackFilter}
+      <Select
+        value={`${sortField},${sortDirection}`}
+        placeholder="Sort"
+        onChange={onChangeSort}
+        options={sortOptions}
+      />
+    </>
   );
 
   const extendedProps = {
     ...props,
+    boardText: 'Campaign',
+    pipelineText: 'Project',
     isFiltered,
-    extraFilter,
+    extraFilter: currentUrl.includes('board') ? growthHackFilter : extraFilter,
     link: `/growthHack/${getCurrentType()}`,
     rightContent: viewChooser
   };
