@@ -132,7 +132,7 @@ class ManageIntegrations extends React.Component<Props, State> {
     } else if (kind === KIND_CHOICES.CALLPRO) {
       icon = 'phone-call';
     } else if (kind === KIND_CHOICES.CHATFUEL) {
-      icon = 'phone-call';
+      icon = 'comment-dots';
     }
 
     return icon;
