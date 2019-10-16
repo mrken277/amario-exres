@@ -227,7 +227,7 @@ export const INTEGRATIONS = [
         description: 'Connect your chatfuel account',
         inMessenger: false,
         kind: 'chatfuel',
-        logo: '/images/integrations/callpro.png',
+        logo: '/images/integrations/chatfuel.png',
         createModal: 'chatfuel'
       }
     ]
