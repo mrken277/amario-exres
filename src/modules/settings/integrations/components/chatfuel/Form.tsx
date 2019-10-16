@@ -22,13 +22,23 @@ class Chatfuel extends React.Component<Props, { loading: boolean }> {
     };
   }
 
-  generateDoc = (values: { name: string; code: string; brandId: string }) => {
+  generateDoc = (values: {
+    name: string;
+    code: string;
+    broadcastToken: string;
+    botId: string;
+    blockName: string;
+    brandId: string;
+  }) => {
     return {
       name: `${values.name} - ${values.code}`,
       brandId: values.brandId,
       kind: 'chatfuel',
       data: {
-        code: values.code
+        code: values.code,
+        broadcastToken: values.broadcastToken,
+        botId: values.botId,
+        blockName: values.blockName
       }
     };
   };
@@ -48,6 +58,21 @@ class Chatfuel extends React.Component<Props, { loading: boolean }> {
         <FormGroup>
           <ControlLabel required={true}>Code</ControlLabel>
           <FormControl {...formProps} name="code" required={true} />
+        </FormGroup>
+
+        <FormGroup>
+          <ControlLabel required={true}>Broadcast token</ControlLabel>
+          <FormControl {...formProps} name="broadcastToken" required={true} />
+        </FormGroup>
+
+        <FormGroup>
+          <ControlLabel required={true}>Bot ID</ControlLabel>
+          <FormControl {...formProps} name="botId" required={true} />
+        </FormGroup>
+
+        <FormGroup>
+          <ControlLabel required={true}>Block name</ControlLabel>
+          <FormControl {...formProps} name="blockName" required={true} />
         </FormGroup>
 
         <SelectBrand isRequired={true} formProps={formProps} />
