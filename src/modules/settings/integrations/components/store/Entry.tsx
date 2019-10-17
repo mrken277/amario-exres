@@ -7,6 +7,7 @@ import NylasGmail from 'modules/settings/integrations/containers/mail/gmail/Form
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { KIND_CHOICES } from '../../constants';
+import Chatfuel from '../../containers/chatfuel/Form';
 import Settings from '../../containers/engages/Settings';
 import Facebook from '../../containers/facebook/Form';
 import KnowledgeBase from '../../containers/knowledgebase/Form';
@@ -24,6 +25,7 @@ type Props = {
     form: number;
     facebook: number;
     callpro: number;
+    chatfuel: number;
     gmail: number;
   };
 };
@@ -98,7 +100,7 @@ class Entry extends React.Component<Props> {
     if (createModal === 'sesconfig') {
       const trigger = (
         <a href="#add">
-          <Icon icon="settings" /> {__('Manage')}
+          <Icon icon="link-1" /> {__('Manage')}
         </a>
       );
 
@@ -135,6 +137,20 @@ class Entry extends React.Component<Props> {
       return (
         <ModalTrigger
           title="Add call pro"
+          trigger={trigger}
+          content={content}
+        />
+      );
+    }
+
+    if (createModal === 'chatfuel') {
+      const trigger = <a href="#add">+ {'Add'}</a>;
+
+      const content = props => <Chatfuel {...props} />;
+
+      return (
+        <ModalTrigger
+          title="Add chatfuel"
           trigger={trigger}
           content={content}
         />
