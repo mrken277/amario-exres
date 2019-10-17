@@ -7,11 +7,7 @@ import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import strip from 'strip';
 import { IUser } from '../../../auth/types';
-import {
-  Alert,
-  sendDesktopNotification,
-  withProps
-} from '../../../common/utils';
+import { sendDesktopNotification, withProps } from '../../../common/utils';
 import {
   AddMessageMutationResponse,
   AddMessageMutationVariables,
@@ -212,9 +208,9 @@ class WorkArea extends React.Component<FinalProps, State> {
         }
       })
       .catch(e => {
-        Alert.error(
-          'You do not have sufficient permission to perform this action'
-        );
+        if (callback) {
+          callback(e);
+        }
       });
   };
 
