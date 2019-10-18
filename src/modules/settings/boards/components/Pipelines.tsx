@@ -3,11 +3,11 @@ import { collectOrders } from 'modules/boards/utils';
 import Button from 'modules/common/components/Button';
 import EmptyState from 'modules/common/components/EmptyState';
 import HeaderDescription from 'modules/common/components/HeaderDescription';
-import { IButtonMutateProps } from 'modules/common/types';
+import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PipelineForm from '../containers/PipelineForm';
 import { PipelineContainer } from '../styles';
 import { IOption } from '../types';
@@ -22,7 +22,7 @@ type Props = {
   boardId: string;
   options?: IOption;
   refetch: ({ boardId }: { boardId?: string }) => Promise<any>;
-};
+} & IRouterProps;
 
 type State = {
   showModal: boolean;
@@ -34,8 +34,12 @@ class Pipelines extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    const { history } = props;
+
+    const showModal = history.location.hash.includes('showPipelineModal');
+
     this.state = {
-      showModal: false,
+      showModal,
       pipelines: props.pipelines,
       isDragDisabled: false
     };
@@ -172,7 +176,7 @@ class Pipelines extends React.Component<Props, State> {
             <HeaderDescription
               icon="/images/actions/34.svg"
               title={`${boardName} & ${pipelineName}`}
-              description="Manage your boards and pipelines so that its easy to manage incoming leads or requests that is adaptable to your team's needs. Add in or delete boards and pipelines to keep business development on track and in check."
+              description="Manage your boards and pipelines so that its easy to manage incoming pop ups or requests that is adaptable to your team's needs. Add in or delete boards and pipelines to keep business development on track and in check."
             />
           }
           right={this.renderButton()}
@@ -185,4 +189,4 @@ class Pipelines extends React.Component<Props, State> {
   }
 }
 
-export default Pipelines;
+export default withRouter(Pipelines);

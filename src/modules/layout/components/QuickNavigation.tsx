@@ -8,7 +8,6 @@ import Tip from 'modules/common/components/Tip';
 import { colors } from 'modules/common/styles';
 import { __ } from 'modules/common/utils';
 import Widget from 'modules/notifications/containers/Widget';
-import { IBrand } from 'modules/settings/brands/types';
 import NotificationSettings from 'modules/settings/profile/containers/NotificationSettings';
 import React from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
@@ -63,14 +62,12 @@ const QuickNavigation = ({
   logout,
   currentUser,
   showBrands,
-  brands,
   selectedBrands,
   onChangeBrands
 }: {
   logout: () => void;
   currentUser: IUser;
   showBrands: boolean;
-  brands: IBrand[];
   selectedBrands: string[];
   onChangeBrands: (value: string) => void;
 }) => {
@@ -79,6 +76,8 @@ const QuickNavigation = ({
   const notificationContent = props => (
     <NotificationSettings currentUser={currentUser} {...props} />
   );
+
+  const brands = currentUser.brands || [];
 
   const brandOptions = brands.map(brand => ({
     value: brand._id,

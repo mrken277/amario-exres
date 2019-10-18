@@ -71,16 +71,29 @@ export const KIND_CHOICES = {
   NYLAS_GMAIL: 'nylas-gmail',
   LEAD: 'lead',
   CALLPRO: 'callpro',
+  CHATFUEL: 'chatfuel',
   ALL_LIST: [
     'messenger',
     'facebook-post',
     'facebook-messenger',
     'lead',
     'callpro',
+    'chatfuel',
     'gmail',
     'nylas-gmail'
   ]
 };
+
+export const KIND_CHOICES_WITH_TEXT = [
+  { text: 'Messenger', value: 'messenger' },
+  { text: 'Facebook post', value: 'facebook-post' },
+  { text: 'facebook messenger', value: 'facebook-messenger' },
+  { text: 'Pop Ups', value: 'lead' },
+  { text: 'Callpro', value: 'callpro' },
+  { text: 'Chatfuel', value: 'chatfuel' },
+  { text: 'Gmail', value: 'gmail' },
+  { text: 'Nylas gmail', value: 'nylas-gmail' }
+];
 
 export const FORM_LOAD_TYPES = {
   SHOUTBOX: 'shoutbox',
@@ -208,6 +221,14 @@ export const INTEGRATIONS = [
         kind: 'callpro',
         logo: '/images/integrations/callpro.png',
         createModal: 'callpro'
+      },
+      {
+        name: 'Chatfuel',
+        description: 'Connect your chatfuel account',
+        inMessenger: false,
+        kind: 'chatfuel',
+        logo: '/images/integrations/chatfuel.png',
+        createModal: 'chatfuel'
       }
     ]
   },

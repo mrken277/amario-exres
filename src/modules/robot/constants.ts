@@ -7,15 +7,16 @@ export const FEATURE_DETAILS = {
     color: '#f7802e',
     description:
       'From ideas to actual performance, making sure everything recorded, prioritized and centralized in the single platform to get tested with pool of analysis and learnings, which made the growing as pleasure.',
-    videoUrl: 'url',
+    videoUrl: 'https://www.youtube.com/embed/Z5KI5YuvZ7U?autoplay=1',
+    videoThumb: 'https://img.youtube.com/vi/Z5KI5YuvZ7U/mqdefault.jpg',
     settingsDetails: {
       growthHackBoardsCreate: {
-        name: 'Create board',
-        url: '/settings/boards/growthHack'
+        name: 'Create a marketing campaign',
+        url: '/settings/boards/growthHack#showBoardModal=true'
       },
       growthHackPipelinesCreate: {
         name: 'Then create a project',
-        url: '/settings/boards/growthHack'
+        url: '/settings/boards/growthHack#showPipelineModal=true'
       },
       growthHackCreate: {
         name: 'Now add an experiments',
@@ -31,19 +32,23 @@ export const FEATURE_DETAILS = {
     settingsDetails: {
       brandCreate: {
         name: 'Create a brand',
-        url: '/settings/brands'
+        url: '/settings/brands#showBrandAddModal=true'
       },
       channelCreate: {
         name: 'Create a channel',
-        url: '/settings/channels'
+        url: '/settings/channels#showChannelAddModal=true'
       },
-      integrationCreate: {
+      messengerIntegrationCreate: {
         name: 'Then create an integration',
         url: '/settings/integrations'
       },
       responseTemplateCreate: {
         name: 'Add a response template',
-        url: '/settings/response-templates'
+        url: '/settings/response-templates#showListFormModal=true'
+      },
+      connectIntegrationsToChannel: {
+        name: 'Connect integration to channel',
+        url: '/settings/channels#showManageIntegrationModal=true'
       }
     }
   },
@@ -57,15 +62,23 @@ export const FEATURE_DETAILS = {
     settingsDetails: {
       dealBoardsCreate: {
         name: 'Create a sales board',
-        url: '/settings/boards/deal'
+        url: '/settings/boards/deal#showBoardModal=true'
       },
       dealPipelinesCreate: {
         name: 'Create a sales pipeline',
-        url: '/settings/boards/deal'
+        url: '/settings/boards/deal#showPipelineModal=true'
       },
       dealCreate: {
-        name: 'Now add deal',
+        name: 'Now add deals',
         url: '/deal/board'
+      },
+      'configure.dealCurrency': {
+        name: 'Configure currencies',
+        url: '/settings/general'
+      },
+      'configure.dealUOM': {
+        name: 'Configure unit of measurement',
+        url: '/settings/general'
       }
     }
   },
@@ -74,12 +87,16 @@ export const FEATURE_DETAILS = {
     color: '#c84b49',
     icon: 'laptop',
     description:
-      'Turn regular visitors into qualified leads by capturing them with a customizable landing page, forms, pop-up or embed placements.',
+      'Turn regular visitors into qualified pop ups by capturing them with a customizable landing page, forms, pop-up or embed placements.',
     videoUrl: 'url',
     settingsDetails: {
       leadIntegrationCreate: {
         name: 'Create pop ups',
         url: '/leads/create'
+      },
+      leadIntegrationInstalled: {
+        name: 'Install on website',
+        url: '/leads'
       }
     }
   },
@@ -93,11 +110,11 @@ export const FEATURE_DETAILS = {
     settingsDetails: {
       emailTemplateCreate: {
         name: 'Create email template',
-        url: '/settings/email-templates'
+        url: '/settings/email-templates#showListFormModal=true'
       },
       tagCreate: {
         name: 'Create email tag',
-        url: '/tags/engageMessage'
+        url: '/tags/engageMessage#showTagengageMessageModal=true'
       },
       engageCreate: {
         name: 'Now create manual email newsletter',
@@ -115,11 +132,11 @@ export const FEATURE_DETAILS = {
     settingsDetails: {
       taskBoardsCreate: {
         name: 'Create a task board',
-        url: '/settings/boards/task'
+        url: '/settings/boards/task#showBoardModal=true'
       },
       taskPipelinesCreate: {
         name: 'Create a task pipeline',
-        url: '/settings/boards/task'
+        url: '/settings/boards/task#showPipelineModal=true'
       },
       taskCreate: {
         name: 'Now add tasks',
@@ -135,11 +152,11 @@ export const FEATURE_DETAILS = {
     settingsDetails: {
       ticketBoardsCreate: {
         name: 'Create a ticket board',
-        url: '/settings/boards/ticket'
+        url: '/settings/boards/ticket#showBoardModal=true'
       },
       ticketPipelinesCreate: {
         name: 'Create a ticket pipeline',
-        url: '/settings/boards/ticket'
+        url: '/settings/boards/ticket#showPipelineModal=true'
       },
       ticketCreate: {
         name: 'Now add tickets',
@@ -157,15 +174,15 @@ export const FEATURE_DETAILS = {
     settingsDetails: {
       knowledgeBaseTopicCreate: {
         name: 'Create topic',
-        url: '/knowledgebase'
+        url: '/knowledgebase#showKBAddModal=true'
       },
       knowledgeBaseCategoryCreate: {
         name: 'Create category',
-        url: '/knowledgebase'
+        url: '/knowledgebase#showKBAddCategoryModal=true'
       },
       knowledgeBaseArticleCreate: {
         name: 'Now write articles',
-        url: '/knowledgebase'
+        url: '/knowledgebase#showKBAddArticleModal=true'
       }
     }
   },
@@ -179,15 +196,15 @@ export const FEATURE_DETAILS = {
     settingsDetails: {
       customerCreate: {
         name: 'Create a contact',
-        url: '/contacts/customers/all'
+        url: '/contacts/customers/all#showCustomerModal=true'
       },
       companyCreate: {
         name: 'Create a company',
-        url: '/contacts/companies'
+        url: '/contacts/companies#showCompanyModal=true'
       },
       productCreate: {
         name: 'Create a product or service',
-        url: '/settings/product-service'
+        url: '/settings/product-service#showProductModal=true'
       }
     }
   },
@@ -219,11 +236,11 @@ export const FEATURE_DETAILS = {
     settingsDetails: {
       customerTagCreate: {
         name: 'Create a customer tag',
-        url: '/tags/customer'
+        url: '/tags/customer#showTagcustomerModal=true'
       },
       companyTagCreate: {
         name: 'Create a company tag',
-        url: '/tags/company'
+        url: '/tags/company#showTagcompanyModal=true'
       }
     }
   },
@@ -237,11 +254,11 @@ export const FEATURE_DETAILS = {
     settingsDetails: {
       customerFieldCreate: {
         name: 'Create a custom customer properties',
-        url: '/settings/properties?type=customer'
+        url: '/settings/properties?type=customer#showPropertycustomerModal=true'
       },
       companyFieldCreate: {
         name: 'Create a custom company properties',
-        url: '/settings/properties?type=company'
+        url: '/settings/properties?type=company#showPropertycompanyModal=true'
       }
     }
   },
@@ -273,7 +290,7 @@ export const FEATURE_DETAILS = {
       },
       facebookIntegrationCreate: {
         name: 'Connect your Facebook messenger',
-        url: '/settings/integrations'
+        url: '/settings/integrations#showFacebookMessengerModal=true'
       }
     }
   },

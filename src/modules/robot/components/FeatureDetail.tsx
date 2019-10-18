@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { IFeature } from '../types';
 import { Title } from './styles';
+import VideoPopup from './VideoPopup';
 
 const Wrapper = styled.div`
   width: 315px;
@@ -143,9 +144,22 @@ class FeatureDetail extends React.Component<Props> {
     );
   }
 
-  onVideoClick = () => {
-    this.props.completeShowStep();
-  };
+  renderVideo() {
+    const { feature } = this.props;
+
+    if (feature.videoUrl && feature.videoUrl !== 'url') {
+      return (
+        <VideoPopup
+          onVideoClick={this.props.completeShowStep}
+          name={feature.name}
+          videoUrl={feature.videoUrl}
+          thumbImage={feature.videoThumb}
+        />
+      );
+    }
+
+    return;
+  }
 
   render() {
     const { feature } = this.props;
@@ -153,6 +167,7 @@ class FeatureDetail extends React.Component<Props> {
     return (
       <Wrapper>
         <Title>{feature.text}</Title>
+        {this.renderVideo()}
         <p>{feature.description}</p>
         {this.renderProgress()}
         {this.renderSettings()}
