@@ -33,14 +33,22 @@ class Robot extends React.Component<Props, State> {
 
     return (
       <>
-        <Assistant
-          show={currentRoute === 'assistant'}
-          changeRoute={this.changeRoute}
-          currentUserName={getCurrentUserName(currentUser)}
-        />
+        <RTG.CSSTransition
+          in={currentRoute === 'assistant'}
+          appear={true}
+          timeout={600}
+          classNames="slide-in-small"
+          unmountOnExit={true}
+        >
+          <Assistant
+            changeRoute={this.changeRoute}
+            currentUserName={getCurrentUserName(currentUser)}
+          />
+        </RTG.CSSTransition>
+
         <Onboarding
-          changeRoute={this.changeRoute}
           show={currentRoute.includes('onboard')}
+          changeRoute={this.changeRoute}
           currentUser={currentUser}
           currentStep={
             currentRoute === 'onboardStart' ? 'featureList' : undefined
@@ -50,7 +58,8 @@ class Robot extends React.Component<Props, State> {
     );
   };
 
-  changeContent = () => {
+  toggleContent = () => {
+    // hide content
     if (this.state.currentRoute === 'assistant') {
       return this.changeRoute('');
     }
@@ -68,7 +77,7 @@ class Robot extends React.Component<Props, State> {
           timeout={2600}
           classNames="robot"
         >
-          <Bot onClick={this.changeContent}>
+          <Bot onClick={this.toggleContent}>
             <img src="/images/erxes-bot.svg" alt="ai robot" />
           </Bot>
         </RTG.CSSTransition>

@@ -26,6 +26,9 @@ const Thumbnail = styled.div`
   img {
     width: 100%;
     border-radius: 5px;
+    height: 175px;
+    display: block;
+    background: ${colors.bgActive};
   }
 
   &:hover {
