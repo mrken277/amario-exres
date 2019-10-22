@@ -112,6 +112,10 @@ class ManageIntegrations extends React.Component<Props, State> {
       type = 'gmail';
     } else if (kind === KIND_CHOICES.NYLAS_GMAIL) {
       type = 'nylas-gmail';
+    } else if (kind === KIND_CHOICES.TWITTER_DM) {
+      type = 'twitter';
+    } else if (kind === KIND_CHOICES.NYLAS_IMAP) {
+      type = 'nylas-imap';
     }
 
     return type;
@@ -131,8 +135,14 @@ class ManageIntegrations extends React.Component<Props, State> {
       icon = 'mail-alt';
     } else if (kind === KIND_CHOICES.CALLPRO) {
       icon = 'phone-call';
+    } else if (kind === KIND_CHOICES.TWITTER_DM) {
+      icon = 'twitter';
     } else if (kind === KIND_CHOICES.CHATFUEL) {
       icon = 'comment-dots';
+    } else if (kind === KIND_CHOICES.NYLAS_GMAIL) {
+      icon = 'mail-alt';
+    } else if (kind === KIND_CHOICES.NYLAS_IMAP) {
+      icon = 'mail-alt';
     }
 
     return icon;
