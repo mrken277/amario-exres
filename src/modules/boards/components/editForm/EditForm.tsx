@@ -123,7 +123,7 @@ class EditForm extends React.Component<Props, State> {
 
   copy = () => {
     const { item, addItem, options } = this.props;
-
+    console.log(item);
     // copied doc
     const doc = {
       ...item,

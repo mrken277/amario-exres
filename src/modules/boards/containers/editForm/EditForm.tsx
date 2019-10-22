@@ -60,7 +60,7 @@ class EditFormContainer extends React.Component<FinalProps> {
     msg = this.props.options.texts.addSuccessText
   ) {
     const { onAdd, addMutation, stageId, options } = this.props;
-
+    console.log(doc);
     addMutation({ variables: doc })
       .then(({ data }) => {
         Alert.success(msg);
