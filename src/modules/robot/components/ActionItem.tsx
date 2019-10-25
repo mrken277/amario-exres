@@ -56,6 +56,8 @@ const Text = styled.div`
       font-size: 8px;
       padding: 2px 5px;
       border-radius: 10px;
+      position: relative;
+      top: -2px;
     }
   }
 
