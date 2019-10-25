@@ -18,7 +18,7 @@ type Props = {
   show: boolean;
   changeRoute: (route: string) => void;
   currentUser: IUser;
-  currentStep?: string;
+  onboardStep?: string;
 };
 
 type FinalProps = Props &
@@ -28,12 +28,12 @@ type FinalProps = Props &
 
 class OnboardingContainer extends React.Component<
   FinalProps,
-  { currentStep?: string }
+  { onboardStep?: string }
 > {
   constructor(props: FinalProps) {
     super(props);
 
-    this.state = { currentStep: props.currentStep };
+    this.state = { onboardStep: props.onboardStep };
   }
 
   changeStep = (step: string) => {
@@ -43,12 +43,12 @@ class OnboardingContainer extends React.Component<
       getAvailableFeaturesQuery.refetch();
     }
 
-    this.setState({ currentStep: step });
+    this.setState({ onboardStep: step });
   };
 
   forceComplete = () => {
     this.props.forceCompleteMutation().then(() => {
-      this.setState({ currentStep: '' });
+      this.setState({ onboardStep: '' });
     });
   };
 
@@ -80,9 +80,9 @@ class OnboardingContainer extends React.Component<
 
           if (
             ['initial', 'inComplete'].includes(type) &&
-            !this.state.currentStep
+            !this.state.onboardStep
           ) {
-            this.setState({ currentStep: type });
+            this.setState({ onboardStep: type });
           }
         }
       }
@@ -90,13 +90,13 @@ class OnboardingContainer extends React.Component<
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.currentStep !== this.props.currentStep) {
-      this.setState({ currentStep: nextProps.currentStep });
+    if (nextProps.onboardStep !== this.props.onboardStep) {
+      this.setState({ onboardStep: nextProps.onboardStep });
     }
   }
 
   render() {
-    const { currentStep } = this.state;
+    const { onboardStep } = this.state;
     const {
       getAvailableFeaturesQuery,
       currentUser,
@@ -120,7 +120,7 @@ class OnboardingContainer extends React.Component<
       <Onboarding
         show={show}
         currentUser={currentUser}
-        currentStep={currentStep}
+        onboardStep={onboardStep}
         changeStep={this.changeStep}
         changeRoute={changeRoute}
         forceComplete={this.forceComplete}

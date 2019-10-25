@@ -1,6 +1,8 @@
 import Icon from 'modules/common/components/Icon';
+import colors from 'modules/common/styles/colors';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
+import { IEntry } from '../types';
 import { Count, GroupHead } from './assistant/styles';
 
 const IconContainer = styled(Count)`
@@ -47,6 +49,14 @@ const Text = styled.div`
     font-size: 13px;
     margin: 0;
     text-transform: capitalize;
+
+    span {
+      background: ${colors.colorCoreRed};
+      color: ${colors.colorWhite};
+      font-size: 8px;
+      padding: 2px 5px;
+      border-radius: 10px;
+    }
   }
 
   p {
@@ -64,13 +74,15 @@ type Props = {
   onClick?: () => void;
   isComplete?: boolean;
   disabled?: boolean;
+  entries?: IEntry[];
+  count?: number | null;
 };
 
 type State = {
   show: boolean;
 };
 
-class ModulItem extends React.Component<Props, State> {
+class ActionItem extends React.Component<Props, State> {
   render() {
     const {
       icon = 'chat',
@@ -80,7 +92,8 @@ class ModulItem extends React.Component<Props, State> {
       onClick,
       vertical,
       isComplete,
-      disabled
+      disabled,
+      count
     } = this.props;
 
     return (
@@ -94,7 +107,9 @@ class ModulItem extends React.Component<Props, State> {
           <Icon icon={icon} />
         </IconContainer>
         <Text>
-          <h4>{title}</h4>
+          <h4>
+            {title} {count && <span>{count}</span>}
+          </h4>
           {!vertical && <p>{description}</p>}
         </Text>
       </Modul>
@@ -102,4 +117,4 @@ class ModulItem extends React.Component<Props, State> {
   }
 }
 
-export default ModulItem;
+export default ActionItem;

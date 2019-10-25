@@ -1,4 +1,5 @@
 import Button from 'modules/common/components/Button';
+import { __ } from 'modules/common/utils';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -25,13 +26,13 @@ const Wrapper = styled.div`
 type Props = {
   buttonText: string;
   onClick: () => void;
-  currentUserName: string;
+  currentUser: string;
   forceComplete: () => void;
 };
 
-class Suggestion extends React.PureComponent<Props> {
+class OnboardOpener extends React.PureComponent<Props> {
   render() {
-    const { onClick, buttonText, currentUserName, forceComplete } = this.props;
+    const { onClick, buttonText, currentUser, forceComplete } = this.props;
 
     let message = "You haven't configured yet. Would you like to configure";
 
@@ -46,14 +47,14 @@ class Suggestion extends React.PureComponent<Props> {
         </span>
         <div>
           <h3>
-            Hello, <b>{currentUserName}</b>
+            {__('Hello')}, <b>{currentUser}</b>
           </h3>
-          <p>{message}</p>
+          <p>{__(message)}</p>
           <Button btnStyle="success" size="small" onClick={onClick}>
-            {buttonText}
+            {__(buttonText)}
           </Button>
           <Button btnStyle="link" size="small" onClick={forceComplete}>
-            Never see again
+            {__('Never see again')}
           </Button>
         </div>
       </Wrapper>
@@ -61,4 +62,4 @@ class Suggestion extends React.PureComponent<Props> {
   }
 }
 
-export default Suggestion;
+export default OnboardOpener;

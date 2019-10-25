@@ -6,13 +6,13 @@ import RTG from 'react-transition-group';
 import FeatureDetail from '../containers/FeatureDetail';
 import { IFeature } from '../types';
 import { getCurrentUserName } from '../utils';
-import ModulItem from './ModulItem';
+import ActionItem from './ActionItem';
+import OnboardOpener from './OnboardOpener';
 import { Content, Greeting, NavButton, SeeAll } from './styles';
-import Suggestion from './Suggestion';
 
 type Props = {
   availableFeatures: IFeature[];
-  currentStep?: string;
+  onboardStep?: string;
   changeStep: (step: string) => void;
   changeRoute: (route: string) => void;
   forceComplete: () => void;
@@ -45,7 +45,7 @@ class Onboarding extends React.Component<Props, State> {
     };
 
     return (
-      <ModulItem
+      <ActionItem
         title={text}
         description={description}
         icon={icon}
@@ -62,7 +62,7 @@ class Onboarding extends React.Component<Props, State> {
     const { selectedFeature } = this.state;
     const {
       availableFeatures,
-      currentStep,
+      onboardStep,
       changeStep,
       currentUser,
       forceComplete
@@ -70,30 +70,30 @@ class Onboarding extends React.Component<Props, State> {
 
     const commonProps = {
       forceComplete,
-      currentUserName: getCurrentUserName(currentUser)
+      currentUser: getCurrentUserName(currentUser)
     };
 
-    if (currentStep === 'initial') {
+    if (onboardStep === 'initial') {
       const onClick = () => {
         changeStep('featureList');
       };
 
       return (
-        <Suggestion {...commonProps} buttonText="Start" onClick={onClick} />
+        <OnboardOpener {...commonProps} buttonText="Start" onClick={onClick} />
       );
     }
 
-    if (currentStep === 'inComplete') {
+    if (onboardStep === 'inComplete') {
       const onClick = () => {
         changeStep('featureList');
       };
 
       return (
-        <Suggestion {...commonProps} buttonText="Resume" onClick={onClick} />
+        <OnboardOpener {...commonProps} buttonText="Resume" onClick={onClick} />
       );
     }
 
-    if (currentStep === 'featureDetail') {
+    if (onboardStep === 'featureDetail') {
       const onBack = () => {
         this.setState({ selectedFeature: undefined }, () => {
           changeStep('featureList');
@@ -110,18 +110,18 @@ class Onboarding extends React.Component<Props, State> {
       );
     }
 
-    if (currentStep === 'featureList') {
+    if (onboardStep === 'featureList') {
       return (
         <>
           <Greeting>
-            Hello!{' '}
+            {__('Hello')}!{' '}
             <b>
               {getCurrentUserName(currentUser)}
               <span role="img" aria-label="Wave">
                 👋
               </span>
             </b>
-            <br /> Which feature do you want to set up
+            <br /> {__('Which feature do you want to set up')}
           </Greeting>
           {availableFeatures
             .filter((feature, index) => index < this.state.featureLimit)
@@ -154,16 +154,12 @@ class Onboarding extends React.Component<Props, State> {
     this.setState({ featureLimit: this.isCollapsed() ? all : this.limit });
   };
 
-  showOnboard = () => {
-    const { show, currentStep } = this.props;
-
-    return !currentStep ? false : show;
-  };
-
   render() {
+    const { show, onboardStep } = this.props;
+
     return (
       <RTG.CSSTransition
-        in={this.showOnboard()}
+        in={onboardStep && show}
         appear={true}
         timeout={600}
         classNames="slide-in-small"

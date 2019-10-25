@@ -1,14 +1,12 @@
 import { IUser } from 'modules/auth/types';
 import * as React from 'react';
 import RTG from 'react-transition-group';
+import Assistant from '../components/assistant/Assistant';
 import Onboarding from '../containers/Onboarding';
-import { IEntry } from '../types';
 import { getCurrentUserName } from '../utils';
-import Assistant from './assistant/Assistant';
 import { Bot } from './styles';
 
 type Props = {
-  entries: IEntry[];
   currentUser: IUser;
 };
 
@@ -42,7 +40,7 @@ class Robot extends React.Component<Props, State> {
         >
           <Assistant
             changeRoute={this.changeRoute}
-            currentUserName={getCurrentUserName(currentUser)}
+            currentUser={getCurrentUserName(currentUser)}
           />
         </RTG.CSSTransition>
 
@@ -50,7 +48,7 @@ class Robot extends React.Component<Props, State> {
           show={currentRoute.includes('onboard')}
           changeRoute={this.changeRoute}
           currentUser={currentUser}
-          currentStep={
+          onboardStep={
             currentRoute === 'onboardStart' ? 'featureList' : undefined
           }
         />

@@ -14,7 +14,7 @@ export type IFeature = {
 
 export type IEntry = {
   action: string;
-  data: object;
+  data: any;
 };
 
 export type StepsCompletenessQueryResponse = {
