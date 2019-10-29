@@ -5,6 +5,7 @@ import { withProps } from '../../common/utils';
 import ActionItem from '../components/ActionItem';
 import { queries } from '../graphql';
 import { EntriesQueryResponse, IEntry } from '../types';
+import { RobotConsumer } from './RobotContext';
 
 type Props = {
   action?: string;
@@ -37,13 +38,16 @@ class ActionItemContainer extends React.Component<FinalProps> {
       case 'customerScoring':
         return data.scoreMap.length;
 
+      case 'mergeCustomers':
+        return entries.length;
+
       default:
         return null;
     }
   };
 
   render() {
-    const { entriesQuery } = this.props;
+    const { entriesQuery, onClick, action } = this.props;
 
     const entries = entriesQuery.robotEntries || [];
 
@@ -53,6 +57,24 @@ class ActionItemContainer extends React.Component<FinalProps> {
       count: this.getActionCount(entries)
     };
 
+    if (!onClick) {
+      return (
+        <RobotConsumer>
+          {({ setDatas, setAction }) => {
+            const handleClick = () => {
+              setDatas(entries, 'assistantDetail');
+
+              if (action) {
+                setAction(action);
+              }
+            };
+
+            return <ActionItem {...updatedProps} onClick={handleClick} />;
+          }}
+        </RobotConsumer>
+      );
+    }
+
     return <ActionItem {...updatedProps} />;
   }
 }
@@ -61,7 +83,7 @@ export default withProps<Props>(
   compose(
     graphql<Props>(gql(queries.entries), {
       options: ({ action }) => ({
-        variables: { action }
+        variables: { action, isNotified: false }
       }),
       name: 'entriesQuery'
     })

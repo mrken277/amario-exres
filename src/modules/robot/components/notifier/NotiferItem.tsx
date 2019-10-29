@@ -3,7 +3,8 @@ import Icon from 'modules/common/components/Icon';
 import * as React from 'react';
 import RTG from 'react-transition-group';
 import styled from 'styled-components';
-import { Item } from './styles';
+import { IEntry } from '../../types';
+import { Item } from '../styles';
 
 const Close = styled.div`
   position: absolute;
@@ -19,10 +20,12 @@ const Close = styled.div`
 `;
 
 type Props = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   closable?: boolean;
   background?: string;
   delay?: number;
+  entry: IEntry;
+  action?: string;
 };
 
 type State = {
@@ -48,8 +51,8 @@ class NotifierItem extends React.Component<Props, State> {
     this.setState({ show: false });
   };
 
-  render() {
-    const { children, closable = true, background } = this.props;
+  renderItemContent = (content: React.ReactNode) => {
+    const { closable = true, background } = this.props;
 
     return (
       <RTG.CSSTransition
@@ -65,10 +68,43 @@ class NotifierItem extends React.Component<Props, State> {
               <Icon icon="times" />
             </Close>
           )}
-          {children}
+          <span role="img" aria-label="Wave">
+            👋
+          </span>
+          <div>
+            <h3>Oops!</h3>
+            <p>{content}</p>
+          </div>
         </Item>
       </RTG.CSSTransition>
     );
+  };
+
+  render() {
+    const { entry, action } = this.props;
+    const data = entry.data;
+
+    switch (action) {
+      case 'featureSuggestion':
+        return this.renderItemContent(<>{data.message}</>);
+
+      case 'channelsWithoutIntegration':
+        if (data.channelIds.length === 0) {
+          return null;
+        }
+
+        return this.renderItemContent(<>{data.channelIds}</>);
+
+      case 'brandsWithoutIntegration':
+        if (data.brandIds.length === 0) {
+          return null;
+        }
+
+        return this.renderItemContent(<>{data.brandIds}</>);
+
+      default:
+        return null;
+    }
   }
 }
 

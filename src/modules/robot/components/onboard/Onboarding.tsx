@@ -3,12 +3,12 @@ import Icon from 'modules/common/components/Icon';
 import { __ } from 'modules/common/utils';
 import React from 'react';
 import RTG from 'react-transition-group';
-import FeatureDetail from '../containers/FeatureDetail';
-import { IFeature } from '../types';
-import { getCurrentUserName } from '../utils';
-import ActionItem from './ActionItem';
+import FeatureDetail from '../../containers/FeatureDetail';
+import { IFeature } from '../../types';
+import { getCurrentUserName } from '../../utils';
+import ActionItem from '../ActionItem';
+import { Content, Greeting, NavButton, SeeAll } from '../styles';
 import OnboardOpener from './OnboardOpener';
-import { Content, Greeting, NavButton, SeeAll } from './styles';
 
 type Props = {
   availableFeatures: IFeature[];
@@ -73,23 +73,18 @@ class Onboarding extends React.Component<Props, State> {
       currentUser: getCurrentUserName(currentUser)
     };
 
-    if (onboardStep === 'initial') {
+    if (onboardStep === 'initial' || onboardStep === 'inComplete') {
       const onClick = () => {
         changeStep('featureList');
+        this.props.changeRoute('onboardStart');
       };
 
       return (
-        <OnboardOpener {...commonProps} buttonText="Start" onClick={onClick} />
-      );
-    }
-
-    if (onboardStep === 'inComplete') {
-      const onClick = () => {
-        changeStep('featureList');
-      };
-
-      return (
-        <OnboardOpener {...commonProps} buttonText="Resume" onClick={onClick} />
+        <OnboardOpener
+          {...commonProps}
+          buttonText={onboardStep === 'initial' ? 'Start' : 'Resume'}
+          onClick={onClick}
+        />
       );
     }
 

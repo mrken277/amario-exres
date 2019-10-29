@@ -85,13 +85,20 @@ type State = {
 };
 
 class ActionItem extends React.Component<Props, State> {
+  handleClick = () => {
+    const { onClick } = this.props;
+
+    if (onClick) {
+      return onClick();
+    }
+  };
+
   render() {
     const {
       icon = 'chat',
       title,
       description,
       color,
-      onClick,
       vertical,
       isComplete,
       disabled,
@@ -100,7 +107,7 @@ class ActionItem extends React.Component<Props, State> {
 
     return (
       <Modul
-        onClick={onClick}
+        onClick={this.handleClick}
         vertical={vertical}
         isComplete={isComplete}
         disabled={disabled}

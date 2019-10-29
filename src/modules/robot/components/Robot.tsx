@@ -1,68 +1,55 @@
 import { IUser } from 'modules/auth/types';
 import * as React from 'react';
 import RTG from 'react-transition-group';
-import Assistant from '../components/assistant/Assistant';
+import { SUGGESTION_ACTIONS } from '../constants';
+import AssistantContainer from '../containers/Assistant';
+import NotifierAction from '../containers/NotifierAction';
 import Onboarding from '../containers/Onboarding';
 import { getCurrentUserName } from '../utils';
-import { Bot } from './styles';
+import { Bot, Container } from './styles';
 
 type Props = {
   currentUser: IUser;
+  activeRoute: string;
+  changeRoute: (route: string) => void;
+  toggleContent: () => void;
 };
 
-type State = {
-  currentRoute: string;
-};
-
-class Robot extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-
-    this.state = { currentRoute: 'onboardInitial' };
-  }
-
-  changeRoute = (currentRoute: string) => {
-    this.setState({ currentRoute });
-  };
-
+class Robot extends React.Component<Props> {
   renderContent = () => {
-    const { currentRoute } = this.state;
-    const { currentUser } = this.props;
+    const { currentUser, changeRoute, activeRoute } = this.props;
 
     return (
       <>
         <RTG.CSSTransition
-          in={currentRoute === 'assistant'}
+          in={activeRoute.startsWith('assistant')}
           appear={true}
           timeout={600}
           classNames="slide-in-small"
           unmountOnExit={true}
         >
-          <Assistant
-            changeRoute={this.changeRoute}
-            currentUser={getCurrentUserName(currentUser)}
-          />
+          <Container>
+            <AssistantContainer currentUser={getCurrentUserName(currentUser)} />
+          </Container>
         </RTG.CSSTransition>
 
-        <Onboarding
-          show={currentRoute.includes('onboard')}
-          changeRoute={this.changeRoute}
-          currentUser={currentUser}
-          onboardStep={
-            currentRoute === 'onboardStart' ? 'featureList' : undefined
-          }
-        />
+        <Container>
+          {(activeRoute === 'onboardInitial' || activeRoute === 'notifier') &&
+            SUGGESTION_ACTIONS.map((action, index) => (
+              <NotifierAction key={index} action={action} />
+            ))}
+
+          <Onboarding
+            show={activeRoute.startsWith('onboard')}
+            changeRoute={changeRoute}
+            currentUser={currentUser}
+            onboardStep={
+              activeRoute === 'onboardStart' ? 'featureList' : undefined
+            }
+          />
+        </Container>
       </>
     );
-  };
-
-  toggleContent = () => {
-    // hide content
-    if (this.state.currentRoute === 'assistant') {
-      return this.changeRoute('');
-    }
-
-    return this.changeRoute('assistant');
   };
 
   render() {
@@ -75,7 +62,7 @@ class Robot extends React.Component<Props, State> {
           timeout={2600}
           classNames="robot"
         >
-          <Bot onClick={this.toggleContent}>
+          <Bot onClick={this.props.toggleContent}>
             <img src="/images/erxes-bot.svg" alt="ai robot" />
           </Bot>
         </RTG.CSSTransition>

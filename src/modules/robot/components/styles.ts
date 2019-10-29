@@ -71,19 +71,30 @@ const NavButton = styledTS<{ right?: boolean }>(styled.div)`
   }
 `;
 
-const Content = styled.div`
+const Container = styled.div`
   position: fixed;
+  min-width: 300px;
+  max-width: 500px;
+  bottom: 65px;
+  left: 15px;
+  z-index: 1000;
+  max-height: calc(100% - 75px);
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+`;
+
+const Content = styled.div`
   padding: ${dimensions.coreSpacing}px;
   border-radius: 10px;
   background: ${colors.bgLight};
-  min-width: 300px;
-  max-width: 500px;
   box-shadow: 0 5px 15px 1px rgba(0, 0, 0, 0.15);
-  bottom: 65px;
-  left: 15px;
-  max-height: calc(100% - 75px);
+  max-height: 100%;
   overflow: auto;
+  position: relative;
+  bottom: 0;
   flex-direction: column;
+  margin-top: 10px;
 `;
 
 const SeeAll = styled.a`
@@ -95,4 +106,44 @@ const SeeAll = styled.a`
   }
 `;
 
-export { Bot, ModulRow, Greeting, Title, NavButton, Content, SeeAll };
+const Item = styledTS<{ background?: string }>(styled.div)`
+  padding: ${dimensions.coreSpacing}px;
+  border-radius: 10px;
+  color: ${colors.colorWhite};
+  background: ${props => props.background || colors.colorCoreBlue};
+  width: 100%;
+  box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+  position: relative;
+  display: flex;
+
+  > span {
+    margin-right: 10px;
+  }
+
+  a {
+    color: ${colors.colorWhite};
+    text-decoration: underline;
+  }
+
+  h3 {
+    margin-top: 0;
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+  }
+`;
+
+export {
+  Bot,
+  ModulRow,
+  Greeting,
+  Title,
+  NavButton,
+  Content,
+  SeeAll,
+  Item,
+  Container
+};

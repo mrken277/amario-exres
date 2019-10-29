@@ -1,21 +1,24 @@
 import Icon from 'modules/common/components/Icon';
+import { IEntry } from 'modules/robot/types';
 import * as React from 'react';
 import { NavButton, Title } from '../styles';
 import { NotifyItem, NotifyList } from './styles';
 
 type Props = {
-  icon?: string;
+  datas?: IEntry[];
+  changeRoute: (route: string) => void;
+  currentAction: string;
 };
 
-type State = {
-  show: boolean;
-};
+class AssistantDetail extends React.Component<Props> {
+  back = () => {
+    this.props.changeRoute('assistant');
+  };
 
-class AssistantDetail extends React.PureComponent<Props, State> {
   render() {
     return (
       <>
-        <NavButton>
+        <NavButton onClick={this.back}>
           <Icon icon="arrow-left" size={24} />
         </NavButton>
 

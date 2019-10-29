@@ -1,5 +1,11 @@
 import colors from 'modules/common/styles/colors';
 
+export const SUGGESTION_ACTIONS = [
+  'featureSuggestion',
+  'channelsWithoutIntegration',
+  'brandsWithoutIntegration'
+];
+
 export const FEATURE_DETAILS = {
   growthHacks: {
     text: 'Growth hacking',

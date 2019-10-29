@@ -5,7 +5,7 @@ import { IUser } from 'modules/auth/types';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
-import Onboarding from '../components/Onboarding';
+import Onboarding from '../components/onboard/Onboarding';
 import { FEATURE_DETAILS } from '../constants';
 import { mutations, queries, subscriptions } from '../graphql';
 import {

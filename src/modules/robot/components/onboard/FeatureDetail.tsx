@@ -5,8 +5,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
-import { IFeature } from '../types';
-import { Title } from './styles';
+import { IFeature } from '../../types';
+import { Title } from '../styles';
 import VideoPopup from './VideoPopup';
 
 const Wrapper = styled.div`

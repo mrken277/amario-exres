@@ -4,7 +4,7 @@ import { IUser } from 'modules/auth/types';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
-import FeatureDetail from '../components/FeatureDetail';
+import FeatureDetail from '../components/onboard/FeatureDetail';
 import { mutations, queries, subscriptions } from '../graphql';
 import {
   CompleteShowStepMutationResponse,
