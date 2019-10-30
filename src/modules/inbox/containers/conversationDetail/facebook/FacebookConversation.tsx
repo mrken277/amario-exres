@@ -80,6 +80,7 @@ class FacebookPostContainer extends React.Component<FinalProps> {
             fetchedComments.push(comment);
           }
         }
+
         return {
           ...prev,
           facebookComments: [...fetchedComments, ...prevComments]

@@ -165,3 +165,10 @@ export type ActivityLogQueryResponse = {
   refetch: () => void;
   subscribeToMore: any;
 };
+
+export type ConfLogQueryResponse = {
+  conformitiesForActivity: any[];
+  loading: boolean;
+  refetch: () => void;
+  subscribeToMore: any;
+};

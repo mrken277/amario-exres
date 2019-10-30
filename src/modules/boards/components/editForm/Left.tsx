@@ -1,5 +1,6 @@
 import ActivityInputs from 'modules/activityLogs/components/ActivityInputs';
 import ActivityLogs from 'modules/activityLogs/containers/ActivityLogs';
+import ConforLogs from 'modules/activityLogs/containers/ConforLogs';
 import React from 'react';
 
 import { IItem } from 'modules/boards/types';
@@ -98,6 +99,12 @@ class Left extends React.Component<Props> {
         />
 
         <ActivityLogs
+          target={item.name}
+          contentId={item._id}
+          contentType={type}
+          extraTabs={[]}
+        />
+        <ConforLogs
           target={item.name}
           contentId={item._id}
           contentType={type}

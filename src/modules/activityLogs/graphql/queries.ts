@@ -19,6 +19,21 @@ const activityLogs = `
   }
 `;
 
+const conformitiesForActivity = `
+  query conformitiesForActivity($contentType: String!, $contentId: String!, $activityType: String, $limit: Int) {
+    conformitiesForActivity(contentType: $contentType, contentId: $contentId, activityType: $activityType, limit: $limit) {
+      mainType
+      mainTypeId
+      relType
+      relTypeId
+      content
+      editAble
+      createdUser
+    }
+  }
+`;
+
 export default {
+  conformitiesForActivity,
   activityLogs
 };
