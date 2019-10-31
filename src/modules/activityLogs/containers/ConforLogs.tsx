@@ -1,8 +1,11 @@
+import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
+import { IUser } from 'modules/auth/types';
 import { withProps } from 'modules/common/utils';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { ConfLogQueryResponse } from '../../customers/types';
+import ConforLogs from '../components/ConforLogs';
 import { queries } from '../graphql';
 
 type Props = {
@@ -13,7 +16,7 @@ type Props = {
 };
 
 type FinalProps = {
-  activityLogQuery: ConfLogQueryResponse;
+  conformitiesForActivityQuery: ConfLogQueryResponse;
 } & WithDataProps;
 
 class Container extends React.Component<FinalProps, {}> {
@@ -29,13 +32,28 @@ class Container extends React.Component<FinalProps, {}> {
   // }
 
   render() {
-    const { activityLogQuery } = this.props;
-    // if (activityLogQuery.loading) {
-    //   return sdas
-    // }
-    // const logs = activityLogQuery.conformitiesForActivity;
-    console.log(activityLogQuery);
-    return <div />;
+    const {
+      target,
+      conformitiesForActivityQuery,
+      onChangeActivityTab,
+      extraTabs
+    } = this.props;
+
+    const props = {
+      target,
+      loadingLogs: conformitiesForActivityQuery.loading,
+      activityLogs: conformitiesForActivityQuery.conformitiesForActivity || [],
+      onTabClick: onChangeActivityTab,
+      extraTabs
+    };
+
+    return (
+      <AppConsumer>
+        {({ currentUser }) => (
+          <ConforLogs {...props} currentUser={currentUser || ({} as IUser)} />
+        )}
+      </AppConsumer>
+    );
   }
 }
 
@@ -49,7 +67,7 @@ const WithData = withProps<WithDataProps>(
     graphql<WithDataProps, ConfLogQueryResponse>(
       gql(queries.conformitiesForActivity),
       {
-        name: 'activityLogQuery',
+        name: 'conformitiesForActivityQuery',
         options: ({ contentId, contentType, activityType }: WithDataProps) => {
           return {
             variables: {
@@ -82,7 +100,6 @@ export default class Wrapper extends React.Component<
 
   render() {
     const { contentId, contentType, target, extraTabs } = this.props;
-
     return (
       <WithData
         target={target}

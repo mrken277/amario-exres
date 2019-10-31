@@ -28,7 +28,13 @@ const conformitiesForActivity = `
       relTypeId
       content
       editAble
-      createdUser
+      createdUser {
+        details {
+          avatar
+          fullName
+          position
+        }
+      }
     }
   }
 `;
