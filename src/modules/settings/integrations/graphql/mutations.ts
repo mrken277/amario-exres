@@ -163,9 +163,39 @@ const removeAccount = `
   }
 `;
 
+const addMailAccount = `
+  mutation integrationAddMailAccount(
+    $email: String!
+    $password: String!
+    $kind: String!
+  ) {
+    integrationAddMailAccount(
+      email: $email
+      password: $password
+      kind: $kind
+    )
+  } 
+`;
+
 const addImapAccount = `
-  mutation integrationAddImapAccount($email: String! $password: String!) {
-    integrationAddImapAccount(email: $email password: $password)
+  mutation integrationAddImapAccount(
+    $email: String! 
+    $password: String!
+    $imapHost: String!
+    $imapPort: Int!
+    $smtpHost: String!
+    $smtpPort: Int!
+    $kind: String!
+  ) {
+    integrationAddImapAccount(
+      email: $email 
+      password: $password
+      imapHost: $imapHost
+      imapPort: $imapPort
+      smtpHost: $smtpHost
+      smtpPort: $smtpPort
+      kind: $kind
+    )
   }
 `;
 
@@ -182,5 +212,6 @@ export default {
   messengerAppsRemove,
   removeAccount,
   integrationSendMail,
-  addImapAccount
+  addImapAccount,
+  addMailAccount
 };

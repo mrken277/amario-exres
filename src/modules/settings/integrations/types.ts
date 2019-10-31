@@ -20,6 +20,15 @@ export interface IPages {
   checked?: boolean;
 }
 
+export interface IImapForm {
+  email: string;
+  password: string;
+  imapHost: string;
+  imapPort: number;
+  smtpHost: string;
+  smtpPort: number;
+}
+
 export interface ISelectMessengerApps {
   brand: IBrand;
   label: string;
@@ -104,6 +113,9 @@ export type IntegrationTypes =
   | 'gmail'
   | 'nylas-gmail'
   | 'nylas-imap'
+  | 'nylas-office365'
+  | 'nylas-outlook'
+  | 'nylas-yahoo'
   | 'twitter';
 
 export type IntegrationsQueryResponse = {
@@ -128,6 +140,9 @@ export type ByKind = {
   callpro: number;
   chatfuel: number;
   imap: number;
+  office365: number;
+  outlook: number;
+  yahoo: number;
 };
 
 type IntegrationsCount = {
