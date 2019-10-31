@@ -2,28 +2,6 @@ import { colors, dimensions } from 'modules/common/styles';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 
-const ModulRow = styled.div`
-  display: flex;
-
-  &:last-child {
-    margin: 0;
-  }
-`;
-
-const Greeting = styled.div`
-  margin-bottom: 20px;
-  font-size: 15px;
-
-  span {
-    margin-left: 5px;
-  }
-
-  p {
-    margin-top: ${dimensions.unitSpacing}px;
-    font-size: 14px;
-  }
-`;
-
 const Bot = styled.div`
   position: absolute;
   bottom: 0;
@@ -41,18 +19,36 @@ const Bot = styled.div`
 `;
 
 const Title = styled.h2`
-  margin: 0 0 20px;
+  margin: 0 0 ${dimensions.coreSpacing}px;
   font-size: 16px;
   text-transform: capitalize;
 `;
 
+const ContentWrapper = styled.div`
+  width: 320px;
+`;
+
+const Greeting = styled.div`
+  margin-bottom: 20px;
+  font-size: 15px;
+
+  span {
+    margin-left: 5px;
+  }
+
+  p {
+    margin-top: ${dimensions.unitSpacing}px;
+    font-size: 13px;
+  }
+`;
+
 const NavButton = styledTS<{ right?: boolean }>(styled.div)`
-  margin-bottom: 10px;
-  border-radius: 20px;
+  margin-bottom: ${dimensions.unitSpacing}px;
+  border-radius: ${dimensions.coreSpacing}px;
   display: inline-block;
   text-align: center;
-  width: 28px;
-  height: 28px;
+  width: 25px;
+  height: 25px;
   margin-left: ${props => !props.right && '-7px'};;
   margin-top: -5px;
   float: ${props => props.right && 'right'};
@@ -67,7 +63,7 @@ const NavButton = styledTS<{ right?: boolean }>(styled.div)`
   }
 
   i {
-    line-height: 28px;
+    line-height: 25px;
   }
 `;
 
@@ -81,7 +77,6 @@ const Container = styled.div`
   max-height: calc(100% - 75px);
   display: flex;
   flex-direction: column;
-  justify-content: end;
 `;
 
 const Content = styled.div`
@@ -106,44 +101,13 @@ const SeeAll = styled.a`
   }
 `;
 
-const Item = styledTS<{ background?: string }>(styled.div)`
-  padding: ${dimensions.coreSpacing}px;
-  border-radius: 10px;
-  color: ${colors.colorWhite};
-  background: ${props => props.background || colors.colorCoreBlue};
-  width: 100%;
-  box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.1);
-  margin-top: 10px;
-  position: relative;
-  display: flex;
-
-  > span {
-    margin-right: 10px;
-  }
-
-  a {
-    color: ${colors.colorWhite};
-    text-decoration: underline;
-  }
-
-  h3 {
-    margin-top: 0;
-    font-size: 14px;
-  }
-
-  p {
-    margin: 0;
-  }
-`;
-
 export {
   Bot,
-  ModulRow,
   Greeting,
+  ContentWrapper,
   Title,
   NavButton,
   Content,
   SeeAll,
-  Item,
   Container
 };

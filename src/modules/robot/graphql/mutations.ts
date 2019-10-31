@@ -16,4 +16,12 @@ const checkStatus = `
   }
 `;
 
-export default { checkStatus, completeShowStep, forceComplete };
+const markAsNotified = `
+  mutation robotEntriesMarkAsNotified($_id: String) {
+    robotEntriesMarkAsNotified(_id: $_id) {
+      data
+    }
+  }
+`;
+
+export default { checkStatus, completeShowStep, forceComplete, markAsNotified };

@@ -2,7 +2,7 @@ import { IUser } from 'modules/auth/types';
 import * as React from 'react';
 import RTG from 'react-transition-group';
 import { SUGGESTION_ACTIONS } from '../constants';
-import AssistantContainer from '../containers/Assistant';
+import Assistant from '../containers/assistant/Assistant';
 import NotifierAction from '../containers/NotifierAction';
 import Onboarding from '../containers/Onboarding';
 import { getCurrentUserName } from '../utils';
@@ -29,7 +29,7 @@ class Robot extends React.Component<Props> {
           unmountOnExit={true}
         >
           <Container>
-            <AssistantContainer currentUser={getCurrentUserName(currentUser)} />
+            <Assistant currentUser={getCurrentUserName(currentUser)} />
           </Container>
         </RTG.CSSTransition>
 

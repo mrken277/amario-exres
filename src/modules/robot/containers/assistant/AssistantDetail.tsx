@@ -1,6 +1,6 @@
 import React from 'react';
-import AssistantDetail from '../components/assistant/AssistantDetail';
-import { RobotConsumer } from './RobotContext';
+import AssistantDetail from '../../components/assistant/AssistantDetail';
+import { RobotConsumer } from '../RobotContext';
 
 function AssistantDetailContainer() {
   return (

@@ -1,23 +1,12 @@
 import debounce from 'lodash/debounce';
 import Icon from 'modules/common/components/Icon';
+import { FEATURES } from 'modules/robot/constants';
+import Channel from 'modules/robot/containers/Channel';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import RTG from 'react-transition-group';
-import styled from 'styled-components';
 import { IEntry } from '../../types';
-import { Item } from '../styles';
-
-const Close = styled.div`
-  position: absolute;
-  right: 10px;
-  top: 5px;
-  font-size: 16px;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    cursor: pointer;
-    transform: scale(1.1);
-  }
-`;
+import { Close, Item } from './styles';
 
 type Props = {
   children?: React.ReactNode;
@@ -51,7 +40,16 @@ class NotifierItem extends React.Component<Props, State> {
     this.setState({ show: false });
   };
 
-  renderItemContent = (content: React.ReactNode) => {
+  generateSuggestContent = (message: string) => {
+    return (
+      <>
+        You didn't use {FEATURES[message].title} feature yet. If you want to
+        start using <Link to={FEATURES[message].url}>click here.</Link>
+      </>
+    );
+  };
+
+  renderNotifierContent = (content: React.ReactNode) => {
     const { closable = true, background } = this.props;
 
     return (
@@ -86,21 +84,44 @@ class NotifierItem extends React.Component<Props, State> {
 
     switch (action) {
       case 'featureSuggestion':
-        return this.renderItemContent(<>{data.message}</>);
+        return this.renderNotifierContent(
+          this.generateSuggestContent(data.message)
+        );
 
       case 'channelsWithoutIntegration':
         if (data.channelIds.length === 0) {
           return null;
         }
 
-        return this.renderItemContent(<>{data.channelIds}</>);
+        return this.renderNotifierContent(
+          <>
+            {data.channelIds.map(id => (
+              <Channel key={id} id={id} modalKey="showManageIntegrationModal" />
+            ))}
+            These channels have no integrations. You can start adding.
+          </>
+        );
+
+      case 'channelsWithoutMembers':
+        if (data.channelIds.length === 0) {
+          return null;
+        }
+
+        return this.renderNotifierContent(
+          <>
+            {data.channelIds.map(id => (
+              <Channel key={id} id={id} modalKey="showChannelAddModal" />
+            ))}
+            these channels have no members. You can start adding.
+          </>
+        );
 
       case 'brandsWithoutIntegration':
         if (data.brandIds.length === 0) {
           return null;
         }
 
-        return this.renderItemContent(<>{data.brandIds}</>);
+        return this.renderNotifierContent(<>{data.brandIds}</>);
 
       default:
         return null;

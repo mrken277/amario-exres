@@ -165,10 +165,6 @@ const DropIcon = styledTS<{ isOpen: boolean }>(styled.span)`
   }
 `;
 
-const HomeContainer = styled.div`
-  width: 320px;
-`;
-
 const CloseModal = styled.div`
   position: absolute;
   right: -40px;
@@ -199,6 +195,5 @@ export {
   ActivityContent,
   DropIcon,
   MiddleContent,
-  HomeContainer,
   CloseModal
 };

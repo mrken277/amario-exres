@@ -1,4 +1,8 @@
+import apolloClient from 'apolloClient';
+import gql from 'graphql-tag';
+import Alert from 'modules/common/utils/Alert';
 import * as React from 'react';
+import { mutations } from '../graphql';
 import { IEntry } from '../types';
 
 interface IState {
@@ -9,6 +13,7 @@ interface IState {
 
 interface IStore extends IState {
   changeRoute: (route: string) => void;
+  markAsNotified: (id: string) => void;
   toggleContent: () => void;
   setDatas: (data: IEntry[], route?: string) => void;
   setAction: (action: string) => void;
@@ -34,11 +39,13 @@ export class RobotProvider extends React.Component<{}, IState> {
   };
 
   setDatas = (datas: IEntry[], route?: string) => {
-    this.setState({ selectedActionDatas: datas }, () => {
-      if (route) {
-        this.changeRoute(route);
-      }
-    });
+    if (datas.length !== 0) {
+      this.setState({ selectedActionDatas: datas }, () => {
+        if (route) {
+          this.changeRoute(route);
+        }
+      });
+    }
   };
 
   setAction = (action: string) => {
@@ -52,8 +59,17 @@ export class RobotProvider extends React.Component<{}, IState> {
     }
 
     return this.changeRoute('assistant');
+  };
 
-    // this.setState({ isAssistantVisible: !this.state.isAssistantVisible, isOnboardVisible: !this.state.isOnboardVisible })
+  markNotified = (id: string) => {
+    apolloClient
+      .mutate({
+        mutation: gql(mutations.markAsNotified),
+        variables: { _id: id }
+      })
+      .then(() => {
+        Alert.success('Successfully');
+      });
   };
 
   public render() {
@@ -64,7 +80,8 @@ export class RobotProvider extends React.Component<{}, IState> {
           changeRoute: this.changeRoute,
           toggleContent: this.toggleContent,
           setDatas: this.setDatas,
-          setAction: this.setAction
+          setAction: this.setAction,
+          markAsNotified: this.markNotified
         }}
       >
         {this.props.children}

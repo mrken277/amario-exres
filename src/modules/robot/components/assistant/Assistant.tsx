@@ -1,10 +1,14 @@
 import Icon from 'modules/common/components/Icon';
-import { HomeContainer } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';
-import { Content, Greeting, NavButton } from 'modules/robot/components/styles';
+import {
+  Content,
+  ContentWrapper,
+  Greeting,
+  NavButton
+} from 'modules/robot/components/styles';
 import ActionItemData from 'modules/robot/containers/ActionItemData';
 import * as React from 'react';
-import AssistantDetail from '../../containers/AssistantDetail';
+import AssistantDetail from '../../containers/assistant/AssistantDetail';
 import ActionItem from '../ActionItem';
 
 type Props = {
@@ -15,7 +19,7 @@ type Props = {
 
 class Assistant extends React.Component<Props> {
   renderHome = () => (
-    <HomeContainer>
+    <ContentWrapper>
       <Greeting>
         {__('Hello')}! <b>{this.props.currentUser} </b>
         <span role="img" aria-label="Wave">
@@ -23,7 +27,7 @@ class Assistant extends React.Component<Props> {
         </span>
         <p>
           {__(
-            "Which feature do you want to set upI'm a bot that help you declutter database and focus on what's most important"
+            "I'm a bot that help you declutter database and focus on what's most important"
           )}
         </p>
       </Greeting>
@@ -59,7 +63,7 @@ class Assistant extends React.Component<Props> {
         icon="user-2"
         action="customerScoring"
       />
-    </HomeContainer>
+    </ContentWrapper>
   );
 
   startOnboard = () => {
@@ -88,7 +92,7 @@ class Assistant extends React.Component<Props> {
     return (
       <Content>
         <NavButton onClick={this.onHide} right={true}>
-          <Icon icon="times" size={17} />
+          <Icon icon="times" size={15} />
         </NavButton>
         {this.renderContent()}
       </Content>

@@ -1,6 +1,6 @@
 import React from 'react';
-import Assistant from '../components/assistant/Assistant';
-import { RobotConsumer } from './RobotContext';
+import Assistant from '../../components/assistant/Assistant';
+import { RobotConsumer } from '../RobotContext';
 
 type Props = {
   currentUser: string;

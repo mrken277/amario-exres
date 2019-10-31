@@ -10,14 +10,24 @@ type Props = {
 class NotifierAction extends React.Component<Props> {
   render() {
     const { entries } = this.props;
+    return (
+      <>
+        {entries.map((entry, index) => {
+          if (!entry) {
+            return null;
+          }
 
-    return entries.map((entry, index) => {
-      if (!entry) {
-        return null;
-      }
-
-      return <NotifierItem {...this.props} entry={entry} key={index} />;
-    });
+          return (
+            <NotifierItem
+              delay={index * 100}
+              {...this.props}
+              entry={entry}
+              key={index}
+            />
+          );
+        })}
+      </>
+    );
   }
 }
 

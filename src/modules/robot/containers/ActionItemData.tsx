@@ -60,16 +60,26 @@ class ActionItemContainer extends React.Component<FinalProps> {
     if (!onClick) {
       return (
         <RobotConsumer>
-          {({ setDatas, setAction }) => {
+          {({ setDatas, setAction, markAsNotified }) => {
             const handleClick = () => {
               setDatas(entries, 'assistantDetail');
+
+              entries.forEach(data => {
+                markAsNotified(data._id);
+              });
 
               if (action) {
                 setAction(action);
               }
             };
 
-            return <ActionItem {...updatedProps} onClick={handleClick} />;
+            return (
+              <ActionItem
+                disabled={entries.length === 0}
+                {...updatedProps}
+                onClick={handleClick}
+              />
+            );
           }}
         </RobotConsumer>
       );

@@ -162,7 +162,7 @@ class Onboarding extends React.Component<Props, State> {
       >
         <Content>
           <NavButton onClick={this.onHide} right={true}>
-            <Icon icon="times" size={17} />
+            <Icon icon="times" size={15} />
           </NavButton>
           {this.renderContent()}
         </Content>

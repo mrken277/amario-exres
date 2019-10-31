@@ -1,8 +1,11 @@
 import Icon from 'modules/common/components/Icon';
+import CompanyEntry from 'modules/robot/containers/assistant/CompanyEntry';
 import { IEntry } from 'modules/robot/types';
 import * as React from 'react';
-import { NavButton, Title } from '../styles';
-import { NotifyItem, NotifyList } from './styles';
+import { ContentWrapper, NavButton, Title } from '../styles';
+import MergeEntry from './MergeEntry';
+import ScoreEntry from './ScoreEntry';
+import { NotifyList } from './styles';
 
 type Props = {
   datas?: IEntry[];
@@ -11,52 +14,73 @@ type Props = {
 };
 
 class AssistantDetail extends React.Component<Props> {
+  renderContent = () => {
+    const { currentAction, datas = [] } = this.props;
+
+    if (currentAction === 'mergeCustomers') {
+      return (
+        <>
+          <Title>Customer merge</Title>
+          <p>
+            Combine real-time client and team communication with in-app
+            messaging, live chat, email and form.
+          </p>
+          <NotifyList>
+            {datas.map(item => (
+              <MergeEntry key={item._id} data={item.data} />
+            ))}
+          </NotifyList>
+        </>
+      );
+    }
+
+    if (currentAction === 'customerScoring') {
+      return (
+        <>
+          <Title>Customer score</Title>
+          <p>Score description</p>
+          <NotifyList>
+            {datas.map(item => (
+              <ScoreEntry key={item._id} data={item.data} />
+            ))}
+          </NotifyList>
+        </>
+      );
+    }
+
+    if (currentAction === 'fillCompanyInfo') {
+      return (
+        <>
+          <Title>Fill company info</Title>
+          <p>Fill company info description</p>
+          <NotifyList>
+            {datas.map(item => (
+              <CompanyEntry
+                key={item._id}
+                parentId={item._id}
+                action={item.action}
+              />
+            ))}
+          </NotifyList>
+        </>
+      );
+    }
+
+    return null;
+  };
+
   back = () => {
     this.props.changeRoute('assistant');
   };
 
   render() {
     return (
-      <>
+      <ContentWrapper>
         <NavButton onClick={this.back}>
           <Icon icon="arrow-left" size={24} />
         </NavButton>
-
-        <Title>Customer merge</Title>
-        <p>
-          Combine real-time client and team communication with in-app messaging,
-          live chat, email and form.
-        </p>
-        <NotifyList>
-          <NotifyItem>
-            <Icon icon="check-circle" />
-            <div>
-              Merged <b>Ganzorig</b> and <b>Ganzorig Bayarsaikhan</b>
-            </div>
-          </NotifyItem>
-
-          <NotifyItem>
-            <Icon icon="check-circle" />
-            <div>
-              Merged <b>Ganzorig</b> and <b>Ganzorig Bayarsaikhan</b>
-            </div>
-          </NotifyItem>
-
-          <NotifyItem>
-            <Icon icon="check-circle" />
-            <div>
-              Merged <b>Ganzorig</b> and <b>Ganzorig Bayarsaikhan</b>
-            </div>
-          </NotifyItem>
-
-          <NotifyItem>
-            <Icon icon="check-circle" />
-            <div>
-              Merged <b>Ganzorig</b> and <b>Ganzorig Bayarsaikhan</b>
-            </div>
-          </NotifyItem>
-        </NotifyList>
-      </>
+        {this.renderContent()}
+      </ContentWrapper>
     );
   }
 }

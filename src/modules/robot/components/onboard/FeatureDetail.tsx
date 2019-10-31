@@ -6,12 +6,8 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { IFeature } from '../../types';
-import { Title } from '../styles';
+import { ContentWrapper, Title } from '../styles';
 import VideoPopup from './VideoPopup';
-
-const Wrapper = styled.div`
-  width: 315px;
-`;
 
 const Checklist = styled.ul`
   padding: 0;
@@ -120,27 +116,22 @@ class FeatureDetail extends React.Component<Props> {
     }
 
     return (
-      <>
-        <Checklist>
-          {feature.settings.map((setting, index) => {
-            const detail = feature.settingsDetails[setting];
+      <Checklist>
+        {feature.settings.map((setting, index) => {
+          const detail = feature.settingsDetails[setting];
 
-            return (
-              <ChecklistItem
-                key={index}
-                isComplete={stepsCompleteness[setting]}
-              >
-                <Link to={`${detail.url}#signedIn=true`}>{detail.name}</Link>
-                {stepsCompleteness[setting] && (
-                  <span role="img" aria-label="Selebration">
-                    🎉
-                  </span>
-                )}
-              </ChecklistItem>
-            );
-          })}
-        </Checklist>
-      </>
+          return (
+            <ChecklistItem key={index} isComplete={stepsCompleteness[setting]}>
+              <Link to={`${detail.url}#signedIn=true`}>{detail.name}</Link>
+              {stepsCompleteness[setting] && (
+                <span role="img" aria-label="Selebration">
+                  🎉
+                </span>
+              )}
+            </ChecklistItem>
+          );
+        })}
+      </Checklist>
     );
   }
 
@@ -165,13 +156,13 @@ class FeatureDetail extends React.Component<Props> {
     const { feature } = this.props;
 
     return (
-      <Wrapper>
+      <ContentWrapper>
         <Title>{feature.text}</Title>
         {this.renderVideo()}
         <p>{feature.description}</p>
         {this.renderProgress()}
         {this.renderSettings()}
-      </Wrapper>
+      </ContentWrapper>
     );
   }
 }

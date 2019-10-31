@@ -6,6 +6,30 @@ export const SUGGESTION_ACTIONS = [
   'brandsWithoutIntegration'
 ];
 
+export const FEATURES = {
+  notUsingChannels: { title: 'Channels', url: '/knowledgeBase' },
+  notUsingIntegrations: {
+    title: 'Integrations',
+    url: '/settings/integrations'
+  },
+  notUsingBrands: { title: 'Brands', url: '/settings/brands' },
+  notUsingEngages: { title: 'Engages', url: '/engage' },
+  notUsingDeals: { title: 'Deals', url: '/deal/board' },
+  notUsingTasks: { title: 'Tasks', url: '/task/board' },
+  notUsingTickets: { title: 'Tickets', url: '/inbox/ticket/board' },
+  notUsingKb: { title: 'Knowledge Base', url: '/knowledgeBase' },
+  notUsingResponseTemplates: {
+    title: 'Response Template',
+    url: '/settings/response-templates'
+  },
+  notUsingEmailTemplates: {
+    title: 'Email Templates',
+    url: '/settings/email-templates'
+  },
+  notUsingEmailScripts: { title: 'Email Scripts', url: '/settings/scripts' },
+  notUsingEmailTags: { title: 'Email Tags', url: '/tags/conversation' }
+};
+
 export const FEATURE_DETAILS = {
   growthHacks: {
     text: 'Growth hacking',

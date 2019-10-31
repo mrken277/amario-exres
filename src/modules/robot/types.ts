@@ -13,6 +13,7 @@ export type IFeature = {
 };
 
 export type IEntry = {
+  _id: string;
   action: string;
   data: any;
 };

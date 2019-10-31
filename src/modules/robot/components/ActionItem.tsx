@@ -1,20 +1,44 @@
 import Icon from 'modules/common/components/Icon';
+import { dimensions } from 'modules/common/styles';
+import { darken, lighten } from 'modules/common/styles/color';
 import colors from 'modules/common/styles/colors';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
+import styledTS from 'styled-components-ts';
 import { IEntry } from '../types';
-import { Count, GroupHead } from './assistant/styles';
 
-const IconContainer = styled(Count)`
-  padding: 10px 20px;
+const IconContainer = styledTS<{ color?: string }>(styled.div)`
+  padding: ${dimensions.unitSpacing}px ${dimensions.coreSpacing}px;
+  color: ${colors.colorWhite};
+  background: ${props =>
+    `linear-gradient(195deg, ${lighten(
+      props.color || colors.colorPrimaryDark,
+      40
+    )} 0%, ${darken(props.color || colors.colorPrimaryDark, 20)} 100%);;`}
+  display: flex;
+  align-items: center;
+  font-size: 16px;
 `;
 
-const Modul = styled(GroupHead)`
+const GroupItem = styledTS<{
+  disabled?: boolean;
+  vertical?: boolean;
+  isComplete?: boolean;
+}>(styled.div)`
+  display: inline-flex;
+  background: ${colors.colorWhite};
+  border-radius: ${dimensions.unitSpacing}px;
+  box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  align-items: stretch;
+  font-weight: bold;
+  flex-direction: ${props => props.vertical && 'column'};
   width: 100%;
   margin-bottom: 15px;
-  margin-right: 20px;
+  margin-right: ${dimensions.coreSpacing}px;
   max-width: ${props => props.vertical && '30%'};
   min-width: ${props => props.vertical && '130px'};
+  position: relative;
 
   &:last-child {
     margin-right: 0;
@@ -36,12 +60,31 @@ const Modul = styled(GroupHead)`
     props.isComplete &&
     css`
       transform: scale(0.9);
-      opacity: 0.6;
+      opacity: 0.7;
+
+      &:after {
+        content: '\\ea3f';
+        font-family: 'erxes';
+        width: 20px;
+        height: 20px;
+        border-radius: ${dimensions.unitSpacing}px;
+        background: ${colors.colorCoreGreen};
+        position: absolute;
+        right: ${dimensions.unitSpacing}px;
+        top: 7px;
+        text-align: center;
+        color: ${colors.colorWhite};
+      }
     `};
+
+  &:hover {
+    cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+    box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.15);
+  }
 `;
 
 const Text = styled.div`
-  padding: 10px 15px;
+  padding: ${dimensions.unitSpacing}px 15px;
   font-weight: normal;
   flex: 1;
 
@@ -55,7 +98,7 @@ const Text = styled.div`
       color: ${colors.colorWhite};
       font-size: 8px;
       padding: 2px 5px;
-      border-radius: 10px;
+      border-radius: ${dimensions.unitSpacing}px;
       position: relative;
       top: -2px;
     }
@@ -106,7 +149,7 @@ class ActionItem extends React.Component<Props, State> {
     } = this.props;
 
     return (
-      <Modul
+      <GroupItem
         onClick={this.handleClick}
         vertical={vertical}
         isComplete={isComplete}
@@ -121,7 +164,7 @@ class ActionItem extends React.Component<Props, State> {
           </h4>
           {!vertical && <p>{description}</p>}
         </Text>
-      </Modul>
+      </GroupItem>
     );
   }
 }
