@@ -19,7 +19,7 @@ const checkStatus = `
 const markAsNotified = `
   mutation robotEntriesMarkAsNotified($_id: String) {
     robotEntriesMarkAsNotified(_id: $_id) {
-      data
+      _id
     }
   }
 `;

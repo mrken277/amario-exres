@@ -22,8 +22,8 @@ class AssistantDetail extends React.Component<Props> {
         <>
           <Title>Customer merge</Title>
           <p>
-            Combine real-time client and team communication with in-app
-            messaging, live chat, email and form.
+            We recognize the same person contacted from different channels and
+            ask you to merge their communications into one conversation.
           </p>
           <NotifyList>
             {datas.map(item => (

@@ -52,6 +52,7 @@ class Brands extends React.Component<Props, {}> {
         title="Manage Integration"
         trigger={trigger}
         size="lg"
+        autoOpenKey="showManageIntegrationModal"
         content={content}
       />
     );

@@ -1,6 +1,7 @@
 import debounce from 'lodash/debounce';
 import Icon from 'modules/common/components/Icon';
 import { FEATURES } from 'modules/robot/constants';
+import Brand from 'modules/robot/containers/Brand';
 import Channel from 'modules/robot/containers/Channel';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
@@ -15,6 +16,7 @@ type Props = {
   delay?: number;
   entry: IEntry;
   action?: string;
+  markAsNotified: (id: string) => void;
 };
 
 type State = {
@@ -38,13 +40,15 @@ class NotifierItem extends React.Component<Props, State> {
 
   close = () => {
     this.setState({ show: false });
+    console.log(this.props.entry);
+    this.props.markAsNotified(this.props.entry._id);
   };
 
   generateSuggestContent = (message: string) => {
     return (
       <>
-        You didn't use {FEATURES[message].title} feature yet. If you want to
-        start using <Link to={FEATURES[message].url}>click here.</Link>
+        We found that you haven't used {FEATURES[message].title} feature yet.
+        Please <Link to={FEATURES[message].url}>press here</Link> to explore.
       </>
     );
   };
@@ -98,7 +102,7 @@ class NotifierItem extends React.Component<Props, State> {
             {data.channelIds.map(id => (
               <Channel key={id} id={id} modalKey="showManageIntegrationModal" />
             ))}
-            These channels have no integrations. You can start adding.
+            these channels have no integrations. You can start adding.
           </>
         );
 
@@ -121,7 +125,14 @@ class NotifierItem extends React.Component<Props, State> {
           return null;
         }
 
-        return this.renderNotifierContent(<>{data.brandIds}</>);
+        return this.renderNotifierContent(
+          <>
+            {data.brandIds.map(id => (
+              <Brand key={id} id={id} modalKey="showManageIntegrationModal" />
+            ))}
+            these brands have no integrations. You can start adding.
+          </>
+        );
 
       default:
         return null;

@@ -58,11 +58,21 @@ const channelDetail = `
   }
 `;
 
+const brandDetail = `
+  query brandDetail($_id: String!) {
+    brandDetail(_id: $_id) {
+      _id
+      name
+    }
+  }
+`;
+
 export default {
   entries,
   getAvailableFeatures,
   stepsCompleteness,
   customerDetail,
   companyDetail,
-  channelDetail
+  channelDetail,
+  brandDetail
 };

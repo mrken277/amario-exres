@@ -5,6 +5,7 @@ import NotifierItem from './NotiferItem';
 type Props = {
   entries: IEntry[];
   action: string;
+  markAsNotified: (id: string) => void;
 };
 
 class NotifierAction extends React.Component<Props> {
@@ -17,14 +18,7 @@ class NotifierAction extends React.Component<Props> {
             return null;
           }
 
-          return (
-            <NotifierItem
-              delay={index * 100}
-              {...this.props}
-              entry={entry}
-              key={index}
-            />
-          );
+          return <NotifierItem {...this.props} entry={entry} key={index} />;
         })}
       </>
     );

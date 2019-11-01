@@ -5,12 +5,14 @@ import { withProps } from '../../common/utils';
 import NotifierAction from '../components/notifier/NotifierAction';
 import { queries } from '../graphql';
 import { EntriesQueryResponse } from '../types';
+import { RobotConsumer } from './RobotContext';
 
 type Props = {
   action: string;
   closable?: boolean;
   background?: string;
   delay?: number;
+  markAsNotified: (id: string) => void;
 };
 
 type FinalProps = {
@@ -32,7 +34,7 @@ class NotifierActionContainer extends React.Component<FinalProps> {
   }
 }
 
-export default withProps<Props>(
+const WithProps = withProps<Props>(
   compose(
     graphql<Props>(gql(queries.entries), {
       options: ({ action }) => ({
@@ -42,3 +44,13 @@ export default withProps<Props>(
     })
   )(NotifierActionContainer)
 );
+
+export default function WithConsumer(props: Props) {
+  return (
+    <RobotConsumer>
+      {({ markAsNotified }) => (
+        <WithProps {...props} markAsNotified={markAsNotified} />
+      )}
+    </RobotConsumer>
+  );
+}
