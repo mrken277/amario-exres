@@ -4,7 +4,7 @@ import React from 'react';
 import { IUser } from '../../auth/types';
 import { ActivityTitle, Timeline } from '../styles';
 
-// import ActivityItem from './ActivityItem';
+import ConforItem from './ConforItem';
 
 type Props = {
   activities: any[];
@@ -15,8 +15,7 @@ type Props = {
 
 class ActivityList extends React.Component<Props> {
   renderItem(data) {
-    data.map(item => console.log(item.relType));
-    // return data.map((item, index) => <ActivityItem key={index} data={item} />);
+    return data.map((item, index) => <ConforItem key={index} data={item} />);
   }
 
   renderList(activity, index) {
