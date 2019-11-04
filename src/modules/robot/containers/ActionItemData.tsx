@@ -93,7 +93,8 @@ export default withProps<Props>(
   compose(
     graphql<Props>(gql(queries.entries), {
       options: ({ action }) => ({
-        variables: { action, isNotified: false }
+        variables: { action, isNotified: false },
+        fetchPolicy: 'network-only'
       }),
       name: 'entriesQuery'
     })

@@ -7,16 +7,14 @@ type Props = {
   customer: ICustomer;
 };
 
-class Customer extends React.Component<Props> {
-  render() {
-    const { customer } = this.props;
+function Customer(props: Props) {
+  const { customer } = props;
 
-    return (
-      <Link to={`/contacts/customers/details/${customer._id}`}>
-        {renderFullName(customer)}
-      </Link>
-    );
-  }
+  return (
+    <Link to={`/contacts/customers/details/${customer._id}`}>
+      {renderFullName(customer)}
+    </Link>
+  );
 }
 
 export default Customer;

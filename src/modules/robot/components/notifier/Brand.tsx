@@ -7,17 +7,15 @@ type Props = {
   modalKey?: string;
 };
 
-class Brand extends React.PureComponent<Props> {
-  render() {
-    const { brand, modalKey } = this.props;
-    const modal = modalKey && `#${modalKey}`;
+function Brand(props: Props) {
+  const { brand, modalKey } = props;
+  const modal = modalKey && `#${modalKey}`;
 
-    return (
-      <Link to={`/settings/brands?_id=${brand._id}${modal}`}>
-        {brand.name || 'Unknown'}
-      </Link>
-    );
-  }
+  return (
+    <Link to={`/settings/brands?_id=${brand._id}${modal}`}>
+      {brand.name || 'Unknown'}
+    </Link>
+  );
 }
 
 export default Brand;

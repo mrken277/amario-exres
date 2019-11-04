@@ -13,6 +13,7 @@ type Props = {
   background?: string;
   delay?: number;
   markAsNotified: (id: string) => void;
+  iteration: number;
 };
 
 type FinalProps = {
@@ -45,7 +46,7 @@ const WithProps = withProps<Props>(
   )(NotifierActionContainer)
 );
 
-export default function WithConsumer(props: Props) {
+export default function WithConsumer(props) {
   return (
     <RobotConsumer>
       {({ markAsNotified }) => (

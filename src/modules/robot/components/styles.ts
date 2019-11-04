@@ -74,9 +74,10 @@ const Container = styled.div`
   bottom: 65px;
   left: 15px;
   z-index: 1000;
-  max-height: calc(100% - 75px);
+  max-height: calc(100% - 105px);
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 `;
 
 const Content = styled.div`
@@ -90,6 +91,7 @@ const Content = styled.div`
   bottom: 0;
   flex-direction: column;
   margin-top: 10px;
+  min-height: 140px;
 `;
 
 const SeeAll = styled.a`

@@ -7,23 +7,21 @@ type Props = {
   data: any;
 };
 
-class MergeEntry extends React.Component<Props> {
-  render() {
-    const { data } = this.props;
-    const { customerIds = [] } = data;
+function MergeEntry(props: Props) {
+  const { data } = props;
+  const { customerIds = [] } = data;
 
-    return (
-      <NotifyItem>
-        <Icon icon="cell" />
-        <div>
-          Merged{' '}
-          {customerIds.map(customerId => (
-            <Customer key={customerId} id={customerId} />
-          ))}
-        </div>
-      </NotifyItem>
-    );
-  }
+  return (
+    <NotifyItem>
+      <Icon icon="cell" />
+      <div>
+        Merged{' '}
+        {customerIds.map(customerId => (
+          <Customer key={customerId} id={customerId} />
+        ))}
+      </div>
+    </NotifyItem>
+  );
 }
 
 export default MergeEntry;

@@ -1,4 +1,5 @@
 import Icon from 'modules/common/components/Icon';
+import { __ } from 'modules/common/utils';
 import CompanyEntry from 'modules/robot/containers/assistant/CompanyEntry';
 import { IEntry } from 'modules/robot/types';
 import * as React from 'react';
@@ -20,10 +21,11 @@ class AssistantDetail extends React.Component<Props> {
     if (currentAction === 'mergeCustomers') {
       return (
         <>
-          <Title>Customer merge</Title>
+          <Title>{__('Customer merge')}</Title>
           <p>
-            We recognize the same person contacted from different channels and
-            ask you to merge their communications into one conversation.
+            {__(
+              'We recognize the same person contacted from different channels and ask you to merge their communications into one conversation'
+            )}
           </p>
           <NotifyList>
             {datas.map(item => (
@@ -37,8 +39,12 @@ class AssistantDetail extends React.Component<Props> {
     if (currentAction === 'customerScoring') {
       return (
         <>
-          <Title>Customer score</Title>
-          <p>Score description</p>
+          <Title>{__('Customer score')}</Title>
+          <p>
+            {__(
+              'Customer score measured by platform usage activity and amount of data entered by the customer'
+            )}
+          </p>
           <NotifyList>
             {datas.map(item => (
               <ScoreEntry key={item._id} data={item.data} />
@@ -51,8 +57,12 @@ class AssistantDetail extends React.Component<Props> {
     if (currentAction === 'fillCompanyInfo') {
       return (
         <>
-          <Title>Fill company info</Title>
-          <p>Fill company info description</p>
+          <Title>{__('Fill company info')}</Title>
+          <p>
+            {__(
+              "Fill out company information and you'll see the updated company information below"
+            )}
+          </p>
           <NotifyList>
             {datas.map(item => (
               <CompanyEntry

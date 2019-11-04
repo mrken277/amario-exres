@@ -6,16 +6,14 @@ type Props = {
   company: ICompany;
 };
 
-class Company extends React.Component<Props> {
-  render() {
-    const { company } = this.props;
+function Company(props: Props) {
+  const { company } = props;
 
-    return (
-      <Link to={`/contacts/companies/details/${company._id}`}>
-        {company.primaryName || company.primaryEmail || 'Unknown'}
-      </Link>
-    );
-  }
+  return (
+    <Link to={`/contacts/companies/details/${company._id}`}>
+      {company.primaryName || company.primaryEmail || 'Unknown'}
+    </Link>
+  );
 }
 
 export default Company;

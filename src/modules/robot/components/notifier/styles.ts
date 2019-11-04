@@ -44,10 +44,19 @@ const Item = styledTS<{ background?: string }>(styled.div)`
     margin: 0;
 
     a {
-      margin-right: 5px;
       font-weight: 500;
     }
   }
 `;
 
-export { Item, Close };
+const Links = styled.span`
+  > a:after {
+    content: ', ';
+  }
+
+  > a:last-of-type:after {
+    content: ' ';
+  }
+`;
+
+export { Item, Close, Links };

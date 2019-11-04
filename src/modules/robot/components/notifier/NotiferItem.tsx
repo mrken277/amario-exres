@@ -7,7 +7,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import RTG from 'react-transition-group';
 import { IEntry } from '../../types';
-import { Close, Item } from './styles';
+import { Close, Item, Links } from './styles';
 
 type Props = {
   children?: React.ReactNode;
@@ -40,7 +40,6 @@ class NotifierItem extends React.Component<Props, State> {
 
   close = () => {
     this.setState({ show: false });
-    console.log(this.props.entry);
     this.props.markAsNotified(this.props.entry._id);
   };
 
@@ -70,11 +69,11 @@ class NotifierItem extends React.Component<Props, State> {
               <Icon icon="times" />
             </Close>
           )}
-          <span role="img" aria-label="Wave">
-            👋
+          <span role="img" aria-label="Up">
+            ☝️
           </span>
           <div>
-            <h3>Oops!</h3>
+            <h3>Ouch!</h3>
             <p>{content}</p>
           </div>
         </Item>
@@ -99,10 +98,16 @@ class NotifierItem extends React.Component<Props, State> {
 
         return this.renderNotifierContent(
           <>
-            {data.channelIds.map(id => (
-              <Channel key={id} id={id} modalKey="showManageIntegrationModal" />
-            ))}
-            these channels have no integrations. You can start adding.
+            <Links>
+              {data.channelIds.map(id => (
+                <Channel
+                  key={id}
+                  id={id}
+                  modalKey="showManageIntegrationModal"
+                />
+              ))}
+            </Links>
+            these channels have no integrations.
           </>
         );
 
@@ -113,10 +118,12 @@ class NotifierItem extends React.Component<Props, State> {
 
         return this.renderNotifierContent(
           <>
-            {data.channelIds.map(id => (
-              <Channel key={id} id={id} modalKey="showChannelAddModal" />
-            ))}
-            these channels have no members. You can start adding.
+            <Links>
+              {data.channelIds.map(id => (
+                <Channel key={id} id={id} modalKey="showChannelAddModal" />
+              ))}
+            </Links>
+            these channels have no members.
           </>
         );
 
@@ -127,10 +134,12 @@ class NotifierItem extends React.Component<Props, State> {
 
         return this.renderNotifierContent(
           <>
-            {data.brandIds.map(id => (
-              <Brand key={id} id={id} modalKey="showManageIntegrationModal" />
-            ))}
-            these brands have no integrations. You can start adding.
+            <Links>
+              {data.brandIds.map(id => (
+                <Brand key={id} id={id} modalKey="showManageIntegrationModal" />
+              ))}
+            </Links>
+            these brands have no integrations.
           </>
         );
 

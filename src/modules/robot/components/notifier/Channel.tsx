@@ -7,17 +7,15 @@ type Props = {
   modalKey?: string;
 };
 
-class Channel extends React.PureComponent<Props> {
-  render() {
-    const { channel, modalKey } = this.props;
-    const modal = modalKey && `#${modalKey}`;
+function Channel(props: Props) {
+  const { channel, modalKey } = props;
+  const modal = modalKey && `#${modalKey}`;
 
-    return (
-      <Link to={`/settings/channels?_id=${channel._id}${modal}`}>
-        {channel.name || 'Unknown'}
-      </Link>
-    );
-  }
+  return (
+    <Link to={`/settings/channels?_id=${channel._id}${modal}`}>
+      {channel.name || 'Unknown'}
+    </Link>
+  );
 }
 
 export default Channel;

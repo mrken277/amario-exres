@@ -36,7 +36,11 @@ class Robot extends React.Component<Props> {
         <Container>
           {(activeRoute === 'onboardInitial' || activeRoute === 'notifier') &&
             SUGGESTION_ACTIONS.map((action, index) => (
-              <NotifierAction key={index} action={action} />
+              <NotifierAction
+                iteration={index + 1}
+                key={index}
+                action={action}
+              />
             ))}
 
           <Onboarding

@@ -2,6 +2,7 @@ import Icon from 'modules/common/components/Icon';
 import { dimensions } from 'modules/common/styles';
 import { darken, lighten } from 'modules/common/styles/color';
 import colors from 'modules/common/styles/colors';
+import { __ } from 'modules/common/utils';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import styledTS from 'styled-components-ts';
@@ -24,7 +25,9 @@ const GroupItem = styledTS<{
   disabled?: boolean;
   vertical?: boolean;
   isComplete?: boolean;
-}>(styled.div)`
+}>(styled.div).attrs({
+  title: props => (props.disabled ? __('Nothing new') : undefined)
+})`
   display: inline-flex;
   background: ${colors.colorWhite};
   border-radius: ${dimensions.unitSpacing}px;
@@ -39,6 +42,7 @@ const GroupItem = styledTS<{
   max-width: ${props => props.vertical && '30%'};
   min-width: ${props => props.vertical && '130px'};
   position: relative;
+  transition: box-shadow ease 0.3s;
 
   &:last-child {
     margin-right: 0;

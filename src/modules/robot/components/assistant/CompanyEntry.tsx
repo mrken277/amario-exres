@@ -8,32 +8,30 @@ type Props = {
   entries: IEntry[];
 };
 
-class CompanyEntry extends React.Component<Props> {
-  render() {
-    const { entries } = this.props;
+function CompanyEntry(props: Props) {
+  const { entries } = props;
 
-    return entries.map((entry, index) => {
-      const { data } = entry;
-      const modifier = data.modifier;
-      const items = Object.keys(modifier);
+  return entries.map((entry, index) => {
+    const { data } = entry;
+    const modifier = data.modifier;
+    const items = Object.keys(modifier);
 
-      return (
-        <div key={index}>
-          <Company id={data._id} />
-          {items.map(key => {
-            return (
-              <NotifyItem key={key}>
-                <Icon icon="info-circle" />
-                <div>
-                  <b>{key}</b>: <span>{modifier[key]}</span>
-                </div>
-              </NotifyItem>
-            );
-          })}
-        </div>
-      );
-    });
-  }
+    return (
+      <div key={index}>
+        <Company id={data._id} />
+        {items.map(key => {
+          return (
+            <NotifyItem key={key}>
+              <Icon icon="info-circle" />
+              <div>
+                <b>{key}</b>: <span>{modifier[key]}</span>
+              </div>
+            </NotifyItem>
+          );
+        })}
+      </div>
+    );
+  });
 }
 
 export default CompanyEntry;
