@@ -6,7 +6,7 @@ import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { ConfLogQueryResponse } from '../../customers/types';
 import ConforLogs from '../components/ConforLogs';
-import { queries } from '../graphql';
+import { queries, subscriptions } from '../graphql';
 
 type Props = {
   contentId: string;
@@ -20,16 +20,16 @@ type FinalProps = {
 } & WithDataProps;
 
 class Container extends React.Component<FinalProps, {}> {
-  // componentWillMount() {
-  //   const { activityLogQuery } = this.props;
+  componentWillMount() {
+    const { conformitiesForActivityQuery } = this.props;
 
-  //   activityLogQuery.subscribeToMore({
-  //     document: gql(subscriptions.activityLogsChanged),
-  //     updateQuery: () => {
-  //       this.props.activityLogQuery.refetch();
-  //     }
-  //   });
-  // }
+    conformitiesForActivityQuery.subscribeToMore({
+      document: gql(subscriptions.activityLogsChanged),
+      updateQuery: () => {
+        this.props.conformitiesForActivityQuery.refetch();
+      }
+    });
+  }
 
   render() {
     const {
