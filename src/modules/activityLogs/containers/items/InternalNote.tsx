@@ -1,11 +1,14 @@
 import gql from 'graphql-tag';
+import InternalNote from 'modules/activityLogs/components/items/InternalNote';
 import { queries } from 'modules/activityLogs/graphql';
+import Spinner from 'modules/common/components/Spinner';
 import { withProps } from 'modules/common/utils';
 import { InternalNoteDetailQueryResponse } from 'modules/internalNotes/types';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
 
 type Props = {
+  activity: any;
   noteId: string;
 };
 
@@ -15,14 +18,20 @@ type FinalProps = {
 
 class FormContainer extends React.Component<FinalProps> {
   render() {
-    console.log('sjdkajdkljskldj');
     const { internalNoteDetailQuery } = this.props;
+
+    if (internalNoteDetailQuery.loading) {
+      return <Spinner />;
+    }
 
     const internalNote = internalNoteDetailQuery.internalNoteDetail;
 
-    console.log(internalNote);
+    const updatedProps = {
+      ...this.props,
+      internalNote
+    };
 
-    return <div>djsakdjklsjdkl</div>;
+    return <InternalNote {...updatedProps} />;
   }
 }
 

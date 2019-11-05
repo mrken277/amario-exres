@@ -28,6 +28,7 @@ const conformitiesForActivity = `
       relTypeId
       content
       editAble
+      createdAt
       createdUser {
         details {
           avatar

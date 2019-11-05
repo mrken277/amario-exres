@@ -9,12 +9,11 @@ type Props = {
 const ConforItem = (props: Props) => {
   const { data } = props;
   const { relType, relTypeId } = data;
-
   if (relType === 'note') {
-    return <InternalNote noteId={relTypeId} />;
+    return <InternalNote noteId={relTypeId} activity={data} />;
   }
 
-  return <div>skdjsakdj</div>;
+  return <div>Task</div>;
 };
 
 export default ConforItem;
