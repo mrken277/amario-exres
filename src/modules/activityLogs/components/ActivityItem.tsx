@@ -1,4 +1,3 @@
-import { __ } from 'modules/common/utils';
 import React from 'react';
 import InternalNote from '../containers/items/InternalNote';
 import Task from '../containers/items/Task';

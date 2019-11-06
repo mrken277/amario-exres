@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { ACTIVITY_LOG_ITEMS_STYLES } from 'modules/activityLogs/constants';
 import {
   ActivityContent,
   ActivityDate,
@@ -14,6 +15,8 @@ import Tip from 'modules/common/components/Tip';
 import { IInternalNote } from 'modules/internalNotes/types';
 import React from 'react';
 import xss from 'xss';
+
+const { INTERNAl_NOTE } = ACTIVITY_LOG_ITEMS_STYLES;
 
 type Props = {
   activity: any;
@@ -43,8 +46,8 @@ class InternalNote extends React.Component<Props> {
 
     return (
       <ActivityRow key={Math.random()}>
-        <ActivityIcon color={'#F7CE53'}>
-          <Icon icon={'pushpin'} />
+        <ActivityIcon color={INTERNAl_NOTE.color}>
+          <Icon icon={INTERNAl_NOTE.icon} />
         </ActivityIcon>
         <React.Fragment>
           <FlexContent>

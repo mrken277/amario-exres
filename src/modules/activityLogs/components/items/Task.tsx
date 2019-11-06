@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { ACTIVITY_LOG_ITEMS_STYLES } from 'modules/activityLogs/constants';
 import {
   ActivityDate,
   ActivityIcon,
@@ -10,6 +11,8 @@ import Icon from 'modules/common/components/Icon';
 import Tip from 'modules/common/components/Tip';
 import { ITask } from 'modules/tasks/types';
 import React from 'react';
+
+const { TASK } = ACTIVITY_LOG_ITEMS_STYLES;
 
 type Props = {
   activity: any;
@@ -39,8 +42,8 @@ class InternalNote extends React.Component<Props> {
 
     return (
       <ActivityRow key={Math.random()}>
-        <ActivityIcon color={'#F7CE53'}>
-          <Icon icon={'clipboard-notes'} />
+        <ActivityIcon color={TASK.color}>
+          <Icon icon={TASK.icon} />
         </ActivityIcon>
         <React.Fragment>
           <FlexContent>
