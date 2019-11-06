@@ -20,8 +20,8 @@ const activityLogs = `
 `;
 
 const conformitiesForActivity = `
-  query conformitiesForActivity($contentType: String!, $contentId: String!, $activityType: String, $limit: Int) {
-    conformitiesForActivity(contentType: $contentType, contentId: $contentId, activityType: $activityType, limit: $limit) {
+  query conformitiesForActivity($conformityTypes: [String], $contentId: String!, $conformityType: String, $limit: Int) {
+    conformitiesForActivity(conformityTypes: $conformityTypes, contentId: $contentId, conformityType: $conformityType, limit: $limit) {
       mainType
       mainTypeId
       relType
@@ -40,17 +40,7 @@ const conformitiesForActivity = `
   }
 `;
 
-const internalNoteDetail = `
-  query internalNoteDetail($_id: String!) {
-    internalNoteDetail(_id: $_id) {
-      _id
-      content
-    }
-  }
-`;
-
 export default {
   conformitiesForActivity,
-  internalNoteDetail,
   activityLogs
 };

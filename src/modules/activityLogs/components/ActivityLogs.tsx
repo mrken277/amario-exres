@@ -1,4 +1,3 @@
-import ActivityList from 'modules/activityLogs/components/ActivityList';
 import { IActivityLogForMonth } from 'modules/activityLogs/types';
 import { IUser } from 'modules/auth/types';
 import DataWithLoader from 'modules/common/components/DataWithLoader';
@@ -7,6 +6,7 @@ import { ActivityContent } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';
 import { hasAnyActivity } from 'modules/customers/utils';
 import React from 'react';
+import ActivityList from './ActivityList';
 
 type Props = {
   activityLogs: IActivityLogForMonth[];
@@ -95,8 +95,8 @@ class ActivityLogs extends React.PureComponent<Props, State> {
             {__('Activity')}
           </TabTitle>
           <TabTitle
-            className={currentTab === 'internal_note' ? 'active' : ''}
-            onClick={this.onTabClick.bind(this, 'internal_note')}
+            className={currentTab === 'note' ? 'active' : ''}
+            onClick={this.onTabClick.bind(this, 'note')}
           >
             {__('Notes')}
           </TabTitle>

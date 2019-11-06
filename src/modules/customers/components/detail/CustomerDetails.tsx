@@ -80,6 +80,7 @@ class CustomerDetails extends React.Component<Props> {
           contentId={customer._id}
           contentType="customer"
           extraTabs={[
+            { name: 'task', label: 'Task' },
             { name: 'conversation', label: 'Conversation' },
             { name: 'email', label: 'Email' }
           ]}

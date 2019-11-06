@@ -68,8 +68,7 @@ export default compose(
           {
             query: gql(queries[`conformitiesForActivity`]),
             variables: {
-              contentId: props.contentTypeId,
-              contentType: props.contentType
+              contentId: props.contentTypeId
             }
           }
         ]

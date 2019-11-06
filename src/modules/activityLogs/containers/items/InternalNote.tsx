@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 import InternalNote from 'modules/activityLogs/components/items/InternalNote';
-import { queries } from 'modules/activityLogs/graphql';
 import Spinner from 'modules/common/components/Spinner';
 import { withProps } from 'modules/common/utils';
+import { queries as internalNoteQueries } from 'modules/internalNotes/graphql';
 import { InternalNoteDetailQueryResponse } from 'modules/internalNotes/types';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
@@ -13,18 +13,18 @@ type Props = {
 };
 
 type FinalProps = {
-  internalNoteDetailQuery: InternalNoteDetailQueryResponse;
+  internalNoteDetailsQuery: InternalNoteDetailQueryResponse;
 } & Props;
 
 class FormContainer extends React.Component<FinalProps> {
   render() {
-    const { internalNoteDetailQuery } = this.props;
+    const { internalNoteDetailsQuery } = this.props;
 
-    if (internalNoteDetailQuery.loading) {
+    if (internalNoteDetailsQuery.loading) {
       return <Spinner />;
     }
 
-    const internalNote = internalNoteDetailQuery.internalNoteDetail;
+    const internalNote = internalNoteDetailsQuery.internalNoteDetail;
 
     const updatedProps = {
       ...this.props,
@@ -38,9 +38,9 @@ class FormContainer extends React.Component<FinalProps> {
 export default withProps<Props>(
   compose(
     graphql<Props, InternalNoteDetailQueryResponse>(
-      gql(queries.internalNoteDetail),
+      gql(internalNoteQueries.internalNoteDetail),
       {
-        name: 'internalNoteDetailQuery',
+        name: 'internalNoteDetailsQuery',
         options: ({ noteId }) => ({
           variables: {
             _id: noteId

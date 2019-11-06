@@ -4,8 +4,8 @@ import { IUser } from 'modules/auth/types';
 import { withProps } from 'modules/common/utils';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
-import { ActivityLogQueryResponse } from '../../customers/types';
-import ActivityLogs from '../components/ActivityLogs';
+import { ConfLogQueryResponse } from '../../customers/types';
+import ConforLogs from '../components/ActivityLogs';
 import { queries, subscriptions } from '../graphql';
 
 type Props = {
@@ -16,17 +16,17 @@ type Props = {
 };
 
 type FinalProps = {
-  activityLogQuery: ActivityLogQueryResponse;
+  conformitiesForActivityQuery: ConfLogQueryResponse;
 } & WithDataProps;
 
 class Container extends React.Component<FinalProps, {}> {
   componentWillMount() {
-    const { activityLogQuery } = this.props;
+    const { conformitiesForActivityQuery } = this.props;
 
-    activityLogQuery.subscribeToMore({
+    conformitiesForActivityQuery.subscribeToMore({
       document: gql(subscriptions.activityLogsChanged),
       updateQuery: () => {
-        this.props.activityLogQuery.refetch();
+        this.props.conformitiesForActivityQuery.refetch();
       }
     });
   }
@@ -34,23 +34,23 @@ class Container extends React.Component<FinalProps, {}> {
   render() {
     const {
       target,
-      activityLogQuery,
-      onChangeActivityTab,
+      conformitiesForActivityQuery,
+      onChangeTab,
       extraTabs
     } = this.props;
 
     const props = {
       target,
-      loadingLogs: activityLogQuery.loading,
-      activityLogs: activityLogQuery.activityLogs || [],
-      onTabClick: onChangeActivityTab,
+      loadingLogs: conformitiesForActivityQuery.loading,
+      activityLogs: conformitiesForActivityQuery.conformitiesForActivity || [],
+      onTabClick: onChangeTab,
       extraTabs
     };
 
     return (
       <AppConsumer>
         {({ currentUser }) => (
-          <ActivityLogs {...props} currentUser={currentUser || ({} as IUser)} />
+          <ConforLogs {...props} currentUser={currentUser || ({} as IUser)} />
         )}
       </AppConsumer>
     );
@@ -58,22 +58,28 @@ class Container extends React.Component<FinalProps, {}> {
 }
 
 type WithDataProps = Props & {
-  onChangeActivityTab: (currentTab: string) => void;
-  activityType: string;
+  onChangeTab: (currentTab: string) => void;
+  conformityType: string;
+  conformityTypes: string[];
 };
 
 const WithData = withProps<WithDataProps>(
   compose(
-    graphql<WithDataProps, ActivityLogQueryResponse>(
-      gql(queries.activityLogs),
+    graphql<WithDataProps, ConfLogQueryResponse>(
+      gql(queries.conformitiesForActivity),
       {
-        name: 'activityLogQuery',
-        options: ({ contentId, contentType, activityType }: WithDataProps) => {
+        name: 'conformitiesForActivityQuery',
+        options: ({
+          contentId,
+          conformityType,
+          conformityTypes
+        }: WithDataProps) => {
           return {
             variables: {
               contentId,
-              contentType,
-              activityType: activityType === 'activity' ? '' : activityType
+              conformityType:
+                conformityType === 'activity' ? '' : conformityType,
+              conformityTypes
             }
           };
         }
@@ -84,31 +90,36 @@ const WithData = withProps<WithDataProps>(
 
 export default class Wrapper extends React.Component<
   Props,
-  { activityType: string }
+  { conformityType: string }
 > {
   constructor(props) {
     super(props);
 
     this.state = {
-      activityType: ''
+      conformityType: ''
     };
   }
 
-  onChangeActivityTab = (currentTab: string) => {
-    this.setState({ activityType: currentTab });
+  onChangeTab = (currentTab: string) => {
+    this.setState({ conformityType: currentTab });
   };
 
   render() {
     const { contentId, contentType, target, extraTabs } = this.props;
+
+    const conformityTypes = extraTabs.map(tabs => tabs.name);
+
+    conformityTypes.push('note');
 
     return (
       <WithData
         target={target}
         contentId={contentId}
         contentType={contentType}
+        conformityTypes={conformityTypes}
         extraTabs={extraTabs}
-        activityType={this.state.activityType}
-        onChangeActivityTab={this.onChangeActivityTab}
+        conformityType={this.state.conformityType}
+        onChangeTab={this.onChangeTab}
       />
     );
   }

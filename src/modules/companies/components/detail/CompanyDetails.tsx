@@ -1,5 +1,6 @@
 import ActivityInputs from 'modules/activityLogs/components/ActivityInputs';
 import ActivityLogs from 'modules/activityLogs/containers/ActivityLogs';
+// import ConforLogs from 'modules/activityLogs/containers/ConforLogs';
 import { IUser } from 'modules/auth/types';
 import { __ } from 'modules/common/utils';
 import { ICompany } from 'modules/companies/types';
@@ -39,6 +40,7 @@ class CompanyDetails extends React.Component<Props> {
           contentId={company._id}
           contentType="company"
           extraTabs={[
+            { name: 'task', label: 'Task' },
             { name: 'conversation', label: 'Conversation' },
             { name: 'email', label: 'Email' }
           ]}

@@ -25,7 +25,7 @@ const ActivityRowComponent = (props: Props) => {
   return (
     <ActivityRow key={Math.random()}>
       <ActivityIcon color={data.color || colors.colorCoreGray}>
-        <Icon icon={data.icon || 'clipboard-notes'} />
+        <Icon icon={'pushpin'} />
       </ActivityIcon>
       <React.Fragment>
         <FlexContent>
