@@ -38,9 +38,10 @@ const Content = styledTS<{ type?: string }>(styled.div)`
 
   h5 {
     ${props => css`
-      margin: ${props.type === 'growthHack' ? '0 20px 10px 0' : '0 0 10px 0'};
+      margin: ${props.type === 'growthHack' ? '0 20px 10px 0' : '0 0 8px 0'};
     `};
     word-break: break-word;
+    line-height: 18px;
   }
 `;
 
@@ -125,8 +126,12 @@ const Amount = styled.ul`
 const Body = styled.div`
   max-height: 100%;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   margin: 0 4px;
+
+  &:hover {
+    overflow-y: auto;
+  }
 `;
 
 const AddNew = styled.a`
