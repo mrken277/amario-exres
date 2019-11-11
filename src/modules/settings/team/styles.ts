@@ -39,12 +39,9 @@ const FlexRow = styled.div`
 `;
 
 const RemoveRow = styled.a`
-  position: absolute;
-  right: 0;
   top: ${dimensions.unitSpacing + 2}px;
   margin-left: ${dimensions.unitSpacing}px;
   padding: ${dimensions.unitSpacing / 2}px;
-  font-size: 10px;
   color: ${colors.colorCoreDarkGray};
 
   &:hover {
@@ -56,13 +53,6 @@ const RemoveRow = styled.a`
 const UserAvatar = styled.td`
   &:hover {
     cursor: pointer;
-  }
-`;
-
-const AlignedTd = styled.td`
-  > * {
-    vertical-align: middle;
-    margin-left: ${dimensions.unitSpacing}px;
   }
 `;
 
@@ -83,7 +73,6 @@ export {
   FlexRow,
   ButtonContainer,
   UserAvatar,
-  AlignedTd,
   LinkButton,
   RemoveRow,
   InviteOption

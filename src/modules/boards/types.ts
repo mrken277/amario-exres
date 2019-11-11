@@ -99,6 +99,20 @@ export interface IStage {
   formId: string;
 }
 
+export interface IPipelineLabel {
+  _id?: string;
+  name: string;
+  colorCode: string;
+  pipelineId?: string;
+  createdBy?: string;
+  createdAt?: Date;
+}
+
+export interface IPipelineLabelVariables {
+  name: string;
+  colorCode: string;
+  pipelineId: string;
+}
 export interface IItem {
   _id: string;
   name: string;
@@ -112,6 +126,7 @@ export interface IItem {
   companies: ICompany[];
   customers: ICustomer[];
   attachments?: IAttachment[];
+  labels: IPipelineLabel[];
   pipeline: IPipeline;
   stage?: IStage;
   isWatched?: boolean;
@@ -119,6 +134,7 @@ export interface IItem {
   hasNotified?: boolean;
   isComplete: boolean;
   reminderMinute: number;
+  labelIds: string[];
 }
 
 export interface IDraggableLocation {
@@ -158,11 +174,6 @@ export type PipelinesQueryResponse = {
   pipelines: IPipeline[];
   loading: boolean;
   refetch: ({ boardId }: { boardId?: string }) => Promise<any>;
-};
-
-export type TemplatesQueryResponse = {
-  growthHackTemplates: IPipeline[];
-  loading: boolean;
 };
 
 export type StagesQueryResponse = {
@@ -218,6 +229,54 @@ export type DetailQueryResponse = {
   loading: boolean;
 };
 
+// query response
+export type PipelineLabelsQueryResponse = {
+  pipelineLabels: IPipelineLabel[];
+  loading: boolean;
+  refetch: () => void;
+};
+
+export type PipelineLabelDetailQueryResponse = {
+  pipelineLabelDetail: IPipelineLabel;
+  loading: boolean;
+  refetch: () => void;
+};
+
+// mutation response
+export type AddPipelineLabelMutationResponse = (
+  { variables: IPipelineLabelVariables }
+) => Promise<any>;
+
+export type EditPipelineLabelMutationResponse = (
+  { variables: EditMutationVariables }
+) => Promise<any>;
+
+export type RemovePipelineLabelMutationVariables = {
+  _id: string;
+};
+
+export type RemovePipelineLabelMutationResponse = {
+  removeMutation: (
+    params: {
+      variables: RemovePipelineLabelMutationVariables;
+    }
+  ) => Promise<void>;
+};
+
+export type PipelineLabelMutationVariables = {
+  pipelineId: string;
+  targetId: string;
+  labelIds: string[];
+};
+
+export type PipelineLabelMutationResponse = {
+  pipelineLabelMutation: (
+    params: {
+      variables: PipelineLabelMutationVariables;
+    }
+  ) => Promise<any>;
+};
+
 export interface IFilterParams extends ISavedConformity {
   itemId?: string;
   search?: string;
@@ -230,25 +289,13 @@ export interface IFilterParams extends ISavedConformity {
   nextMonth?: string;
   noCloseDate?: string;
   overdue?: string;
+  labelIds?: string;
 }
 
 export interface IEditFormContent {
   state: any;
-  onChangeAttachment: (attachments: IAttachment[]) => void;
-  onChangeField: (
-    name:
-      | 'name'
-      | 'stageId'
-      | 'description'
-      | 'closeDate'
-      | 'assignedUserIds'
-      | 'customers'
-      | 'companies'
-      | 'isComplete'
-      | 'reminderMinute',
-    value: any
-  ) => void;
+  saveItem: (doc: { [key: string]: any }) => void;
+  onChangeStage: (stageId: string) => void;
   copy: () => void;
   remove: (id: string) => void;
-  onBlurFields: (name: string, value: string) => void;
 }

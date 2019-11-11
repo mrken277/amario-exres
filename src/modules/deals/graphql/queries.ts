@@ -13,6 +13,10 @@ const commonParams = `
   $noCloseDate: String,
   $overdue: String,
   $productIds: [String],
+  $labelIds: [String],
+  $search: String,
+  $date: ItemDate,
+  $pipelineId: String,
   ${conformityQueryFields}
 `;
 
@@ -26,6 +30,10 @@ const commonParamDefs = `
   noCloseDate: $noCloseDate,
   overdue: $overdue,
   productIds: $productIds,
+  labelIds: $labelIds,
+  search: $search,
+  date: $date,
+  pipelineId: $pipelineId,
   ${conformityQueryFieldDefs}
 `;
 
@@ -65,6 +73,12 @@ export const dealFields = `
       avatar
     }
   }
+  labels {
+    _id
+    name
+    colorCode
+  }
+  labelIds
   stage {
     probability
     name
@@ -84,13 +98,9 @@ export const dealFields = `
 
 const dealsTotalAmounts = `
   query dealsTotalAmounts(
-    $date: ItemDate
-    $pipelineId: String
     ${commonParams}
   ) {
     dealsTotalAmounts(
-      date: $date
-      pipelineId: $pipelineId
       ${commonParamDefs}
     ) {
       _id
@@ -110,20 +120,14 @@ const dealsTotalAmounts = `
 const deals = `
   query deals(
     $initialStageId: String,
-    $pipelineId: String,
     $stageId: String,
-    $date: ItemDate,
     $skip: Int,
-    $search: String
     ${commonParams}
   ) {
     deals(
-      pipelineId: $pipelineId,
       initialStageId: $initialStageId,
       stageId: $stageId,
-      date: $date,
       skip: $skip,
-      search: $search
       ${commonParamDefs}
     ) {
       ${dealFields}

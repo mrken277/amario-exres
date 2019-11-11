@@ -10,7 +10,7 @@ import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
 import { MESSAGE_KINDS } from 'modules/engage/constants';
 import React from 'react';
-import { EngageTitle, HelperText } from '../styles';
+import { HelperText, RowTitle } from '../styles';
 import { IEngageMessage, IEngageMessenger } from '../types';
 
 type Props = {
@@ -139,12 +139,12 @@ class Row extends React.Component<Props> {
           />
         </td>
         <td>
-          <EngageTitle onClick={this.onClick}>{message.title}</EngageTitle>
+          <RowTitle onClick={this.onClick}>{message.title}</RowTitle>
           {message.isDraft ? <Label lblStyle="primary">Draft</Label> : null}
           {this.renderRules()}
         </td>
         <td className="text-normal">
-          <NameCard user={message.fromUser} avatarSize={30} singleLine={true} />
+          <NameCard user={message.fromUser} avatarSize={30} />
         </td>
         <td>{status}</td>
         <td className="text-primary">

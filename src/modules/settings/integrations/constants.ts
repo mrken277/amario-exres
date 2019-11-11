@@ -69,8 +69,13 @@ export const KIND_CHOICES = {
   FACEBOOK_POST: 'facebook-post',
   GMAIL: 'gmail',
   NYLAS_GMAIL: 'nylas-gmail',
+  NYLAS_IMAP: 'nylas-imap',
+  NYLAS_OUTLOOK: 'nylas-outlook',
+  NYLAS_OFFICE365: 'nylas-office365',
+  NYLAS_YAHOO: 'nylas-yahoo',
   LEAD: 'lead',
   CALLPRO: 'callpro',
+  TWITTER_DM: 'twitter-dm',
   CHATFUEL: 'chatfuel',
   ALL_LIST: [
     'messenger',
@@ -78,9 +83,13 @@ export const KIND_CHOICES = {
     'facebook-messenger',
     'lead',
     'callpro',
+    'twitter-dm',
     'chatfuel',
     'gmail',
-    'nylas-gmail'
+    'nylas-gmail',
+    'nylas-imap',
+    'nylas-office365',
+    'nylas-outlook'
   ]
 };
 
@@ -173,6 +182,24 @@ export const INTEGRATIONS = [
     name: 'row-2',
     rows: [
       {
+        name: 'IMAP by Nylas',
+        description: 'Connect your custom mail server',
+        inMessenger: false,
+        kind: 'nylas-imap',
+        logo: '/images/integrations/email.png',
+        createModal: 'nylas-imap',
+        createUrl: '/settings/integrations/nylas-imap'
+      },
+      {
+        name: 'Office 365 by Nylas',
+        description: 'Connect your office 365 mail server',
+        inMessenger: false,
+        kind: 'nylas-office365',
+        logo: '/images/integrations/office365.png',
+        createModal: 'nylas-office365',
+        createUrl: '/settings/integrations/nylas-office365'
+      },
+      {
         name: 'Gmail by Nylas',
         description:
           'Connect straight to your gmail and get those emails going powered by Nylas',
@@ -190,6 +217,31 @@ export const INTEGRATIONS = [
         logo: '/images/integrations/lead.png',
         createModal: 'lead',
         createUrl: '/settings/integrations/lead'
+      }
+    ]
+  },
+  {
+    name: 'row-3',
+    rows: [
+      {
+        name: 'Outlook by Nylas',
+        description:
+          'Connect straight to your outlook and get those emails going powered by Nylas',
+        inMessenger: false,
+        kind: 'nylas-outlook',
+        logo: '/images/integrations/outlook.png',
+        createModal: 'nylas-outlook',
+        createUrl: '/settings/integrations/nylas-outlook'
+      },
+      {
+        name: 'Yahoo by Nylas',
+        description:
+          'Connect straight to your yahoo and get those emails going powered by Nylas',
+        inMessenger: false,
+        kind: 'nylas-yahoo',
+        logo: '/images/integrations/yahoo.png',
+        createModal: 'nylas-yahoo',
+        createUrl: '/settings/integrations/nylas-yahoo'
       },
       {
         name: 'Knowledge Base',
@@ -212,7 +264,7 @@ export const INTEGRATIONS = [
     ]
   },
   {
-    name: 'row-3',
+    name: 'row-4',
     rows: [
       {
         name: 'Call Pro',
@@ -221,6 +273,14 @@ export const INTEGRATIONS = [
         kind: 'callpro',
         logo: '/images/integrations/callpro.png',
         createModal: 'callpro'
+      },
+      {
+        name: 'Twitter',
+        description: 'Connect to your twitter DMs here in your Inbox',
+        inMessenger: false,
+        kind: 'twitter-dm',
+        logo: '/images/integrations/twitter.png',
+        createModal: 'twitter'
       },
       {
         name: 'Chatfuel',
@@ -234,7 +294,7 @@ export const INTEGRATIONS = [
   },
   {
     title: 'Coming soon',
-    name: 'row-4',
+    name: 'row-5',
     rows: [
       {
         name: 'Viber',

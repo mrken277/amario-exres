@@ -29,8 +29,7 @@ export const ScrolledContent = styled.div`
   padding: 4px 0 8px;
   margin: 6px 10px 4px 5px;
   flex: 1;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto;
 `;
 
 export const RootBack = styled.div`
@@ -47,7 +46,7 @@ export const DropZone = styled.div`
 `;
 
 export const EmptyContainer = styled.div`
-  height: 160px;
+  height: 100px;
 `;
 
 export const Wrapper = styledTS<{ isDraggingOver: boolean }>(styled.div)`

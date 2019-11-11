@@ -27,6 +27,10 @@ const Right = styled.div`
   float: right;
 `;
 
+const Actions = styled.div`
+  margin-bottom: ${dimensions.coreSpacing}px;
+`;
+
 const Footer = styled.div`
   padding-top: 8px;
   margin-top: 8px;
@@ -48,7 +52,6 @@ const HeaderRow = styled(FlexContent)`
 
 const HeaderContent = styled.div`
   flex: 1;
-  font-size: 16px;
 
   textarea {
     border-bottom: none;
@@ -197,6 +200,7 @@ const RightButton = styled(Button)`
   > i {
     color: ${colors.textPrimary};
     margin-right: 5px;
+    font-size: 14px;
   }
 
   &:hover {
@@ -227,6 +231,7 @@ const MoveFormContainer = styled.div`
 
 const PipelineName = styled.div`
   font-weight: bold;
+  font-size: 15px;
 
   &:hover {
     cursor: pointer;
@@ -317,8 +322,6 @@ const Avatar = styled.img`
   margin-right: 5px;
 `;
 
-const AddContainer = styled.form``;
-
 const Status = styled.div`
   margin-bottom: 4px;
   overflow: hidden;
@@ -343,6 +346,7 @@ export {
   RightButton,
   MoveFormContainer,
   PipelineName,
+  Actions,
   FormFooter,
   FlexContent,
   LeftContainer,
@@ -353,7 +357,6 @@ export {
   SelectOption,
   SelectValue,
   Avatar,
-  AddContainer,
   Status,
   PriceContainer,
   Right,

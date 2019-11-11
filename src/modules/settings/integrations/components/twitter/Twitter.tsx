@@ -1,13 +1,13 @@
 import FormControl from 'modules/common/components/form/Control';
-import CommonForm from 'modules/common/components/form/Form';
+import Form from 'modules/common/components/form/Form';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
 import Spinner from 'modules/common/components/Spinner';
 import { ModalFooter } from 'modules/common/styles/main';
 import { IButtonMutateProps, IFormProps } from 'modules/common/types';
 import * as React from 'react';
-import Accounts from '../../../containers/Accounts';
-import SelectBrand from '../../../containers/SelectBrand';
+import Accounts from '../../containers/Accounts';
+import SelectBrand from '../../containers/SelectBrand';
 
 type Props = {
   renderButton: (props: IButtonMutateProps) => JSX.Element;
@@ -15,10 +15,10 @@ type Props = {
   onRemoveAccount: (accountId: string) => void;
   closeModal: () => void;
   accountId: string;
-  email?: string;
+  twitterAccountId: string;
 };
 
-class Form extends React.Component<Props, { loading: boolean }> {
+class Twitter extends React.Component<Props, { loading: boolean }> {
   constructor(props: Props) {
     super(props);
 
@@ -28,13 +28,13 @@ class Form extends React.Component<Props, { loading: boolean }> {
   }
 
   generateDoc = (values: { name: string; brandId: string }) => {
-    const { accountId, email } = this.props;
+    const { accountId, twitterAccountId } = this.props;
 
     return {
       ...values,
-      kind: 'nylas-gmail',
+      kind: 'twitter-dm',
       accountId,
-      data: { email }
+      data: { twitterAccountId }
     };
   };
 
@@ -53,8 +53,8 @@ class Form extends React.Component<Props, { loading: boolean }> {
         <SelectBrand isRequired={true} formProps={formProps} />
 
         <Accounts
-          kind="nylas-gmail"
-          addLink="nylas/oauth2/callback"
+          kind="twitter"
+          addLink="twitter/login"
           onSelect={onAccountSelect}
           onRemove={onRemoveAccount}
           formProps={formProps}
@@ -73,8 +73,8 @@ class Form extends React.Component<Props, { loading: boolean }> {
   };
 
   render() {
-    return <CommonForm renderContent={this.renderContent} />;
+    return <Form renderContent={this.renderContent} />;
   }
 }
 
-export default Form;
+export default Twitter;

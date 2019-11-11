@@ -3,48 +3,60 @@ import ActivityLogs from 'modules/activityLogs/containers/ActivityLogs';
 import React from 'react';
 
 import { IItem } from 'modules/boards/types';
+import Checklists from 'modules/checklists/containers/Checklists';
 import FormControl from 'modules/common/components/form/Control';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
 import Icon from 'modules/common/components/Icon';
 import Uploader from 'modules/common/components/Uploader';
 import { IAttachment } from 'modules/common/types';
-import { __ } from 'modules/common/utils';
+import { __, extractAttachment } from 'modules/common/utils';
 import { LeftContainer, TitleRow } from '../../styles/item';
+import Labels from '..//label/Labels';
 
 type Props = {
   item: IItem;
-  onChangeField: (name: 'description', value: any) => void;
+  saveItem: (doc: { [key: string]: any }) => void;
   type: string;
-  description: string;
-  onChangeAttachment: (attachments: IAttachment[]) => void;
-  attachments: IAttachment[];
-  onBlurFields: (name: 'description' | 'name', value: string) => void;
 };
 
 class Left extends React.Component<Props> {
   render() {
-    const {
-      item,
-      onChangeField,
-      attachments,
-      onChangeAttachment,
-      description,
-      type
-    } = this.props;
+    const { item, saveItem, type } = this.props;
 
-    const descriptionOnChange = e =>
-      onChangeField('description', (e.target as HTMLInputElement).value);
+    const descriptionOnBlur = e => {
+      const description = e.target.value;
 
-    const descriptionOnBlur = e =>
-      this.props.onBlurFields('description', e.target.value);
+      if (item.description !== description) {
+        saveItem({ description: e.target.value });
+      }
+    };
+
+    const onChangeAttachment = (files: IAttachment[]) =>
+      saveItem({ attachments: files });
+
+    const attachments =
+      (item.attachments && extractAttachment(item.attachments)) || [];
 
     return (
       <LeftContainer>
+        {item.labels.length > 0 && (
+          <FormGroup>
+            <TitleRow>
+              <ControlLabel>
+                <Icon icon="tag-alt" />
+                {__('Labels')}
+              </ControlLabel>
+            </TitleRow>
+
+            <Labels labels={item.labels} />
+          </FormGroup>
+        )}
+
         <FormGroup>
           <TitleRow>
             <ControlLabel>
-              <Icon icon="attach" />
+              <Icon icon="paperclip" />
               {__('Attachments')}
             </ControlLabel>
           </TitleRow>
@@ -65,11 +77,13 @@ class Left extends React.Component<Props> {
 
           <FormControl
             componentClass="textarea"
-            defaultValue={description}
-            onChange={descriptionOnChange}
+            defaultValue={item.description}
             onBlur={descriptionOnBlur}
+            autoFocus={true}
           />
         </FormGroup>
+
+        <Checklists contentType={type} contentTypeId={item._id} />
 
         <ActivityInputs
           contentTypeId={item._id}
