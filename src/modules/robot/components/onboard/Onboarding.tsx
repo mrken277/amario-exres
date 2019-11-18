@@ -3,7 +3,7 @@ import Icon from 'modules/common/components/Icon';
 import { __ } from 'modules/common/utils';
 import React from 'react';
 import RTG from 'react-transition-group';
-import FeatureDetail from '../../containers/FeatureDetail';
+import FeatureDetail from '../../containers/onboard/FeatureDetail';
 import { IFeature } from '../../types';
 import { getCurrentUserName } from '../../utils';
 import ActionItem from '../ActionItem';

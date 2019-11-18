@@ -6,15 +6,17 @@ import {
   Greeting,
   NavButton
 } from 'modules/robot/components/styles';
-import ActionItemData from 'modules/robot/containers/ActionItemData';
+import { JOB_DETAILS } from 'modules/robot/constants';
 import * as React from 'react';
-import AssistantDetail from '../../containers/assistant/AssistantDetail';
+import JobItem from '../../containers/assistant/JobItem';
 import ActionItem from '../ActionItem';
+import JobDetail from './JobDetail';
 
 type Props = {
   changeRoute: (route: string) => void;
   currentUser: string;
   currentRoute: string;
+  jobs: string[];
 };
 
 class Assistant extends React.Component<Props> {
@@ -40,29 +42,20 @@ class Assistant extends React.Component<Props> {
         onClick={this.startOnboard}
       />
 
-      <ActionItemData
-        title="Customer merge"
-        description={__('Automatically merge same people')}
-        icon="users"
-        color="#ec542b"
-        action="mergeCustomers"
-      />
+      {this.props.jobs.map((job, index) => {
+        const jobDetail = JOB_DETAILS[job];
 
-      <ActionItemData
-        title="Company meta"
-        description={__('Automatically retrive company info')}
-        color="#3599cb"
-        action="fillCompanyInfo"
-        icon="briefcase"
-      />
-
-      <ActionItemData
-        title="Customer Scoring"
-        description={__('Customer scoring depends on activity')}
-        color="#27b553"
-        icon="user-2"
-        action="customerScoring"
-      />
+        return (
+          <JobItem
+            job={job}
+            key={index}
+            title={jobDetail.title}
+            description={__(jobDetail.description)}
+            icon={jobDetail.icon}
+            color={jobDetail.color}
+          />
+        );
+      })}
     </ContentWrapper>
   );
 
@@ -71,10 +64,10 @@ class Assistant extends React.Component<Props> {
   };
 
   renderContent = () => {
-    const { currentRoute } = this.props;
+    const { currentRoute, changeRoute } = this.props;
 
-    if (currentRoute === 'assistantDetail') {
-      return <AssistantDetail />;
+    if (currentRoute === 'assistant-jobDetail') {
+      return <JobDetail changeRoute={changeRoute} />;
     }
 
     if (currentRoute === 'assistant') {

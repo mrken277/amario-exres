@@ -1,10 +1,8 @@
 import { IUser } from 'modules/auth/types';
 import * as React from 'react';
 import RTG from 'react-transition-group';
-import { SUGGESTION_ACTIONS } from '../constants';
 import Assistant from '../containers/assistant/Assistant';
-import NotifierAction from '../containers/NotifierAction';
-import Onboarding from '../containers/Onboarding';
+import Onboarding from '../containers/onboard/Onboarding';
 import { getCurrentUserName } from '../utils';
 import { Bot, Container } from './styles';
 
@@ -34,15 +32,6 @@ class Robot extends React.Component<Props> {
         </RTG.CSSTransition>
 
         <Container>
-          {(activeRoute === 'onboardInitial' || activeRoute === 'notifier') &&
-            SUGGESTION_ACTIONS.map((action, index) => (
-              <NotifierAction
-                iteration={index + 1}
-                key={index}
-                action={action}
-              />
-            ))}
-
           <Onboarding
             show={activeRoute.startsWith('onboard')}
             changeRoute={changeRoute}

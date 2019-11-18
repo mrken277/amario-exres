@@ -3,20 +3,17 @@ import gql from 'graphql-tag';
 import Alert from 'modules/common/utils/Alert';
 import * as React from 'react';
 import { mutations } from '../graphql';
-import { IEntry } from '../types';
 
 interface IState {
   activeRoute: string | '';
-  currentAction: string;
-  selectedActionDatas: IEntry[] | undefined;
+  currentJob?: string;
 }
 
 interface IStore extends IState {
   changeRoute: (route: string) => void;
   markAsNotified: (id: string) => void;
   toggleContent: () => void;
-  setDatas: (data: IEntry[], route?: string) => void;
-  setAction: (action: string) => void;
+  setCurrentJob: (job: string) => void;
 }
 
 const RobotContext = React.createContext({} as IStore);
@@ -29,8 +26,7 @@ export class RobotProvider extends React.Component<{}, IState> {
 
     this.state = {
       activeRoute: 'onboardInitial',
-      selectedActionDatas: undefined,
-      currentAction: ''
+      currentJob: ''
     };
   }
 
@@ -38,18 +34,8 @@ export class RobotProvider extends React.Component<{}, IState> {
     this.setState({ activeRoute: route });
   };
 
-  setDatas = (datas: IEntry[], route?: string) => {
-    if (datas.length !== 0) {
-      this.setState({ selectedActionDatas: datas }, () => {
-        if (route) {
-          this.changeRoute(route);
-        }
-      });
-    }
-  };
-
-  setAction = (action: string) => {
-    this.setState({ currentAction: action });
+  setCurrentJob = (job: string) => {
+    this.setState({ currentJob: job });
   };
 
   toggleContent = () => {
@@ -79,8 +65,7 @@ export class RobotProvider extends React.Component<{}, IState> {
           ...this.state,
           changeRoute: this.changeRoute,
           toggleContent: this.toggleContent,
-          setDatas: this.setDatas,
-          setAction: this.setAction,
+          setCurrentJob: this.setCurrentJob,
           markAsNotified: this.markNotified
         }}
       >

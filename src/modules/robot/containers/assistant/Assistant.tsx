@@ -1,3 +1,4 @@
+import { JOBS } from 'modules/robot/constants';
 import React from 'react';
 import Assistant from '../../components/assistant/Assistant';
 import { RobotConsumer } from '../RobotContext';
@@ -12,6 +13,7 @@ function AssistantContainer(props: Props) {
       {({ activeRoute, changeRoute }) => (
         <Assistant
           {...props}
+          jobs={JOBS}
           currentRoute={activeRoute}
           changeRoute={changeRoute}
         />

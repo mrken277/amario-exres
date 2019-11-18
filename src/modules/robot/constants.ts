@@ -1,11 +1,5 @@
 import colors from 'modules/common/styles/colors';
 
-export const SUGGESTION_ACTIONS = [
-  'featureSuggestion',
-  'channelsWithoutIntegration',
-  'brandsWithoutIntegration'
-];
-
 export const FEATURES = {
   notUsingChannels: { title: 'Channels', url: '/knowledgeBase' },
   notUsingIntegrations: {
@@ -355,5 +349,32 @@ export const FEATURE_DETAILS = {
         url: '/settings/importHistories?type=company'
       }
     }
+  }
+};
+
+export const JOBS = [
+  'mergeCustomers',
+  'companyMetaExtraction',
+  'customerScoring'
+];
+
+export const JOB_DETAILS = {
+  mergeCustomers: {
+    title: 'Customer merge',
+    description: 'Automatically merge same people',
+    icon: 'users',
+    color: '#ec542b'
+  },
+  companyMetaExtraction: {
+    title: 'Company meta',
+    description: 'Automatically retrive company info',
+    icon: 'briefcase',
+    color: '#3599cb'
+  },
+  customerScoring: {
+    title: 'Customer Scoring',
+    description: 'Customer scoring depends on activity',
+    icon: 'user-2',
+    color: '#27b553'
   }
 };
