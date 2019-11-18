@@ -3,6 +3,7 @@ const getJobs = `
     robotGetJobs(type: $type, isNotified: $isNotified, parentId: $parentId) {
       _id
       content
+      isNotified
     }
   }
 `;

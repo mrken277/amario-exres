@@ -1,8 +1,4 @@
-import apolloClient from 'apolloClient';
-import gql from 'graphql-tag';
-import Alert from 'modules/common/utils/Alert';
 import * as React from 'react';
-import { mutations } from '../graphql';
 
 interface IState {
   activeRoute: string | '';
@@ -11,7 +7,6 @@ interface IState {
 
 interface IStore extends IState {
   changeRoute: (route: string) => void;
-  markAsNotified: (id: string) => void;
   toggleContent: () => void;
   selectJobType: (job: string) => void;
 }
@@ -47,17 +42,6 @@ export class RobotProvider extends React.Component<{}, IState> {
     return this.changeRoute('assistant');
   };
 
-  markNotified = (id: string) => {
-    apolloClient
-      .mutate({
-        mutation: gql(mutations.markAsNotified),
-        variables: { _id: id }
-      })
-      .then(() => {
-        Alert.success('Successfully');
-      });
-  };
-
   public render() {
     return (
       <RobotContext.Provider
@@ -65,8 +49,7 @@ export class RobotProvider extends React.Component<{}, IState> {
           ...this.state,
           changeRoute: this.changeRoute,
           toggleContent: this.toggleContent,
-          selectJobType: this.selectJobType,
-          markAsNotified: this.markNotified
+          selectJobType: this.selectJobType
         }}
       >
         {this.props.children}

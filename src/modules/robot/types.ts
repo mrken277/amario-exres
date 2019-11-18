@@ -39,6 +39,7 @@ export type ForceCompleteMutationResponse = {
 export type IRobotJob = {
   _id: string;
   content: string;
+  isNotified: boolean;
 };
 
 export type IRobotJobDetails = {

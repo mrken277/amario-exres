@@ -103,8 +103,17 @@ const SeeAll = styled.a`
   }
 `;
 
+const Job = styledTS<{ isNotified }>(styled.div)`
+  padding: 2px 4px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: ${props => `1px solid ${props.isNotified ? '#dfdfdf' : '#e41f1f'}`};
+`;
+
 export {
   Bot,
+  Job,
   Greeting,
   ContentWrapper,
   Title,

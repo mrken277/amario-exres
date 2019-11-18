@@ -38,7 +38,7 @@ export default withProps<Props>(
   compose(
     graphql<Props>(gql(queries.getJobs), {
       options: ({ jobType }) => ({
-        variables: { type: jobType, isNotified: false },
+        variables: { type: jobType },
         fetchPolicy: 'network-only'
       }),
       name: 'jobsQuery'
