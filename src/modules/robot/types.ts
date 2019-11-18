@@ -12,12 +12,6 @@ export type IFeature = {
   showSettings: boolean;
 };
 
-export type IEntry = {
-  _id: string;
-  action: string;
-  data: any;
-};
-
 export type StepsCompletenessQueryResponse = {
   onboardingStepsCompleteness: { [key: string]: boolean };
   subscribeToMore: any;
@@ -30,10 +24,6 @@ export type GetAvailableFeaturesQueryResponse = {
   subscribeToMore: any;
   loading: boolean;
   refetch: () => void;
-};
-
-export type EntriesQueryResponse = {
-  robotEntries: IEntry[];
 };
 
 export type CompleteShowStepMutationResponse = {

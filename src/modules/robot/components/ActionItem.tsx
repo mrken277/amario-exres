@@ -6,7 +6,6 @@ import { __ } from 'modules/common/utils';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import styledTS from 'styled-components-ts';
-import { IEntry } from '../types';
 
 const IconContainer = styledTS<{ color?: string }>(styled.div)`
   padding: ${dimensions.unitSpacing}px ${dimensions.coreSpacing}px;
@@ -123,7 +122,6 @@ type Props = {
   onClick?: () => void;
   isComplete?: boolean;
   disabled?: boolean;
-  entries?: IEntry[];
   count?: number | null;
 };
 
