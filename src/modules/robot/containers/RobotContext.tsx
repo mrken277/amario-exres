@@ -6,14 +6,14 @@ import { mutations } from '../graphql';
 
 interface IState {
   activeRoute: string | '';
-  currentJob?: string;
+  selectedJobType?: string;
 }
 
 interface IStore extends IState {
   changeRoute: (route: string) => void;
   markAsNotified: (id: string) => void;
   toggleContent: () => void;
-  setCurrentJob: (job: string) => void;
+  selectJobType: (job: string) => void;
 }
 
 const RobotContext = React.createContext({} as IStore);
@@ -26,7 +26,7 @@ export class RobotProvider extends React.Component<{}, IState> {
 
     this.state = {
       activeRoute: 'onboardInitial',
-      currentJob: ''
+      selectedJobType: ''
     };
   }
 
@@ -34,8 +34,8 @@ export class RobotProvider extends React.Component<{}, IState> {
     this.setState({ activeRoute: route });
   };
 
-  setCurrentJob = (job: string) => {
-    this.setState({ currentJob: job });
+  selectJobType = (jobType: string) => {
+    this.setState({ selectedJobType: jobType });
   };
 
   toggleContent = () => {
@@ -65,7 +65,7 @@ export class RobotProvider extends React.Component<{}, IState> {
           ...this.state,
           changeRoute: this.changeRoute,
           toggleContent: this.toggleContent,
-          setCurrentJob: this.setCurrentJob,
+          selectJobType: this.selectJobType,
           markAsNotified: this.markNotified
         }}
       >

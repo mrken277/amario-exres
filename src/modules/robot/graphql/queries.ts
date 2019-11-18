@@ -1,9 +1,8 @@
-const jobDetail = `
-  query robotEntries($action: String, $isNotified: Boolean, $parentId: String) {
-    robotEntries(action: $action, isNotified: $isNotified, parentId: $parentId) {
+const getJobs = `
+  query robotGetJobs($type: String, $isNotified: Boolean, $parentId: String) {
+    robotGetJobs(type: $type, isNotified: $isNotified, parentId: $parentId) {
       _id
-      action
-      data
+      content
     }
   }
 `;
@@ -26,7 +25,7 @@ const getAvailableFeatures = `
 `;
 
 export default {
-  jobDetail,
+  getJobs,
   getAvailableFeatures,
   stepsCompleteness
 };

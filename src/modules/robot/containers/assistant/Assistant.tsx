@@ -10,10 +10,11 @@ type Props = {
 function AssistantContainer(props: Props) {
   return (
     <RobotConsumer>
-      {({ activeRoute, changeRoute }) => (
+      {({ activeRoute, changeRoute, selectedJobType }) => (
         <Assistant
           {...props}
-          jobs={JOBS}
+          jobTypes={JOBS}
+          selectedJobType={selectedJobType}
           currentRoute={activeRoute}
           changeRoute={changeRoute}
         />

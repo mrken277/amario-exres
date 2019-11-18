@@ -8,15 +8,16 @@ import {
 } from 'modules/robot/components/styles';
 import { JOB_DETAILS } from 'modules/robot/constants';
 import * as React from 'react';
-import JobItem from '../../containers/assistant/JobItem';
+import JobTypeDetail from '../../containers/assistant/JobTypeDetail';
+import JobTypeItem from '../../containers/assistant/JobTypeItem';
 import ActionItem from '../ActionItem';
-import JobDetail from './JobDetail';
 
 type Props = {
   changeRoute: (route: string) => void;
   currentUser: string;
   currentRoute: string;
-  jobs: string[];
+  selectedJobType?: string;
+  jobTypes: string[];
 };
 
 class Assistant extends React.Component<Props> {
@@ -42,17 +43,17 @@ class Assistant extends React.Component<Props> {
         onClick={this.startOnboard}
       />
 
-      {this.props.jobs.map((job, index) => {
-        const jobDetail = JOB_DETAILS[job];
+      {this.props.jobTypes.map((jobType, index) => {
+        const jobTypeDetail = JOB_DETAILS[jobType];
 
         return (
-          <JobItem
-            job={job}
+          <JobTypeItem
+            jobType={jobType}
             key={index}
-            title={jobDetail.title}
-            description={__(jobDetail.description)}
-            icon={jobDetail.icon}
-            color={jobDetail.color}
+            title={jobTypeDetail.title}
+            description={__(jobTypeDetail.description)}
+            icon={jobTypeDetail.icon}
+            color={jobTypeDetail.color}
           />
         );
       })}
@@ -64,10 +65,10 @@ class Assistant extends React.Component<Props> {
   };
 
   renderContent = () => {
-    const { currentRoute, changeRoute } = this.props;
+    const { currentRoute, selectedJobType } = this.props;
 
-    if (currentRoute === 'assistant-jobDetail') {
-      return <JobDetail changeRoute={changeRoute} />;
+    if (currentRoute === 'assistant-jobTypeDetail' && selectedJobType) {
+      return <JobTypeDetail jobType={selectedJobType} />;
     }
 
     if (currentRoute === 'assistant') {

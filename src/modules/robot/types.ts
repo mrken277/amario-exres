@@ -35,3 +35,8 @@ export type CompleteShowStepMutationResponse = {
 export type ForceCompleteMutationResponse = {
   forceCompleteMutation: () => Promise<any>;
 };
+
+export type IRobotJob = {
+  _id: string;
+  content: string;
+};
