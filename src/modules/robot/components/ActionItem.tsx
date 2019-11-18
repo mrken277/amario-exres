@@ -162,7 +162,7 @@ class ActionItem extends React.Component<Props, State> {
         </IconContainer>
         <Text>
           <h4>
-            {title} {count && <span>{count}</span>}
+            {title} {count && count > 0 ? <span>{count}</span> : null}
           </h4>
           {!vertical && <p>{description}</p>}
         </Text>

@@ -1,3 +1,12 @@
+const getJobTypes = `
+  query robotGetJobTypes {
+    robotGetJobTypes {
+      name
+      notificationsCount
+    }
+  }
+`;
+
 const getJobs = `
   query robotGetJobs($type: String, $isNotified: Boolean, $parentId: String) {
     robotGetJobs(type: $type, isNotified: $isNotified, parentId: $parentId) {
@@ -27,6 +36,7 @@ const getAvailableFeatures = `
 
 export default {
   getJobs,
+  getJobTypes,
   getAvailableFeatures,
   stepsCompleteness
 };

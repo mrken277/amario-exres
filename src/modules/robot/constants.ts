@@ -352,12 +352,6 @@ export const FEATURE_DETAILS = {
   }
 };
 
-export const JOBS = [
-  'mergeCustomers',
-  'companyMetaExtraction',
-  'customerScoring'
-];
-
 export const JOB_DETAILS = {
   mergeCustomers: {
     title: 'Customer merge',

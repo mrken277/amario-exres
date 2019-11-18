@@ -7,6 +7,7 @@ import {
   NavButton
 } from 'modules/robot/components/styles';
 import { JOB_DETAILS } from 'modules/robot/constants';
+import { IRobotJobType } from 'modules/robot/types';
 import * as React from 'react';
 import JobTypeDetail from '../../containers/assistant/JobTypeDetail';
 import JobTypeItem from '../../containers/assistant/JobTypeItem';
@@ -17,7 +18,7 @@ type Props = {
   currentUser: string;
   currentRoute: string;
   selectedJobType?: string;
-  jobTypes: string[];
+  jobTypes: IRobotJobType[];
 };
 
 class Assistant extends React.Component<Props> {
@@ -44,11 +45,12 @@ class Assistant extends React.Component<Props> {
       />
 
       {this.props.jobTypes.map((jobType, index) => {
-        const jobTypeDetail = JOB_DETAILS[jobType];
+        const jobTypeDetail = JOB_DETAILS[jobType.name];
 
         return (
           <JobTypeItem
-            jobType={jobType}
+            jobType={jobType.name}
+            count={jobType.notificationsCount}
             key={index}
             title={jobTypeDetail.title}
             description={__(jobTypeDetail.description)}

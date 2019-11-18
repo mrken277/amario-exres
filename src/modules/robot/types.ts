@@ -42,6 +42,11 @@ export type IRobotJob = {
   isNotified: boolean;
 };
 
+export type IRobotJobType = {
+  name: string;
+  notificationsCount: number;
+};
+
 export type IRobotJobDetails = {
   title: string;
   description: string;

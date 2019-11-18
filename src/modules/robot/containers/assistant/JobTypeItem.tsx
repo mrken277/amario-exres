@@ -12,16 +12,12 @@ type Props = {
   onClick?: () => void;
   isComplete?: boolean;
   disabled?: boolean;
+  count?: number;
 };
 
 export default class JobTypeItem extends React.Component<Props> {
   render() {
     const { jobType } = this.props;
-
-    const updatedProps = {
-      ...this.props,
-      count: 1
-    };
 
     return (
       <RobotConsumer>
@@ -31,7 +27,7 @@ export default class JobTypeItem extends React.Component<Props> {
             changeRoute('assistant-jobTypeDetail');
           };
 
-          return <ActionItem {...updatedProps} onClick={handleClick} />;
+          return <ActionItem {...this.props} onClick={handleClick} />;
         }}
       </RobotConsumer>
     );
