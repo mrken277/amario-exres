@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import { withProps } from 'modules/common/utils';
 import JobTypeDetail from 'modules/robot/components/assistant/JobTypeDetail';
+import { JOB_DETAILS } from 'modules/robot/constants';
 import React from 'react';
 import { compose, graphql } from 'react-apollo';
 import { queries } from '../../graphql';
@@ -14,12 +15,19 @@ type FinalProps = { jobsQuery } & Props;
 
 class JobTypeDetailContainer extends React.Component<FinalProps> {
   render() {
-    const jobs = this.props.jobsQuery.robotGetJobs || [];
+    const { jobsQuery, jobType } = this.props;
+    const jobs = jobsQuery.robotGetJobs || [];
 
     return (
       <RobotConsumer>
         {({ changeRoute }) => {
-          return <JobTypeDetail jobs={jobs} changeRoute={changeRoute} />;
+          return (
+            <JobTypeDetail
+              details={JOB_DETAILS[jobType]}
+              jobs={jobs}
+              changeRoute={changeRoute}
+            />
+          );
         }}
       </RobotConsumer>
     );

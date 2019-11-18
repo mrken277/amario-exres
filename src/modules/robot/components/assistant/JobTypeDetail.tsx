@@ -1,12 +1,14 @@
 import Icon from 'modules/common/components/Icon';
-import { IRobotJob } from 'modules/robot/types';
+import { __ } from 'modules/common/utils';
+import { IRobotJob, IRobotJobDetails } from 'modules/robot/types';
 import * as React from 'react';
 import xss from 'xss';
-import { ContentWrapper, NavButton } from '../styles';
+import { ContentWrapper, NavButton, Title } from '../styles';
 
 type Props = {
   changeRoute: (route: string) => void;
   jobs: IRobotJob[];
+  details: IRobotJobDetails;
 };
 
 class JobTypeDetail extends React.Component<Props> {
@@ -15,11 +17,17 @@ class JobTypeDetail extends React.Component<Props> {
   };
 
   render() {
+    const { details } = this.props;
+
     return (
       <ContentWrapper>
         <NavButton onClick={this.back}>
           <Icon icon="arrow-left" size={24} />
         </NavButton>
+
+        <Title>{__(details.title)}</Title>
+        <p>{__(details.description)}</p>
+
         {this.props.jobs.map(job => {
           return (
             <div

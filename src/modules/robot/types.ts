@@ -40,3 +40,10 @@ export type IRobotJob = {
   _id: string;
   content: string;
 };
+
+export type IRobotJobDetails = {
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+};
