@@ -359,7 +359,7 @@ export const JOB_DETAILS = {
     icon: 'users',
     color: '#ec542b'
   },
-  companyMetaExtraction: {
+  fillCompanyInfo: {
     title: 'Company meta',
     description: 'Automatically retrive company info',
     icon: 'briefcase',
