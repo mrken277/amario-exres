@@ -370,5 +370,11 @@ export const JOB_DETAILS = {
     description: 'Customer scoring depends on activity',
     icon: 'user-2',
     color: '#27b553'
+  },
+  suggestion: {
+    title: 'Suggestions',
+    description: 'Will suggest about unused items',
+    icon: 'question-circle',
+    color: '#27b5c3'
   }
 };
