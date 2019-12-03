@@ -3,7 +3,8 @@ import Spinner from 'modules/common/components/Spinner';
 import Entry from 'modules/settings/integrations/components/store/Entry';
 import { queries } from 'modules/settings/integrations/graphql';
 import React from 'react';
-import { compose, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
 import { withProps } from '../../../common/utils';
 import { MessengerAppsCountQueryResponse } from '../types';
 

@@ -3,7 +3,8 @@ import gql from 'graphql-tag';
 import Spinner from 'modules/common/components/Spinner';
 import { Alert, withProps } from 'modules/common/utils';
 import React from 'react';
-import { compose, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
 import List from '../components/List';
 import { mutations, queries } from '../graphql';
 import {

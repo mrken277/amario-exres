@@ -3,7 +3,8 @@ import Bulk from 'modules/common/components/Bulk';
 import { Alert, withProps } from 'modules/common/utils';
 import { generatePaginationParams } from 'modules/common/utils/router';
 import React from 'react';
-import { compose, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
 import List from '../../components/product/ProductList';
 import { mutations, queries } from '../../graphql';
 import {

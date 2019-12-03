@@ -7,7 +7,8 @@ import {
   IIntegration
 } from 'modules/settings/integrations/types';
 import React from 'react';
-import { compose, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
 import ChooseBrand from '../components/ChooseBrand';
 import { mutations, queries } from '../graphql';
 import { BrandsQueryResponse, IChooseBrand } from '../types';

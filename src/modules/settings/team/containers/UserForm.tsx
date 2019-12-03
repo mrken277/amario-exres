@@ -8,7 +8,8 @@ import {
   UsersGroupsQueryResponse
 } from 'modules/settings/permissions/types';
 import React from 'react';
-import { compose, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
 import { IUser } from '../../../auth/types';
 import { withProps } from '../../../common/utils';
 import { queries as channelQueries } from '../../channels/graphql';

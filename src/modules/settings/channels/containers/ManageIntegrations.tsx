@@ -4,7 +4,8 @@ import ManageIntegrations from 'modules/settings/integrations/containers/common/
 import { integrationsListParams } from 'modules/settings/integrations/containers/utils';
 import { queries as integQueries } from 'modules/settings/integrations/graphql';
 import React from 'react';
-import { compose, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
 import { mutations, queries } from '../graphql';
 import {
   EditChannelMutationResponse,

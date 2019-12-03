@@ -2,7 +2,8 @@ import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
 import { Alert, confirm, withProps } from 'modules/common/utils';
 import React from 'react';
-import { compose, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
 import ImportIndicator from '../components/ImportIndicator';
 import { mutations, queries, subscriptions } from '../graphql';
 import {

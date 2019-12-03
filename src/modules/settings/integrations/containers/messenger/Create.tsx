@@ -17,7 +17,8 @@ import {
   SaveMessengerMutationVariables
 } from 'modules/settings/integrations/types';
 import React from 'react';
-import { compose, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
 import { withRouter } from 'react-router';
 import { TopicsQueryResponse } from '../../../../knowledgeBase/types';
 import { AllBrandsQueryResponse } from '../../../brands/types';

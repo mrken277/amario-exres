@@ -6,7 +6,8 @@ import { integrationsListParams } from 'modules/settings/integrations/containers
 import { queries as integQueries } from 'modules/settings/integrations/graphql';
 import { IIntegration } from 'modules/settings/integrations/types';
 import React from 'react';
-import { compose, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
 import { mutations, queries } from '../graphql';
 import { BrandsManageIntegrationsMutationResponse, IBrandDoc } from '../types';
 import ChooseBrand from './ChooseBrand';

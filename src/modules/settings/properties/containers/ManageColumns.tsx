@@ -2,7 +2,8 @@ import gql from 'graphql-tag';
 import { Alert, withProps } from 'modules/common/utils';
 import { queries } from 'modules/forms/graphql';
 import React from 'react';
-import { compose, graphql } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
 import ManageColumns from '../components/ManageColumns';
 import {
   DefaultColumnsConfigQueryResponse,
