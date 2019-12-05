@@ -34,6 +34,7 @@ const options = {
   },
   texts: {
     addText: 'Add a ticket',
+    convertToText: 'Convert to a ticket',
     addSuccessText: 'You successfully added a ticket',
     updateSuccessText: 'You successfully updated a ticket',
     deleteSuccessText: 'You successfully deleted a ticket',

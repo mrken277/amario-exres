@@ -6,17 +6,10 @@ type Props = {
   relType: string;
   relTypeIds?: string[];
   assignedUserIds?: string[];
+  sourceKind?: string;
+  sourceKindId?: string;
 };
 
 export default (props: Props) => {
-  const { relType, relTypeIds, assignedUserIds } = props;
-
-  return (
-    <AddTrigger
-      options={options}
-      relTypeIds={relTypeIds}
-      relType={relType}
-      assignedUserIds={assignedUserIds}
-    />
-  );
+  return <AddTrigger {...props} options={options} />;
 };

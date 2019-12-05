@@ -195,18 +195,7 @@ export default class WorkArea extends React.Component<Props, State> {
       <BarItems>
         <Tagger targets={[currentConversation]} trigger={tagTrigger} />
 
-        <ConvertTo
-          customerIds={
-            currentConversation.customerId
-              ? [currentConversation.customerId]
-              : []
-          }
-          assignedUserIds={
-            currentConversation.assignedUserId
-              ? [currentConversation.assignedUserId]
-              : []
-          }
-        />
+        <ConvertTo conversation={currentConversation} />
 
         <Resolver conversations={[currentConversation]} />
       </BarItems>

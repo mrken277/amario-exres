@@ -10,7 +10,9 @@ const commonVariables = `
   $priority: String,
   $source: String,
   $reminderMinute: Int,
-  $isComplete: Boolean
+  $isComplete: Boolean,
+  $sourceKind: String,
+  $sourceKindId: String,
 `;
 
 const commonParams = `
@@ -23,7 +25,9 @@ const commonParams = `
   source: $source,
   attachments: $attachments,
   reminderMinute: $reminderMinute,
-  isComplete: $isComplete
+  isComplete: $isComplete,
+  sourceKind: $sourceKind,
+  sourceKindId: $sourceKindId,
 `;
 
 const ticketsAdd = `

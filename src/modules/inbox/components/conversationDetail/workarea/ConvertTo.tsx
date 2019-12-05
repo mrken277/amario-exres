@@ -3,6 +3,7 @@ import DropdownToggle from 'modules/common/components/DropdownToggle';
 import Icon from 'modules/common/components/Icon';
 import { __ } from 'modules/common/utils';
 import DealAddTrigger from 'modules/deals/components/DealAddTrigger';
+import { IConversation } from 'modules/inbox/types';
 import TaskAddTrigger from 'modules/tasks/components/TaskAddTrigger';
 import TicketAddTrigger from 'modules/tickets/components/TicketAddTrigger';
 import React from 'react';
@@ -23,11 +24,19 @@ const Container = styled.div`
 `;
 
 type Props = {
-  customerIds?: string[];
-  assignedUserIds?: string[];
+  conversation: IConversation;
 };
 
 export default (props: Props) => {
+  const { conversation } = props;
+
+  const assignedUserIds = conversation.assignedUserId
+    ? [conversation.assignedUserId]
+    : [];
+  const customerIds = conversation.customerId ? [conversation.customerId] : [];
+  const sourceKind = conversation.integration.kind;
+  const sourceKindId = conversation.integration._id;
+
   return (
     <Container>
       <Dropdown>
@@ -39,23 +48,29 @@ export default (props: Props) => {
         <Dropdown.Menu>
           <li key="ticket">
             <TicketAddTrigger
-              assignedUserIds={props.assignedUserIds}
-              relTypeIds={props.customerIds}
+              assignedUserIds={assignedUserIds}
+              relTypeIds={customerIds}
               relType="customer"
+              sourceKind={sourceKind}
+              sourceKindId={sourceKindId}
             />
           </li>
           <li key="deal">
             <DealAddTrigger
-              assignedUserIds={props.assignedUserIds}
-              relTypeIds={props.customerIds}
+              assignedUserIds={assignedUserIds}
+              relTypeIds={customerIds}
               relType="customer"
+              sourceKind={sourceKind}
+              sourceKindId={sourceKindId}
             />
           </li>
           <li key="task">
             <TaskAddTrigger
-              assignedUserIds={props.assignedUserIds}
-              relTypeIds={props.customerIds}
+              assignedUserIds={assignedUserIds}
+              relTypeIds={customerIds}
               relType="customer"
+              sourceKind={sourceKind}
+              sourceKindId={sourceKindId}
             />
           </li>
         </Dropdown.Menu>
