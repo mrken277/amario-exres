@@ -70,14 +70,18 @@ a:hover {
 .modal-dialog {
   padding: 0;
   margin: 50px auto;
-}
 
-.modal-dialog.middle {
-  width: 65%;
-}
+  &.modal-dialog-centered {
+    margin: 0 auto;
+  }
 
-.modal-dialog.full {
-  width: 85%;
+  &.middle {
+    width: 65%;
+  }
+
+  &.full {
+    width: 85%;
+  }
 }
 
 .modal-1000w {
@@ -115,6 +119,10 @@ a:hover {
 
 .modal-body {
   padding: 30px 40px;
+}
+
+.modal-body.no-padding {
+  padding: 0px;
 }
 
 .modal-footer {
@@ -523,25 +531,24 @@ a:hover {
   color: ${colors.colorPrimaryDark};
 }
 
-.Select-arrow-zone {
-  padding-right: 0;
+.Select-arrow-zone { 
   width: 20px;
 }
 
 .Select-arrow-zone > .Select-arrow {
   border: none;
-  margin-right: 10px;
+  margin-right: 12px;
 }
 
 .Select .Select-arrow:before {
   font-family: 'erxes';
-  font-size: 10px;
-  content: '\\e827';
+  content: '\\e9a6';
+  font-size: 14px;
   color: ${colors.colorCoreGray};
 }
 
 .Select.is-open .Select-arrow:before {
-  content: '\\e89a';
+  content: '\\e9c4';
 }
 
 .Select-menu-outer {

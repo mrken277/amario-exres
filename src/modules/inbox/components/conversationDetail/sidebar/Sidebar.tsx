@@ -2,7 +2,7 @@ import Button from 'modules/common/components/Button';
 import { Tabs, TabTitle } from 'modules/common/components/tabs';
 import Sidebar from 'modules/layout/components/Sidebar';
 import React from 'react';
-import { Actions, BasicInfo, TabContent } from './styles';
+import { Actions, BasicInfo, MailBox, TabContent } from './styles';
 
 import asyncComponent from 'modules/common/components/AsyncComponent';
 import Box from 'modules/common/components/Box';
@@ -15,7 +15,7 @@ import { IConversation } from '../../../types';
 
 const ActionSection = asyncComponent(
   () =>
-    import(/* webpackChunkName:"Inbox-Sidebar-ActionSection" */ 'modules/customers/components/common/ActionSection'),
+    import(/* webpackChunkName:"Inbox-Sidebar-ActionSection" */ 'modules/customers/containers/common/ActionSection'),
   { height: '25px', width: '80px' }
 );
 
@@ -138,17 +138,17 @@ class Index extends React.Component<IndexProps, IndexState> {
   };
 
   renderActions() {
-    const { customer, conversation } = this.props;
+    const { customer } = this.props;
     const { primaryPhone, primaryEmail } = customer;
-    const { kind } = conversation.integration;
 
     const content = props => (
-      <MailForm
-        kind={kind}
-        fromEmail={primaryEmail}
-        refetchQueries={['activityLogsCustomer']}
-        closeModal={props.closeModal}
-      />
+      <MailBox>
+        <MailForm
+          fromEmail={primaryEmail}
+          refetchQueries={['activityLogsCustomer']}
+          closeModal={props.closeModal}
+        />
+      </MailBox>
     );
 
     return (
@@ -163,6 +163,7 @@ class Index extends React.Component<IndexProps, IndexState> {
           }
           size="lg"
           content={content}
+          paddingContent="no-padding"
         />
         <Button
           href={primaryPhone && `tel:${primaryPhone}`}

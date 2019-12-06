@@ -56,6 +56,8 @@ export interface IItemParams {
   isComplete?: boolean;
   priority?: string;
   reminderMinute?: number;
+  companyIds?: string[];
+  customerIds?: string[];
 }
 
 export type SaveItemMutation = ({ variables: IItemParams }) => Promise<any>;
@@ -121,11 +123,14 @@ export interface IItem {
   name: string;
   order: number;
   stageId: string;
+  boardId?: string;
   closeDate: Date;
   description: string;
   amount: number;
   modifiedAt: Date;
+  assignedUserIds?: string[];
   assignedUsers: IUser[];
+  createdUser?: IUser;
   companies: ICompany[];
   customers: ICustomer[];
   attachments?: IAttachment[];
@@ -138,6 +143,7 @@ export interface IItem {
   isComplete: boolean;
   reminderMinute: number;
   labelIds: string[];
+  createdAt: Date;
 }
 
 export interface IDraggableLocation {
