@@ -233,6 +233,16 @@ const responseTemplateList = `
   }
 `;
 
+const convertToInfo = `
+  query convertToInfo($conversationId: String!) {
+    convertToInfo(conversationId: $conversationId) {
+      ticketUrl
+      dealUrl
+      taskUrl
+    }
+  }
+`;
+
 const generateCustomerDetailQuery = params => {
   const {
     showDeviceProperties = false,
@@ -329,5 +339,6 @@ export default {
   totalConversationsCount,
   unreadConversationsCount,
   lastConversation,
-  generateCustomerDetailQuery
+  generateCustomerDetailQuery,
+  convertToInfo
 };

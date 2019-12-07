@@ -29,7 +29,6 @@ export interface IOptions {
   };
   texts: {
     addText: string;
-    convertToText: string;
     addSuccessText: string;
     updateSuccessText: string;
     deleteSuccessText: string;
@@ -59,8 +58,9 @@ export interface IItemParams {
   reminderMinute?: number;
   companyIds?: string[];
   customerIds?: string[];
-  sourceKind?: string;
-  sourceKindId?: string;
+  sourceIntegration?: string;
+  sourceIntegrationId?: string;
+  sourceConversationId?: string;
 }
 
 export type SaveItemMutation = ({ variables: IItemParams }) => Promise<any>;

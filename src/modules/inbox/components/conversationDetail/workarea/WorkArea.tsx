@@ -36,7 +36,8 @@ const Participators = asyncComponent(
 );
 
 const ConvertTo = asyncComponent(
-  () => import(/* webpackChunkName:"Inbox-ConvertTo" */ './ConvertTo'),
+  () =>
+    import(/* webpackChunkName:"Inbox-ConvertTo" */ '../../../containers/conversationDetail/workarea/ConvertTo'),
   { height: '22px', width: '100px', marginRight: '10px' }
 );
 

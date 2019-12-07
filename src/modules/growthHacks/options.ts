@@ -33,7 +33,6 @@ const options = {
   },
   texts: {
     addText: 'Add an experiment',
-    convertToText: 'Convert to an expriment',
     addSuccessText: 'You successfully added an experiment',
     updateSuccessText: 'You successfully updated an experiment',
     deleteSuccessText: 'You successfully deleted an experiment',
