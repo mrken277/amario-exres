@@ -10,7 +10,7 @@ type Props = {
   sourceIntegrationId?: string;
   sourceConversationId?: string;
   url?: string;
-  refetch?: () => void;
+  refetch: () => void;
 };
 
 export default (props: Props) => {
