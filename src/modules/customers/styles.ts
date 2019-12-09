@@ -91,8 +91,12 @@ const TabContent = styled.div`
   padding: ${dimensions.coreSpacing}px;
 `;
 
-const Date = styled.time`
-  font-size: 12px;
+const ClickableRow = styled.span`
+  cursor: pointer;
+
+  &:hover {
+    color: ${colors.textSecondary};
+  }
 `;
 
 export {
@@ -104,6 +108,6 @@ export {
   InfoAvatar,
   Contact,
   Name,
-  Date,
-  TabContent
+  TabContent,
+  ClickableRow
 };

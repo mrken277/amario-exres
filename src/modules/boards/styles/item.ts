@@ -12,8 +12,6 @@ const FlexContent = styled.div`
 `;
 
 const PriceContainer = styled.div`
-  overflow: auto;
-
   ul {
     float: left;
   }
@@ -25,10 +23,6 @@ const Left = styled.div`
 
 const Right = styled.div`
   float: right;
-`;
-
-const Actions = styled.div`
-  margin-bottom: ${dimensions.coreSpacing}px;
 `;
 
 const Footer = styled.div`
@@ -346,7 +340,6 @@ export {
   RightButton,
   MoveFormContainer,
   PipelineName,
-  Actions,
   FormFooter,
   FlexContent,
   LeftContainer,
