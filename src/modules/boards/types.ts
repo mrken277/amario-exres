@@ -58,8 +58,6 @@ export interface IItemParams {
   reminderMinute?: number;
   companyIds?: string[];
   customerIds?: string[];
-  sourceIntegration?: string;
-  sourceIntegrationId?: string;
   sourceConversationId?: string;
 }
 

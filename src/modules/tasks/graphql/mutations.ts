@@ -10,8 +10,6 @@ const commonVariables = `
   $attachments: [AttachmentInput],
   $reminderMinute: Int,
   $isComplete: Boolean,
-  $sourceIntegration: String,
-  $sourceIntegrationId: String,
   $sourceConversationId: String,
 `;
 
@@ -25,8 +23,6 @@ const commonParams = `
   attachments: $attachments,
   reminderMinute: $reminderMinute,
   isComplete: $isComplete,
-  sourceIntegration: $sourceIntegration,
-  sourceIntegrationId: $sourceIntegrationId,
   sourceConversationId: $sourceConversationId,
 `;
 

@@ -11,8 +11,6 @@ const commonVariables = `
   $reminderMinute: Int,
   $isComplete: Boolean,
   $priority: String,
-  $sourceIntegration: String,
-  $sourceIntegrationId: String,
   $sourceConversationId: String,
 `;
 
@@ -27,8 +25,6 @@ const commonParams = `
   reminderMinute: $reminderMinute,
   isComplete: $isComplete,
   priority: $priority,
-  sourceIntegration: $sourceIntegration,
-  sourceIntegrationId: $sourceIntegrationId,
   sourceConversationId: $sourceConversationId,
 `;
 

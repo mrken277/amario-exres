@@ -40,16 +40,12 @@ export default (props: Props) => {
     ? [conversation.assignedUserId]
     : [];
   const customerIds = conversation.customerId ? [conversation.customerId] : [];
-  const sourceIntegration = conversation.integration.kind;
-  const sourceIntegrationId = conversation.integration._id;
   const sourceConversationId = conversation._id;
 
   const triggerProps = {
     assignedUserIds,
     relTypeIds: customerIds,
     relType: 'customer',
-    sourceIntegration,
-    sourceIntegrationId,
     sourceConversationId,
     refetch
   };

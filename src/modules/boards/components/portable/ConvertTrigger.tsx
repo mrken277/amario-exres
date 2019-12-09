@@ -9,8 +9,6 @@ type Props = {
   assignedUserIds?: string[];
   options: IOptions;
   refetch: () => void;
-  sourceIntegration?: string;
-  sourceIntegrationId?: string;
   sourceConversationId?: string;
   title: string;
   url?: string;
@@ -23,8 +21,6 @@ export default (props: Props) => {
     options,
     refetch,
     assignedUserIds,
-    sourceIntegration,
-    sourceIntegrationId,
     sourceConversationId,
     title,
     url
@@ -48,8 +44,6 @@ export default (props: Props) => {
       relType={relType}
       relTypeIds={relTypeIds}
       assignedUserIds={assignedUserIds}
-      sourceIntegration={sourceIntegration}
-      sourceIntegrationId={sourceIntegrationId}
       sourceConversationId={sourceConversationId}
       showSelect={true}
     />

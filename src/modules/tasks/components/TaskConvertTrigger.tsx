@@ -6,8 +6,6 @@ type Props = {
   relType: string;
   relTypeIds?: string[];
   assignedUserIds?: string[];
-  sourceIntegration?: string;
-  sourceIntegrationId?: string;
   sourceConversationId?: string;
   url?: string;
   refetch: () => void;
