@@ -69,7 +69,7 @@ class CreatedLog extends React.Component<Props> {
 
       return (
         <span>
-          This customer registered to erxes
+          This customer registered to erxes by
           {content ? ` ${content.name}'s integrations` : ''}
         </span>
       );
