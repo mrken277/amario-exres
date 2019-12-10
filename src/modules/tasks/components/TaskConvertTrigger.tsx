@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default (props: Props) => {
-  const title = props.url ? 'View a task' : 'Convert to a task';
+  const title = props.url ? 'Go to a task' : 'Convert to a task';
 
   const extendedProps = {
     ...props,
