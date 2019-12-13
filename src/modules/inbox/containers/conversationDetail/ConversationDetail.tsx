@@ -30,7 +30,7 @@ class DetailContainer extends React.Component<FinalProps> {
     this.prevSubscriptions = null;
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     const { currentId, detailQuery } = nextProps;
 
     // if conversation id changed. then unsubscribe previous subscriptions

@@ -61,9 +61,7 @@ class OnboardingContainer extends React.Component<
         });
       }, 4000);
     }
-  }
 
-  componentWillMount() {
     const { getAvailableFeaturesQuery, currentUser } = this.props;
 
     if (!getAvailableFeaturesQuery) {
@@ -90,7 +88,7 @@ class OnboardingContainer extends React.Component<
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     if (nextProps.currentStep !== this.props.currentStep) {
       this.setState({ currentStep: nextProps.currentStep });
     }

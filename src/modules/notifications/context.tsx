@@ -30,7 +30,7 @@ const NotifContext = React.createContext({} as IStore);
 export const NotifConsumer = NotifContext.Consumer;
 
 class Provider extends React.Component<Props> {
-  componentWillMount() {
+  componentDidMount() {
     const {
       notificationsQuery,
       notificationCountQuery,

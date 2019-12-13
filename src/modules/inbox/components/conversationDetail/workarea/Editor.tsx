@@ -176,7 +176,7 @@ export default class Editor extends React.Component<EditorProps, State> {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     if (nextProps.responseTemplate !== this.props.responseTemplate) {
       const editorState = createStateFromHTML(
         this.state.editorState,

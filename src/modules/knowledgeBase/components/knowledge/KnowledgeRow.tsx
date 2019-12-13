@@ -65,7 +65,7 @@ class KnowledgeRow extends React.Component<Props, State> {
     this.setState({ detailed: collapse(topic._id, true) });
   };
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     const { categories } = this.props.topic;
 
     if (categories.includes(nextProps.currentCategoryId)) {

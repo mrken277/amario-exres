@@ -33,7 +33,7 @@ class ProductForm extends React.Component<Props, State> {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.updateTotal();
 
     // initial product item

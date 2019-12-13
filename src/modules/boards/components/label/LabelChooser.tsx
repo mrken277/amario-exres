@@ -28,7 +28,7 @@ class ChooseLabel extends React.Component<
     this.state = { selectedLabelIds: props.selectedLabelIds };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate(nextProps: Props) {
     if (
       this.props.selectedLabelIds.toString() !==
       nextProps.selectedLabelIds.toString()

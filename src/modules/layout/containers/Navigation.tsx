@@ -13,7 +13,7 @@ class NavigationContainer extends React.Component<{
   unreadConversationsCountQuery: UnreadConversationsTotalCountQueryResponse;
   currentUser: IUser;
 }> {
-  componentWillMount() {
+  componentDidMount() {
     const { unreadConversationsCountQuery, currentUser } = this.props;
 
     unreadConversationsCountQuery.subscribeToMore({

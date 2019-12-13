@@ -80,7 +80,7 @@ type WithCurrentIdFinalProps = {
 } & WithCurrentIdProps;
 
 class WithCurrentId extends React.Component<WithCurrentIdFinalProps> {
-  componentWillReceiveProps(nextProps: WithCurrentIdFinalProps) {
+  componentDidUpdate(nextProps: WithCurrentIdFinalProps) {
     const {
       lastCategoryQuery,
       history,

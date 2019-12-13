@@ -26,7 +26,7 @@ class Tagger extends React.Component<Props, { tagsForList: any[] }> {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     this.setState({
       tagsForList: this.generateTagsParams(nextProps.tags, nextProps.targets)
     });

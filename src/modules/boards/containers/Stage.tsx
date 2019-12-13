@@ -37,7 +37,7 @@ type FinalStageProps = {
 } & StageProps;
 
 class StageContainer extends React.PureComponent<FinalStageProps> {
-  componentWillReceiveProps(nextProps: FinalStageProps) {
+  componentDidUpdate(nextProps: FinalStageProps) {
     const { stage, loadingState, onLoad, itemsQuery, options } = nextProps;
 
     if (itemsQuery && !itemsQuery.loading && loadingState !== 'loaded') {

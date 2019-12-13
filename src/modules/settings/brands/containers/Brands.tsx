@@ -85,7 +85,7 @@ type WithCurrentIdFinalProps = {
 
 // tslint:disable-next-line:max-classes-per-file
 class WithCurrentId extends React.Component<WithCurrentIdFinalProps> {
-  componentWillReceiveProps(nextProps: WithCurrentIdFinalProps) {
+  componentDidUpdate(nextProps: WithCurrentIdFinalProps) {
     const {
       lastBrandQuery,
       history,

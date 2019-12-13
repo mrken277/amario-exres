@@ -45,7 +45,7 @@ class Pipelines extends React.Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     if (nextProps.pipelines !== this.props.pipelines) {
       this.setState({ pipelines: nextProps.pipelines });
     }

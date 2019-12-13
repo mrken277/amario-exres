@@ -23,7 +23,7 @@ class HistoryDetailContainer extends React.Component<
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { importHistoryDetailQuery, id } = this.props;
 
     importHistoryDetailQuery.subscribeToMore({

@@ -21,7 +21,7 @@ type FinalProps = {
 } & WithDataProps;
 
 class Container extends React.Component<FinalProps, {}> {
-  componentWillMount() {
+  componentDidMount() {
     const { activityLogQuery } = this.props;
 
     activityLogQuery.subscribeToMore({

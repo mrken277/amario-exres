@@ -61,7 +61,7 @@ class WithRefetchHandling extends React.Component<
 }
 
 class WithCurrentId extends React.Component<IProps> {
-  componentWillReceiveProps(nextProps: IProps) {
+  componentDidUpdate(nextProps: IProps) {
     const { conversationsGetLast, loading, history, queryParams } = nextProps;
     const { _id } = queryParams;
 

@@ -89,7 +89,7 @@ type withCurrentIdFinalProps = {
 
 // tslint:disable-next-line:max-classes-per-file
 class WithCurrentId extends React.Component<withCurrentIdFinalProps> {
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     const {
       lastChannelQuery = {},
       history,
