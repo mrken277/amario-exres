@@ -22,6 +22,7 @@ type IProps = {
   sourceConversationId?: string;
   relTypeIds?: string[];
   assignedUserIds?: string[];
+  getAssociatedItem?: (itemId: string) => void;
   closeModal: () => void;
   refetch?: () => void;
 };
@@ -41,7 +42,8 @@ class AddFormContainer extends React.Component<FinalProps> {
       editConformity,
       refetch,
       assignedUserIds,
-      sourceConversationId
+      sourceConversationId,
+      getAssociatedItem
     } = this.props;
 
     doc.assignedUserIds = assignedUserIds;
@@ -63,6 +65,10 @@ class AddFormContainer extends React.Component<FinalProps> {
         }
 
         callback(data[options.mutationsName.addMutation]);
+
+        if (getAssociatedItem) {
+          getAssociatedItem(data[options.mutationsName.addMutation]._id);
+        }
 
         if (refetch) {
           refetch();
