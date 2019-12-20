@@ -33,14 +33,26 @@ class ConvertLog extends React.Component<Props> {
 
     const conversation = (
       <Link to={`/inbox/index?_id=${content}`} target="_blank">
-        this conversation
+        conversation
+      </Link>
+    );
+
+    const item = (
+      <Link
+        to={`${
+          contentType === 'ticket' ? '/inbox' : ''
+        }/${contentType}/board?_id=${activity._id}&itemId=${
+          contentTypeDetail._id
+        }`}
+        target="_blank"
+      >
+        {contentTypeDetail.name}
       </Link>
     );
 
     return (
       <span>
-        <strong>{userName}</strong> converted{' '}
-        <strong>{contentTypeDetail.name}</strong> {contentType} from{' '}
+        <strong>{userName}</strong> converted {item} {contentType} from a{' '}
         {conversation}
       </span>
     );
