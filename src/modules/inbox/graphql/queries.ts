@@ -162,8 +162,8 @@ const userList = `
 `;
 
 const channelList = `
-  query channels($memberIds: [String]) {
-    channels(memberIds: $memberIds) {
+  query channels($page: Int, $perPage: Int, $memberIds: [String]) {
+    channels(page: $page, perPage: $perPage, memberIds: $memberIds) {
       _id
       name
     }
@@ -231,6 +231,16 @@ const responseTemplateList = `
       name
       brandId
       content
+    }
+  }
+`;
+
+const convertToInfo = `
+  query convertToInfo($conversationId: String!) {
+    convertToInfo(conversationId: $conversationId) {
+      ticketUrl
+      dealUrl
+      taskUrl
     }
   }
 `;
@@ -331,5 +341,6 @@ export default {
   totalConversationsCount,
   unreadConversationsCount,
   lastConversation,
-  generateCustomerDetailQuery
+  generateCustomerDetailQuery,
+  convertToInfo
 };
