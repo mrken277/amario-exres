@@ -1,12 +1,16 @@
 import client from 'apolloClient';
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import FilterByParams from 'modules/common/components/FilterByParams';
 import Spinner from 'modules/common/components/Spinner';
-import { Alert } from 'modules/common/utils';
+import { Alert, withProps } from 'modules/common/utils';
 import { queries } from 'modules/inbox/graphql';
 import { NoHeight } from 'modules/inbox/styles';
 import { generateParams } from 'modules/inbox/utils';
+import { queries as ChannelQueries } from 'modules/settings/channels/graphql';
+import { ChannelsCountQueryResponse } from 'modules/settings/channels/types';
 import React from 'react';
+import { graphql } from 'react-apollo';
 
 type Props = {
   query?: { queryName: string; dataName: string; variables?: any };
@@ -16,15 +20,17 @@ type Props = {
   icon?: string;
   queryParams?: any;
   refetchRequired: string;
+  channelsCountQuery?: ChannelsCountQueryResponse;
 };
 
 type State = {
   fields: any[];
   counts: any;
   loading: boolean;
+  page: number;
 };
 
-export default class FilterList extends React.PureComponent<Props, State> {
+class FilterList extends React.PureComponent<Props, State> {
   mounted: boolean;
 
   constructor(props: Props) {
@@ -41,7 +47,8 @@ export default class FilterList extends React.PureComponent<Props, State> {
     this.state = {
       fields: props.fields || [],
       counts: {},
-      loading
+      loading,
+      page: 1
     };
   }
 
@@ -53,14 +60,25 @@ export default class FilterList extends React.PureComponent<Props, State> {
     // Fetching filter lists channels, brands, tags etc
     if (query) {
       const { queryName, dataName, variables = {} } = query;
+      const { page } = this.state;
+
       client
         .query({
           query: gql(queries[queryName]),
-          variables
+          variables:
+            dataName === 'channels'
+              ? { ...variables, page, perPage: 10 }
+              : variables
         })
         .then(({ data }: any) => {
           if (this.mounted) {
-            this.setState({ fields: data[dataName] });
+            this.setState({
+              fields:
+                dataName === 'channels'
+                  ? [...this.state.fields, ...data[dataName]]
+                  : data[dataName],
+              page: page + 1
+            });
           }
         })
         .catch(e => {
@@ -93,6 +111,22 @@ export default class FilterList extends React.PureComponent<Props, State> {
     this.mounted = false;
   }
 
+  loadMoreChannels(totalCount: number) {
+    const handle = setInterval(() => {
+      const { fields } = this.state;
+
+      if (totalCount === 0) {
+        clearInterval(handle);
+      }
+
+      if (fields.length < totalCount) {
+        this.fetchData(true);
+      } else {
+        clearInterval(handle);
+      }
+    }, 1000);
+  }
+
   componentDidUpdate(prevProps) {
     const { queryParams, refetchRequired } = this.props;
 
@@ -108,11 +142,15 @@ export default class FilterList extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { paramKey, icon } = this.props;
-    const { counts, fields, loading } = this.state;
+    const { paramKey, icon, channelsCountQuery } = this.props;
+    const { counts, fields, loading, page } = this.state;
 
     if (loading) {
       return <Spinner objective={true} />;
+    }
+
+    if (channelsCountQuery && !channelsCountQuery.loading && page === 2) {
+      this.loadMoreChannels(channelsCountQuery.channelsTotalCount || 0);
     }
 
     return (
@@ -129,3 +167,15 @@ export default class FilterList extends React.PureComponent<Props, State> {
     );
   }
 }
+
+export default withProps<Props>(
+  compose(
+    graphql<Props, ChannelsCountQueryResponse>(
+      gql(ChannelQueries.channelsCount),
+      {
+        name: 'channelsCountQuery',
+        skip: ({ query }) => !query || query.dataName !== 'channels'
+      }
+    )
+  )(FilterList)
+);
