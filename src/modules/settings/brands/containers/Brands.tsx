@@ -1,12 +1,14 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { router as routerUtils, withProps } from 'modules/common/utils';
 import { IntegrationsCountQueryResponse } from 'modules/settings/integrations/types';
 import queryString from 'query-string';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import { IRouterProps } from '../../../common/types';
-import { Brands as DumbBrands, Empty } from '../components';
+import DumbBrands from '../components/Brands';
+import Empty from '../components/Empty';
 import { queries } from '../graphql';
 import { BrandDetailQueryResponse, BrandsGetLastQueryResponse } from '../types';
 
@@ -91,6 +93,7 @@ class WithCurrentId extends React.Component<WithCurrentIdFinalProps> {
     } = nextProps;
 
     if (
+      !history.location.hash &&
       lastBrandQuery &&
       !_id &&
       lastBrandQuery.brandsGetLast &&

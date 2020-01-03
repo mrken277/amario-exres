@@ -1,10 +1,12 @@
 import client from 'apolloClient';
 import gql from 'graphql-tag';
-import { FilterByParams, Spinner } from 'modules/common/components';
-import { __ } from 'modules/common/utils';
+import FilterByParams from 'modules/common/components/FilterByParams';
+import Spinner from 'modules/common/components/Spinner';
+import { Alert } from 'modules/common/utils';
 import { queries } from 'modules/inbox/graphql';
+import { NoHeight } from 'modules/inbox/styles';
 import { generateParams } from 'modules/inbox/utils';
-import * as React from 'react';
+import React from 'react';
 
 type Props = {
   query?: { queryName: string; dataName: string; variables?: any };
@@ -13,6 +15,7 @@ type Props = {
   paramKey: string;
   icon?: string;
   queryParams?: any;
+  refetchRequired: string;
 };
 
 type State = {
@@ -42,7 +45,7 @@ export default class FilterList extends React.PureComponent<Props, State> {
     };
   }
 
-  fetchData() {
+  fetchData(ignoreCache = false) {
     const { query, counts, queryParams } = this.props;
 
     this.mounted = true;
@@ -50,16 +53,18 @@ export default class FilterList extends React.PureComponent<Props, State> {
     // Fetching filter lists channels, brands, tags etc
     if (query) {
       const { queryName, dataName, variables = {} } = query;
-
       client
         .query({
           query: gql(queries[queryName]),
           variables
         })
-        .then(({ data }) => {
+        .then(({ data }: any) => {
           if (this.mounted) {
             this.setState({ fields: data[dataName] });
           }
+        })
+        .catch(e => {
+          Alert.error(e.message);
         });
     }
 
@@ -67,12 +72,16 @@ export default class FilterList extends React.PureComponent<Props, State> {
     client
       .query({
         query: gql(queries.conversationCounts),
-        variables: { ...generateParams({ ...queryParams }), only: counts }
+        variables: { ...generateParams({ ...queryParams }), only: counts },
+        fetchPolicy: ignoreCache ? 'network-only' : 'cache-first'
       })
       .then(({ data, loading }: { data: any; loading: boolean }) => {
         if (this.mounted) {
           this.setState({ counts: data.conversationCounts[counts], loading });
         }
+      })
+      .catch(e => {
+        Alert.error(e.message);
       });
   }
 
@@ -84,6 +93,20 @@ export default class FilterList extends React.PureComponent<Props, State> {
     this.mounted = false;
   }
 
+  componentDidUpdate(prevProps) {
+    const { queryParams, refetchRequired } = this.props;
+
+    if (prevProps.refetchRequired !== refetchRequired) {
+      return this.fetchData(true);
+    }
+
+    if (prevProps.queryParams === queryParams) {
+      return;
+    }
+
+    return this.fetchData(true);
+  }
+
   render() {
     const { paramKey, icon } = this.props;
     const { counts, fields, loading } = this.state;
@@ -93,14 +116,16 @@ export default class FilterList extends React.PureComponent<Props, State> {
     }
 
     return (
-      <FilterByParams
-        fields={fields}
-        paramKey={paramKey}
-        counts={counts}
-        icon={icon}
-        loading={false}
-        searchable={false}
-      />
+      <NoHeight>
+        <FilterByParams
+          fields={fields}
+          paramKey={paramKey}
+          counts={counts}
+          icon={icon}
+          loading={false}
+          searchable={false}
+        />
+      </NoHeight>
     );
   }
 }

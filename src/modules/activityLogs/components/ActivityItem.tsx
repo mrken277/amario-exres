@@ -1,86 +1,110 @@
-import {
-  ActivityContent,
-  ActivityDate,
-  ActivityIcon,
-  ActivityRow,
-  AvatarWrapper,
-  EmailContent,
-  FlexBody,
-  FlexContent
-} from 'modules/activityLogs/styles';
-import { Icon, NameCard, Tip } from 'modules/common/components';
-import * as moment from 'moment';
-import * as React from 'react';
-import * as xss from 'xss';
+import { IUser } from 'modules/auth/types';
+import Icon from 'modules/common/components/Icon';
+import Tip from 'modules/common/components/Tip';
+import React from 'react';
+import Task from '../containers/items/boardItems/Task';
+import Conversation from '../containers/items/Conversation';
+import Email from '../containers/items/Email';
+import InternalNote from '../containers/items/InternalNote';
+import { ActivityIcon, ActivityRow } from '../styles';
+import { IActivityLog } from '../types';
+import { formatText, getIconAndColor } from '../utils';
+import MovementLog from './items/boardItems/MovementLog';
+import ConvertLog from './items/ConvertLog';
+import CreatedLog from './items/CreatedLog';
+import MergedLog from './items/MergedLog';
+import SegmentLog from './items/SegmentLog';
 
 type Props = {
-  data: any;
+  activity: IActivityLog;
+  currenUser: IUser;
 };
 
-const ActivityItem = (props: Props) => {
-  const { data } = props;
+class ActivityItem extends React.Component<Props> {
+  renderDetail(type: string, children: React.ReactNode) {
+    const iconAndColor = getIconAndColor(type) || {};
 
-  if (data.action === 'email-send') {
-    const content = JSON.parse(data.content);
+    if (type === 'conversation') {
+      return children;
+    }
 
     return (
       <ActivityRow key={Math.random()}>
-        <ActivityIcon color={data.color}>
-          <Icon icon={data.icon || ''} />
-        </ActivityIcon>
-        <React.Fragment>
-          <FlexContent>
-            <AvatarWrapper>
-              <NameCard.Avatar user={data.by} size={40} />
-            </AvatarWrapper>
-            <FlexBody>
-              <p>{content.subject}</p>
-              <div>
-                {data.caption}
-                <Icon icon="rightarrow" /> To: <span>{content.toEmails}</span>
-                {content.cc && <span>Cc: {content.cc}</span>}
-                {content.bcc && <span>Bcc: {content.bcc}</span>}
-              </div>
-            </FlexBody>
-            <Tip text={moment(data.date).format('lll')}>
-              <ActivityDate>{moment(data.date).fromNow()}</ActivityDate>
-            </Tip>
-          </FlexContent>
-          {data.content && (
-            <EmailContent
-              dangerouslySetInnerHTML={{ __html: xss(content.body) }}
-            />
-          )}
-        </React.Fragment>
+        <Tip text={formatText(type)} placement="top">
+          <ActivityIcon color={iconAndColor.color}>
+            <Icon icon={iconAndColor.icon} />
+          </ActivityIcon>
+        </Tip>
+        {children}
       </ActivityRow>
     );
   }
 
-  return (
-    <ActivityRow key={Math.random()}>
-      <ActivityIcon color={data.color}>
-        <Icon icon={data.icon || ''} />
-      </ActivityIcon>
-      <React.Fragment>
-        <FlexContent>
-          <AvatarWrapper>
-            <NameCard.Avatar user={data.by} size={40} />
-          </AvatarWrapper>
-          <FlexBody>
-            <div>{data.caption}</div>
-          </FlexBody>
-          <Tip text={moment(data.date).format('lll')}>
-            <ActivityDate>{moment(data.date).fromNow()}</ActivityDate>
-          </Tip>
-        </FlexContent>
-        {data.content && (
-          <ActivityContent
-            dangerouslySetInnerHTML={{ __html: xss(data.content) }}
+  render() {
+    const { activity, currenUser } = this.props;
+    const { _id, contentType, action } = activity;
+
+    switch ((action && action) || contentType) {
+      case 'note':
+        return this.renderDetail(
+          'note',
+          <InternalNote
+            noteId={_id}
+            activity={activity}
+            currenUser={currenUser}
           />
-        )}
-      </React.Fragment>
-    </ActivityRow>
-  );
-};
+        );
+      case 'conversation':
+        return this.renderDetail(
+          'conversation',
+          <Conversation conversationId={_id} activity={activity} />
+        );
+      case 'taskDetail':
+        return this.renderDetail('task', <Task taskId={_id} />);
+      case 'engage-email':
+        return this.renderDetail(
+          'email',
+          <Email emailType="engage" emailId={_id} activity={activity} />
+        );
+      case 'email':
+        return this.renderDetail(
+          'email',
+          <Email emailType="email" emailId={_id} activity={activity} />
+        );
+      case 'comment':
+        return this.renderDetail(
+          'conversation',
+          <Conversation conversationId={_id} activity={activity} />
+        );
+      case 'moved':
+        return this.renderDetail(
+          activity.contentType,
+          <MovementLog activity={activity} />
+        );
+      case 'create':
+        return this.renderDetail(
+          activity.contentType,
+          <CreatedLog activity={activity} />
+        );
+      case 'merge':
+        return this.renderDetail(
+          activity.contentType,
+          <MergedLog activity={activity} />
+        );
+      case 'convert':
+        return this.renderDetail(
+          activity.contentType,
+          <ConvertLog activity={activity} />
+        );
+      case 'segment':
+        return this.renderDetail(
+          activity.action,
+          <SegmentLog activity={activity} />
+        );
+      default:
+        return <div />;
+    }
+  }
+}
 
 export default ActivityItem;

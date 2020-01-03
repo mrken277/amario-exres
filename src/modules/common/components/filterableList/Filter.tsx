@@ -1,10 +1,10 @@
-import { FormControl } from 'modules/common/components';
+import FormControl from 'modules/common/components/form/Control';
 import { __ } from 'modules/common/utils';
-import * as React from 'react';
+import React from 'react';
 
 type Props = {
   placeholder?: string;
-  onChange: (e: React.FormEvent<HTMLElement>) => void;
+  onChange: (e) => void;
 };
 
 function Filter({ placeholder = 'Search', onChange }: Props) {

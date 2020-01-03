@@ -48,6 +48,7 @@ const sidebarConversations = `
       status
       updatedAt
       idleTime
+      messageCount
       assignedUser {
         _id
         details {
@@ -58,6 +59,7 @@ const sidebarConversations = `
       integration {
         _id
         kind
+        name
         brand {
           _id
           name
@@ -76,8 +78,6 @@ const sidebarConversations = `
         isUser
         avatar
         visitorContactInfo
-        facebookData
-        twitterData
       }
       tagIds
       tags {
@@ -85,12 +85,6 @@ const sidebarConversations = `
         name
       }
       readUserIds
-      twitterData {
-        isDirectMessage
-      }
-      facebookData {
-        kind
-      }
     }
   }
 `;
@@ -113,9 +107,35 @@ const conversationDetailMarkAsRead = `
 `;
 
 const conversationMessages = `
-  query conversationMessages($conversationId: String!, $skip: Int, $limit: Int) {
-    conversationMessages(conversationId: $conversationId, skip: $skip, limit: $limit) {
+  query conversationMessages($conversationId: String!, $skip: Int, $limit: Int, $getFirst: Boolean) {
+    conversationMessages(conversationId: $conversationId, skip: $skip, limit: $limit, getFirst: $getFirst) {
       ${messageFields}
+    }
+  }
+`;
+
+const converstationFacebookComments = `
+  query converstationFacebookComments($postId: String!, $commentId: String, $senderId: String, $skip: Int, $limit: Int) {
+    converstationFacebookComments(postId: $postId, limit: $limit, commentId: $commentId, senderId: $senderId, skip: $skip) {
+      conversationId
+      commentId
+      postId
+      recipientId
+      senderId
+      attachments
+      content
+      erxesApiId
+      timestamp
+      parentId
+      commentCount
+      customer {
+        _id
+        visitorContactInfo
+        messengerData
+        avatar
+        firstName
+        lastName
+      }
     }
   }
 `;
@@ -127,8 +147,8 @@ const conversationMessagesTotalCount = `
 `;
 
 const userList = `
-  query objects {
-    users {
+  query objects($searchValue: String, $requireUsername: Boolean) {
+    users(searchValue: $searchValue, requireUsername: $requireUsername) {
       _id
       username
       email
@@ -142,8 +162,17 @@ const userList = `
 `;
 
 const channelList = `
-  query channels {
-    channels {
+  query channels($page: Int, $perPage: Int, $memberIds: [String]) {
+    channels(page: $page, perPage: $perPage, memberIds: $memberIds) {
+      _id
+      name
+    }
+  }
+`;
+
+const integrationsGetUsedTypes = `
+  query integrationsGetUsedTypes {
+    integrationsGetUsedTypes {
       _id
       name
     }
@@ -196,8 +225,8 @@ const lastConversation = `
 `;
 
 const responseTemplateList = `
-  query responseTemplates {
-    responseTemplates {
+  query responseTemplates($perPage: Int) {
+    responseTemplates(perPage: $perPage) {
       _id
       name
       brandId
@@ -206,9 +235,18 @@ const responseTemplateList = `
   }
 `;
 
+const convertToInfo = `
+  query convertToInfo($conversationId: String!) {
+    convertToInfo(conversationId: $conversationId) {
+      ticketUrl
+      dealUrl
+      taskUrl
+    }
+  }
+`;
+
 const generateCustomerDetailQuery = params => {
   const {
-    showProfile = false,
     showDeviceProperties = false,
     showMessengerData = false,
     showCustomFields = false,
@@ -221,14 +259,8 @@ const generateCustomerDetailQuery = params => {
     integration {
       kind
     }
+    ${customerQueries.basicFields}
   `;
-
-  if (showProfile) {
-    fields = `
-      ${fields}
-      ${customerQueries.basicFields}
-    `;
-  }
 
   if (showMessengerData) {
     fields = `
@@ -291,27 +323,17 @@ const generateCustomerDetailQuery = params => {
   `;
 };
 
-const conversationMessagesFacebook = `
-  query conversationMessagesFacebook($conversationId: String, $commentId: String, $postId: String, $limit: Int) {
-    conversationMessagesFacebook(conversationId: $conversationId, commentId: $commentId, postId: $postId, limit: $limit) {
-      list {
-        ${messageFields}
-      }
-      
-      commentCount
-    }
-  }
-`;
-
 export default {
   conversationList,
   sidebarConversations,
   conversationDetail,
   conversationDetailMarkAsRead,
   conversationMessages,
+  converstationFacebookComments,
   conversationMessagesTotalCount,
   userList,
   channelList,
+  integrationsGetUsedTypes,
   brandList,
   tagList,
   responseTemplateList,
@@ -320,5 +342,5 @@ export default {
   unreadConversationsCount,
   lastConversation,
   generateCustomerDetailQuery,
-  conversationMessagesFacebook
+  convertToInfo
 };

@@ -1,8 +1,9 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { Alert, withProps } from 'modules/common/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
-import { ForgotPassword } from '../components';
+import React from 'react';
+import { graphql } from 'react-apollo';
+import ForgotPassword from '../components/ForgotPassword';
 import { mutations } from '../graphql';
 import {
   ForgotPasswordMutationResponse,

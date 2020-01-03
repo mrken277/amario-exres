@@ -1,7 +1,6 @@
-import _ from 'lodash';
-import { Button } from 'modules/common/components';
+import Button from 'modules/common/components/Button';
 import { CONVERSATION_STATUSES } from 'modules/inbox/constants';
-import * as React from 'react';
+import React from 'react';
 import { IConversation } from '../types';
 
 type Props = {
@@ -28,7 +27,7 @@ class Resolver extends React.Component<Props> {
     );
 
     const buttonText = hasClosedConversation ? 'Open' : 'Resolve';
-    const icon = hasClosedConversation ? 'refresh' : 'checked';
+    const icon = hasClosedConversation ? 'redo' : 'check-circle';
 
     const btnAttrs = {
       size: 'small',

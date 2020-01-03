@@ -1,10 +1,8 @@
-import {
-  ControlLabel,
-  FormControl,
-  FormGroup
-} from 'modules/common/components';
-import * as moment from 'moment';
-import * as React from 'react';
+import FormControl from 'modules/common/components/form/Control';
+import FormGroup from 'modules/common/components/form/Group';
+import ControlLabel from 'modules/common/components/form/Label';
+import React from 'react';
+import { SelectInput } from '../styles';
 import { IField } from '../types';
 
 type Props = {
@@ -79,10 +77,10 @@ export default class GenerateField extends React.Component<Props, State> {
     }
 
     if (validation === 'date') {
-      attrs.type = 'date';
+      attrs.max = '9999-12-31';
 
       if (value) {
-        attrs.value = moment(value).format('YYYY-MM-DD');
+        attrs.value = new Date(value).toLocaleDateString();
       }
     }
 
@@ -101,10 +99,10 @@ export default class GenerateField extends React.Component<Props, State> {
     return (
       <div>
         {options.map((option, index) => (
-          <div key={index}>
+          <SelectInput key={index}>
             {this.renderInput({ ...attrs, option })}
             <span>{option}</span>
-          </div>
+          </SelectInput>
         ))}
       </div>
     );
@@ -187,9 +185,8 @@ export default class GenerateField extends React.Component<Props, State> {
 
     return (
       <FormGroup>
-        <ControlLabel ignoreTrans={true}>
+        <ControlLabel ignoreTrans={true} required={field.isRequired}>
           {field.text}
-          {field.isRequired ? <span className="required">*</span> : null}
         </ControlLabel>
 
         {field.description ? <p>{field.description}</p> : null}

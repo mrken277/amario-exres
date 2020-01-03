@@ -1,15 +1,17 @@
 import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
+import { queries } from 'modules/auth/graphql';
 import { IUser } from 'modules/auth/types';
 import { Alert, withProps } from 'modules/common/utils';
 import { queries as teamQueries } from 'modules/settings/team/graphql';
 import { UserDetailQueryResponse } from 'modules/settings/team/types';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
-import { Spinner } from '../../../common/components';
+import React from 'react';
+import { graphql } from 'react-apollo';
+import Spinner from '../../../common/components/Spinner';
 import { queries as brandQueries } from '../../brands/graphql';
 import { BrandsQueryResponse } from '../../brands/types';
-import { Signature } from '../components';
+import Signature from '../components/Signature';
 import {
   IEmailSignature,
   IEmailSignatureWithBrand,
@@ -36,7 +38,7 @@ const SignatureContainer = (props: FinalProps) => {
   }
 
   // save email configs action
-  const save = (signaturesToSave: IEmailSignatureWithBrand[]) => {
+  const save = (signaturesToSave: IEmailSignatureWithBrand[], callback) => {
     const doc: IEmailSignature[] = [];
 
     // remove brandName from list
@@ -51,7 +53,8 @@ const SignatureContainer = (props: FinalProps) => {
 
     saveMutation({ variables: { signatures: doc } })
       .then(() => {
-        Alert.success('Congrats');
+        Alert.success('Great job! You just set up your email signature.');
+        callback();
         userDetailQuery.refetch();
       })
       .catch(error => {
@@ -113,7 +116,14 @@ const WithQuery = withProps<Props>(
         }
       `,
       {
-        name: 'saveMutation'
+        name: 'saveMutation',
+        options: () => ({
+          refetchQueries: [
+            {
+              query: gql(queries.currentUser)
+            }
+          ]
+        })
       }
     )
   )(SignatureContainer)

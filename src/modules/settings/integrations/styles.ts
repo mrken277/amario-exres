@@ -42,14 +42,25 @@ const FlexRow = styled.div`
 const Row = styled.div`
   display: flex;
   height: 100%;
+
+  > button {
+    flex-shrink: 0;
+    margin-left: 10px;
+    align-self: baseline;
+  }
 `;
 
 const MessengerPreview = styled.div`
   width: 40%;
 `;
 
-const IntegrationName = styled.span`
-  margin-right: ${dimensions.unitSpacing}px;
+const IntegrationName = styled.div`
+  display: flex;
+  align-items: center;
+
+  > div {
+    margin-left: ${dimensions.unitSpacing / 2}px;
+  }
 `;
 
 const BrandName = styled.div`
@@ -57,4 +68,56 @@ const BrandName = styled.div`
   color: ${colors.colorCoreGray};
 `;
 
-export { FlexRow, Row, MessengerPreview, IntegrationName, BrandName };
+const Script = styled.div`
+  padding-top: ${dimensions.coreSpacing}px;
+
+  ol {
+    padding-left: ${dimensions.coreSpacing}px;
+  }
+`;
+
+const Options = styled.div`
+  font-weight: 500;
+
+  i {
+    color: ${colors.colorCoreGray};
+    margin-left: ${dimensions.unitSpacing}px;
+    font-weight: normal;
+  }
+`;
+
+const Description = styled.p`
+  text-transform: initial;
+`;
+
+const Verify = styled.div`
+  display: flex;
+  align-items: center;
+  margin: ${dimensions.coreSpacing}px ${dimensions.coreSpacing * 8}px
+    ${dimensions.coreSpacing}px 0;
+
+  > * {
+    margin-left: ${dimensions.unitSpacing}px;
+  }
+
+  > i {
+    color: ${colors.colorPrimary};
+    margin: 0 ${dimensions.unitSpacing}px 0;
+  }
+
+  label {
+    margin: 0;
+  }
+`;
+
+export {
+  FlexRow,
+  Row,
+  MessengerPreview,
+  IntegrationName,
+  BrandName,
+  Options,
+  Description,
+  Script,
+  Verify
+};

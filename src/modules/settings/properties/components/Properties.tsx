@@ -1,18 +1,19 @@
-import {
-  Button,
-  DropdownToggle,
-  EmptyState,
-  Icon,
-  ModalTrigger
-} from 'modules/common/components';
+import Button from 'modules/common/components/Button';
+import DropdownToggle from 'modules/common/components/DropdownToggle';
+import EmptyState from 'modules/common/components/EmptyState';
+import HeaderDescription from 'modules/common/components/HeaderDescription';
+import Icon from 'modules/common/components/Icon';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { __ } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import * as React from 'react';
-import { Dropdown, MenuItem } from 'react-bootstrap';
-import { PropertyForm, PropertyGroupForm } from '../containers';
+import Wrapper from 'modules/layout/components/Wrapper';
+import React from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
+import PropertyForm from '../containers/PropertyForm';
+import PropertyGroupForm from '../containers/PropertyGroupForm';
 import { PropertyList } from '../styles';
 import { IFieldGroup } from '../types';
-import { PropertyRow, Sidebar } from './';
+import PropertyRow from './PropertyRow';
+import Sidebar from './Sidebar';
 
 type Props = {
   queryParams: any;
@@ -65,10 +66,10 @@ class Properties extends React.Component<Props> {
   };
 
   renderActionBar = () => {
-    const { queryParams, fieldsGroups } = this.props;
+    const { queryParams, fieldsGroups, currentType } = this.props;
 
-    const addGroup = <MenuItem>{__('Add group')}</MenuItem>;
-    const addField = <MenuItem>{__('Add Property')}</MenuItem>;
+    const addGroup = <Dropdown.Item>{__('Add group')}</Dropdown.Item>;
+    const addField = <Dropdown.Item>{__('Add Property')}</Dropdown.Item>;
 
     const groupContent = props => (
       <PropertyGroupForm {...props} queryParams={queryParams} />
@@ -89,20 +90,18 @@ class Properties extends React.Component<Props> {
     };
 
     return (
-      <Dropdown
-        id="dropdown-knowledgebase"
-        className="quick-button"
-        pullRight={true}
-      >
-        <DropdownToggle bsRole="toggle">
+      <Dropdown alignRight={true}>
+        <Dropdown.Toggle as={DropdownToggle} id="dropdown-properties">
           <Button btnStyle="success" size="small" icon="add">
-            {__('Add Group & Field ')} <Icon icon="downarrow" />
+            {__('Add Group & Field ')}
+            <Icon icon="angle-down" />
           </Button>
-        </DropdownToggle>
+        </Dropdown.Toggle>
         <Dropdown.Menu>
           <ModalTrigger
             title="Add Group"
             trigger={addGroup}
+            autoOpenKey={`showProperty${currentType}Modal`}
             content={groupContent}
           />
           <ModalTrigger
@@ -124,10 +123,25 @@ class Properties extends React.Component<Props> {
       { title: __(currentType) }
     ];
 
+    const actionBarLeft = (
+      <HeaderDescription
+        icon="/images/actions/26.svg"
+        title="Properties"
+        description="The quick view finder helps you to view basic information on both companies and customers alike. Add groups and fields of the exact information you want to see."
+      />
+    );
+
     return (
       <Wrapper
-        actionBar={<Wrapper.ActionBar right={this.renderActionBar()} />}
-        header={<Wrapper.Header breadcrumb={breadcrumb} />}
+        actionBar={
+          <Wrapper.ActionBar
+            left={actionBarLeft}
+            right={this.renderActionBar()}
+          />
+        }
+        header={
+          <Wrapper.Header title={__(currentType)} breadcrumb={breadcrumb} />
+        }
         leftSidebar={<Sidebar title="Properties" currentType={currentType} />}
         content={this.renderProperties()}
       />

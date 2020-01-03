@@ -1,14 +1,14 @@
-import {
-  Button,
-  DataWithLoader,
-  ModalTrigger,
-  Pagination
-} from 'modules/common/components';
+import Button from 'modules/common/components/Button';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
+import HeaderDescription from 'modules/common/components/HeaderDescription';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Pagination from 'modules/common/components/pagination/Pagination';
 import { __ } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import { IntegrationList } from 'modules/settings/integrations/containers/common';
-import * as React from 'react';
-import { ManageIntegrations, Sidebar } from '../containers';
+import Wrapper from 'modules/layout/components/Wrapper';
+import IntegrationList from 'modules/settings/integrations/containers/common/IntegrationList';
+import React from 'react';
+import ManageIntegrations from '../containers/ManageIntegrations';
+import Sidebar from '../containers/Sidebar';
 import { IChannel } from '../types';
 
 type Props = {
@@ -52,14 +52,31 @@ class Channels extends React.Component<Props, {}> {
         title="Manage Integration"
         trigger={trigger}
         size="lg"
+        autoOpenKey="showManageIntegrationModal"
         content={content}
       />
     );
 
     return (
       <Wrapper
-        header={<Wrapper.Header breadcrumb={breadcrumb} />}
-        actionBar={<Wrapper.ActionBar right={rightActionBar} />}
+        header={
+          <Wrapper.Header
+            title={`${currentChannel.name || ''}`}
+            breadcrumb={breadcrumb}
+          />
+        }
+        actionBar={
+          <Wrapper.ActionBar
+            left={
+              <HeaderDescription
+                icon="/images/actions/31.svg"
+                title="Channels"
+                description="Channels are important to know how and where your team members are spread out. Manage your channels and stay at the top of your game."
+              />
+            }
+            right={rightActionBar}
+          />
+        }
         leftSidebar={
           <Sidebar
             currentChannelId={currentChannel._id}
@@ -77,8 +94,8 @@ class Channels extends React.Component<Props, {}> {
             }
             loading={loading}
             count={integrationsCount}
-            emptyText="There is no integration in this channel."
-            emptyImage="/images/robots/robot-05.svg"
+            emptyText="Choose from our many integrations and add to your channel"
+            emptyImage="/images/actions/2.svg"
           />
         }
       />

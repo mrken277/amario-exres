@@ -1,8 +1,10 @@
 import _ from 'lodash';
-import { FormControl, NameCard, Tags } from 'modules/common/components';
-import { urlParser } from 'modules/common/utils';
-import * as moment from 'moment';
-import * as React from 'react';
+import FormControl from 'modules/common/components/form/Control';
+import NameCard from 'modules/common/components/nameCard/NameCard';
+import Tags from 'modules/common/components/Tags';
+import { formatValue } from 'modules/common/utils';
+import { ClickableRow } from 'modules/customers/styles';
+import React from 'react';
 import { FlexItem } from '../../styles';
 import { ICompany } from '../../types';
 
@@ -13,48 +15,6 @@ type Props = {
   isChecked: boolean;
   toggleBulk: (company: ICompany, isChecked?: boolean) => void;
 };
-
-function isTimeStamp(value) {
-  if (typeof value === 'string') {
-    value = parseInt(value, 10);
-  }
-
-  return (
-    Number.isInteger(value) && value > 1000000000 && value <= 999999999999999
-  );
-}
-
-function createLinkFromUrl(url) {
-  if (!url.includes('http')) {
-    url = 'http://' + url;
-  }
-
-  const onClick = e => {
-    e.stopPropagation();
-    window.open(url);
-  };
-
-  return <a onClick={onClick}>{urlParser.extractRootDomain(url)}</a>;
-}
-
-function formatValue(value) {
-  if (typeof value === 'boolean') {
-    return value.toString();
-  }
-
-  if (urlParser.isValidURL(value)) {
-    return createLinkFromUrl(value);
-  }
-
-  if (
-    value &&
-    (moment(value, moment.ISO_8601).isValid() || isTimeStamp(value))
-  ) {
-    return moment(value).fromNow();
-  }
-
-  return value || '-';
-}
 
 function displayValue(company, name) {
   const value = _.get(company, name);
@@ -91,7 +51,7 @@ function CompanyRow({
   };
 
   const onTrClick = () => {
-    history.push(`companies/details/${company._id}`);
+    history.push(`/contacts/companies/details/${company._id}`);
   };
 
   return (
@@ -104,7 +64,9 @@ function CompanyRow({
         />
       </td>
       {columnsConfig.map(({ name }) => (
-        <td key={name}>{displayValue(company, name)}</td>
+        <td key={name}>
+          <ClickableRow>{displayValue(company, name)}</ClickableRow>
+        </td>
       ))}
       <td>
         <Tags tags={tags} limit={2} />

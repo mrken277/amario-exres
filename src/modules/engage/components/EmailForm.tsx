@@ -1,56 +1,31 @@
-import {
-  ControlLabel,
-  FormControl,
-  FormGroup,
-  Uploader
-} from 'modules/common/components';
+import EditorCK from 'modules/common/components/EditorCK';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import FormControl from 'modules/common/components/form/Control';
+import FormGroup from 'modules/common/components/form/Group';
+import ControlLabel from 'modules/common/components/form/Label';
+import HelpPopover from 'modules/common/components/HelpPopover';
+import Icon from 'modules/common/components/Icon';
 import { FlexItem, FlexPad } from 'modules/common/components/step/styles';
-import { EMAIL_CONTENT_CLASS } from 'modules/engage/constants';
-import * as React from 'react';
-import * as ReactDom from 'react-dom';
-import styled from 'styled-components';
-import * as xss from 'xss';
-import { IUser } from '../../auth/types';
-import { IEmailTemplate } from '../../settings/emailTemplates/types';
-import { IEngageEmail, IEngageScheduleDate } from '../types';
-import Editor from './Editor';
+import Tip from 'modules/common/components/Tip';
+import Uploader from 'modules/common/components/Uploader';
+import { ISelectedOption } from 'modules/common/types';
+import { __ } from 'modules/common/utils';
+import { EMAIL_CONTENT } from 'modules/engage/constants';
+import {
+  EditorContainer,
+  VerifyCancel,
+  VerifyCheck,
+  VerifyStatus
+} from 'modules/engage/styles';
+import React from 'react';
+import Select from 'react-select-plus';
+import { IEmailFormProps, IEngageEmail, IEngageScheduleDate } from '../types';
 import Scheduler from './Scheduler';
 
-const PreviewContainer = styled.div`
-  margin: 20px;
-  height: 100%;
-  p {
-    padding: 20px;
-  }
-`;
-
-const EmailContent = styled.div`
-  padding: 20px 30px;
-
-  p {
-    padding: 0px;
-    margin: 0px;
-  }
-`;
-
-type Props = {
-  onChange: (
-    name: 'email' | 'content' | 'fromUserId' | 'scheduleDate',
-    value: IEngageEmail | IEngageScheduleDate | string
-  ) => void;
-  message?: string;
-  users: IUser[];
-  templates: IEmailTemplate[];
-  kind: string;
-  email: IEngageEmail;
-  fromUserId: string;
-  content: string;
-  scheduleDate: IEngageScheduleDate;
-};
+type Props = IEmailFormProps & { verifiedEmails: string[]; error?: string };
 
 type State = {
   fromUserId: string;
-  currentTemplate: string;
   content: string;
   email: IEngageEmail;
   scheduleDate?: IEngageScheduleDate;
@@ -62,26 +37,10 @@ class EmailForm extends React.Component<Props, State> {
 
     this.state = {
       fromUserId: props.fromUserId,
-      currentTemplate: '',
       content: props.content,
       email: props.email,
       scheduleDate: props.scheduleDate
     };
-  }
-
-  componentDidMount() {
-    if (this.props.email) {
-      this.templateChange(this.props.email.templateId);
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      this.props.content !== prevProps.content ||
-      this.state.currentTemplate !== prevState.currentTemplate
-    ) {
-      this.renderBuilder();
-    }
   }
 
   changeContent = (key, value) => {
@@ -94,15 +53,19 @@ class EmailForm extends React.Component<Props, State> {
     this.props.onChange('email', email);
   };
 
-  changeUser = fromUserId => {
+  changeUser = (fromUserId: string) => {
     this.setState({ fromUserId });
     this.props.onChange('fromUserId', fromUserId);
   };
 
   templateChange = value => {
-    this.changeContent('templateId', value);
-    this.setState({ currentTemplate: this.findTemplate(value) });
-    this.renderBuilder();
+    const email = { ...this.state.email } as IEngageEmail;
+
+    email.templateId = value;
+
+    this.setState({ content: this.findTemplate(value), email }, () => {
+      this.props.onChange('email', this.state.email);
+    });
   };
 
   findTemplate = id => {
@@ -114,38 +77,6 @@ class EmailForm extends React.Component<Props, State> {
 
     return '';
   };
-
-  renderBuilder() {
-    const contentContainer = document.getElementsByClassName(
-      EMAIL_CONTENT_CLASS
-    );
-
-    // render editor to content
-    if (contentContainer.length > 0) {
-      ReactDom.render(
-        <EmailContent
-          dangerouslySetInnerHTML={{
-            __html: xss(this.props.content || '')
-          }}
-        />,
-        contentContainer[0]
-      );
-    }
-  }
-
-  renderMessage() {
-    if (!this.state.currentTemplate) {
-      return null;
-    }
-
-    return (
-      <PreviewContainer
-        dangerouslySetInnerHTML={{
-          __html: this.state.currentTemplate
-        }}
-      />
-    );
-  }
 
   renderScheduler() {
     if (this.props.kind === 'manual') {
@@ -160,11 +91,71 @@ class EmailForm extends React.Component<Props, State> {
     );
   }
 
+  onEditorChange = e => {
+    this.props.onChange('content', e.editor.getData());
+  };
+
+  renderFrom() {
+    const { error } = this.props;
+
+    if (error) {
+      return <ErrorMsg>{error}</ErrorMsg>;
+    }
+
+    const onChangeUser = (value: ISelectedOption) => {
+      const userId = value ? value.value : '';
+
+      this.changeUser(userId);
+    };
+
+    const selectOptions = () => {
+      const { users, verifiedEmails } = this.props;
+      const options: any[] = [];
+
+      users.map(user =>
+        options.push({
+          value: user._id,
+          label: (user.details && user.details.fullName) || user.username,
+          disabled: !verifiedEmails.includes(user.email)
+        })
+      );
+
+      return options;
+    };
+
+    const optionRenderer = option => (
+      <VerifyStatus>
+        {!option.disabled ? (
+          <Tip placement="auto" text="Email verified">
+            <VerifyCheck>
+              <Icon icon="check-circle" />
+            </VerifyCheck>
+          </Tip>
+        ) : (
+          <Tip placement="auto" text="Email not verified">
+            <VerifyCancel>
+              <Icon icon="times-circle" />
+            </VerifyCancel>
+          </Tip>
+        )}
+        {option.label}
+      </VerifyStatus>
+    );
+
+    return (
+      <Select
+        placeholder={__('Choose users')}
+        value={this.state.fromUserId}
+        onChange={onChangeUser}
+        optionRenderer={optionRenderer}
+        options={selectOptions()}
+      />
+    );
+  }
+
   render() {
     const { attachments } = this.state.email;
 
-    const onChangeUser = e =>
-      this.changeUser((e.target as HTMLInputElement).value);
     const onChangeContent = e =>
       this.changeContent('subject', (e.target as HTMLInputElement).value);
     const onChangeTemplate = e =>
@@ -176,27 +167,30 @@ class EmailForm extends React.Component<Props, State> {
       <FlexItem>
         <FlexPad direction="column" overflow="auto">
           <FormGroup>
-            <ControlLabel>Message:</ControlLabel>
-            <Editor
-              onChange={this.props.onChange}
-              defaultValue={this.state.content}
-            />
-          </FormGroup>
-
-          <FormGroup>
-            <ControlLabel>From:</ControlLabel>
-            <FormControl
-              componentClass="select"
-              onChange={onChangeUser}
-              value={this.state.fromUserId}
-            >
-              <option />{' '}
-              {this.props.users.map(user => (
-                <option key={user._id} value={user._id}>
-                  {user.details ? user.details.fullName : user.username}
-                </option>
-              ))}
-            </FormControl>
+            <ControlLabel>
+              From:
+              <HelpPopover title="The email address is not verified (x) by Amazon Ses services.">
+                <div>
+                  If you want to verify your email:
+                  <ol>
+                    <li>Log in to your AWS Management Console</li>
+                    <li>Click on the Services menu from the dropdown menu</li>
+                    <li>
+                      Click on the Simple Email Services menu from the left
+                      sidebar
+                    </li>
+                    <li>
+                      Click on the Email Addresses menu from the left sidebar
+                    </li>
+                    <li>
+                      Finally, click on the button that named "Verify a new
+                      email address"
+                    </li>
+                  </ol>
+                </div>
+              </HelpPopover>
+            </ControlLabel>
+            {this.renderFrom()}
           </FormGroup>
 
           <FormGroup>
@@ -209,6 +203,7 @@ class EmailForm extends React.Component<Props, State> {
 
           <FormGroup>
             <ControlLabel>Email template:</ControlLabel>
+            <p>{__('Insert email template to content')}</p>
             <FormControl
               componentClass="select"
               onChange={onChangeTemplate}
@@ -233,8 +228,16 @@ class EmailForm extends React.Component<Props, State> {
           {this.renderScheduler()}
         </FlexPad>
 
-        <FlexItem v="center" h="center" overflow="auto">
-          {this.renderMessage()}
+        <FlexItem overflow="auto" count="2">
+          <EditorContainer>
+            <ControlLabel>Content:</ControlLabel>
+            <EditorCK
+              content={this.state.content}
+              onChange={this.onEditorChange}
+              insertItems={EMAIL_CONTENT}
+              height={500}
+            />
+          </EditorContainer>
         </FlexItem>
       </FlexItem>
     );

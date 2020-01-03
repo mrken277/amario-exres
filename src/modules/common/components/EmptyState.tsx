@@ -1,17 +1,20 @@
 import { __ } from 'modules/common/utils';
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { colors } from '../styles';
 import Button from './Button';
 import Icon from './Icon';
 
-const EmptyStateStyled = styledTS<{ hugeness: string }>(styled.div)`
+const EmptyStateStyled = styledTS<{ hugeness: string; light?: boolean }>(
+  styled.div
+)`
   display: flex;
   flex-direction: column;
   height: 100%;
   flex: 1;
   justify-content: center;
+  align-items: center;
   text-align: center;
   font-size: 14px;
   padding: 20px;
@@ -19,12 +22,20 @@ const EmptyStateStyled = styledTS<{ hugeness: string }>(styled.div)`
 
   img {
     max-height: 260px;
+    margin: 0 auto 20px auto;
+    max-width: 60%;
+    width: fit-content;
+  }
+
+  span {
+    max-width: 600px;
+    color: ${props => props.light && colors.colorWhite}
   }
 
   ${props => {
     if (props.hugeness === 'small') {
       return `
-        min-height: 80px;
+        min-height: 100px;
         font-size: 12px;
         padding: 10px 20px;
       `;
@@ -40,7 +51,7 @@ const EmptyStateStyled = styledTS<{ hugeness: string }>(styled.div)`
   }};
 
   i {
-    font-size: ${props => (props.hugeness === 'small' ? '28px' : '14vh')};
+    font-size: ${props => (props.hugeness === 'small' ? '28px' : '12vh')};
     line-height: ${props => (props.hugeness === 'small' ? '40px' : '18vh')};
     color: ${colors.colorCoreLightGray};
   }
@@ -58,6 +69,7 @@ type Props = {
   size?: string;
   linkUrl?: string;
   linkText?: string;
+  light?: boolean;
 };
 
 function EmptyState({
@@ -66,13 +78,14 @@ function EmptyState({
   image,
   size = 'small',
   linkUrl,
-  linkText
+  linkText,
+  light
 }: Props) {
   return (
-    <EmptyStateStyled hugeness={size}>
+    <EmptyStateStyled hugeness={size} light={light}>
       {icon ? <Icon icon={icon} /> : <img src={image} alt={text} />}
 
-      {__(text)}
+      <span>{__(text)}</span>
 
       {linkUrl && linkText ? (
         <Button btnStyle="simple" size="small" href={linkUrl}>

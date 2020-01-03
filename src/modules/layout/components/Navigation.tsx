@@ -1,17 +1,20 @@
-import { Label, Tip } from 'modules/common/components';
+import Label from 'modules/common/components/Label';
+import Tip from 'modules/common/components/Tip';
+import WithPermission from 'modules/common/components/WithPermission';
 import { colors, dimensions } from 'modules/common/styles';
 import { __, setBadge } from 'modules/common/utils';
-import * as React from 'react';
+import Robot from 'modules/robot/containers/Robot';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 const LeftNavigation = styled.aside`
   width: ${dimensions.headerSpacingWide}px;
   background: ${colors.colorPrimaryDark};
-  z-index: 10;
+  box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.1);
+  z-index: 11;
   flex-shrink: 0;
-  overflow: hidden;
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
@@ -38,7 +41,6 @@ const Nav = styled.nav`
   display: block;
   margin-top: ${dimensions.unitSpacing / 2}px;
   height: calc(100% - 130px);
-  overflow: auto;
 
   > a {
     display: block;
@@ -66,13 +68,15 @@ const Nav = styled.nav`
 
       &:before {
         content: '';
-        width: 2px;
+        width: 3px;
         background: ${colors.colorCoreTeal};
         position: absolute;
         display: block;
         left: 0;
-        top: 0;
-        bottom: 0;
+        top: 5px;
+        bottom: 5px;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
       }
 
       i {
@@ -85,7 +89,7 @@ const Nav = styled.nav`
     }
 
     &:hover {
-      background: rgba(0, 0, 0, 0.05);
+      background: rgba(0, 0, 0, 0.06);
 
       i {
         opacity: 1;
@@ -125,12 +129,37 @@ class Navigation extends React.Component<{
     const unreadCount = nextProps.unreadConversationsCount;
 
     if (unreadCount !== this.props.unreadConversationsCount) {
-      setBadge(unreadCount, __('Inbox').toString());
+      setBadge(unreadCount, __('Team Inbox').toString());
     }
   }
 
+  renderNavItem = (
+    permission: string,
+    text: string,
+    url: string,
+    icon: string,
+    label?: React.ReactNode
+  ) => {
+    return (
+      <WithPermission action={permission}>
+        <Tip placement="right" text={text}>
+          <NavLink to={url}>
+            <NavIcon className={icon} />
+            {label}
+          </NavLink>
+        </Tip>
+      </WithPermission>
+    );
+  };
+
   render() {
     const { unreadConversationsCount } = this.props;
+
+    const unreadIndicator = unreadConversationsCount !== 0 && (
+      <Label shake={true} lblStyle="danger" ignoreTrans={true}>
+        {unreadConversationsCount}
+      </Label>
+    );
 
     return (
       <LeftNavigation>
@@ -138,52 +167,51 @@ class Navigation extends React.Component<{
           <img src="/images/erxes.png" alt="erxes" />
         </NavLink>
         <Nav>
-          <Tip placement="right" text={__('Inbox').toString()}>
-            <NavLink to="/inbox">
-              <NavIcon className="icon-chat" />
-              {unreadConversationsCount !== 0 && (
-                <Label shake={true} lblStyle="danger" ignoreTrans={true}>
-                  {unreadConversationsCount}
-                </Label>
-              )}
-            </NavLink>
-          </Tip>
-          <Tip placement="right" text={__('Deal').toString()}>
-            <NavLink to="/deals">
-              <NavIcon className="icon-piggy-bank" />
-            </NavLink>
-          </Tip>
-          <Tip placement="right" text={__('Customers').toString()}>
-            <NavLink to="/customers">
-              <NavIcon className="icon-users" />
-            </NavLink>
-          </Tip>
-          <Tip placement="right" text={__('Companies').toString()}>
-            <NavLink to="/companies">
-              <NavIcon className="icon-briefcase" />
-            </NavLink>
-          </Tip>
-          <Tip placement="right" text={__('Leads').toString()}>
-            <NavLink to="/forms">
-              <NavIcon className="icon-laptop" />
-            </NavLink>
-          </Tip>
-          <Tip placement="right" text={__('Engage').toString()}>
-            <NavLink to="/engage">
-              <NavIcon className="icon-megaphone" />
-            </NavLink>
-          </Tip>
-          <Tip placement="right" text={__('Knowledge Base').toString()}>
-            <NavLink to="/knowledgeBase">
-              <NavIcon className="icon-clipboard" />
-            </NavLink>
-          </Tip>
-          <Tip placement="right" text={__('App store').toString()}>
-            <NavLink to="/settings/integrations" className="bottom">
-              <NavIcon className="icon-menu" />
-            </NavLink>
-          </Tip>
+          {this.renderNavItem(
+            'showConversations',
+            __('Conversation'),
+            '/inbox',
+            'icon-chat',
+            unreadIndicator
+          )}
+          {this.renderNavItem(
+            'showGrowthHacks',
+            __('Growth Hacking'),
+            '/growthHack',
+            'icon-idea'
+          )}
+          {this.renderNavItem(
+            'showDeals',
+            __('Deal'),
+            '/deal',
+            'icon-piggy-bank'
+          )}
+          {this.renderNavItem(
+            'showCustomers',
+            __('Contacts'),
+            '/contacts',
+            'icon-users'
+          )}
+          {this.renderNavItem(
+            'showForms',
+            __('Leads'),
+            '/leads',
+            'icon-laptop'
+          )}
+          {this.renderNavItem(
+            'showEngagesMessages',
+            __('Engage'),
+            '/engage',
+            'icon-megaphone'
+          )}
+          {this.renderNavItem(
+            'showKnowledgeBase',
+            __('Knowledge Base'),
+            '/knowledgeBase',
+            'icon-book'
+          )}
         </Nav>
+        <Robot />
       </LeftNavigation>
     );
   }

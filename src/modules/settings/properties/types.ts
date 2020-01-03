@@ -2,15 +2,16 @@ import { IUser } from 'modules/auth/types';
 
 export interface IField {
   _id: string;
+  key?: string;
   contentType: string;
   contentTypeId?: string;
   type: string;
-  validation: string;
-  text: string;
-  description: string;
-  options: string[];
+  validation?: string;
+  text?: string;
+  description?: string;
+  options?: string[];
   isRequired?: boolean;
-  order: React.ReactNode;
+  order?: React.ReactNode;
   isVisible?: boolean;
   isDefinedByErxes?: boolean;
   groupId?: string;
@@ -66,6 +67,8 @@ export type FieldsCombinedByType = {
   _id: string;
   name: string;
   label: string;
+  brandName: string;
+  brandId: string;
 };
 
 export type FieldsCombinedByTypeQueryResponse = {

@@ -1,30 +1,43 @@
-import { Button, ModalTrigger, Table } from 'modules/common/components';
+import Button from 'modules/common/components/Button';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Table from 'modules/common/components/table';
+import { IButtonMutateProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import { ITag, ITagSaveParams } from 'modules/tags/types';
-import * as React from 'react';
-import Form from './Form';
+import Wrapper from 'modules/layout/components/Wrapper';
+import { ITag } from 'modules/tags/types';
+import React from 'react';
+import FormComponent from './Form';
 import Row from './Row';
 import Sidebar from './Sidebar';
 
 type Props = {
   tags: ITag[];
   type: string;
+  renderButton: (props: IButtonMutateProps) => JSX.Element;
   remove: (tag: ITag) => void;
-  save: (params: ITagSaveParams) => void;
+  loading: boolean;
 };
 
-function List({ tags, type, remove, save }: Props) {
+function List({ tags, type, remove, loading, renderButton }: Props) {
   const trigger = (
     <Button btnStyle="success" size="small" icon="add">
       Add tag
     </Button>
   );
 
-  const modalContent = props => <Form {...props} type={type} save={save} />;
+  const modalContent = props => (
+    <FormComponent {...props} type={type} renderButton={renderButton} />
+  );
 
   const actionBarRight = (
-    <ModalTrigger title="Add tag" trigger={trigger} content={modalContent} />
+    <ModalTrigger
+      title="Add tag"
+      autoOpenKey={`showTag${type}Modal`}
+      trigger={trigger}
+      content={modalContent}
+      enforceFocus={false}
+    />
   );
 
   const actionBar = <Wrapper.ActionBar right={actionBarRight} />;
@@ -44,8 +57,8 @@ function List({ tags, type, remove, save }: Props) {
             tag={tag}
             count={tag.objectCount}
             type={type}
-            save={save}
             remove={remove}
+            renderButton={renderButton}
           />
         ))}
       </tbody>
@@ -53,15 +66,23 @@ function List({ tags, type, remove, save }: Props) {
   );
 
   const breadcrumb = [
-    { title: __('Tags'), link: '/tags' },
+    { title: __('Tags'), link: '/tags/engageMessage' },
     { title: __(type) }
   ];
 
   return (
     <Wrapper
-      header={<Wrapper.Header breadcrumb={breadcrumb} />}
+      header={<Wrapper.Header title={__(type)} breadcrumb={breadcrumb} />}
       actionBar={actionBar}
-      content={content}
+      content={
+        <DataWithLoader
+          data={content}
+          loading={loading}
+          count={tags.length}
+          emptyText="There is no tag."
+          emptyImage="/images/actions/8.svg"
+        />
+      }
       leftSidebar={<Sidebar />}
     />
   );

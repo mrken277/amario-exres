@@ -1,18 +1,22 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
+import { IUser } from 'modules/auth/types';
 import { router as routerUtils, withProps } from 'modules/common/utils';
-import { ConversationList } from 'modules/inbox/components/leftSidebar';
+import ConversationList from 'modules/inbox/components/leftSidebar/ConversationList';
 import { queries, subscriptions } from 'modules/inbox/graphql';
 import { generateParams } from 'modules/inbox/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import {
   ConversationsQueryResponse,
   ConvesationsQueryVariables,
   IConversation
 } from '../../types';
 import { ConversationsTotalCountQueryResponse } from '../../types';
+import { InboxManagementActionConsumer } from '../Inbox';
 
 type Props = {
+  currentUser?: IUser;
   history: any;
   currentConversationId?: string;
   toggleRowCheckbox: (conversation: IConversation[], checked: boolean) => void;
@@ -23,15 +27,26 @@ type Props = {
 type FinalProps = {
   conversationsQuery: ConversationsQueryResponse;
   totalCountQuery: ConversationsTotalCountQueryResponse;
+  updateCountsForNewMessage: () => void;
 } & Props;
 
 class ConversationListContainer extends React.PureComponent<FinalProps> {
   componentWillMount() {
-    const { conversationsQuery, totalCountQuery } = this.props;
+    const {
+      currentUser,
+      conversationsQuery,
+      totalCountQuery,
+      updateCountsForNewMessage
+    } = this.props;
 
     conversationsQuery.subscribeToMore({
       document: gql(subscriptions.conversationClientMessageInserted),
+      variables: { userId: currentUser ? currentUser._id : null },
       updateQuery: () => {
+        if (updateCountsForNewMessage) {
+          updateCountsForNewMessage();
+        }
+
         conversationsQuery.refetch();
         totalCountQuery.refetch();
       }
@@ -62,6 +77,17 @@ class ConversationListContainer extends React.PureComponent<FinalProps> {
   }
 }
 
+const ConversationListContainerWithRefetch = props => (
+  <InboxManagementActionConsumer>
+    {({ notifyConsumersOfManagementAction }) => (
+      <ConversationListContainer
+        {...props}
+        updateCountsForNewMessage={notifyConsumersOfManagementAction}
+      />
+    )}
+  </InboxManagementActionConsumer>
+);
+
 const generateOptions = queryParams => ({
   ...queryParams,
   limit: queryParams.limit ? parseInt(queryParams.limit, 10) : 10
@@ -75,6 +101,7 @@ export default withProps<Props>(
         name: 'conversationsQuery',
         options: ({ queryParams }) => ({
           variables: generateParams(queryParams),
+          notifyOnNetworkStatusChange: true,
           fetchPolicy: 'network-only',
           // every minute
           pollInterval: 60000
@@ -91,5 +118,5 @@ export default withProps<Props>(
         })
       }
     )
-  )(ConversationListContainer)
+  )(ConversationListContainerWithRefetch)
 );

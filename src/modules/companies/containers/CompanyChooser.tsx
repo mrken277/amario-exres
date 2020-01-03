@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
-import { Chooser } from 'modules/common/components';
+import * as compose from 'lodash.flowright';
 import { Alert, withProps } from 'modules/common/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
-import { CompanyForm } from '.';
+import ConformityChooser from 'modules/conformity/containers/ConformityChooser';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { mutations, queries } from '../graphql';
 import {
   AddMutationResponse,
@@ -11,6 +11,7 @@ import {
   ICompany,
   ICompanyDoc
 } from '../types';
+import CompanyForm from './CompanyForm';
 
 type Props = {
   search: (value: string, loadMore?: boolean) => void;
@@ -23,62 +24,97 @@ type FinalProps = {
 } & Props &
   AddMutationResponse;
 
-const CompanyChooser = (props: WrapperProps & FinalProps) => {
-  const { data, companiesQuery, companiesAdd, search } = props;
-  // add company
-  const addCompany = ({ doc, callback }) => {
-    companiesAdd({
-      variables: doc
-    })
-      .then(() => {
-        companiesQuery.refetch();
+class CompanyChooser extends React.Component<
+  WrapperProps & FinalProps,
+  { newCompanyId?: string }
+> {
+  constructor(props) {
+    super(props);
 
-        Alert.success('Success');
+    this.state = {
+      newCompanyId: undefined
+    };
+  }
 
-        callback();
+  render() {
+    const { data, companiesQuery, companiesAdd, search } = this.props;
+
+    // add company
+    const addCompany = ({ doc, callback }) => {
+      companiesAdd({
+        variables: doc
       })
-      .catch(e => {
-        Alert.error(e.message);
-      });
-  };
+        .then(() => {
+          companiesQuery.refetch();
 
-  const renderName = company => {
-    return company.primaryName || company.website || 'N/A';
-  };
+          Alert.success('You successfully added a company');
 
-  const updatedProps = {
-    ...props,
-    data: {
-      _id: data._id,
-      name: renderName(data),
-      datas: data.companies
-    },
-    search,
-    clearState: () => search(''),
-    title: 'Company',
-    renderForm: formProps => <CompanyForm {...formProps} action={addCompany} />,
-    renderName,
-    add: addCompany,
-    datas: companiesQuery.companies || []
-  };
+          callback();
+        })
+        .catch(e => {
+          Alert.error(e.message);
+        });
+    };
 
-  return <Chooser {...updatedProps} />;
-};
+    const renderName = company => {
+      return company.primaryName || company.website || 'Unknown';
+    };
+
+    const getAssociatedCompany = (newCompanyId: string) => {
+      this.setState({ newCompanyId });
+    };
+
+    const updatedProps = {
+      ...this.props,
+      data: {
+        _id: data._id,
+        name: renderName(data),
+        datas: data.companies,
+        mainTypeId: data.mainTypeId,
+        mainType: data.mainType,
+        relType: 'company'
+      },
+      search,
+      clearState: () => search(''),
+      title: 'Company',
+      renderForm: formProps => (
+        <CompanyForm
+          {...formProps}
+          action={addCompany}
+          getAssociatedCompany={getAssociatedCompany}
+        />
+      ),
+      renderName,
+      add: addCompany,
+      newItemId: this.state.newCompanyId,
+      datas: companiesQuery.companies || [],
+      refetchQuery: queries.companies
+    };
+
+    return <ConformityChooser {...updatedProps} />;
+  }
+}
 
 const WithQuery = withProps<Props>(
   compose(
     graphql<
-      Props,
+      Props & WrapperProps,
       CompaniesQueryResponse,
       { searchValue: string; perPage: number }
     >(gql(queries.companies), {
       name: 'companiesQuery',
-      options: ({ searchValue, perPage }) => {
+      options: ({ searchValue, perPage, data }) => {
         return {
           variables: {
             searchValue,
-            perPage
-          }
+            perPage,
+            mainType: data.mainType,
+            mainTypeId: data.mainTypeId,
+            isRelated: data.isRelated,
+            sortField: 'createdAt',
+            sortDirection: -1
+          },
+          fetchPolicy: data.isRelated ? 'network-only' : 'cache-first'
         };
       }
     }),
@@ -90,14 +126,24 @@ const WithQuery = withProps<Props>(
 );
 
 type WrapperProps = {
-  data: { _id?: string; name: string; companies: ICompany[] };
+  data: {
+    _id?: string;
+    name: string;
+    companies: ICompany[];
+    mainTypeId?: string;
+    mainType?: string;
+    isRelated?: boolean;
+  };
   onSelect: (datas: ICompany[]) => void;
   closeModal: () => void;
 };
 
 export default class Wrapper extends React.Component<
   WrapperProps,
-  { perPage: number; searchValue: string }
+  {
+    perPage: number;
+    searchValue: string;
+  }
 > {
   constructor(props) {
     super(props);

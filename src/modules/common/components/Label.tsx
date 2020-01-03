@@ -1,6 +1,7 @@
-import { __, colorParser } from 'modules/common/utils';
+import color from 'color';
+import { __ } from 'modules/common/utils';
 import { shake } from 'modules/common/utils/animations';
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { colors } from '../styles';
@@ -60,12 +61,9 @@ const LabelStyled = styledTS<{
     background: ${colors.colorPrimary};
   }
 
-  &.label-form {
+  &.label-form,
+  &.label-lead {
     background: ${colors.colorCoreYellow};
-  }
-
-  &.label-twitter {
-    background: ${colors.socialTwitter};
   }
 
   &.label-facebook {
@@ -73,23 +71,27 @@ const LabelStyled = styledTS<{
   }
 
   &.label-messenger {
-    background: ${colors.colorPrimary};
-  }
-
-  &.label-gmail {
-    background: ${colors.socialGmail};
-  }
-
-  &.label-lead {
     background: ${colors.colorCoreBlue};
   }
 
+  &.label-facebook-messenger {
+    background: ${colors.socialFacebookMessenger};
+  }
+
   &.label-knowledgebase {
-    background: ${colors.colorPrimary};
+    background: ${colors.colorCoreTeal};
   }
 
   &.label-googleMeet {
     background: ${colors.socialGoogleMeet};
+  }
+
+  &.label-twitter {
+    background: ${colors.socialTwitter}
+  }
+
+  &.label-gmail {
+    background: ${colors.socialGmail}
   }
 `;
 
@@ -114,7 +116,7 @@ class Label extends React.Component<Props> {
     const updatedProps = {
       ...this.props,
       hasLightBackground: style
-        ? colorParser.isColorLight(style.backgroundColor || '')
+        ? color(style.backgroundColor).isLight()
         : undefined
     };
 

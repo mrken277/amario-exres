@@ -1,166 +1,118 @@
-import { ActivityList } from 'modules/activityLogs/components';
-import {
-  DataWithLoader,
-  Icon,
-  Tabs,
-  TabTitle
-} from 'modules/common/components';
-import { ActivityContent } from 'modules/common/styles/main';
+import ActivityInputs from 'modules/activityLogs/components/ActivityInputs';
+import ActivityLogs from 'modules/activityLogs/containers/ActivityLogs';
+import Icon from 'modules/common/components/Icon';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import { TabTitle } from 'modules/common/components/tabs';
 import { __, renderFullName } from 'modules/common/utils';
-import { Form as NoteForm } from 'modules/internalNotes/containers';
-import { Wrapper } from 'modules/layout/components';
-import { WhiteBoxRoot } from 'modules/layout/styles';
-import { MailForm } from 'modules/settings/integrations/containers/google';
-import * as React from 'react';
-import { IActivityLogForMonth } from '../../../activityLogs/types';
-import { IUser } from '../../../auth/types';
-import { TabContent } from '../../styles';
+import Widget from 'modules/engage/containers/Widget';
+import { MailBox } from 'modules/inbox/components/conversationDetail/sidebar/styles';
+import Wrapper from 'modules/layout/components/Wrapper';
+import MailForm from 'modules/settings/integrations/containers/mail/MailForm';
+import React from 'react';
 import { ICustomer } from '../../types';
-import { hasAnyActivity } from '../../utils';
 import LeftSidebar from './LeftSidebar';
 import RightSidebar from './RightSidebar';
 
 type Props = {
   customer: ICustomer;
-  currentUser: IUser;
-  activityLogsCustomer: IActivityLogForMonth[];
   taggerRefetchQueries?: any[];
-  loadingLogs: boolean;
 };
 
-type State = {
-  currentSubTab: string;
-  currentTab: string;
-};
-
-class CustomerDetails extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentSubTab: 'activity',
-      currentTab: 'newNote'
-    };
-  }
-
-  onTabClick = currentSubTab => {
-    this.setState({ currentSubTab });
-  };
-
-  onChangeTab = currentTab => {
-    this.setState({ currentTab });
-  };
-
-  renderSubTabContent() {
-    const { currentSubTab } = this.state;
-
-    const {
-      currentUser,
-      activityLogsCustomer,
-      loadingLogs,
-      customer
-    } = this.props;
-
-    const hasActivity = hasAnyActivity(activityLogsCustomer);
-
-    return (
-      <ActivityContent isEmpty={!hasActivity}>
-        <DataWithLoader
-          loading={loadingLogs}
-          count={!loadingLogs && hasActivity ? 1 : 0}
-          data={
-            <ActivityList
-              user={currentUser}
-              activities={activityLogsCustomer}
-              target={customer.firstName}
-              type={currentSubTab} // show logs filtered by type
-            />
-          }
-          emptyText="No Activities"
-          emptyImage="/images/robots/robot-03.svg"
-        />
-      </ActivityContent>
-    );
-  }
-
-  renderTabContent() {
+class CustomerDetails extends React.Component<Props> {
+  renderEmailTab = () => {
     const { customer } = this.props;
-    const { currentTab } = this.state;
 
-    if (currentTab === 'newNote') {
-      return <NoteForm contentType="customer" contentTypeId={customer._id} />;
+    if (!customer.primaryEmail) {
+      return null;
     }
 
-    return (
-      <TabContent>
-        <MailForm
-          contentType="customer"
-          contentTypeId={customer._id}
-          toEmail={customer.primaryEmail}
-          refetchQueries={['activityLogsCustomer']}
-        />
-      </TabContent>
+    const triggerEmail = (
+      <TabTitle>
+        <Icon icon="envelope-add" /> {__('New email')}
+      </TabTitle>
     );
-  }
+
+    const content = props => (
+      <MailBox>
+        <MailForm
+          fromEmail={customer.primaryEmail}
+          refetchQueries={['activityLogsCustomer']}
+          closeModal={props.closeModal}
+        />
+      </MailBox>
+    );
+
+    return (
+      <ModalTrigger
+        dialogClassName="middle"
+        title="Email"
+        trigger={triggerEmail}
+        size="lg"
+        content={content}
+        paddingContent="no-padding"
+        enforceFocus={false}
+      />
+    );
+  };
+
+  renderExtraTabs = () => {
+    const triggerMessenger = (
+      <TabTitle>
+        <Icon icon="comment-plus" /> {__('New message')}
+      </TabTitle>
+    );
+
+    return (
+      <>
+        <Widget
+          customers={[this.props.customer]}
+          modalTrigger={triggerMessenger}
+          channelType="messenger"
+        />
+        {this.renderEmailTab()}
+      </>
+    );
+  };
 
   render() {
-    const { currentSubTab, currentTab } = this.state;
     const { customer, taggerRefetchQueries } = this.props;
 
     const breadcrumb = [
-      { title: __('Customers'), link: '/customers' },
+      { title: __('Contacts'), link: '/contacts' },
+      { title: __('Customers'), link: '/contacts/customers/all' },
       { title: renderFullName(customer) }
     ];
 
     const content = (
-      <div>
-        <WhiteBoxRoot>
-          <Tabs>
-            <TabTitle
-              className={currentTab === 'newNote' ? 'active' : ''}
-              onClick={this.onChangeTab.bind(this, 'newNote')}
-            >
-              <Icon icon="edit-1" /> {__('New note')}
-            </TabTitle>
-            <TabTitle
-              className={currentTab === 'email' ? 'active' : ''}
-              onClick={this.onChangeTab.bind(this, 'email')}
-            >
-              <Icon icon="email" /> {__('Email')}
-            </TabTitle>
-          </Tabs>
-
-          {this.renderTabContent()}
-        </WhiteBoxRoot>
-
-        <Tabs grayBorder={true}>
-          <TabTitle
-            className={currentSubTab === 'activity' ? 'active' : ''}
-            onClick={this.onTabClick.bind(this, 'activity')}
-          >
-            {__('Activity')}
-          </TabTitle>
-          <TabTitle
-            className={currentSubTab === 'notes' ? 'active' : ''}
-            onClick={this.onTabClick.bind(this, 'notes')}
-          >
-            {__('Notes')}
-          </TabTitle>
-          <TabTitle
-            className={currentSubTab === 'conversations' ? 'active' : ''}
-            onClick={this.onTabClick.bind(this, 'conversations')}
-          >
-            {__('Conversation')}
-          </TabTitle>
-        </Tabs>
-
-        {this.renderSubTabContent()}
-      </div>
+      <>
+        <ActivityInputs
+          contentTypeId={customer._id}
+          contentType="customer"
+          toEmail={customer.primaryEmail}
+          showEmail={false}
+          extraTabs={this.renderExtraTabs()}
+        />
+        <ActivityLogs
+          target={customer.firstName}
+          contentId={customer._id}
+          contentType="customer"
+          extraTabs={[
+            { name: 'conversation', label: 'Conversation' },
+            { name: 'email', label: 'Email' },
+            { name: 'task', label: 'Task' }
+          ]}
+        />
+      </>
     );
 
     return (
       <Wrapper
-        header={<Wrapper.Header breadcrumb={breadcrumb} />}
+        header={
+          <Wrapper.Header
+            title={renderFullName(customer)}
+            breadcrumb={breadcrumb}
+          />
+        }
         leftSidebar={
           <LeftSidebar
             wide={true}

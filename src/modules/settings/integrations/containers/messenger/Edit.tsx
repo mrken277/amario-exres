@@ -1,9 +1,10 @@
 import gql from 'graphql-tag';
-import { Spinner } from 'modules/common/components';
+import * as compose from 'lodash.flowright';
+import Spinner from 'modules/common/components/Spinner';
 import { IRouterProps } from 'modules/common/types';
 import { Alert, withProps } from 'modules/common/utils';
 import { queries as kbQueries } from 'modules/knowledgeBase/graphql';
-import { Form } from 'modules/settings/integrations/components/messenger';
+import Form from 'modules/settings/integrations/components/messenger/Form';
 import { mutations, queries } from 'modules/settings/integrations/graphql';
 import {
   EditMessengerMutationResponse,
@@ -14,8 +15,8 @@ import {
   SaveMessengerAppearanceMutationResponse,
   SaveMessengerConfigsMutationResponse
 } from 'modules/settings/integrations/types';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import { TopicsQueryResponse } from '../../../../knowledgeBase/types';
 import { BrandsQueryResponse } from '../../../brands/types';
@@ -84,7 +85,8 @@ const EditMessenger = (props: FinalProps) => {
       })
 
       .then(() => {
-        Alert.success('Successfully saved.');
+        Alert.success('You successfully updated a messenger');
+
         history.push('/settings/integrations?refetch=true');
       })
       .catch(error => {

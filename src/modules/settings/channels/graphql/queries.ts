@@ -27,6 +27,14 @@ const channels = `
       description
       integrationIds
       memberIds
+      members {
+        _id
+        email
+        details {
+          avatar
+          fullName
+        }
+      }
     }
   }
 `;
@@ -35,6 +43,7 @@ const users = `
   query users {
     users {
       _id
+      email
       details {
         avatar
         fullName

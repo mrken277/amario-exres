@@ -1,52 +1,96 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { IUser } from 'modules/auth/types';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import ButtonMutate from 'modules/common/components/ButtonMutate';
+import Spinner from 'modules/common/components/Spinner';
+import { IButtonMutateProps } from 'modules/common/types';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withProps } from '../../../common/utils';
+import { queries as channelQueries } from '../../channels/graphql';
 import { ChannelsQueryResponse } from '../../channels/types';
-import { UserDetailForm } from '../components';
-import { queries } from '../graphql';
+import UserDetailForm from '../components/detail/UserDetailForm';
+import { mutations, queries } from '../graphql';
 import {
-  ActivityLogQueryResponse,
   UserConverationsQueryResponse,
   UserDetailQueryResponse
 } from '../types';
+import UserForm from './UserForm';
 
 type Props = {
   _id: string;
   queryParams: any;
-  renderEditForm: React.ReactNode;
+  renderEditForm?: (
+    { closeModal, user }: { closeModal: () => void; user: IUser }
+  ) => React.ReactNode;
 };
 
 type FinalProps = {
   userDetailQuery: UserDetailQueryResponse;
   channelsQuery: ChannelsQueryResponse;
-  userActivityLogQuery: ActivityLogQueryResponse;
   userConversationsQuery: UserConverationsQueryResponse;
-  renderEditForm: (
-    { closeModal, user }: { closeModal: () => void; user: IUser }
-  ) => React.ReactNode;
 };
 
-const UserDetailFormContainer = (props: FinalProps) => {
+const UserDetailFormContainer = (props: Props & FinalProps) => {
   const {
     userDetailQuery,
     channelsQuery,
-    userActivityLogQuery,
     userConversationsQuery,
     renderEditForm
   } = props;
 
+  if (userDetailQuery.loading) {
+    return <Spinner />;
+  }
+
   const { list = [], totalCount = 0 } =
     userConversationsQuery.userConversations || {};
 
+  const renderButton = ({
+    name,
+    values,
+    isSubmitted,
+    callback,
+    object
+  }: IButtonMutateProps) => {
+    const afterMutate = () => {
+      userDetailQuery.refetch();
+
+      if (callback) {
+        callback();
+      }
+    };
+
+    return (
+      <ButtonMutate
+        mutation={mutations.usersEdit}
+        variables={values}
+        callback={afterMutate}
+        isSubmitted={isSubmitted}
+        type="submit"
+        successMessage={`You successfully ${
+          object ? 'updated' : 'added'
+        } a ${name}`}
+      />
+    );
+  };
+
+  const editForm = localProps => {
+    return (
+      <UserForm
+        {...localProps}
+        closeModal={localProps.closeModal}
+        object={localProps.user}
+        renderButton={renderButton}
+      />
+    );
+  };
+
   const updatedProps = {
-    renderEditForm,
+    renderEditForm: renderEditForm ? renderEditForm : editForm,
     user: userDetailQuery.userDetail || {},
     participatedConversations: list,
     totalConversationCount: totalCount,
-    loadingLogs: userActivityLogQuery.loading,
-    activityLogsUser: userActivityLogQuery.activityLogsUser || [],
     channels: channelsQuery.channels || []
   };
 
@@ -81,16 +125,9 @@ export default withProps<Props>(
         }
       })
     }),
-    graphql(gql(queries.channels), {
+    graphql(gql(channelQueries.channels), {
       name: 'channelsQuery',
       options: commonOptions
-    }),
-    graphql<Props, ActivityLogQueryResponse, { _id: string }>(
-      gql(queries.userActivityLog),
-      {
-        name: 'userActivityLogQuery',
-        options: commonOptions
-      }
-    )
+    })
   )(UserDetailFormContainer)
 );

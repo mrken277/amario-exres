@@ -1,30 +1,31 @@
-import * as React from 'react';
-import { Dropdown } from 'react-bootstrap';
+import gql from 'graphql-tag';
+import Button from 'modules/common/components/Button';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
+import DateFilter from 'modules/common/components/DateFilter';
+import DropdownToggle from 'modules/common/components/DropdownToggle';
+import FormControl from 'modules/common/components/form/Control';
+import Icon from 'modules/common/components/Icon';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Pagination from 'modules/common/components/pagination/Pagination';
+import SortHandler from 'modules/common/components/SortHandler';
+import Table from 'modules/common/components/table';
+import { menuContacts } from 'modules/common/utils/menus';
+import { queries } from 'modules/customers/graphql';
+import React from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import { CustomersMerge } from '..';
-import {
-  Button,
-  DataWithLoader,
-  DateFilter,
-  DropdownToggle,
-  FormControl,
-  Icon,
-  ModalTrigger,
-  Pagination,
-  SortHandler,
-  Table
-} from '../../../common/components';
 import { IRouterProps } from '../../../common/types';
-import { __, confirm, router } from '../../../common/utils';
-import { Widget } from '../../../engage/containers';
-import { Wrapper } from '../../../layout/components';
+import { __, Alert, confirm, router } from '../../../common/utils';
+import Widget from '../../../engage/containers/Widget';
+import Wrapper from '../../../layout/components/Wrapper';
 import { BarItems } from '../../../layout/styles';
-import { ManageColumns } from '../../../settings/properties/containers';
+import ManageColumns from '../../../settings/properties/containers/ManageColumns';
 import { IConfigColumn } from '../../../settings/properties/types';
-import { TaggerPopover } from '../../../tags/components';
-import { CustomerForm } from '../../containers';
+import TaggerPopover from '../../../tags/components/TaggerPopover';
+import CustomerForm from '../../containers/CustomerForm';
 import { ICustomer } from '../../types';
+import CustomersMerge from '../detail/CustomersMerge';
 import CustomerRow from './CustomerRow';
 import Sidebar from './Sidebar';
 
@@ -39,6 +40,7 @@ interface IProps extends IRouterProps {
   toggleBulk: (target: ICustomer, toAdd: boolean) => void;
   toggleAll: (targets: ICustomer[], containerId: string) => void;
   loading: boolean;
+  mergeCustomerLoading: boolean;
   searchValue: string;
   removeCustomers: (
     doc: { customerIds: string[] },
@@ -53,7 +55,7 @@ interface IProps extends IRouterProps {
   ) => Promise<void>;
   queryParams: any;
   exportCustomers: (bulk: string[]) => void;
-  handleXlsUpload: (e: React.FormEvent<HTMLInputElement>) => void;
+  responseId: string;
 }
 
 type State = {
@@ -112,8 +114,7 @@ class CustomersList extends React.Component<IProps, State> {
             </th>
             {columnsConfig.map(({ name, label }) => (
               <th key={name}>
-                <SortHandler sortField={name} />
-                {__(label)}
+                <SortHandler sortField={name} label={__(label)} />
               </th>
             ))}
             <th>{__('Tags')}</th>
@@ -139,12 +140,14 @@ class CustomersList extends React.Component<IProps, State> {
     if (this.timer) {
       clearTimeout(this.timer);
     }
+
     const { history } = this.props;
     const searchValue = e.target.value;
 
     this.setState({ searchValue });
 
     this.timer = setTimeout(() => {
+      router.removeParams(history, 'page');
       router.setParams(history, { searchValue });
     }, 500);
   };
@@ -168,7 +171,7 @@ class CustomersList extends React.Component<IProps, State> {
       history,
       queryParams,
       exportCustomers,
-      handleXlsUpload
+      mergeCustomerLoading
     } = this.props;
 
     const addTrigger = (
@@ -177,7 +180,7 @@ class CustomersList extends React.Component<IProps, State> {
       </Button>
     );
 
-    const editColumns = <a>{__('Edit columns')}</a>;
+    const editColumns = <a href="#edit">{__('Edit columns')}</a>;
 
     const dateFilter = queryParams.form && (
       <DateFilter queryParams={queryParams} history={history} />
@@ -199,7 +202,14 @@ class CustomersList extends React.Component<IProps, State> {
     };
 
     const customersMerge = props => {
-      return <CustomersMerge {...props} objects={bulk} save={mergeCustomers} />;
+      return (
+        <CustomersMerge
+          {...props}
+          objects={bulk}
+          save={mergeCustomers}
+          mergeCustomerLoading={mergeCustomerLoading}
+        />
+      );
     };
 
     const actionBarRight = (
@@ -215,12 +225,12 @@ class CustomersList extends React.Component<IProps, State> {
 
         {dateFilter}
 
-        <Dropdown id="dropdown-engage" pullRight={true}>
-          <DropdownToggle bsRole="toggle">
+        <Dropdown className="dropdown-btn" alignRight={true}>
+          <Dropdown.Toggle as={DropdownToggle} id="dropdown-customize">
             <Button btnStyle="simple" size="small">
-              {__('Customize ')} <Icon icon="downarrow" />
+              {__('Customize ')} <Icon icon="angle-down" />
             </Button>
-          </DropdownToggle>
+          </Dropdown.Toggle>
           <Dropdown.Menu>
             <li>
               <ModalTrigger
@@ -235,31 +245,24 @@ class CustomersList extends React.Component<IProps, State> {
               </Link>
             </li>
             <li>
-              <a onClick={exportCustomers.bind(this, bulk)}>
+              <a href="#export" onClick={exportCustomers.bind(this, bulk)}>
                 {__('Export customers')}
-              </a>
-            </li>
-            <li>
-              <a>
-                <label style={{ fontWeight: 'normal' }}>
-                  {__('Import customers')}
-                  <input
-                    type="file"
-                    onChange={handleXlsUpload}
-                    style={{ display: 'none' }}
-                    accept=".xlsx, .xls"
-                  />
-                </label>
               </a>
             </li>
           </Dropdown.Menu>
         </Dropdown>
-
+        <Link to="/settings/importHistories?type=customer">
+          <Button btnStyle="primary" size="small" icon="arrow-from-right">
+            {__('Go to import')}
+          </Button>
+        </Link>
         <ModalTrigger
           title="New customer"
+          autoOpenKey="showCustomerModal"
           trigger={addTrigger}
           size="lg"
           content={customerForm}
+          backDrop="static"
         />
       </BarItems>
     );
@@ -267,22 +270,31 @@ class CustomersList extends React.Component<IProps, State> {
     let actionBarLeft: React.ReactNode;
 
     const mergeButton = (
-      <Button btnStyle="primary" size="small" icon="shuffle">
+      <Button btnStyle="primary" size="small" icon="merge">
         Merge
       </Button>
     );
 
     if (bulk.length > 0) {
       const tagButton = (
-        <Button btnStyle="simple" size="small" icon="downarrow">
+        <Button btnStyle="simple" size="small" icon="tag-alt">
           Tag
         </Button>
       );
 
       const onClick = () =>
-        confirm().then(() => {
-          this.removeCustomers(bulk);
-        });
+        confirm()
+          .then(() => {
+            this.removeCustomers(bulk);
+          })
+          .catch(e => {
+            Alert.error(e.message);
+          });
+
+      const refetchQuery = {
+        query: gql(queries.customerCounts),
+        variables: { only: 'byTag' }
+      };
 
       actionBarLeft = (
         <BarItems>
@@ -293,6 +305,7 @@ class CustomersList extends React.Component<IProps, State> {
             successCallback={emptyBulk}
             targets={bulk}
             trigger={tagButton}
+            refetchQueries={[refetchQuery]}
           />
           {bulk.length === 2 && (
             <ModalTrigger
@@ -318,23 +331,25 @@ class CustomersList extends React.Component<IProps, State> {
       <Wrapper.ActionBar left={actionBarLeft} right={actionBarRight} />
     );
 
-    const breadcrumb = [{ title: __(`Customers`) + ` (${totalCount})` }];
-
     return (
       <Wrapper
         header={
-          <Wrapper.Header breadcrumb={breadcrumb} queryParams={queryParams} />
+          <Wrapper.Header
+            title={__(`Customers`) + ` (${totalCount})`}
+            queryParams={queryParams}
+            submenu={menuContacts}
+          />
         }
         actionBar={actionBar}
         footer={<Pagination count={totalCount} />}
-        leftSidebar={<Sidebar />}
+        leftSidebar={<Sidebar loadingMainQuery={loading} />}
         content={
           <DataWithLoader
             data={this.renderContent()}
             loading={loading}
             count={customers.length}
-            emptyText="There is no customer."
-            emptyImage="/images/robots/robot-01.svg"
+            emptyText="Let's start taking care of your customers"
+            emptyImage="/images/actions/11.svg"
           />
         }
       />

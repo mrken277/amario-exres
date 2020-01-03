@@ -1,17 +1,15 @@
-import {
-  Button,
-  FormControl,
-  Icon,
-  Label,
-  Tip
-} from 'modules/common/components';
+import { formatText } from 'modules/activityLogs/utils';
+import Button from 'modules/common/components/Button';
+import FormControl from 'modules/common/components/form/Control';
+import Icon from 'modules/common/components/Icon';
+import IntegrationIcon from 'modules/common/components/IntegrationIcon';
+import Tip from 'modules/common/components/Tip';
 import { Column, Columns, Title } from 'modules/common/styles/chooser';
 import { CenterContent, ModalFooter } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';
 import { IBrandDoc } from 'modules/settings/brands/types';
 import { IChannelDoc } from 'modules/settings/channels/types';
-import { KIND_CHOICES } from 'modules/settings/integrations/constants';
-import * as React from 'react';
+import React from 'react';
 import { BrandName, IntegrationName } from '../../styles';
 import { IIntegration } from '../../types';
 
@@ -21,7 +19,6 @@ type Props = {
   search: (searchValue: string, check?: boolean) => void;
   allIntegrations: IIntegration[];
   perPage: number;
-  clearState: () => void;
   closeModal?: () => void;
   renderConfirm?: (
     integration: IIntegration,
@@ -67,10 +64,6 @@ class ManageIntegrations extends React.Component<Props, State> {
     }
   };
 
-  componentWillUnmount() {
-    this.props.clearState();
-  }
-
   componentWillReceiveProps(newProps) {
     const { allIntegrations, perPage } = newProps;
 
@@ -96,44 +89,10 @@ class ManageIntegrations extends React.Component<Props, State> {
     this.props.search(this.state.searchValue, true);
   };
 
-  getTypeName(integration) {
-    const kind = integration.kind;
-    let type = 'messenger';
-
-    if (kind === KIND_CHOICES.FORM) {
-      type = 'form';
-    } else if (kind === KIND_CHOICES.TWITTER) {
-      type = 'twitter';
-    } else if (kind === KIND_CHOICES.FACEBOOK) {
-      type = 'facebook';
-    } else if (kind === KIND_CHOICES.GMAIL) {
-      type = 'gmail';
-    }
-
-    return type;
-  }
-
-  getIconByKind(integration) {
-    const kind = integration.kind;
-    let icon = 'comment-alt';
-
-    if (kind === KIND_CHOICES.FORM) {
-      icon = 'doc-text-inv-1';
-    } else if (kind === KIND_CHOICES.TWITTER) {
-      icon = 'twitter-1';
-    } else if (kind === KIND_CHOICES.FACEBOOK) {
-      icon = 'facebook-official';
-    } else if (kind === KIND_CHOICES.GMAIL) {
-      icon = 'mail-alt';
-    }
-
-    return icon;
-  }
-
   handleChange = (type, integration) => {
     const { selectedIntegrations } = this.state;
 
-    if (type === 'add') {
+    if (type === 'plus-1') {
       return this.setState({
         selectedIntegrations: [...selectedIntegrations, integration]
       });
@@ -154,15 +113,14 @@ class ManageIntegrations extends React.Component<Props, State> {
 
     const actionTrigger = (
       <li key={integration._id} onClick={onClick}>
-        <IntegrationName>{integration.name}</IntegrationName>
-        <Tip text={this.getTypeName(integration)}>
-          <Label
-            className={`label-${this.getTypeName(integration)} round`}
-            ignoreTrans={true}
-          >
-            <Icon icon={this.getIconByKind(integration)} />
-          </Label>
-        </Tip>
+        <IntegrationName>
+          {integration.name}
+          <Tip text={formatText(integration.kind)}>
+            <div>
+              <IntegrationIcon integration={integration} size={18} />
+            </div>
+          </Tip>
+        </IntegrationName>
         <BrandName>{brand.name}</BrandName>
         <Icon icon={icon} />
       </li>
@@ -188,7 +146,7 @@ class ManageIntegrations extends React.Component<Props, State> {
     const { selectedIntegrations } = this.state;
 
     if (
-      icon === 'add' &&
+      icon === 'plus-1' &&
       selectedIntegrations.some(e => e._id === integration._id)
     ) {
       return null;
@@ -208,10 +166,11 @@ class ManageIntegrations extends React.Component<Props, State> {
             <FormControl
               placeholder={__('Type to search')}
               onChange={this.search}
+              autoFocus={true}
             />
             <ul>
               {allIntegrations.map(integration =>
-                this.renderRow(integration, 'add')
+                this.renderRow(integration, 'plus-1')
               )}
               {this.state.hasMore && (
                 <CenterContent>
@@ -219,7 +178,7 @@ class ManageIntegrations extends React.Component<Props, State> {
                     size="small"
                     btnStyle="primary"
                     onClick={this.loadMore}
-                    icon="checked-1"
+                    icon="angle-double-down"
                   >
                     Load More
                   </Button>
@@ -235,7 +194,7 @@ class ManageIntegrations extends React.Component<Props, State> {
             </Title>
             <ul>
               {selectedIntegrations.map(integration =>
-                this.renderRow(integration, 'minus-circle')
+                this.renderRow(integration, 'times')
               )}
             </ul>
           </Column>

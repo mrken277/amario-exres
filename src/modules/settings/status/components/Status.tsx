@@ -1,12 +1,14 @@
-import { Icon } from 'modules/common/components';
-import { FullContent } from 'modules/common/styles/main';
+import HeaderDescription from 'modules/common/components/HeaderDescription';
+import Icon from 'modules/common/components/Icon';
 import { __ } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import * as React from 'react';
-import { Box, Group, MiddleContent, Title } from '../styles';
+import Wrapper from 'modules/layout/components/Wrapper';
+import React from 'react';
+import { Box, Group, Title } from '../styles';
 import { ProjectVersions, Version } from '../types';
 
-class Status extends React.Component<{ versions: ProjectVersions }> {
+class Status extends React.PureComponent<{
+  versions: ProjectVersions;
+}> {
   renderData(title: string, version?: Version) {
     const ver = version || ({} as Version);
 
@@ -34,20 +36,6 @@ class Status extends React.Component<{ versions: ProjectVersions }> {
             - {ver.abbreviatedSha}{' '}
           </div>
         </Group>
-        <Group>
-          <span>
-            <Icon icon="wallclock" /> Last commit{' '}
-          </span>
-          <div>
-            <b>{__('Message')}</b> - {ver.lastCommitMessage}
-          </div>
-          <div>
-            <b>{__('User')}</b> - {ver.lastCommittedUser}
-          </div>
-          <div>
-            <b>{__('Date')}</b> - {ver.lastCommittedDate}
-          </div>
-        </Group>
       </Box>
     );
   }
@@ -60,32 +48,37 @@ class Status extends React.Component<{ versions: ProjectVersions }> {
 
     const { versions } = this.props;
 
-    const {
-      erxesVersion,
-      apiVersion,
-      widgetVersion,
-      widgetApiVersion
-    } = versions;
+    const { erxesVersion, apiVersion, widgetVersion } = versions;
 
     const content = (
-      <FullContent center={true}>
-        <MiddleContent>
-          {this.renderData('Erxes Status', erxesVersion)}
+      <div>
+        {this.renderData('Erxes Status', erxesVersion)}
 
-          {this.renderData('Erxes API Status', apiVersion)}
+        {this.renderData('Erxes API Status', apiVersion)}
 
-          {this.renderData('Erxes Widget Status', widgetVersion)}
-
-          {this.renderData('Widget Api Version', widgetApiVersion)}
-        </MiddleContent>
-      </FullContent>
+        {this.renderData('Erxes Widget Status', widgetVersion)}
+      </div>
     );
 
     return (
       <Wrapper
-        header={<Wrapper.Header breadcrumb={breadcrumb} />}
+        header={
+          <Wrapper.Header title={__('System status')} breadcrumb={breadcrumb} />
+        }
+        actionBar={
+          <Wrapper.ActionBar
+            left={
+              <HeaderDescription
+                icon="/images/actions/28.svg"
+                title="System status"
+                description={`This allows you to see erxes's real-time information on all system statuses. You'll find live and historical data on system performance.`}
+              />
+            }
+          />
+        }
         content={content}
         transparent={true}
+        center={true}
       />
     );
   }

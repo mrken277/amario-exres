@@ -32,6 +32,10 @@ export default `
     _id
     visitorContactInfo
     messengerData
+    avatar
+    firstName
+    lastName
+    emails
   }
   messageCount
   participatorCount
@@ -51,15 +55,15 @@ export default `
     name
     colorCode
   }
-  twitterData {
-    id_str
-    isDirectMessage
-  }
-  facebookData {
-    kind
-  }
-  gmailData {
-    messageId
-  }
   readUserIds
+  facebookPost {
+    postId
+    recipientId
+    senderId
+    content
+    erxesApiId
+    attachments
+    timestamp
+    commentCount
+  }
 `;

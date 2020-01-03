@@ -1,9 +1,10 @@
 import gql from 'graphql-tag';
-import { Chooser } from 'modules/common/components';
+import * as compose from 'lodash.flowright';
 import { Alert, renderFullName, withProps } from 'modules/common/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
-import { CustomerForm } from '../containers';
+import ConformityChooser from 'modules/conformity/containers/ConformityChooser';
+import React from 'react';
+import { graphql } from 'react-apollo';
+import CustomerForm from '../containers/CustomerForm';
 import { mutations, queries } from '../graphql';
 import {
   AddMutationResponse,
@@ -18,64 +19,96 @@ type Props = {
   perPage: number;
 };
 
-type FinalProps = { customersQuery: CustomersQueryResponse } & Props &
+type FinalProps = {
+  customersQuery: CustomersQueryResponse;
+} & Props &
   AddMutationResponse;
+class CustomerChooser extends React.Component<
+  WrapperProps & FinalProps,
+  { newCustomerId?: string }
+> {
+  constructor(props) {
+    super(props);
 
-const CustomerChooser = (props: WrapperProps & FinalProps) => {
-  const { data, customersQuery, customersAdd, search } = props;
+    this.state = {
+      newCustomerId: undefined
+    };
+  }
 
-  // add customer
-  const addCustomer = ({ doc, callback }) => {
-    customersAdd({
-      variables: doc
-    })
-      .then(() => {
-        customersQuery.refetch();
+  render() {
+    const { data, customersQuery, customersAdd, search } = this.props;
 
-        Alert.success('Success');
-
-        callback();
+    // add customer
+    const addCustomer = ({ doc, callback }) => {
+      customersAdd({
+        variables: doc
       })
-      .catch(e => {
-        Alert.error(e.message);
-      });
-  };
+        .then(() => {
+          customersQuery.refetch();
 
-  const updatedProps = {
-    ...props,
-    data: {
-      _id: data._id,
-      name: data.name,
-      datas: data.customers
-    },
-    search,
-    clearState: () => search(''),
-    title: 'Customer',
-    renderName: renderFullName,
-    renderForm: formProps => (
-      <CustomerForm {...formProps} action={addCustomer} />
-    ),
-    add: addCustomer,
-    datas: customersQuery.customers || []
-  };
+          Alert.success('You successfully added a customer');
 
-  return <Chooser {...updatedProps} />;
-};
+          callback();
+        })
+        .catch(e => {
+          Alert.error(e.message);
+        });
+    };
+
+    const getAssociatedCustomer = (newCustomerId: string) => {
+      this.setState({ newCustomerId });
+    };
+
+    const updatedProps = {
+      ...this.props,
+      data: {
+        _id: data._id,
+        name: data.name,
+        datas: data.customers,
+        mainTypeId: data.mainTypeId,
+        mainType: data.mainType,
+        relType: 'customer'
+      },
+      search,
+      clearState: () => search(''),
+      title: 'Customer',
+      renderName: renderFullName,
+      renderForm: formProps => (
+        <CustomerForm
+          {...formProps}
+          getAssociatedCustomer={getAssociatedCustomer}
+        />
+      ),
+      add: addCustomer,
+      newItemId: this.state.newCustomerId,
+      datas: customersQuery.customers || [],
+      refetchQuery: queries.customers
+    };
+
+    return <ConformityChooser {...updatedProps} />;
+  }
+}
 
 const WithQuery = withProps<Props>(
   compose(
     graphql<
-      Props,
+      Props & WrapperProps,
       CustomersQueryResponse,
       { searchValue: string; perPage: number }
     >(gql(queries.customers), {
       name: 'customersQuery',
-      options: ({ searchValue, perPage }) => {
+      options: ({ searchValue, perPage, data }) => {
         return {
           variables: {
             searchValue,
-            perPage
-          }
+            perPage,
+            mainType: data.mainType,
+            mainTypeId: data.mainTypeId,
+            isRelated: data.isRelated,
+            sortField: 'createdAt',
+            sortDirection: -1
+          },
+          fetchPolicy: data.isRelated ? 'network-only' : 'cache-first'
         };
       }
     }),
@@ -90,14 +123,24 @@ const WithQuery = withProps<Props>(
 );
 
 type WrapperProps = {
-  data: { _id?: string; name: string; customers: ICustomer[] };
+  data: {
+    _id?: string;
+    name: string;
+    customers: ICustomer[];
+    mainTypeId?: string;
+    mainType?: string;
+    isRelated?: boolean;
+  };
   onSelect: (datas: ICustomer[]) => void;
   closeModal: () => void;
 };
 
 export default class Wrapper extends React.Component<
   WrapperProps,
-  { perPage: number; searchValue: string }
+  {
+    perPage: number;
+    searchValue: string;
+  }
 > {
   constructor(props) {
     super(props);
@@ -117,7 +160,6 @@ export default class Wrapper extends React.Component<
 
   render() {
     const { searchValue, perPage } = this.state;
-
     return (
       <WithQuery
         {...this.props}

@@ -16,13 +16,14 @@ const brandDetail = `
 `;
 
 const brands = `
-  query brands($page: Int, $perPage: Int) {
-    brands(page: $page, perPage: $perPage) {
+  query brands($page: Int, $perPage: Int, $searchValue: String) {
+    brands(page: $page, perPage: $perPage, searchValue: $searchValue) {
       _id
       code
       name
       createdAt
       description
+      emailConfig
     }
   }
 `;

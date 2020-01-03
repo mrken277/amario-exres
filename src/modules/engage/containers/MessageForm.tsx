@@ -1,9 +1,10 @@
 import gql from 'graphql-tag';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
 import { BrandsQueryResponse } from '../../settings/brands/types';
-import { MessageForm } from '../components';
+import MessageForm from '../components/MessageForm';
 import { queries } from '../graphql';
 import { EngageMessageDetailQueryResponse } from '../types';
 

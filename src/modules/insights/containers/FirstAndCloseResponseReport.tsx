@@ -1,17 +1,20 @@
 import gql from 'graphql-tag';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { BrandsQueryResponse } from '../../settings/brands/types';
-import { FirstResponse, ResponseCloseReport } from '../components';
+import FirstResponse from '../components/FirstResponse';
+import ResponseCloseReport from '../components/ResponseCloseReport';
 import { queries } from '../graphql';
 import {
   FirstResponseQueryResponse,
-  IParamsWithType,
+  IParams,
+  IQueryParams,
   ResponseCloseQueryResponse
 } from '../types';
 
 type Props = {
-  queryParams: any;
+  queryParams: IQueryParams;
   history: any;
   type: string;
 };
@@ -62,7 +65,6 @@ const FirstAndCloseResponseReportContainer = (props: FinalProps) => {
 };
 
 const commonOptions = queryParams => ({
-  fetchPolicy: 'network-only',
   notifyOnNetworkStatusChange: true,
   variables: {
     brandIds: queryParams.brandIds,
@@ -76,12 +78,12 @@ export default compose(
   graphql(gql(queries.firstResponse), {
     name: 'firstResponseQuery',
     skip: ({ type }) => type !== 'first',
-    options: ({ queryParams }: IParamsWithType) => commonOptions(queryParams)
+    options: ({ queryParams }: IParams) => commonOptions(queryParams)
   }),
   graphql(gql(queries.responseClose), {
     name: 'responseCloseQuery',
     skip: ({ type }) => type !== 'close',
-    options: ({ queryParams }: IParamsWithType) => commonOptions(queryParams)
+    options: ({ queryParams }: IParams) => commonOptions(queryParams)
   }),
   graphql<Props, BrandsQueryResponse>(gql(queries.brands), {
     name: 'brandsQuery'

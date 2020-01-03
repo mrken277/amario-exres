@@ -1,6 +1,7 @@
 import { colors } from 'modules/common/styles';
+import { readFile } from 'modules/common/utils';
 import { ICustomer } from 'modules/customers/types';
-import * as React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
@@ -27,7 +28,6 @@ const AvatarStyled = styledTS<{
     (props.hasAvatar && 'none') ||
     (props.isUser && colors.colorCoreTeal) ||
     (props.messenger && colors.colorPrimary) ||
-    (props.twitter && colors.socialTwitter) ||
     (props.facebook && colors.socialFacebook) ||
     colors.colorSecondary};
 
@@ -63,6 +63,7 @@ type Props = {
   size?: number;
   icon?: React.ReactNode;
   hasAvatar?: boolean;
+  letterCount?: number;
 };
 
 function Element({
@@ -74,7 +75,7 @@ function Element({
 }) {
   if (customer) {
     return (
-      <Link to={customer && `/customers/details/${customer._id}`}>
+      <Link to={customer && `/contacts/customers/details/${customer._id}`}>
         {children}
       </Link>
     );
@@ -83,19 +84,22 @@ function Element({
 }
 
 class Avatar extends React.Component<Props> {
-  generateStyle(size = 40) {
+  generateStyle(size: number = 40) {
     return {
       width: size,
       height: size,
       lineHeight: `${size}px`,
       borderRadius: `${size}px`,
-      fontSize: `${size / 3}px`
+      fontSize: `${size / 3}px`,
+      fontWeight: 600
     };
   }
 
-  renderImage(src) {
+  renderImage(src: string) {
     const { size } = this.props;
-    return <AvatarImage image={src} style={this.generateStyle(size)} />;
+    return (
+      <AvatarImage image={readFile(src)} style={this.generateStyle(size)} />
+    );
   }
 
   generateTypes() {
@@ -105,9 +109,7 @@ class Avatar extends React.Component<Props> {
       return {
         isUser: customer.isUser,
         hasAvatar,
-        messenger: customer.messengerData && true,
-        twitter: customer.twitterData && true,
-        facebook: customer.facebookData && true
+        messenger: customer.messengerData && true
       };
     }
 
@@ -117,12 +119,12 @@ class Avatar extends React.Component<Props> {
   }
 
   renderInitials(fullName) {
-    const { size } = this.props;
+    const { size, letterCount = 2 } = this.props;
 
     const initials = fullName ? (
       fullName
         .split(' ')
-        .slice(0, 2)
+        .slice(0, letterCount)
         .map(s => s.charAt(0))
         .join('.')
         .toUpperCase()

@@ -1,45 +1,33 @@
-import * as React from 'react';
-import { SelectBrand } from '..';
-import {
-  Button,
-  ControlLabel,
-  FormControl,
-  FormGroup,
-  Spinner
-} from '../../../../common/components';
-import { ModalFooter } from '../../../../common/styles/main';
-import { __ } from '../../../../common/utils';
-import { IBrand } from '../../../brands/types';
-import { IAccount } from '../../../linkedAccounts/types';
-import { CreateFacebookMutationVariables, IPages } from '../../types';
+import FormControl from 'modules/common/components/form/Control';
+import Form from 'modules/common/components/form/Form';
+import FormGroup from 'modules/common/components/form/Group';
+import ControlLabel from 'modules/common/components/form/Label';
+import Spinner from 'modules/common/components/Spinner';
+import { ModalFooter } from 'modules/common/styles/main';
+import { IButtonMutateProps, IFormProps } from 'modules/common/types';
+import React from 'react';
+import Accounts from '../../containers/Accounts';
+import SelectBrand from '../../containers/SelectBrand';
+import { IPages } from '../../types';
 
 type Props = {
-  save: (
-    params: CreateFacebookMutationVariables,
-    callback?: () => void
-  ) => void;
-  onAccSelect: (doc: { appId?: string; accountId?: string }) => void;
-  brands: IBrand[];
+  kind: string;
+  renderButton: (props: IButtonMutateProps) => JSX.Element;
+  onAccountSelect: (accountId?: string) => void;
   pages: IPages[];
-  accounts: IAccount[];
+  accountId?: string;
+  onRemoveAccount: (accountId: string) => void;
   closeModal: () => void;
 };
 
 class Facebook extends React.Component<Props, { loading: boolean }> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
       loading: false
     };
   }
-
-  onAccChange = () => {
-    const accountId = (document.getElementById('acc') as HTMLInputElement)
-      .value;
-
-    this.props.onAccSelect({ accountId });
-  };
 
   collectCheckboxValues(name: string): string[] {
     const values: string[] = [];
@@ -57,83 +45,89 @@ class Facebook extends React.Component<Props, { loading: boolean }> {
     return values;
   }
 
-  handleSubmit = e => {
-    e.preventDefault();
+  generateDoc = (values: {
+    messengerName: string;
+    brandId: string;
+    accountId: string;
+  }) => {
+    const { accountId, kind } = this.props;
 
-    const doc: CreateFacebookMutationVariables = {
-      name: (document.getElementById('name') as HTMLInputElement).value,
-      brandId: (document.getElementById('selectBrand') as HTMLInputElement)
-        .value,
-      accountId: (document.getElementById('acc') as HTMLInputElement).value,
-      pageIds: this.collectCheckboxValues('pages')
+    return {
+      name: values.messengerName,
+      brandId: values.brandId,
+      kind,
+      accountId: accountId ? accountId : values.accountId,
+      data: {
+        pageIds: this.collectCheckboxValues('pages')
+      }
     };
+  };
 
-    const callback = () => {
-      this.setState({ loading: false }, () => this.props.closeModal());
-    };
+  renderPages() {
+    const { pages } = this.props;
 
-    this.setState({ loading: true });
+    if (pages.length === 0) {
+      return null;
+    }
 
-    this.props.save(doc, callback);
+    return (
+      <FormGroup>
+        <ControlLabel required={true}>Pages</ControlLabel>
+
+        {pages.map(page => (
+          <div key={page.id}>
+            <FormControl
+              componentClass="checkbox"
+              name="pages"
+              key={page.id}
+              value={page.id}
+            >
+              {page.name}
+            </FormControl>
+          </div>
+        ))}
+      </FormGroup>
+    );
+  }
+
+  renderContent = (formProps: IFormProps) => {
+    const { onRemoveAccount, onAccountSelect, renderButton } = this.props;
+    const { values, isSubmitted } = formProps;
+
+    return (
+      <>
+        {this.state.loading && <Spinner />}
+        <FormGroup>
+          <ControlLabel required={true}>Name</ControlLabel>
+          <FormControl {...formProps} name="messengerName" required={true} />
+        </FormGroup>
+
+        <SelectBrand isRequired={true} formProps={formProps} />
+
+        <Accounts
+          kind="facebook"
+          addLink="fblogin"
+          onSelect={onAccountSelect}
+          onRemove={onRemoveAccount}
+          formProps={formProps}
+        />
+
+        {this.renderPages()}
+
+        <ModalFooter>
+          {renderButton({
+            name: 'integration',
+            values: this.generateDoc(values),
+            isSubmitted,
+            callback: this.props.closeModal
+          })}
+        </ModalFooter>
+      </>
+    );
   };
 
   render() {
-    const { pages, brands, accounts } = this.props;
-
-    return (
-      <form onSubmit={this.handleSubmit}>
-        {this.state.loading && <Spinner />}
-        <FormGroup>
-          <ControlLabel>Name</ControlLabel>
-
-          <FormControl id="name" type="text" required={true} />
-        </FormGroup>
-
-        <SelectBrand brands={brands} />
-
-        <FormGroup>
-          <ControlLabel>Linked Accounts</ControlLabel>
-
-          <FormControl
-            componentClass="select"
-            placeholder={__('Select account')}
-            onChange={this.onAccChange}
-            id="acc"
-          >
-            <option value="">Select account ...</option>
-
-            {accounts.map((account, index) => (
-              <option key={`account${index}`} value={account._id}>
-                {account.name}
-              </option>
-            ))}
-          </FormControl>
-        </FormGroup>
-
-        <FormGroup>
-          <ControlLabel>Pages</ControlLabel>
-
-          {pages.map(page => (
-            <div key={page.id}>
-              <FormControl
-                componentClass="checkbox"
-                name="pages"
-                key={page.id}
-                value={page.id}
-              >
-                {page.name}
-              </FormControl>
-            </div>
-          ))}
-        </FormGroup>
-
-        <ModalFooter>
-          <Button btnStyle="success" type="submit" icon="checked-1">
-            Save
-          </Button>
-        </ModalFooter>
-      </form>
-    );
+    return <Form renderContent={this.renderContent} />;
   }
 }
 

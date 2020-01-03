@@ -1,106 +1,51 @@
-const customerActivityLogQuery = `
-  query activityLogsCustomer($_id: String!) {
-    activityLogsCustomer(_id: $_id) {
-      date {
-        year
-        month
-      }
-      list {
-        id
-        action
-        content
-        createdAt
-        by {
-          _id
-          type
-          details {
-            avatar
-            fullName
-          }
-        }
-      }
+const activityLogs = `
+  query activityLogs($contentType: String!, $contentId: String!, $activityType: String, $limit: Int ) {
+    activityLogs(contentType: $contentType, contentId: $contentId, activityType: $activityType, limit: $limit) {
+      _id
+      action
+      contentId
+      contentType
+      content
+      createdAt
+      createdBy
+  
+      createdByDetail
+      contentDetail
+      contentTypeDetail
     }
   }
 `;
 
-const companyActivityLogQuery = `
-  query activityLogsCompany($_id: String!) {
-    activityLogsCompany(_id: $_id) {
-      date {
-        year
-        month
-      }
-      list {
-        id
-        action
-        content
-        createdAt
-        by {
-          _id
-          type
-          details {
-            avatar
-            fullName
-          }
+const emailDeliveryDetail = `
+  query emailDeliveryDetail($_id: String! ) {
+    emailDeliveryDetail(_id: $_id ) {
+      _id
+      subject
+      body
+      to
+      cc
+      bcc
+      attachments
+      from
+      kind
+      userId
+      customerId
+      createdAt
+  
+      fromUser {
+        _id
+        details {
+          avatar
+          fullName
+          position
         }
       }
-    }
-  }
-`;
-
-const userActivityLogQuery = `
-  query activityLogsUser($_id: String!) {
-    activityLogsUser(_id: $_id) {
-      date {
-        year
-        month
-      }
-      list {
-        id
-        action
-        content
-        createdAt
-        by {
-          _id
-          type
-          details {
-            avatar
-            fullName
-          }
-        }
-      }
-    }
-  }
-`;
-
-const dealActivityLogQuery = `
-  query activityLogsDeal($_id: String!) {
-    activityLogsDeal(_id: $_id) {
-      date {
-        year
-        month
-      }
-      list {
-        id
-        action
-        content
-        createdAt
-        by {
-          _id
-          type
-          details {
-            avatar
-            fullName
-          }
-        }
-      }
+      fromEmail
     }
   }
 `;
 
 export default {
-  customerActivityLogQuery,
-  companyActivityLogQuery,
-  userActivityLogQuery,
-  dealActivityLogQuery
+  activityLogs,
+  emailDeliveryDetail
 };

@@ -10,6 +10,18 @@ const rotate = keyframes`
 	}
 `;
 
+const wave = keyframes`
+  0%{
+    transform:translateY(0px)
+  }
+  28%{
+    transform:translateY(-5px)
+  }
+  44%{
+    transform:translateY(0px)
+  }
+`;
+
 const fadeIn = keyframes`
   0% {
     opacity: 0;
@@ -73,4 +85,50 @@ const twinkling = keyframes`
   }
 `;
 
-export { rotate, fadeIn, slideDown, slideLeft, slideRight, shake, twinkling };
+const stripe = keyframes`
+  from {
+    background-position: 16px 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+`;
+
+const robotAnimation = keyframes`
+  from {
+    opacity: 0;
+    -webkit-transform: scale(0.1) rotate(30deg);
+    transform: scale(0.1) rotate(30deg);
+    -webkit-transform-origin: center bottom;
+    transform-origin: center bottom;
+  }
+
+  50% {
+    -webkit-transform: rotate(-10deg);
+    transform: rotate(-10deg);
+  }
+
+  70% {
+    -webkit-transform: rotate(3deg);
+    transform: rotate(3deg);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}`;
+
+export {
+  rotate,
+  fadeIn,
+  slideDown,
+  slideLeft,
+  slideRight,
+  shake,
+  twinkling,
+  stripe,
+  wave,
+  robotAnimation
+};

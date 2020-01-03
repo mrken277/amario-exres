@@ -1,10 +1,17 @@
 import { __ } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import * as React from 'react';
+import Wrapper from 'modules/layout/components/Wrapper';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Box, BoxName, Divider, Row, RowTitle } from '../styles';
+import {
+  Box,
+  BoxName,
+  Divider,
+  MenusContainer,
+  Row,
+  RowTitle
+} from '../styles';
 
-class Settings extends React.Component {
+class Settings extends React.PureComponent {
   renderBox(name: string, image: string, to: string) {
     return (
       <Box>
@@ -20,9 +27,9 @@ class Settings extends React.Component {
     const breadcrumb = [{ title: __('Settings'), link: '/settings' }];
 
     const content = (
-      <div>
+      <MenusContainer>
         <Row>
-          <RowTitle className="secondRow">{__('General Settings')}</RowTitle>
+          <RowTitle>{__('General Settings')}</RowTitle>
           <div>
             {this.renderBox(
               'Account default',
@@ -35,19 +42,39 @@ class Settings extends React.Component {
               '/settings/team'
             )}
             {this.renderBox(
+              'Permission',
+              '/images/icons/erxes-23.svg',
+              '/settings/permissions'
+            )}
+            {this.renderBox(
               'Properties',
               '/images/icons/erxes-01.svg',
               '/settings/properties'
             )}
             {this.renderBox(
-              'Import histories',
-              '/images/icons/erxes-12.svg',
+              'Tags',
+              '/images/icons/erxes-18.svg',
+              '/tags/conversation'
+            )}
+            {this.renderBox(
+              'Segments',
+              '/images/icons/erxes-15.svg',
+              '/segments/customer'
+            )}
+            {this.renderBox(
+              'Import & Export',
+              '/images/icons/erxes-07.svg',
               '/settings/importHistories'
             )}
             {this.renderBox(
               'Status',
               '/images/icons/erxes-06.svg',
               '/settings/status'
+            )}
+            {this.renderBox(
+              'Logs',
+              '/images/icons/erxes-14.svg',
+              '/settings/logs'
             )}
           </div>
         </Row>
@@ -80,11 +107,6 @@ class Settings extends React.Component {
               '/images/icons/erxes-09.svg',
               '/settings/email-templates'
             )}
-          </div>
-        </Row>
-        <Row>
-          <RowTitle />
-          <div>
             {this.renderBox(
               'Email Appearance',
               '/images/icons/erxes-08.svg',
@@ -99,12 +121,28 @@ class Settings extends React.Component {
         </Row>
         <Divider />
         <Row>
-          <RowTitle className="secondRow">{__('Deal Settings')}</RowTitle>
+          <RowTitle>{__('Growth Hacking Settings')}</RowTitle>
           <div>
             {this.renderBox(
-              'Boards & Pipelines',
+              'Marketing campaigns & Projects',
+              '/images/icons/erxes-20.svg',
+              '/settings/boards/growthHack'
+            )}
+            {this.renderBox(
+              'Growth Hacking Templates',
+              '/images/icons/erxes-22.svg',
+              '/settings/boards/growthHackTemplate'
+            )}
+          </div>
+        </Row>
+        <Divider />
+        <Row>
+          <RowTitle>{__('Sales Pipeline Settings')}</RowTitle>
+          <div>
+            {this.renderBox(
+              'Sales board & Pipelines',
               '/images/icons/erxes-19.svg',
-              '/settings/deals'
+              '/settings/boards/deal'
             )}
             {this.renderBox(
               'Product & Service',
@@ -113,12 +151,36 @@ class Settings extends React.Component {
             )}
           </div>
         </Row>
-      </div>
+        <Divider />
+        <Row>
+          <RowTitle>{__('Ticket Settings')}</RowTitle>
+          <div>
+            {this.renderBox(
+              'Ticket Sales board & Pipelines',
+              '/images/icons/erxes-19.svg',
+              '/settings/boards/ticket'
+            )}
+          </div>
+        </Row>
+        <Divider />
+        <Row>
+          <RowTitle>{__('Task Settings')}</RowTitle>
+          <div>
+            {this.renderBox(
+              'Task Sales board & Pipelines',
+              '/images/icons/erxes-19.svg',
+              '/settings/boards/task'
+            )}
+          </div>
+        </Row>
+      </MenusContainer>
     );
 
     return (
       <Wrapper
-        header={<Wrapper.Header breadcrumb={breadcrumb} />}
+        header={
+          <Wrapper.Header title={__('Settings')} breadcrumb={breadcrumb} />
+        }
         content={content}
         transparent={true}
       />

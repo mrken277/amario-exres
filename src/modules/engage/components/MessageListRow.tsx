@@ -1,22 +1,20 @@
-import {
-  ActionButtons,
-  Button,
-  FormControl,
-  Icon,
-  Label,
-  NameCard,
-  Tags,
-  Tip
-} from 'modules/common/components';
+import dayjs from 'dayjs';
+import ActionButtons from 'modules/common/components/ActionButtons';
+import Button from 'modules/common/components/Button';
+import FormControl from 'modules/common/components/form/Control';
+import Icon from 'modules/common/components/Icon';
+import Label from 'modules/common/components/Label';
+import NameCard from 'modules/common/components/nameCard/NameCard';
+import Tags from 'modules/common/components/Tags';
+import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
 import { MESSAGE_KINDS } from 'modules/engage/constants';
-import * as moment from 'moment';
-import * as React from 'react';
-import { EngageTitle, HelperText } from '../styles';
+import React from 'react';
+import { HelperText, RowTitle } from '../styles';
 import { IEngageMessage, IEngageMessenger } from '../types';
 
 type Props = {
-  message: IEngageMessage;
+  message: any;
 
   // TODO: add types
   edit: () => void;
@@ -95,7 +93,7 @@ class Row extends React.Component<Props> {
     if (message.segment) {
       return (
         <HelperText>
-          <Icon icon="piechart" /> {message.segment.name}
+          <Icon icon="chart-pie-alt" /> {message.segment.name}
         </HelperText>
       );
     }
@@ -105,7 +103,7 @@ class Row extends React.Component<Props> {
 
     return rules.map(rule => (
       <HelperText key={rule._id}>
-        <Icon icon="piechart" /> {rule.text} {rule.condition} {rule.value}
+        <Icon icon="chart-pie-alt" /> {rule.text} {rule.condition} {rule.value}
       </HelperText>
     ));
   }
@@ -126,8 +124,7 @@ class Row extends React.Component<Props> {
     const { isChecked, message, remove } = this.props;
     const { stats = { send: '' }, brand = { name: '' } } = message;
 
-    const deliveryReports = Object.values(message.deliveryReports || {});
-    const totalCount = deliveryReports.length;
+    const totalCount = stats.total || 0;
 
     if (totalCount === stats.send) {
       status = <Label lblStyle="success">Sent</Label>;
@@ -143,26 +140,26 @@ class Row extends React.Component<Props> {
           />
         </td>
         <td>
-          <EngageTitle onClick={this.onClick}>{message.title}</EngageTitle>
+          <RowTitle onClick={this.onClick}>{message.title}</RowTitle>
           {message.isDraft ? <Label lblStyle="primary">Draft</Label> : null}
           {this.renderRules()}
         </td>
         <td className="text-normal">
-          <NameCard user={message.fromUser} avatarSize={30} singleLine={true} />
+          <NameCard user={message.fromUser} avatarSize={30} />
         </td>
         <td>{status}</td>
         <td className="text-primary">
-          <Icon icon="cube" />
+          <Icon icon="cube-2" />
           <b> {totalCount}</b>
         </td>
         <td>
           {message.email ? (
             <div>
-              <Icon icon="email-3" /> {__('Email')}
+              <Icon icon="envelope" /> {__('Email')}
             </div>
           ) : (
             <div>
-              <Icon icon="chat" /> {__('Messenger')}
+              <Icon icon="comment-1" /> {__('Messenger')}
             </div>
           )}
         </td>
@@ -172,8 +169,8 @@ class Row extends React.Component<Props> {
         </td>
 
         <td>
-          <Icon icon="calendar" />{' '}
-          {moment(message.createdDate).format('DD MMM YYYY')}
+          <Icon icon="calender" />{' '}
+          {dayjs(message.createdDate).format('DD MMM YYYY')}
         </td>
 
         <td>

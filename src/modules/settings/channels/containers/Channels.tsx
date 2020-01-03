@@ -1,12 +1,14 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { IRouterProps } from 'modules/common/types';
 import { router as routerUtils, withProps } from 'modules/common/utils';
 import queryString from 'query-string';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import { IntegrationsCountQueryResponse } from '../../integrations/types';
-import { Channels as DumbChannels, Empty } from '../components';
+import DumbChannels from '../components/Channels';
+import Empty from '../components/Empty';
 import { queries } from '../graphql';
 import {
   ChannelDetailQueryResponse,
@@ -96,7 +98,7 @@ class WithCurrentId extends React.Component<withCurrentIdFinalProps> {
 
     const { channelsGetLast, loading } = lastChannelQuery;
 
-    if (!_id && channelsGetLast && !loading) {
+    if (!_id && channelsGetLast && !loading && !history.location.hash) {
       routerUtils.setParams(history, { _id: channelsGetLast._id }, true);
     }
   }

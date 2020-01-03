@@ -1,7 +1,9 @@
-import { DataWithLoader, EmptyState, Icon } from 'modules/common/components';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
+import EmptyState from 'modules/common/components/EmptyState';
+import Icon from 'modules/common/components/Icon';
 import { router } from 'modules/common/utils';
-import { SidebarCounter, SidebarList } from 'modules/layout/styles';
-import * as React from 'react';
+import { FieldStyle, SidebarCounter, SidebarList } from 'modules/layout/styles';
+import React from 'react';
 import { withRouter } from 'react-router';
 import styled from 'styled-components';
 import { IRouterProps } from '../types';
@@ -51,7 +53,7 @@ class FilterByParams extends React.Component<IProps, State> {
     const { key } = this.state;
 
     if (fields.length === 0) {
-      return <EmptyState icon="clipboard-1" text="No templates" size="full" />;
+      return <EmptyState icon={icon} text="No templates" size="full" />;
     }
 
     return (
@@ -71,6 +73,7 @@ class FilterByParams extends React.Component<IProps, State> {
             return (
               <li key={field._id}>
                 <a
+                  href="#param"
                   tabIndex={0}
                   className={
                     router.getParam(history, [paramKey]) === field._id
@@ -82,7 +85,7 @@ class FilterByParams extends React.Component<IProps, State> {
                   {icon ? (
                     <Icon icon={icon} style={{ color: field.colorCode }} />
                   ) : null}{' '}
-                  {field.name}
+                  <FieldStyle>{field.name}</FieldStyle>
                   <SidebarCounter>{counts[field._id]}</SidebarCounter>
                 </a>
               </li>
@@ -101,8 +104,8 @@ class FilterByParams extends React.Component<IProps, State> {
         loading={loading}
         count={fields.length}
         data={this.renderItems()}
-        emptyText="No tags"
-        emptyIcon="tag"
+        emptyText="Empty"
+        emptyIcon="folder-2"
         size="small"
         objective={true}
       />

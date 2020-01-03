@@ -1,18 +1,21 @@
 import gql from 'graphql-tag';
-import { Spinner } from 'modules/common/components';
+import * as compose from 'lodash.flowright';
+import Spinner from 'modules/common/components/Spinner';
+import { IButtonMutateProps } from 'modules/common/types';
 import { queries as kbQueries } from 'modules/knowledgeBase/graphql';
 import { TopicsQueryResponse } from 'modules/knowledgeBase/types';
 import { queries as integrationQueries } from 'modules/settings/integrations/graphql';
 import { IntegrationsQueryResponse } from 'modules/settings/integrations/types';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withProps } from '../../../common/utils';
 import { ICommonFormProps } from '../../common/types';
-import { Form } from '../components';
+import Form from '../components/Form';
 
 type Props = {
   integrationsQuery: IntegrationsQueryResponse;
   kbTopicsQuery: TopicsQueryResponse;
+  renderButton: (props: IButtonMutateProps) => JSX.Element;
 };
 
 const FormContainer = (props: Props & ICommonFormProps) => {
@@ -23,12 +26,13 @@ const FormContainer = (props: Props & ICommonFormProps) => {
   }
 
   const integrations = integrationsQuery.integrations;
+
   const kbTopics = kbTopicsQuery.knowledgeBaseTopics;
 
   const updatedProps = {
     ...props,
     messengers: integrations.filter(i => i.kind === 'messenger'),
-    forms: integrations.filter(i => i.kind === 'form'),
+    leads: integrations.filter(i => i.kind === 'lead'),
     kbTopics
   };
 

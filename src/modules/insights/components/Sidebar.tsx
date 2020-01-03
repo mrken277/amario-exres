@@ -1,59 +1,61 @@
 import { __ } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
+import Wrapper from 'modules/layout/components/Wrapper';
 import { SidebarList } from 'modules/layout/styles';
-import * as React from 'react';
+import queryString from 'query-string';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-function Sidebar() {
-  const WrapperSidebar = Wrapper.Sidebar;
-  const { Title } = WrapperSidebar.Section;
+import { DEAL_INSIGHTS, INBOX_INSIGHTS, INSIGHT_TYPES } from '../constants';
+import { IInsightType } from '../types';
 
-  return (
-    <WrapperSidebar>
-      <WrapperSidebar.Section>
-        <Title>{__('Insights')}</Title>
-        <SidebarList>
-          <li>
-            <NavLink
-              activeClassName="active"
-              exact={true}
-              to="/insights/volume-report"
-            >
-              {__('Volume Report')}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink activeClassName="active" to="/insights/response-report">
-              {__('Response Report')}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink activeClassName="active" to="/insights/summary-report">
-              {__('Volume Report By Customer')}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              activeClassName="active"
-              to="/insights/response-close-report"
-            >
-              {__('Response Close Report')}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink activeClassName="active" to="/insights/first-response">
-              {__('First Response Report')}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink activeClassName="active" to="/insights/export-report">
-              {__('Export Report')}
-            </NavLink>
-          </li>
-        </SidebarList>
-      </WrapperSidebar.Section>
-    </WrapperSidebar>
-  );
+type Props = {
+  type?: string;
+  queryParams?: any;
+};
+
+class Sidebar extends React.Component<Props> {
+  getInsights() {
+    const { type = INSIGHT_TYPES.INBOX } = this.props;
+
+    return type === INSIGHT_TYPES.INBOX ? INBOX_INSIGHTS : DEAL_INSIGHTS;
+  }
+
+  renderItem(insight: IInsightType) {
+    const { name, to } = insight;
+    const { queryParams } = this.props;
+
+    const search = queryString.stringify(queryParams);
+
+    return (
+      <li key={to}>
+        <NavLink
+          activeClassName="active"
+          to={{
+            pathname: to,
+            search
+          }}
+        >
+          {__(name)}
+        </NavLink>
+      </li>
+    );
+  }
+
+  render() {
+    const WrapperSidebar = Wrapper.Sidebar;
+    const { Title } = WrapperSidebar.Section;
+
+    return (
+      <WrapperSidebar>
+        <WrapperSidebar.Section>
+          <Title>{__('Insights')}</Title>
+          <SidebarList>
+            {this.getInsights().map(insight => this.renderItem(insight))}
+          </SidebarList>
+        </WrapperSidebar.Section>
+      </WrapperSidebar>
+    );
+  }
 }
 
 export default Sidebar;

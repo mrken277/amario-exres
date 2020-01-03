@@ -1,6 +1,10 @@
-import * as React from 'react';
+import asyncComponent from 'modules/common/components/AsyncComponent';
+import React from 'react';
 import { Route } from 'react-router-dom';
-import { KnowledgeBase } from './containers';
+
+const KnowledgeBase = asyncComponent(() =>
+  import(/* webpackChunkName: "KnowledgeBase" */ './containers/KnowledgeBase')
+);
 
 const routes = () => <Route path="/knowledgeBase/" component={KnowledgeBase} />;
 

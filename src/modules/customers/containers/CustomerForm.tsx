@@ -1,82 +1,108 @@
-import gql from 'graphql-tag';
-import { Alert, withProps } from 'modules/common/utils';
+import ButtonMutate from 'modules/common/components/ButtonMutate';
 import {
-  AddMutationResponse,
-  EditMutationResponse,
-  ICustomer,
-  ICustomerDoc
-} from 'modules/customers/types';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
-import { CustomerForm } from '../components';
+  IButtonMutateProps,
+  IQueryParams,
+  IRouterProps
+} from 'modules/common/types';
+import { ICustomer } from 'modules/customers/types';
+import React from 'react';
+import { withRouter } from 'react-router';
+import CustomerForm from '../components/list/CustomerForm';
 import { mutations } from '../graphql';
 
 type Props = {
   customer: ICustomer;
   closeModal: () => void;
+  getAssociatedCustomer?: (customerId: string) => void;
+  queryParams: IQueryParams;
 };
 
-type FinalProps = Props & EditMutationResponse & AddMutationResponse;
+type State = {
+  redirectType?: string;
+};
 
-const CustomerFormContainer = (props: FinalProps) => {
-  const { customersEdit, customer, customersAdd } = props;
+type FinalProps = {} & Props & IRouterProps;
+class CustomerFormContainer extends React.Component<FinalProps, State> {
+  constructor(props) {
+    super(props);
 
-  let action = ({ doc }) => {
-    customersAdd({ variables: doc })
-      .then(() => {
-        Alert.success('Success');
-      })
-      .catch(e => {
-        Alert.error(e.message);
-      });
-  };
-
-  if (customer) {
-    action = ({ doc }) => {
-      customersEdit({ variables: { _id: customer._id, ...doc } })
-        .then(() => {
-          Alert.success('Success');
-        })
-        .catch(e => {
-          Alert.error(e.message);
-        });
+    this.state = {
+      redirectType: undefined
     };
   }
 
-  const updatedProps = {
-    ...props,
-    action
+  changeRedirectType = (redirectType: string) => {
+    this.setState({ redirectType });
   };
 
-  return <CustomerForm {...updatedProps} />;
+  render() {
+    const { closeModal, history, getAssociatedCustomer } = this.props;
+    const { redirectType } = this.state;
+
+    const renderButton = ({
+      name,
+      values,
+      isSubmitted,
+      object
+    }: IButtonMutateProps) => {
+      const afterSave = data => {
+        closeModal();
+
+        if (redirectType === 'detail') {
+          return history.push(
+            `/contacts/customers/details/${data.customersAdd._id}`
+          );
+        }
+
+        const currentLocation = `${window.location.pathname}${
+          window.location.search
+        }`;
+
+        if (getAssociatedCustomer) {
+          getAssociatedCustomer(data.customersAdd._id);
+        }
+
+        if (redirectType === 'new') {
+          history.push(`/contacts`);
+          history.replace(`${currentLocation}#showCustomerModal=true`);
+        }
+      };
+
+      return (
+        <ButtonMutate
+          mutation={object ? mutations.customersEdit : mutations.customersAdd}
+          variables={values}
+          callback={afterSave}
+          refetchQueries={getRefetchQueries()}
+          isSubmitted={isSubmitted}
+          disableLoading={redirectType ? true : false}
+          disabled={isSubmitted}
+          type="submit"
+          icon="user-check"
+          successMessage={`You successfully ${
+            object ? 'updated' : 'added'
+          } a ${name}`}
+        />
+      );
+    };
+
+    const updatedProps = {
+      ...this.props,
+      changeRedirectType: this.changeRedirectType,
+      renderButton
+    };
+
+    return <CustomerForm {...updatedProps} />;
+  }
+}
+
+const getRefetchQueries = () => {
+  return [
+    'customersMain',
+    // customers for company detail associate customers
+    'customers',
+    'customerCounts'
+  ];
 };
 
-const options = () => {
-  return {
-    refetchQueries: [
-      'customersMain',
-      // customers for company detail associate customers
-      'customers',
-      'customerCounts'
-    ]
-  };
-};
-
-export default withProps<Props>(
-  compose(
-    graphql<Props, EditMutationResponse, ICustomer>(
-      gql(mutations.customersEdit),
-      {
-        name: 'customersEdit',
-        options
-      }
-    ),
-    graphql<Props, AddMutationResponse, ICustomerDoc>(
-      gql(mutations.customersAdd),
-      {
-        name: 'customersAdd',
-        options
-      }
-    )
-  )(CustomerFormContainer)
-);
+export default withRouter<FinalProps>(CustomerFormContainer);

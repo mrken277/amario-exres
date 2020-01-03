@@ -1,3 +1,8 @@
+import {
+  conformityQueryFieldDefs,
+  conformityQueryFields
+} from 'modules/conformity/graphql/queries';
+
 const companyFields = `
   _id
   createdAt
@@ -60,6 +65,7 @@ const listParamsDef = `
   $brand: String
   $sortField: String
   $sortDirection: Int
+  ${conformityQueryFields}
 `;
 
 const listParamsValue = `
@@ -74,6 +80,7 @@ const listParamsValue = `
   brand: $brand
   sortField: $sortField
   sortDirection: $sortDirection
+  ${conformityQueryFieldDefs}
 `;
 
 export const companies = `
@@ -113,29 +120,6 @@ export const companyDetail = `
         primaryEmail
         primaryPhone
       }
-      deals {
-        _id
-        companies {
-          _id
-          primaryName
-        }
-        customers {
-          _id
-          firstName
-          primaryEmail
-        }
-        products
-        amount
-        closeDate
-        assignedUsers {
-          _id
-          email
-          details {
-            fullName
-            avatar
-          }
-        }
-      }
     }
   }
 `;
@@ -160,28 +144,9 @@ export const companiesListConfig = `
   }
 `;
 
-const activityLogsCompany = `
-  query activityLogsCompany($_id: String!) {
-    activityLogsCompany(_id: $_id) {
-      date {
-        year
-        month
-      }
-      list {
-        id
-        action
-        content
-        createdAt
-        by {
-          _id
-          type
-          details {
-            avatar
-            fullName
-          }
-        }
-      }
-    }
+const companiesExport = `
+  query companiesExport(${listParamsDef}) {
+    companiesExport(${listParamsValue})
   }
 `;
 
@@ -192,5 +157,5 @@ export default {
   companyDetail,
   tags,
   companiesListConfig,
-  activityLogsCompany
+  companiesExport
 };

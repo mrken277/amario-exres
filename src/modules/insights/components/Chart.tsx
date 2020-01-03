@@ -1,7 +1,8 @@
 import { ResponsiveLine } from '@nivo/line';
-import { Spinner } from 'modules/common/components';
+import EmptyState from 'modules/common/components/EmptyState';
+import Spinner from 'modules/common/components/Spinner';
 import { colors } from 'modules/common/styles';
-import * as React from 'react';
+import React from 'react';
 import { ChartWrapper, LoaderWrapper } from '../styles';
 import { IChartParams } from '../types';
 
@@ -10,11 +11,14 @@ interface IProps {
   loading?: boolean;
   width?: number;
   height: number;
+  type?: string;
 }
 
 class Chart extends React.Component<IProps> {
   render() {
-    const { data, height, loading } = this.props;
+    const { data, height, loading, type } = this.props;
+    let typeId = 'count';
+    let marginLeft = 35;
 
     if (loading) {
       return (
@@ -24,7 +28,27 @@ class Chart extends React.Component<IProps> {
       );
     }
 
-    const chartData = [{ id: 'count', color: '#eee', data }];
+    if (this.props.data.length === 0) {
+      return (
+        <ChartWrapper>
+          <EmptyState text="There is no data" size="full" icon="ban" />
+        </ChartWrapper>
+      );
+    }
+
+    data.filter(axis => {
+      if (axis.y > 999) {
+        return (marginLeft = 52);
+      }
+
+      return null;
+    });
+
+    if (type === 'conversation-report') {
+      typeId = 'sec';
+    }
+
+    const chartData = [{ id: typeId, color: '#eee', data }];
 
     return (
       <ChartWrapper height={height}>
@@ -34,7 +58,7 @@ class Chart extends React.Component<IProps> {
             top: 30,
             right: 30,
             bottom: 30,
-            left: 30
+            left: marginLeft
           }}
           colors={[colors.colorPrimary]}
           enableArea={true}

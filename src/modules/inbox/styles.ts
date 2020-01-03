@@ -1,10 +1,14 @@
 import {
+  RichEditorControlsRoot,
+  RichEditorRoot
+} from 'modules/common/components/editor/styles';
+import {
   PopoverFooter as RootFooter,
   PopoverList as RootList
 } from 'modules/common/components/filterableList/styles';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
-import { colors } from '../common/styles';
+import { colors, dimensions } from '../common/styles';
 import { darken, rgba } from '../common/styles/color';
 
 const PopoverButton = styled.div`
@@ -16,31 +20,15 @@ const PopoverButton = styled.div`
   }
 
   > i {
-    margin-left: 5px;
-    margin-right: 0;
-    font-size: 10px;
+    margin-left: 3px;
+    margin-right: -3px;
     transition: all ease 0.3s;
     color: ${colors.colorCoreGray};
-  }
-
-  &[aria-describedby] {
-    color: ${colors.colorSecondary};
-
-    i {
-      transform: rotate(180deg);
-    }
   }
 
   &:hover {
     cursor: pointer;
   }
-`;
-
-const ConversationWrapper = styled.div`
-  height: 100%;
-  overflow: auto;
-  min-height: 100px;
-  background: ${colors.bgLight};
 `;
 
 const RichEditorRight = styled.div`
@@ -51,13 +39,16 @@ const ResponseSuggestions = styled.ul`
   position: absolute;
   left: 0px;
   bottom: 100%;
+  bottom: calc(100% + 2px);
   margin: 0;
   padding: 0;
   z-index: 1;
-  width: 100%;
+  width: 480px;
   list-style-type: none;
   background: ${colors.colorWhite};
   box-shadow: 0 -3px 20px -2px ${colors.darkShadow};
+  overflow: hidden;
+  border-radius: 3px;
 `;
 
 const ResponseSuggestionItem = styled.li`
@@ -65,7 +56,7 @@ const ResponseSuggestionItem = styled.li`
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
-  padding: 5px 20px;
+  padding: 5px 15px;
   text-overflow: ellipsis;
 
   :hover {
@@ -89,6 +80,12 @@ const RespondBoxStyled = styledTS<{
   filter: ${props => props.isInactive && 'blur(2px)'};
 `;
 
+const MailRespondBox = styled(RespondBoxStyled)`
+  padding: ${dimensions.unitSpacing - 2}px ${dimensions.coreSpacing}px;
+  display: flex;
+  align-items: flex-start;
+`;
+
 const ResponseTemplateStyled = styled.div`
   display: inline-block;
 
@@ -96,6 +93,7 @@ const ResponseTemplateStyled = styled.div`
     margin-right: 10px;
     margin-left: 0;
     padding: 0;
+    font-size: 13px;
   }
 
   span {
@@ -179,6 +177,18 @@ const PopoverList = styledTS<{ center?: boolean }>(styled(RootList))`
     a {
       color: ${colors.colorCoreDarkGray};
     }
+    
+  }
+`;
+
+const PopoverLoadMore = styled.li`
+  text-align: center;
+
+  button {
+    box-shadow: none;
+    border-radius: 30px;
+    font-size: 10px;
+    padding: 5px 15px;
   }
 `;
 
@@ -218,45 +228,38 @@ const TemplateContent = styled.div`
   font-weight: normal;
 `;
 
-const MessengerApps = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 5px 0;
-
-  img {
-    width: 35px;
-    margin-right: 10px;
-  }
-
-  h5,
-  p {
-    margin: 0;
-  }
-
-  p {
-    margin-top: 3px;
-    color: ${colors.colorCoreGray};
-  }
-`;
-
 const AttachmentIndicator = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   margin: 0 15px 10px 15px;
   color: ${rgba(colors.colorWhite, 0.7)};
 `;
 
 const Attachment = styled.div`
   display: flex;
-  max-width: 220px;
+  max-width: 250px;
   padding: 5px;
-  margin: 5px 0 5px 5px;
+  margin: 0 0 5px 5px;
   font-size: 12px;
   background-color: ${colors.colorSecondary};
   align-items: center;
 
   > div {
-    margin-right: 5px;
+    margin-right: 8px;
+  }
+
+  i {
+    color: ${colors.colorWhite};
+    opacity: 0.7;
+    margin: 0 3px;
+    font-size: 13px;
+    transition: all ease 0.3s;
+
+    &:hover {
+      cursor: pointer;
+      opacity: 1;
+    }
   }
 `;
 
@@ -277,46 +280,6 @@ const FileName = styled.div`
   text-overflow: ellipsis;
   margin-right: 5px;
   color: ${colors.colorWhite};
-`;
-
-const AssignText = styled.div`
-  display: inline-block;
-`;
-
-const ActionBarLeft = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
-const AssignTrigger = styled.div`
-  padding-left: 10px;
-
-  i {
-    margin-left: 5px;
-    margin-right: 0;
-    transition: all ease 0.3s;
-    line-height: 30px;
-    color: ${colors.colorCoreGray};
-    font-size: 10px;
-    display: inline-block;
-  }
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  &[aria-describedby] {
-    color: ${colors.colorSecondary};
-
-    i {
-      transform: rotate(180deg);
-    }
-  }
-
-  img {
-    margin: 0;
-  }
 `;
 
 const MaskWrapper = styled.div`
@@ -342,9 +305,70 @@ const Mask = styled.div`
   }
 `;
 
+const NoHeight = styled.div`
+  height: auto;
+`;
+
+const SmallEditor = styled.div`
+  flex: 1;
+  background: ${colors.colorWhite};
+  border: 1px solid ${colors.borderPrimary};
+  border-radius: ${dimensions.coreSpacing}px;
+  margin-left: ${dimensions.unitSpacing}px;
+  padding: ${dimensions.unitSpacing - 2}px 110px ${dimensions.unitSpacing - 2}px
+    0;
+  position: relative;
+
+  ${RichEditorRoot} {
+    padding-top: 0;
+
+    .RichEditor-editor {
+      border: 0;
+
+      .public-DraftEditor-content,
+      .public-DraftEditorPlaceholder-root {
+        min-height: auto;
+        padding: 0px 15px;
+      }
+
+      .public-DraftEditorPlaceholder-inner {
+        max-height: 20px;
+        overflow: hidden;
+      }
+    }
+  }
+
+  ${RichEditorControlsRoot} {
+    display: none;
+  }
+
+  ${EditorActions} {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 5px 10px;
+
+    label:first-of-type {
+      position: initial;
+    }
+  }
+
+  ${AttachmentIndicator} {
+    margin: 5px ${dimensions.unitSpacing}px 0;
+  }
+
+  ${PreviewImg} {
+    width: 13px;
+    height: 13px;
+  }
+`;
+
+const CallLabel = styledTS<{ type: string }>(styled.span)`
+  color: ${props => (props.type === 'answered' ? 'green' : 'red')};
+`;
+
 export {
   PopoverButton,
-  ConversationWrapper,
   RespondBoxStyled,
   ResponseSuggestions,
   ResponseSuggestionItem,
@@ -357,6 +381,7 @@ export {
   InlineHeaderSpan,
   PopoverBody,
   PopoverList,
+  PopoverLoadMore,
   TemplateTitle,
   TemplateContent,
   PopoverFooter,
@@ -365,10 +390,10 @@ export {
   AttachmentIndicator,
   PreviewImg,
   FileName,
-  AssignText,
-  ActionBarLeft,
-  AssignTrigger,
   Mask,
   MaskWrapper,
-  MessengerApps
+  NoHeight,
+  SmallEditor,
+  CallLabel,
+  MailRespondBox
 };

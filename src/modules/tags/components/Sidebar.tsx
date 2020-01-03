@@ -1,7 +1,7 @@
 import { __ } from 'modules/common/utils';
-import { Sidebar } from 'modules/layout/components';
+import Sidebar from 'modules/layout/components/Sidebar';
 import { SidebarList } from 'modules/layout/styles';
-import * as React from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 function TagsSidebar() {
@@ -35,6 +35,11 @@ function TagsSidebar() {
           <li>
             <NavLink activeClassName="active" to="/tags/integration">
               {__('Integration')}
+            </NavLink>
+          </li>
+          <li>
+            <NavLink activeClassName="active" to="/tags/product">
+              {__('Product & Service')}
             </NavLink>
           </li>
         </SidebarList>

@@ -1,8 +1,9 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { Alert, confirm } from 'modules/common/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
-import { CategoryList } from '../../components';
+import React from 'react';
+import { graphql } from 'react-apollo';
+import CategoryList from '../../components/category/CategoryList';
 import { mutations, queries } from '../../graphql';
 import {
   ArticlesTotalCountQueryResponse,
@@ -42,7 +43,7 @@ const KnowledgeBaseContainer = (props: FinalProps) => {
         .then(() => {
           categoriesQuery.refetch();
 
-          Alert.success('Successfully deleted.');
+          Alert.success('You successfully deleted a category');
         })
         .catch(error => {
           Alert.error(error.message);
@@ -99,17 +100,30 @@ export default compose(
     {
       name: 'removeCategoriesMutation',
       options: ({ currentCategoryId }) => {
+        const refetchQueries: any[] = [
+          {
+            query: gql(queries.knowledgeBaseCategories)
+          },
+          {
+            query: gql(queries.knowledgeBaseTopics)
+          }
+        ];
+
+        if (currentCategoryId) {
+          refetchQueries.push({
+            query: gql(queries.knowledgeBaseArticlesTotalCount),
+            variables: { categoryIds: [currentCategoryId] }
+          });
+
+          refetchQueries.push({
+            query: gql(queries.knowledgeBaseCategoryDetail),
+            variables: { _id: currentCategoryId },
+            skip: () => !currentCategoryId
+          });
+        }
+
         return {
-          refetchQueries: [
-            {
-              query: gql(queries.knowledgeBaseArticlesTotalCount),
-              variables: { categoryIds: [currentCategoryId] }
-            },
-            {
-              query: gql(queries.knowledgeBaseCategoryDetail),
-              variables: { _id: currentCategoryId }
-            }
-          ]
+          refetchQueries
         };
       }
     }

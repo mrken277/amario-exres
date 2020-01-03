@@ -1,5 +1,6 @@
 import { IUser } from 'modules/auth/types';
-import * as React from 'react';
+import { getUserAvatar } from 'modules/common/utils';
+import React from 'react';
 import {
   ErxesStaffProfile,
   ErxesSupporters,
@@ -27,7 +28,7 @@ class Supporters extends React.Component<Props> {
 
       return (
         <ErxesStaffProfile key={u._id}>
-          <img src={details.avatar} alt={details.fullName} />
+          <img src={getUserAvatar(u)} alt={details.fullName} />
           <StateSpan state={isOnline || false} />
         </ErxesStaffProfile>
       );

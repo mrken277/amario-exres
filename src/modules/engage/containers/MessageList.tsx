@@ -1,12 +1,13 @@
 import gql from 'graphql-tag';
-import { Bulk } from 'modules/common/components';
+import * as compose from 'lodash.flowright';
+import Bulk from 'modules/common/components/Bulk';
 import { IRouterProps } from 'modules/common/types';
 import queryString from 'query-string';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import { withProps } from '../../common/utils';
-import { MessageList } from '../components';
+import MessageList from '../components/MessageList';
 import { queries } from '../graphql';
 import {
   EngageMessagesQueryResponse,
@@ -73,8 +74,7 @@ const MessageListContainerWithData = withProps<Props>(
       {
         name: 'engageMessagesQuery',
         options: props => ({
-          variables: generateListQueryVariables(props),
-          fetchPolicy: 'network-only'
+          variables: generateListQueryVariables(props)
         })
       }
     ),
@@ -83,8 +83,7 @@ const MessageListContainerWithData = withProps<Props>(
       {
         name: 'engageMessagesTotalCountQuery',
         options: props => ({
-          variables: generateListQueryVariables(props),
-          fetchPolicy: 'network-only'
+          variables: generateListQueryVariables(props)
         })
       }
     )

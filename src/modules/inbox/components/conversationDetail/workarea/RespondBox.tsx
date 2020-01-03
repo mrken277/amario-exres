@@ -1,37 +1,50 @@
-import { Button, FormControl, Icon, Tip } from 'modules/common/components';
-import { __, Alert, uploadHandler } from 'modules/common/utils';
-import * as React from 'react';
-
-import {
-  MessengerApp,
-  ResponseTemplate
-} from 'modules/inbox/containers/conversationDetail';
-
+import asyncComponent from 'modules/common/components/AsyncComponent';
+import Button from 'modules/common/components/Button';
+import { SmallLoader } from 'modules/common/components/ButtonMutate';
+import FormControl from 'modules/common/components/form/Control';
+import Icon from 'modules/common/components/Icon';
+import NameCard from 'modules/common/components/nameCard/NameCard';
+import Tip from 'modules/common/components/Tip';
+import { IAttachmentPreview } from 'modules/common/types';
+import { __, Alert, readFile, uploadHandler } from 'modules/common/utils';
+import { deleteHandler } from 'modules/common/utils/uploadHandler';
+import ResponseTemplate from 'modules/inbox/containers/conversationDetail/responseTemplate/ResponseTemplate';
 import {
   Attachment,
   AttachmentIndicator,
   AttachmentThumb,
   EditorActions,
   FileName,
+  MailRespondBox,
   Mask,
   MaskWrapper,
   PreviewImg,
-  RespondBoxStyled
+  RespondBoxStyled,
+  SmallEditor
 } from 'modules/inbox/styles';
-
-import { IAttachmentPreview } from 'modules/common/types';
+import React from 'react';
 import { IUser } from '../../../../auth/types';
 import { IIntegration } from '../../../../settings/integrations/types';
 import { IResponseTemplate } from '../../../../settings/responseTemplates/types';
 import { AddMessageMutationVariables, IConversation } from '../../../types';
-import Editor from './Editor';
+
+const Editor = asyncComponent(
+  () => import(/* webpackChunkName: "Editor-in-Inbox" */ './Editor'),
+  {
+    height: '137px',
+    width: '100%',
+    color: '#fff'
+  }
+);
 
 type Props = {
   conversation: IConversation;
+  currentUser: IUser;
   sendMessage: (
     message: AddMessageMutationVariables,
     callback: (error: Error) => void
   ) => void;
+  onSearchChange: (value: string) => void;
   showInternal: boolean;
   setAttachmentPreview?: (data: IAttachmentPreview) => void;
   responseTemplates: IResponseTemplate[];
@@ -47,6 +60,7 @@ type State = {
   content: string;
   mentionedUserIds: string[];
   editorKey: string;
+  loading: object;
 };
 
 class RespondBox extends React.Component<Props, State> {
@@ -61,8 +75,36 @@ class RespondBox extends React.Component<Props, State> {
       attachments: [],
       responseTemplate: '',
       content: '',
-      mentionedUserIds: []
+      mentionedUserIds: [],
+      loading: {}
     };
+  }
+
+  isContentWritten() {
+    const { content } = this.state;
+
+    // draftjs empty content
+    if (content === '<p><br></p>' || content === '') {
+      return false;
+    }
+
+    return true;
+  }
+
+  shouldComponentUpdate(nextProps: Props) {
+    if (this.props.conversation._id !== nextProps.conversation._id) {
+      if (this.isContentWritten()) {
+        localStorage.setItem(this.props.conversation._id, this.state.content);
+      } else {
+        // if clear content
+        localStorage.removeItem(this.props.conversation._id);
+      }
+
+      // clear previous content
+      this.setState({ content: '' });
+    }
+
+    return true;
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -87,6 +129,10 @@ class RespondBox extends React.Component<Props, State> {
     }
   }
 
+  getUnsendMessage = (id: string) => {
+    return localStorage.getItem(id) || '';
+  };
+
   // save editor current content to state
   onEditorContentChange = (content: string) => {
     this.setState({ content });
@@ -95,6 +141,10 @@ class RespondBox extends React.Component<Props, State> {
   // save mentioned user to state
   onAddMention = (mentionedUserIds: string[]) => {
     this.setState({ mentionedUserIds });
+  };
+
+  onSearchChange = (value: string) => {
+    this.props.onSearchChange(value);
   };
 
   checkIsActive(conversation: IConversation) {
@@ -111,6 +161,10 @@ class RespondBox extends React.Component<Props, State> {
 
     const element = document.querySelector('.DraftEditor-root') as HTMLElement;
 
+    if (!element) {
+      return;
+    }
+
     element.click();
   };
 
@@ -119,7 +173,7 @@ class RespondBox extends React.Component<Props, State> {
 
     this.addMessage();
 
-    // redrawing editor after sned button, so editor content will be reseted
+    // redrawing editor after send button, so editor content will be reseted
     this.setState({ editorKey: `${this.state.editorKey}Key` });
   };
 
@@ -136,9 +190,39 @@ class RespondBox extends React.Component<Props, State> {
     });
   };
 
-  // on shift + enter press in editor
-  onShifEnter = () => {
-    this.addMessage();
+  handleDeleteFile = (url: string) => {
+    const urlArray = url.split('/');
+
+    // checking whether url is full path or just file name
+    const fileName =
+      urlArray.length === 1 ? url : urlArray[urlArray.length - 1];
+
+    let loading = this.state.loading;
+    loading[url] = true;
+
+    this.setState({ loading });
+
+    deleteHandler({
+      fileName,
+      afterUpload: ({ status }) => {
+        if (status === 'ok') {
+          const remainedAttachments = this.state.attachments.filter(
+            a => a.url !== url
+          );
+
+          this.setState({ attachments: remainedAttachments });
+
+          Alert.success('You successfully deleted a file');
+        } else {
+          Alert.error(status);
+        }
+
+        loading = this.state.loading;
+        delete loading[url];
+
+        this.setState({ loading });
+      }
+    });
   };
 
   handleFileInput = (e: React.FormEvent<HTMLInputElement>) => {
@@ -147,7 +231,6 @@ class RespondBox extends React.Component<Props, State> {
 
     uploadHandler({
       files,
-
       beforeUpload: () => {
         return;
       },
@@ -178,7 +261,7 @@ class RespondBox extends React.Component<Props, State> {
     return text.replace(/&nbsp;/g, ' ');
   }
 
-  addMessage() {
+  addMessage = () => {
     const { conversation, sendMessage } = this.props;
     const { isInternal, attachments, content, mentionedUserIds } = this.state;
     const message = {
@@ -206,7 +289,7 @@ class RespondBox extends React.Component<Props, State> {
         });
       });
     }
-  }
+  };
 
   toggleForm = () => {
     this.setState({
@@ -215,7 +298,8 @@ class RespondBox extends React.Component<Props, State> {
   };
 
   renderIncicator() {
-    const attachments = this.state.attachments;
+    const { attachments, loading } = this.state;
+
     if (attachments.length > 0) {
       return (
         <AttachmentIndicator>
@@ -224,7 +308,9 @@ class RespondBox extends React.Component<Props, State> {
               <AttachmentThumb>
                 {attachment.type.startsWith('image') && (
                   <PreviewImg
-                    style={{ backgroundImage: `url('${attachment.url}')` }}
+                    style={{
+                      backgroundImage: `url(${readFile(attachment.url)})`
+                    }}
                   />
                 )}
               </AttachmentThumb>
@@ -233,6 +319,14 @@ class RespondBox extends React.Component<Props, State> {
                 ({Math.round(attachment.size / 1000)}
                 kB)
               </div>
+              {loading[attachment.url] ? (
+                <SmallLoader />
+              ) : (
+                <Icon
+                  icon="times"
+                  onClick={this.handleDeleteFile.bind(this, attachment.url)}
+                />
+              )}
             </Attachment>
           ))}
         </AttachmentIndicator>
@@ -256,49 +350,9 @@ class RespondBox extends React.Component<Props, State> {
     return null;
   }
 
-  render() {
+  renderEditor() {
     const { isInternal, responseTemplate } = this.state;
     const { responseTemplates, conversation } = this.props;
-
-    const integration = conversation.integration || ({} as IIntegration);
-
-    const Buttons = (
-      <EditorActions>
-        <FormControl
-          className="toggle-message"
-          componentClass="checkbox"
-          checked={isInternal}
-          onChange={this.toggleForm}
-        >
-          {__('Internal note')}
-        </FormControl>
-
-        <Tip text={__('Attach file')}>
-          <label>
-            <Icon icon="upload-2" />
-            <input type="file" onChange={this.handleFileInput} />
-          </label>
-        </Tip>
-
-        <MessengerApp conversation={conversation} />
-
-        <ResponseTemplate
-          brandId={integration.brandId}
-          attachments={this.state.attachments}
-          content={this.state.content}
-          onSelect={this.onSelectTemplate}
-        />
-
-        <Button
-          onClick={this.onSend}
-          btnStyle="success"
-          size="small"
-          icon="send"
-        >
-          Send
-        </Button>
-      </EditorActions>
-    );
 
     let type = 'message';
 
@@ -311,30 +365,134 @@ class RespondBox extends React.Component<Props, State> {
     );
 
     return (
+      <Editor
+        currentConversation={conversation._id}
+        defaultContent={this.getUnsendMessage(conversation._id)}
+        key={this.state.editorKey}
+        onChange={this.onEditorContentChange}
+        onAddMention={this.onAddMention}
+        onAddMessage={this.addMessage}
+        onSearchChange={this.onSearchChange}
+        placeholder={placeholder}
+        mentions={this.props.teamMembers}
+        showMentions={isInternal}
+        responseTemplate={responseTemplate}
+        responseTemplates={responseTemplates}
+        handleFileInput={this.handleFileInput}
+      />
+    );
+  }
+
+  renderCheckbox(kind: string) {
+    const { isInternal } = this.state;
+
+    if (kind.includes('nylas') || kind === 'gmail') {
+      return null;
+    }
+
+    return (
+      <FormControl
+        className="toggle-message"
+        componentClass="checkbox"
+        checked={isInternal}
+        onChange={this.toggleForm}
+        disabled={this.props.showInternal}
+      >
+        {__('Internal note')}
+      </FormControl>
+    );
+  }
+
+  renderButtons() {
+    const { conversation } = this.props;
+    const integration = conversation.integration || ({} as IIntegration);
+    const disabled =
+      integration.kind.includes('nylas') || integration.kind === 'gmail';
+
+    return (
+      <EditorActions>
+        {this.renderCheckbox(integration.kind)}
+
+        <Tip text={__('Attach file')}>
+          <label>
+            <Icon icon="paperclip" />
+            <input
+              type="file"
+              onChange={this.handleFileInput}
+              multiple={true}
+            />
+          </label>
+        </Tip>
+
+        <ResponseTemplate
+          brandId={integration.brandId}
+          attachments={this.state.attachments}
+          content={this.state.content}
+          onSelect={this.onSelectTemplate}
+        />
+
+        <Button
+          onClick={this.onSend}
+          btnStyle="success"
+          size="small"
+          icon="message"
+        >
+          {!disabled && 'Send'}
+        </Button>
+      </EditorActions>
+    );
+  }
+
+  renderBody() {
+    return (
+      <>
+        {this.renderEditor()}
+        {this.renderIncicator()}
+        {this.renderButtons()}
+      </>
+    );
+  }
+
+  renderContent() {
+    const { isInternal } = this.state;
+
+    return (
       <MaskWrapper>
         {this.renderMask()}
         <RespondBoxStyled
           isInternal={isInternal}
           isInactive={this.state.isInactive}
         >
-          <Editor
-            key={this.state.editorKey}
-            onChange={this.onEditorContentChange}
-            onAddMention={this.onAddMention}
-            onShifEnter={this.onShifEnter}
-            placeholder={placeholder}
-            mentions={this.props.teamMembers}
-            showMentions={isInternal}
-            responseTemplate={responseTemplate}
-            responseTemplates={responseTemplates}
-            handleFileInput={this.handleFileInput}
-          />
-
-          {this.renderIncicator()}
-          {Buttons}
+          {this.renderBody()}
         </RespondBoxStyled>
       </MaskWrapper>
     );
+  }
+
+  renderMailRespondBox() {
+    const { currentUser } = this.props;
+
+    return (
+      <MailRespondBox isInternal={true}>
+        <NameCard.Avatar user={currentUser} size={34} />
+        <SmallEditor>{this.renderBody()}</SmallEditor>
+      </MailRespondBox>
+    );
+  }
+
+  render() {
+    const { conversation } = this.props;
+
+    const integration = conversation.integration || ({} as IIntegration);
+    const { kind } = integration;
+
+    const isMail = kind.includes('nylas') || kind === 'gmail';
+
+    if (isMail) {
+      return this.renderMailRespondBox();
+    }
+
+    return this.renderContent();
   }
 }
 

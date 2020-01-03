@@ -1,8 +1,11 @@
-import { Spinner } from 'modules/common/components';
-import * as React from 'react';
-import { Col, Row } from 'react-bootstrap';
-import { Summary } from '.';
+import EmptyState from 'modules/common/components/EmptyState';
+import Spinner from 'modules/common/components/Spinner';
+import { readFile } from 'modules/common/utils';
+import React from 'react';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import {
+  ChartWrapper,
   FullName,
   InsightUserData,
   LoaderWrapper,
@@ -11,10 +14,12 @@ import {
 import { IChartParams } from '../types';
 import { convertTime } from '../utils';
 import Chart from './Chart';
+import Summary from './Summary';
 
 type Props = {
   datas: IChartParams[];
   loading: boolean;
+  type?: string;
 };
 
 class TeamMembers extends React.Component<Props> {
@@ -29,19 +34,22 @@ class TeamMembers extends React.Component<Props> {
 
         <InsightUserData>
           <UserProfile>
-            <a>
-              <img
-                src={data.avatar || '/images/avatar-colored.svg'}
-                alt={data.fullName}
-              />
-            </a>
+            <img
+              src={
+                data.avatar
+                  ? readFile(data.avatar)
+                  : '/images/avatar-colored.svg'
+              }
+              alt={data.fullName}
+            />
+
             <FullName>{data.fullName}</FullName>
 
             {userData.time ? (
               <span>&nbsp; ({convertTime(userData.time)})</span>
             ) : null}
           </UserProfile>
-          <Chart height={240} data={data.graph} />
+          <Chart height={240} data={data.graph} type={this.props.type} />
         </InsightUserData>
       </Col>
     );
@@ -55,6 +63,14 @@ class TeamMembers extends React.Component<Props> {
         <LoaderWrapper>
           <Spinner objective={true} />
         </LoaderWrapper>
+      );
+    }
+
+    if (datas.length === 0) {
+      return (
+        <ChartWrapper>
+          <EmptyState text="There is no data" size="full" icon="ban" />
+        </ChartWrapper>
       );
     }
 

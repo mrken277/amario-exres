@@ -9,6 +9,12 @@ export interface IBrand {
   emailConfig: { type: string; template: string };
 }
 
+export interface IChooseBrand {
+  _id?: string;
+  name: string;
+  brandId: string;
+}
+
 export interface IBrandDoc extends IBrand {
   integrations: IIntegration[];
 }
@@ -20,6 +26,12 @@ export interface IBrandsCount {
 // queries
 
 export type BrandsQueryResponse = {
+  brands: IBrand[];
+  loading: boolean;
+  refetch: () => void;
+};
+
+export type AllBrandsQueryResponse = {
   brands: IBrand[];
   loading: boolean;
   refetch: () => void;
@@ -54,27 +66,6 @@ export type BrandsManageIntegrationsMutationResponse = {
   saveMutation: (
     params: {
       variables: BrandsManageIntegrationsMutationVariables;
-    }
-  ) => Promise<void>;
-};
-
-export type BrandMutationVariables = {
-  name: string;
-  description: string;
-};
-
-export type BrandAddMutationResponse = {
-  addMutation: (
-    params: {
-      variables: BrandMutationVariables;
-    }
-  ) => Promise<void>;
-};
-
-export type BrandEditMutationResponse = {
-  editMutation: (
-    params: {
-      variables: BrandMutationVariables;
     }
   ) => Promise<void>;
 };

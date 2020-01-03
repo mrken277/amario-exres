@@ -1,16 +1,20 @@
 import { IUser } from 'modules/auth/types';
-import {
-  ControlLabel,
-  FormControl,
-  FormGroup
-} from 'modules/common/components';
+import EditorCK from 'modules/common/components/EditorCK';
+import FormControl from 'modules/common/components/form/Control';
+import FormGroup from 'modules/common/components/form/Group';
+import ControlLabel from 'modules/common/components/form/Label';
 import { FlexItem, FlexPad } from 'modules/common/components/step/styles';
-import { MESSENGER_KINDS, SENT_AS_CHOICES } from 'modules/engage/constants';
-import * as React from 'react';
+import { Alert } from 'modules/common/utils';
+import {
+  EMAIL_CONTENT,
+  MESSENGER_KINDS,
+  SENT_AS_CHOICES
+} from 'modules/engage/constants';
+import { MAIL_TOOLBARS_CONFIG } from 'modules/settings/integrations/constants';
+import React from 'react';
 import { IBrand } from '../../settings/brands/types';
-import { MessengerPreview } from '../containers';
+import MessengerPreview from '../containers/MessengerPreview';
 import { IEngageMessenger, IEngageScheduleDate } from '../types';
-import Editor from './Editor';
 import Scheduler from './Scheduler';
 
 type Props = {
@@ -93,7 +97,7 @@ class MessengerForm extends React.Component<Props, State> {
   renderScheduler() {
     const { messageKind, onChange } = this.props;
 
-    if (messageKind === 'manual' || messageKind === 'visitorAuto') {
+    if (messageKind === 'manual') {
       return null;
     }
 
@@ -102,22 +106,37 @@ class MessengerForm extends React.Component<Props, State> {
     );
   }
 
+  onEditorChange = e => {
+    this.props.onChange('content', e.editor.getData());
+  };
+
   render() {
     const onChangeFrom = e =>
       this.changeFromUserId((e.target as HTMLInputElement).value);
-    const onChangeContent = e =>
+    const onChangeContent = e => {
+      Alert.error(
+        'Please carefully select the brand, it will appear in the selected brand messenger.'
+      );
       this.changeContent('brandId', (e.target as HTMLInputElement).value);
+    };
     const onChangeSentAs = e =>
       this.changeContent('sentAs', (e.target as HTMLInputElement).value);
 
     return (
       <FlexItem>
-        <FlexPad overflow="auto" direction="column">
+        <FlexPad overflow="auto" direction="column" count="3">
           <FormGroup>
             <ControlLabel>Message:</ControlLabel>
-            <Editor
-              onChange={this.props.onChange}
-              defaultValue={this.props.content}
+
+            <EditorCK
+              content={this.props.content}
+              onChange={this.onEditorChange}
+              toolbar={[
+                { name: 'insert', items: ['strinsert'] },
+                ...MAIL_TOOLBARS_CONFIG
+              ]}
+              insertItems={EMAIL_CONTENT}
+              height={300}
             />
           </FormGroup>
 
@@ -174,13 +193,13 @@ class MessengerForm extends React.Component<Props, State> {
           {this.renderScheduler()}
         </FlexPad>
 
-        <FlexPad overflow="auto">
+        <FlexItem overflow="auto" count="2">
           <MessengerPreview
             sentAs={this.state.messenger.sentAs}
             content={this.props.content}
             fromUserId={this.state.fromUserId}
           />
-        </FlexPad>
+        </FlexItem>
       </FlexItem>
     );
   }

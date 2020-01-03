@@ -1,34 +1,34 @@
-import { Icon } from 'modules/common/components';
+import Icon from 'modules/common/components/Icon';
 import { colors } from 'modules/common/styles';
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
-import { IConversationFacebookData } from '../../inbox/types';
 import { IIntegration } from '../../settings/integrations/types';
 import { darken } from '../styles/color';
 
 const RoundedBackground = styledTS<{ type: string; size?: number }>(
   styled.span
 )`
-  width: ${props => (props.size ? `${props.size}px` : '22px')};
-  height: ${props => (props.size ? `${props.size}px` : '22px')};
+  width: ${props => (props.size ? `${props.size}px` : '20px')};
+  height: ${props => (props.size ? `${props.size}px` : '20px')};
   border-radius: ${props => (props.size ? `${props.size / 2}px` : '11px')};
   text-align: center;
   display: flex;
   justify-content: center;
-  border: 1px solid ${colors.colorWhite};
+  line-height: ${props => (props.size ? `${props.size - 1}px` : '20px')};
   background: ${props =>
-    (props.type === 'form' && darken(colors.colorCoreYellow, 32)) ||
-    (props.type === 'messenger' && colors.colorPrimary) ||
-    (props.type === 'twitter' && colors.socialTwitter) ||
+    (props.type === 'lead' && darken(colors.colorCoreYellow, 32)) ||
+    (props.type === 'messenger' && colors.colorCoreBlue) ||
+    (props.type === 'twitter-dm' && colors.socialTwitter) ||
     (props.type === 'facebook' && colors.socialFacebook) ||
+    (props.type === 'facebook-messenger' && colors.socialFacebookMessenger) ||
     (props.type === 'gmail' && colors.socialGmail) ||
-    colors.colorSecondary};
+    (props.type.includes('nylas') && colors.socialGmail) ||
+    colors.colorCoreBlue};
 
   i {
     color: ${colors.colorWhite};
-    font-size: ${props => (props.size ? '18px' : '11px')};
-    line-height: ${props => (props.size ? '38px' : '20px')};
+    font-size: ${props => (props.size ? `${props.size / 2}px` : '11px')};
   }
 
   img {
@@ -38,30 +38,47 @@ const RoundedBackground = styledTS<{ type: string; size?: number }>(
 
 type Props = {
   integration: IIntegration;
-  facebookData?: IConversationFacebookData;
   size?: number;
 };
 
 class IntegrationIcon extends React.PureComponent<Props> {
   getIcon() {
-    const { integration, facebookData } = this.props;
+    const { integration } = this.props;
 
     let icon;
     switch (integration.kind) {
-      case 'facebook':
-        icon =
-          facebookData && facebookData.kind === 'feed'
-            ? 'facebook-1'
-            : 'messenger';
+      case 'facebook-messenger':
+        icon = 'messenger';
         break;
-      case 'twitter':
-        icon = 'twitter-1';
+      case 'twitter-dm':
+        icon = 'twitter';
         break;
       case 'messenger':
         icon = 'comment';
         break;
+      case 'nylas-gmail':
+        icon = 'mail-alt';
+        break;
+      case 'nylas-imap':
+        icon = 'mail-alt';
+        break;
+      case 'nylas-office365':
+        icon = 'mail-alt';
+        break;
+      case 'nylas-outlook':
+        icon = 'mail-alt';
+        break;
+      case 'nylas-yahoo':
+        icon = 'mail-alt';
+        break;
       case 'gmail':
         icon = 'mail-alt';
+        break;
+      case 'callpro':
+        icon = 'phone-call';
+        break;
+      case 'chatfuel':
+        icon = 'comment-dots';
         break;
       default:
         icon = 'doc-text-inv-1';

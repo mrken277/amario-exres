@@ -6,18 +6,21 @@ import { createHttpLink } from 'apollo-link-http';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 import { Alert } from 'modules/common/utils';
+import { __ } from 'modules/common/utils';
 
 // get env config from process.env or window.env
 export const getEnv = () => {
   const wenv = (window as any).env || {};
 
-  const getItem = name => process.env[name] || wenv[name];
+  const getItem = name => wenv[name] || process.env[name];
 
   return {
+    NODE_ENV: getItem('NODE_ENV'),
     REACT_APP_API_URL: getItem('REACT_APP_API_URL'),
     REACT_APP_API_SUBSCRIPTION_URL: getItem('REACT_APP_API_SUBSCRIPTION_URL'),
     REACT_APP_CDN_HOST: getItem('REACT_APP_CDN_HOST'),
-    REACT_APP_CDN_HOST_API: getItem('REACT_APP_CDN_HOST_API')
+    REACT_APP_CDN_HOST_API: getItem('REACT_APP_CDN_HOST_API'),
+    REACT_APP_SENTRY_DSN: getItem('REACT_APP_SENTRY_DSN')
   };
 };
 
@@ -29,10 +32,18 @@ const httpLink = createHttpLink({
   credentials: 'include'
 });
 
-// Network error
-const errorLink = onError(({ networkError }) => {
+// Error handler
+const errorLink = onError(({ networkError, graphQLErrors }) => {
+  if (graphQLErrors && graphQLErrors.length > 0) {
+    const [error] = graphQLErrors;
+
+    if (error.message === 'Login required') {
+      window.location.reload();
+    }
+  }
+
   if (networkError) {
-    Alert.error('Disconnect ...');
+    Alert.error(__('NetworkError'));
   }
 });
 
@@ -40,13 +51,17 @@ const errorLink = onError(({ networkError }) => {
 const httpLinkWithMiddleware = errorLink.concat(httpLink);
 
 // Subscription config
-export const wsLink = new WebSocketLink({
-  uri: REACT_APP_API_SUBSCRIPTION_URL || '',
+export const wsLink: any = new WebSocketLink({
+  uri: REACT_APP_API_SUBSCRIPTION_URL || 'ws://localhost',
   options: {
+    lazy: true,
     reconnect: true,
     timeout: 30000
   }
 });
+
+wsLink.subscriptionClient.maxConnectTimeGenerator.duration = () =>
+  wsLink.subscriptionClient.maxConnectTimeGenerator.max;
 
 type Definintion = {
   kind: string;

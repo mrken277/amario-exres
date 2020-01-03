@@ -10,39 +10,77 @@ const commonParams = `
   languageCode: $languageCode
 `;
 
-const sendGmailFields = `
-  $integrationId: String!,
-  $cocType: String!,
-  $cocId: String!,
-  $subject: String!,
-  $body: String!,
-  $toEmails: String!,
-  $cc: String,
-  $bcc: String,
-  $attachments: [gmailAttachmentData],
+const mailParamsDef = `
+  $erxesApiId: String!,
   $headerId: String,
-  $references: String,
-  $threadId: String
+  $threadId: String,
+  $messageId: String,
+  $references: String
+  $replyToMessageId: String,
+  $subject: String!,
+  $kind: String,
+  $body: String!,
+  $to: [String]!,
+  $cc: [String],
+  $bcc: [String] ,
+  $from: String!,
+  $shouldResolve: Boolean,
+  $attachments: [JSON],
 `;
 
-const sendGmailVariables = `
-  integrationId: $integrationId,
-  cocType: $cocType,
-  cocId: $cocId,
+const mailParams = `
+  erxesApiId: $erxesApiId,
+  headerId: $headerId,
+  threadId: $threadId,
+  messageId: $messageId,
+  kind: $kind,
+  references: $references,
+  replyToMessageId: $replyToMessageId,
   subject: $subject,
   body: $body,
-  toEmails: $toEmails,
+  to: $to,
   cc: $cc,
   bcc: $bcc,
+  from: $from,
+  shouldResolve: $shouldResolve,
   attachments: $attachments,
-  headerId: $headerId,
-  references: $references,
-  threadId: $threadId
+`;
+
+const integrationSendMail = ` 
+  mutation integrationSendMail(${mailParamsDef}) {
+    integrationSendMail(${mailParams})
+  }
 `;
 
 const integrationsCreateMessenger = `
   mutation integrationsCreateMessengerIntegration(${commonParamsDef}) {
     integrationsCreateMessengerIntegration(${commonParams}) {
+      _id
+      brand {
+        _id
+        name
+        code
+      }
+    }
+  }
+`;
+
+const integrationsCreateExternalIntegration = `
+  mutation integrationsCreateExternalIntegration($name: String!, $brandId: String!, $accountId: String, $kind: String!, $data: JSON) {
+    integrationsCreateExternalIntegration(name: $name, brandId: $brandId, accountId: $accountId, kind: $kind, data: $data) {
+      _id
+      brand {
+        _id
+        name
+        code
+      }
+    }
+  }
+`;
+
+const integrationsEditCommonFields = `
+  mutation integrationsEditCommonFields($_id: String!, $name: String!, $brandId: String!) {
+    integrationsEditCommonFields(_id: $_id, name: $name, brandId: $brandId) {
       _id
     }
   }
@@ -70,26 +108,6 @@ const integrationsSaveMessengerAppearance = `
       _id: $_id
       uiOptions: $uiOptions
     ) {
-      _id
-    }
-  }
-`;
-
-const integrationsSendGmail = ` 
-  mutation integrationsSendGmail(${sendGmailFields}) {
-    integrationsSendGmail(${sendGmailVariables}) {
-      status
-      statusText
-    }
-  }
-`;
-
-const integrationsCreateGmail = ` 
-  mutation integrationsCreateGmailIntegration(
-    $code: String!
-    $brandId: String!
-  ) {
-    integrationsCreateGmailIntegration(code: $code, brandId: $brandId) {
       _id
     }
   }
@@ -133,21 +151,97 @@ const messengerAppsAddKnowledgebase = `
   }
 `;
 
+const messengerAppsAddWebsite = `
+  mutation messengerAppsAddWebsite(
+    $name: String!
+    $integrationId: String!
+    $description: String!
+    $buttonText: String!
+    $url: String!
+  ) {
+    messengerAppsAddWebsite(
+      name: $name
+      integrationId: $integrationId
+      description: $description
+      buttonText: $buttonText
+      url: $url
+    ) {
+      _id
+    }
+  }
+`;
+
 const messengerAppsRemove = `
   mutation messengerAppsRemove($_id: String!) {
     messengerAppsRemove(_id: $_id)
   }
 `;
 
+const removeAccount = `
+  mutation integrationsRemoveAccount($_id: String!) {
+    integrationsRemoveAccount(_id: $_id)
+  }
+`;
+
+const addMailAccount = `
+  mutation integrationAddMailAccount(
+    $email: String!
+    $password: String!
+    $kind: String!
+  ) {
+    integrationAddMailAccount(
+      email: $email
+      password: $password
+      kind: $kind
+    )
+  } 
+`;
+
+const addImapAccount = `
+  mutation integrationAddImapAccount(
+    $email: String! 
+    $password: String!
+    $imapHost: String!
+    $imapPort: Int!
+    $smtpHost: String!
+    $smtpPort: Int!
+    $kind: String!
+  ) {
+    integrationAddImapAccount(
+      email: $email 
+      password: $password
+      imapHost: $imapHost
+      imapPort: $imapPort
+      smtpHost: $smtpHost
+      smtpPort: $smtpPort
+      kind: $kind
+    )
+  }
+`;
+
+const integrationsArchive = `
+  mutation integrationsArchive($_id: String!) {
+    integrationsArchive(_id: $_id) {
+      _id
+    }
+  }
+`;
+
 export default {
+  integrationsArchive,
   integrationsCreateMessenger,
+  integrationsCreateExternalIntegration,
+  integrationsEditCommonFields,
   integrationsEditMessenger,
   integrationsSaveMessengerConfigs,
   integrationsSaveMessengerAppearance,
-  integrationsSendGmail,
-  integrationsCreateGmail,
   integrationsRemove,
   messengerAppsAddLead,
   messengerAppsAddKnowledgebase,
-  messengerAppsRemove
+  messengerAppsAddWebsite,
+  messengerAppsRemove,
+  removeAccount,
+  integrationSendMail,
+  addImapAccount,
+  addMailAccount
 };

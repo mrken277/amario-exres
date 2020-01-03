@@ -1,7 +1,9 @@
+import client from 'apolloClient';
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { Alert, withProps } from 'modules/common/utils';
-import { ActionSection } from 'modules/customers/components/common';
-import { mutations } from 'modules/customers/graphql';
+import ActionSection from 'modules/customers/components/common/ActionSection';
+import { mutations, queries } from 'modules/customers/graphql';
 import {
   ICustomer,
   MergeMutationResponse,
@@ -9,8 +11,8 @@ import {
   RemoveMutationResponse,
   RemoveMutationVariables
 } from 'modules/customers/types';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { IRouterProps } from '../../../common/types';
 
@@ -25,7 +27,7 @@ type FinalProps = Props &
   IRouterProps;
 
 const ActionSectionContainer = (props: FinalProps) => {
-  const { customer, customersRemove, customersMerge, history } = props;
+  const { isSmall, customer, customersRemove, customersMerge, history } = props;
 
   const { _id } = customer;
 
@@ -34,8 +36,8 @@ const ActionSectionContainer = (props: FinalProps) => {
       variables: { customerIds: [_id] }
     })
       .then(() => {
-        Alert.success('Success');
-        history.push('/customers');
+        Alert.success('You successfully deleted a customer');
+        history.push('/contacts/customers/all');
       })
       .catch(e => {
         Alert.error(e.message);
@@ -50,18 +52,42 @@ const ActionSectionContainer = (props: FinalProps) => {
       }
     })
       .then(response => {
-        Alert.success('Success');
-        history.push(`/customers/details/${response.data.customersMerge._id}`);
+        Alert.success('You successfully merged a customer');
+        history.push(
+          `/contacts/customers/details/${response.data.customersMerge._id}`
+        );
       })
       .catch(e => {
         Alert.error(e.message);
       });
   };
 
+  const searchCustomer = (
+    searchValue: string,
+    callback: (data?: any) => void
+  ) => {
+    client
+      .query({
+        query: gql(queries.customers),
+        variables: { searchValue, page: 1, perPage: 10 }
+      })
+      .then((response: any) => {
+        if (typeof callback === 'function') {
+          callback(response.data.customers);
+        }
+      })
+      .catch(error => {
+        Alert.error(error.message);
+      });
+  };
+
   const updatedProps = {
-    ...props,
+    isSmall,
+    coc: customer,
+    cocType: 'customer',
     remove,
-    merge
+    merge,
+    search: searchCustomer
   };
 
   return <ActionSection {...updatedProps} />;

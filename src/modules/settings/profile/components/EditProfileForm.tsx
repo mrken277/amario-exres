@@ -1,18 +1,26 @@
-import { UserCommonInfos } from 'modules/auth/components';
+import UserCommonInfos from 'modules/auth/components/UserCommonInfos';
 import { IUser, IUserDoc } from 'modules/auth/types';
-import { Button, ModalTrigger } from 'modules/common/components';
+import Button from 'modules/common/components/Button';
+import Form from 'modules/common/components/form/Form';
 import { ModalFooter } from 'modules/common/styles/main';
-import * as React from 'react';
-import { PasswordConfirmation } from '.';
+import { IFormProps } from 'modules/common/types';
+import { __ } from 'modules/common/utils';
+import React from 'react';
+import Modal from 'react-bootstrap/Modal';
+import PasswordConfirmation from './PasswordConfirmation';
 
 type Props = {
   currentUser: IUser;
   closeModal: () => void;
-  save: (variables: IUserDoc & { password?: string }) => void;
+  save: (
+    variables: IUserDoc & { password?: string },
+    callback: () => void
+  ) => void;
 };
 
 type State = {
   avatar: string;
+  isShowPasswordPopup: boolean;
 };
 
 class EditProfile extends React.Component<Props, State> {
@@ -22,82 +30,112 @@ class EditProfile extends React.Component<Props, State> {
     const { currentUser } = props;
     const { details } = currentUser;
 
-    this.state = { avatar: details ? details.avatar || '' : '' };
+    this.state = {
+      avatar: details ? details.avatar || '' : '',
+      isShowPasswordPopup: false
+    };
   }
 
-  getInputElementValue(id) {
-    return (document.getElementById(id) as HTMLInputElement).value;
-  }
+  closeConfirm = () => {
+    this.setState({ isShowPasswordPopup: false });
+  };
 
-  handleSubmit = password => {
-    this.props.save({
-      username: this.getInputElementValue('username'),
-      email: this.getInputElementValue('email'),
-      details: {
-        avatar: this.state.avatar,
-        shortName: this.getInputElementValue('shortName'),
-        fullName: this.getInputElementValue('fullName'),
-        position: this.getInputElementValue('position'),
-        location: this.getInputElementValue('user-location'),
-        description: this.getInputElementValue('description')
-      },
-      links: {
-        linkedIn: this.getInputElementValue('linkedin'),
-        twitter: this.getInputElementValue('twitter'),
-        facebook: this.getInputElementValue('facebook'),
-        youtube: this.getInputElementValue('youtube'),
-        github: this.getInputElementValue('github'),
-        website: this.getInputElementValue('website')
-      },
-      password
-    });
-
+  closeAllModals = () => {
+    this.closeConfirm();
     this.props.closeModal();
+  };
+
+  handleSubmit = (password: string, values: any) => {
+    this.props.save(
+      {
+        username: values.username,
+        email: values.email,
+        details: {
+          avatar: this.state.avatar,
+          shortName: values.shortName,
+          fullName: values.fullName,
+          position: values.position,
+          location: values.userLocation,
+          description: values.description
+        },
+        links: {
+          linkedIn: values.linkedin,
+          twitter: values.twitter,
+          facebook: values.facebook,
+          youtube: values.youtube,
+          github: values.github,
+          website: values.website
+        },
+        password
+      },
+      this.closeAllModals
+    );
   };
 
   onAvatarUpload = url => {
     this.setState({ avatar: url });
   };
 
-  onSuccess = password => {
-    return this.handleSubmit(password);
+  onSuccess = (password: string, values: any[]) => {
+    return this.handleSubmit(password, values);
   };
 
-  render() {
-    const saveButton = (
-      <Button btnStyle="success" icon="checked-1">
-        Save
-      </Button>
-    );
+  showConfirm = () => {
+    return this.setState({ isShowPasswordPopup: true });
+  };
 
-    const content = props => (
-      <PasswordConfirmation {...props} onSuccess={this.onSuccess} />
-    );
-
+  renderPasswordConfirmationModal(formProps: IFormProps) {
     return (
-      <React.Fragment>
+      <Modal
+        show={this.state.isShowPasswordPopup}
+        onHide={this.closeConfirm}
+        animation={false}
+      >
+        <Modal.Header closeButton={true}>
+          <Modal.Title>{__('Enter your password to Confirm')}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <PasswordConfirmation
+            formProps={formProps}
+            onSuccess={this.onSuccess}
+            closeModal={this.closeConfirm}
+          />
+        </Modal.Body>
+      </Modal>
+    );
+  }
+
+  renderContent = formProps => {
+    return (
+      <>
         <UserCommonInfos
+          formProps={formProps}
           user={this.props.currentUser}
           onAvatarUpload={this.onAvatarUpload}
         />
 
+        {this.renderPasswordConfirmationModal(formProps)}
+
         <ModalFooter>
           <Button
             btnStyle="simple"
-            type="button"
             onClick={this.props.closeModal}
             icon="cancel-1"
           >
             Cancel
           </Button>
 
-          <ModalTrigger
-            title="Enter your password to Confirm"
-            trigger={saveButton}
-            content={content}
-          />
+          <Button type="submit" btnStyle="success" icon="checked-1">
+            Save
+          </Button>
         </ModalFooter>
-      </React.Fragment>
+      </>
+    );
+  };
+
+  render() {
+    return (
+      <Form renderContent={this.renderContent} onSubmit={this.showConfirm} />
     );
   }
 }

@@ -1,18 +1,16 @@
-import {
-  ActionButtons,
-  Button,
-  Icon,
-  Label,
-  ModalTrigger,
-  Table,
-  Tip
-} from 'modules/common/components';
+import ActionButtons from 'modules/common/components/ActionButtons';
+import Button from 'modules/common/components/Button';
+import HeaderDescription from 'modules/common/components/HeaderDescription';
+import Icon from 'modules/common/components/Icon';
+import Label from 'modules/common/components/Label';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Table from 'modules/common/components/table';
+import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import Sidebar from 'modules/settings/Sidebar';
-import * as React from 'react';
+import Wrapper from 'modules/layout/components/Wrapper';
+import React from 'react';
 import { IBrand } from '../../brands/types';
-import { Config } from '../containers';
+import Config from '../containers/Config';
 
 type Props = {
   brands: IBrand[];
@@ -56,6 +54,7 @@ class List extends React.Component<Props, {}> {
               trigger={editTrigger}
               content={content}
               ignoreTrans={true}
+              size="lg"
             />
           </ActionButtons>
         </td>
@@ -65,6 +64,11 @@ class List extends React.Component<Props, {}> {
 
   render() {
     const { brands } = this.props;
+
+    const breadcrumb = [
+      { title: __('Settings'), link: '/settings' },
+      { title: __('Email appearance') }
+    ];
 
     const content = (
       <Table>
@@ -79,16 +83,27 @@ class List extends React.Component<Props, {}> {
       </Table>
     );
 
-    const breadcrumb = [
-      { title: __('Settings'), link: '/settings' },
-      { title: __('Email appearance') }
-    ];
-
     return (
       <Wrapper
-        header={<Wrapper.Header breadcrumb={breadcrumb} />}
-        leftSidebar={<Sidebar />}
+        header={
+          <Wrapper.Header
+            title={__('Email appearance')}
+            breadcrumb={breadcrumb}
+          />
+        }
+        actionBar={
+          <Wrapper.ActionBar
+            left={
+              <HeaderDescription
+                icon="/images/actions/29.svg"
+                title="Email appearance"
+                description="Appearances matter, especially for your business. Edit and manage your email appearance so that your business can operate in one voice."
+              />
+            }
+          />
+        }
         content={content}
+        center={true}
       />
     );
   }

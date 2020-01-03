@@ -1,8 +1,5 @@
 const commonFields = `
   packageVersion
-  lastCommittedUser
-  lastCommittedDate
-  lastCommitMessage
   branch
   sha
   abbreviatedSha
@@ -22,10 +19,6 @@ const configsVersions = `
       widgetVersion {
         packageVersion
        ${commonFields}
-      }
-
-      widgetApiVersion {
-        ${commonFields}
       }
     }
   }

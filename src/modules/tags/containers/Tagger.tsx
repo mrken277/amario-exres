@@ -1,8 +1,9 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { Alert, withProps } from 'modules/common/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
-import { Tagger } from '../components';
+import React from 'react';
+import { graphql } from 'react-apollo';
+import Tagger from '../components/Tagger';
 import {
   ITagTypes,
   TagMutationResponse,
@@ -17,7 +18,7 @@ type Props = {
   type: ITagTypes | string;
   successCallback?: () => void;
   className?: string;
-  refetchQueries?: string[];
+  refetchQueries?: any[];
 };
 
 type FinalProps = {

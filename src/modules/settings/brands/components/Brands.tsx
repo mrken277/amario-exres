@@ -1,14 +1,14 @@
-import * as React from 'react';
-import {
-  Button,
-  DataWithLoader,
-  ModalTrigger,
-  Pagination
-} from '../../../common/components';
+import Button from 'modules/common/components/Button';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
+import HeaderDescription from 'modules/common/components/HeaderDescription';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Pagination from 'modules/common/components/pagination/Pagination';
+import React from 'react';
 import { __ } from '../../../common/utils';
-import { Wrapper } from '../../../layout/components';
-import { IntegrationList } from '../../integrations/containers/common';
-import { ManageIntegrations, Sidebar } from '../containers';
+import Wrapper from '../../../layout/components/Wrapper';
+import IntegrationList from '../../integrations/containers/common/IntegrationList';
+import ManageIntegrations from '../containers/ManageIntegrations';
+import Sidebar from '../containers/Sidebar';
 import { IBrand } from '../types';
 
 type Props = {
@@ -58,8 +58,24 @@ class Brands extends React.Component<Props, {}> {
 
     return (
       <Wrapper
-        header={<Wrapper.Header breadcrumb={breadcrumb} />}
-        actionBar={<Wrapper.ActionBar right={rightActionBar} />}
+        header={
+          <Wrapper.Header
+            title={`${currentBrand.name || ''}`}
+            breadcrumb={breadcrumb}
+          />
+        }
+        actionBar={
+          <Wrapper.ActionBar
+            left={
+              <HeaderDescription
+                icon="/images/actions/32.svg"
+                title="Brands"
+                description="Add unlimited Brands with unlimited support to further your growth and accelerate your business."
+              />
+            }
+            right={rightActionBar}
+          />
+        }
         leftSidebar={
           <Sidebar
             currentBrandId={currentBrand._id}
@@ -77,8 +93,8 @@ class Brands extends React.Component<Props, {}> {
             }
             loading={loading}
             count={integrationsCount}
-            emptyText="There is no integration in this Brand"
-            emptyImage="/images/robots/robot-05.svg"
+            emptyText="Add an integration in this Brand"
+            emptyImage="/images/actions/2.svg"
           />
         }
       />

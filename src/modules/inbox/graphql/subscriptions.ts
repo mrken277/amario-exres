@@ -17,10 +17,25 @@ const conversationMessageInserted = `
 `;
 
 const conversationClientMessageInserted = `
-  subscription conversationClientMessageInserted {
-    conversationClientMessageInserted {
+  subscription conversationClientMessageInserted($userId: String!) {
+    conversationClientMessageInserted(userId: $userId) {
       _id
+      content
     }
+  }
+`;
+
+const conversationClientTypingStatusChanged = `
+  subscription conversationClientTypingStatusChanged($_id: String!) {
+    conversationClientTypingStatusChanged(_id: $_id) {
+      text
+    }
+  }
+`;
+
+const conversationExternalIntegrationMessageInserted = `
+  subscription conversationExternalIntegrationMessageInserted {
+    conversationExternalIntegrationMessageInserted
   }
 `;
 
@@ -37,5 +52,7 @@ export default {
   conversationChanged,
   conversationMessageInserted,
   conversationClientMessageInserted,
+  conversationClientTypingStatusChanged,
+  conversationExternalIntegrationMessageInserted,
   customerConnectionChanged
 };

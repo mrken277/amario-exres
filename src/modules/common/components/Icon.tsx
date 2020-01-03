@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 
@@ -11,21 +11,26 @@ type Props = {
   icon: string;
   size?: number;
   style?: any;
+  color?: string;
   isActive?: boolean;
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 };
 
 function Icon(props: Props) {
-  const { isActive } = props;
+  const { isActive, color } = props;
 
-  let color;
+  let changedColor = color || '';
 
   if (isActive) {
-    color = 'black';
+    changedColor = 'black';
   }
 
   return (
-    <IconStyle {...props} className={`icon-${props.icon}`} color={color} />
+    <IconStyle
+      {...props}
+      className={`icon-${props.icon}`}
+      color={changedColor}
+    />
   );
 }
 

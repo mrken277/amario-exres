@@ -4,12 +4,10 @@ import {
   ActivityRow,
   AvatarWrapper,
   EmailContent,
-  FlexContent,
   Timeline
 } from 'modules/activityLogs/styles';
 import { colors, dimensions, typography } from 'modules/common/styles';
 import { ActivityContent } from 'modules/common/styles/main';
-import { EditorActions } from 'modules/internalNotes/components/Form';
 import { SidebarBox, SidebarTitle } from 'modules/layout/styles';
 import styled from 'styled-components';
 
@@ -27,7 +25,7 @@ const FlexRow = styled.div`
     border: none;
     background: none;
     border-bottom: 1px solid ${colors.colorShadowGray};
-    padding: 17px 14px;
+    padding: 5px 0;
     font-size: ${typography.fontSizeBody}px;
 
     &:focus {
@@ -45,7 +43,7 @@ const FlexItem = styled.div`
 const Actions = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 0 ${dimensions.coreSpacing}px ${dimensions.coreSpacing}px;
+  padding: 0 ${dimensions.coreSpacing}px ${dimensions.unitSpacing}px;
 
   > a,
   button {
@@ -59,7 +57,8 @@ const Actions = styled.div`
 
 const SectionContainer = styled.div`
   position: relative;
-  border-top: 1px solid ${colors.borderPrimary};
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.08);
+  margin-bottom: 10px;
 
   > div {
     margin-bottom: 0;
@@ -78,20 +77,17 @@ const SectionContainer = styled.div`
   }
 `;
 
-const ActivityNote = styled.div`
-  border-bottom: 2px solid ${colors.borderPrimary};
-  padding-bottom: ${dimensions.coreSpacing}px;
+const NoteFormContainer = styled.div`
+  border-bottom: 1px solid ${colors.borderPrimary};
 
   > span {
-    padding: 0 ${dimensions.coreSpacing}px;
+    padding: ${dimensions.coreSpacing}px ${dimensions.coreSpacing}px
+      ${dimensions.unitSpacing}px;
+    display: block;
   }
 
-  textarea {
-    color: ${colors.colorCoreGray};
-  }
-
-  ${EditorActions} {
-    bottom: -15px;
+  .draftJsToolbar__toolbar__dNtBH button {
+    width: 25px;
   }
 `;
 
@@ -115,12 +111,9 @@ const ActivityLogContent = styled(ActivityContent)`
     left: calc(-${iconWrapperWidth} + ${iconWrapperWidth} * 0.3);
   }
 
-  ${FlexContent} {
-    display: block;
-  }
-
   ${ActivityRow} {
-    background: ${colors.bgLight};
+    padding: ${dimensions.unitSpacing * 1.5}px 0;
+    box-shadow: none;
   }
 
   ${ActivityDate} {
@@ -135,17 +128,32 @@ const ActivityLogContent = styled(ActivityContent)`
 `;
 
 const BasicInfo = styled.div`
+  margin-top: 10px;
+
   .icon-edit {
     display: none;
   }
 `;
 
+const TabContent = styled.div`
+  ul {
+    padding: ${dimensions.unitSpacing}px 0;
+  }
+`;
+
+const MailBox = styled.div`
+  background: ${colors.colorWhite};
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  transition: all ease 0.3s;
+`;
+
 const SidebarCollapse = styled.a`
   color: ${colors.colorCoreGray};
   position: absolute;
-  top: ${dimensions.unitSpacing}px;
-  right: ${dimensions.coreSpacing}px;
-  font-size: 15px;
+  top: ${dimensions.unitSpacing - 2}px;
+  right: ${dimensions.coreSpacing - 3}px;
+  font-size: 14px;
 
   &:hover {
     cursor: pointer;
@@ -161,8 +169,10 @@ export {
   FlexItem,
   SectionContainer,
   Actions,
-  ActivityNote,
+  NoteFormContainer,
   ActivityLogContent,
   BasicInfo,
-  SidebarCollapse
+  SidebarCollapse,
+  TabContent,
+  MailBox
 };

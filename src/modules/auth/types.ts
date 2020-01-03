@@ -1,3 +1,4 @@
+import { IBrand } from 'modules/settings/brands/types';
 import { IEmailSignature } from 'modules/settings/email/types';
 
 export interface IUserDetails {
@@ -7,6 +8,7 @@ export interface IUserDetails {
   description?: string;
   position?: string;
   location?: string;
+  operatorPhone?: string;
 }
 
 export interface IUserLinks {
@@ -26,16 +28,19 @@ export interface IUserConversation {
 export interface IUserDoc {
   username: string;
   email: string;
-  role?: string;
+  isActive?: boolean;
   details?: IUserDetails;
+  isOwner?: boolean;
+  status?: string;
   links?: IUserLinks;
   getNotificationByEmail?: boolean;
   participatedConversations?: IUserConversation[];
+  permissionActions?: string[];
 }
 
 export interface IUser extends IUserDoc {
   _id: string;
-  role: string;
+  brands?: IBrand[];
   emailSignatures?: IEmailSignature[];
 }
 

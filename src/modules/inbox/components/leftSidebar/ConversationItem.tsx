@@ -1,16 +1,15 @@
-import * as moment from 'moment';
-import * as React from 'react';
+import dayjs from 'dayjs';
+import withCurrentUser from 'modules/auth/containers/withCurrentUser';
+import FormControl from 'modules/common/components/form/Control';
+import IntegrationIcon from 'modules/common/components/IntegrationIcon';
+import NameCard from 'modules/common/components/nameCard/NameCard';
+import Tags from 'modules/common/components/Tags';
+import Tip from 'modules/common/components/Tip';
+import { renderFullName } from 'modules/common/utils';
+import { CallLabel } from 'modules/inbox/styles';
+import { cleanIntegrationKind } from 'modules/settings/integrations/containers/utils';
+import React from 'react';
 import strip from 'strip';
-
-import { withCurrentUser } from 'modules/auth/containers';
-import {
-  FormControl,
-  IntegrationIcon,
-  NameCard,
-  Tags,
-  Tip
-} from 'modules/common/components';
-
 import { IUser } from '../../../auth/types';
 import { ICustomer } from '../../../customers/types';
 import { IBrand } from '../../../settings/brands/types';
@@ -18,15 +17,17 @@ import { IIntegration } from '../../../settings/integrations/types';
 import { IConversation } from '../../types';
 import {
   AssigneeImg,
-  AssigneeWrapper,
   CheckBox,
+  Count,
   CustomerName,
   FlexContent,
+  FlexRoot,
+  FlexWidth,
+  Idle,
   MainInfo,
   MessageContent,
   RowContent,
   RowItem,
-  SmallText,
   SmallTextOneLine
 } from './styles';
 
@@ -71,22 +72,32 @@ class ConversationItem extends React.Component<Props> {
     e.stopPropagation();
   };
 
-  renderFullName(visitor: { [key: string]: any }) {
-    if (visitor.firstName || visitor.lastName) {
-      return (visitor.firstName || '') + ' ' + (visitor.lastName || '');
+  isIdle = (integration: IIntegration, idleTime: number) => {
+    const kind = integration.kind;
+
+    if (
+      kind === 'form' ||
+      kind.includes('nylas') ||
+      kind === 'gmail' ||
+      this.props.conversation.status === 'closed'
+    ) {
+      return false;
     }
 
-    return null;
-  }
+    // become idle in 3 minutes
+    return idleTime >= 3;
+  };
 
-  getVisitorInfo(customer: ICustomer) {
-    if (customer.visitorContactInfo) {
-      const visitor = customer.visitorContactInfo;
-
-      return this.renderFullName(visitor) || visitor.email || visitor.phone;
+  showMessageContent(kind: string, content: string) {
+    if (kind === 'callpro') {
+      return (
+        <CallLabel type={(content || '').toLocaleLowerCase()}>
+          {content}
+        </CallLabel>
+      );
     }
 
-    return null;
+    return strip(content);
   }
 
   render() {
@@ -96,87 +107,79 @@ class ConversationItem extends React.Component<Props> {
     const customer = conversation.customer || ({} as ICustomer);
     const integration = conversation.integration || ({} as IIntegration);
     const brand = integration.brand || ({} as IBrand);
-    const brandName = brand.name;
     const tags = conversation.tags || [];
     const assignedUser = conversation.assignedUser;
     const isExistingCustomer = customer && customer._id;
     const isChecked = selectedIds.includes(conversation._id);
+    const messageCount = conversation.messageCount || 0;
 
     const isRead =
       conversation.readUserIds &&
       conversation.readUserIds.indexOf(currentUser._id) > -1;
 
-    const isIdle =
-      integration.kind !== 'form' &&
-      integration.kind !== 'gmail' &&
-      conversation.status !== 'closed' &&
-      idleTime >= 1;
-
     return (
-      <RowItem
-        onClick={this.onClick}
-        isActive={isActive}
-        isRead={isRead}
-        isIdle={isIdle}
-      >
+      <RowItem onClick={this.onClick} isActive={isActive} isRead={isRead}>
         <RowContent isChecked={isChecked}>
           {this.renderCheckbox()}
           <FlexContent>
             <MainInfo>
               {isExistingCustomer && (
                 <NameCard.Avatar
-                  size={40}
+                  size={36}
+                  letterCount={1}
                   customer={customer}
-                  icon={
-                    <IntegrationIcon
-                      integration={integration}
-                      facebookData={conversation.facebookData}
-                    />
-                  }
+                  icon={<IntegrationIcon integration={integration} />}
                 />
               )}
               <FlexContent>
                 <CustomerName>
-                  {isExistingCustomer &&
-                    (this.renderFullName(customer) ||
-                      customer.primaryEmail ||
-                      customer.primaryPhone ||
-                      this.getVisitorInfo(customer) ||
-                      'Unnamed')}
+                  <FlexWidth>
+                    {isExistingCustomer && renderFullName(customer)}
+                  </FlexWidth>
+                  <time>{dayjs(updatedAt || createdAt).fromNow(true)}</time>
                 </CustomerName>
 
                 <SmallTextOneLine>
-                  to {brandName} via {integration && integration.kind}
+                  to {brand.name} via{' '}
+                  {integration.kind === 'callpro'
+                    ? integration.name
+                    : cleanIntegrationKind(integration && integration.kind)}
                 </SmallTextOneLine>
               </FlexContent>
             </MainInfo>
 
-            <MessageContent>{strip(content)}</MessageContent>
+            <MessageContent>
+              <FlexWidth>
+                {this.showMessageContent(integration.kind, content || '')}
+              </FlexWidth>
+              <FlexRoot>
+                {messageCount > 1 && <Count>{messageCount}</Count>}
+                {assignedUser && (
+                  <Tip
+                    key={assignedUser._id}
+                    placement="top"
+                    text={assignedUser.details && assignedUser.details.fullName}
+                  >
+                    <AssigneeImg
+                      src={
+                        assignedUser.details &&
+                        (assignedUser.details.avatar
+                          ? assignedUser.details.avatar
+                          : '/images/avatar-colored.svg')
+                      }
+                    />
+                  </Tip>
+                )}
+              </FlexRoot>
+            </MessageContent>
             <Tags tags={tags} limit={3} />
           </FlexContent>
         </RowContent>
-
-        <SmallText>
-          {moment(updatedAt || createdAt).fromNow()}
-
-          {assignedUser && (
-            <AssigneeWrapper>
-              <Tip
-                key={assignedUser._id}
-                placement="top"
-                text={assignedUser.details && assignedUser.details.fullName}
-              >
-                <AssigneeImg
-                  src={
-                    assignedUser.details
-                      ? assignedUser.details.avatar
-                      : '/images/avatar-colored.svg'
-                  }
-                />
-              </Tip>
-            </AssigneeWrapper>
-          )}
-        </SmallText>
+        {this.isIdle(integration, idleTime) && (
+          <Tip placement="left" text="Idle">
+            <Idle />
+          </Tip>
+        )}
       </RowItem>
     );
   }

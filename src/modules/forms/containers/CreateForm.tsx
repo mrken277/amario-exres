@@ -1,59 +1,66 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { Alert, withProps } from 'modules/common/utils';
 import {
-  AddIntegrationMutationResponse,
-  AddIntegrationMutationVariables
-} from 'modules/settings/integrations/types';
-import {
   AddFieldsMutationResponse,
-  AddFieldsMutationVariables
+  AddFieldsMutationVariables,
+  IField
 } from 'modules/settings/properties/types';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import { IRouterProps } from '../../common/types';
-import { BrandsQueryResponse } from '../../settings/brands/types';
-import { Form } from '../components';
-import { mutations, queries } from '../graphql';
-import { AddFormMutationResponse, AddFormMutationVariables } from '../types';
+import Form from '../components/Form';
+import { mutations } from '../graphql';
+import {
+  AddFormMutationResponse,
+  AddFormMutationVariables,
+  IFormData
+} from '../types';
 
 type Props = {
-  brandsQuery: BrandsQueryResponse;
-} & IRouterProps &
-  AddIntegrationMutationResponse &
+  renderPreviewWrapper: (previewRenderer, fields: IField[]) => void;
+  afterDbSave: (formId: string) => void;
+  onDocChange?: (doc: IFormData) => void;
+  type: string;
+  isReadyToSave: boolean;
+  showMessage?: boolean;
+};
+
+type FinalProps = {} & Props &
+  IRouterProps &
   AddFieldsMutationResponse &
   AddFormMutationResponse;
 
-class CreateFormContainer extends React.Component<Props, {}> {
+class CreateFormContainer extends React.Component<FinalProps, {}> {
+  static defaultProps = {
+    showMessage: true
+  };
+
   render() {
     const {
-      brandsQuery,
-      addIntegrationMutation,
       addFormMutation,
       addFieldsMutation,
-      history
+      afterDbSave,
+      showMessage
     } = this.props;
 
-    if (brandsQuery.loading) {
-      return false;
-    }
-
-    const brands = brandsQuery.brands || [];
-
-    const save = doc => {
+    const saveForm = doc => {
       let formId;
-
-      const { form, brandId, name, languageCode, formData, fields } = doc;
+      const { title, desc, btnText, fields, type } = doc;
 
       addFormMutation({
-        variables: form
+        variables: {
+          title,
+          description: desc,
+          buttonText: btnText,
+          type
+        }
       })
         .then(({ data }) => {
           formId = data.formsAdd._id;
 
-          return addIntegrationMutation({
-            variables: { formData, brandId, name, languageCode, formId }
-          });
+          afterDbSave(formId);
         })
 
         .then(() => {
@@ -63,7 +70,6 @@ class CreateFormContainer extends React.Component<Props, {}> {
             promises.push(
               addFieldsMutation({
                 variables: {
-                  contentType: 'form',
                   contentTypeId: formId,
                   ...field
                 }
@@ -75,8 +81,9 @@ class CreateFormContainer extends React.Component<Props, {}> {
         })
 
         .then(() => {
-          Alert.success('Congrats');
-          history.push('/forms');
+          if (showMessage) {
+            Alert.success('You successfully added a form');
+          }
         })
 
         .catch(error => {
@@ -86,44 +93,30 @@ class CreateFormContainer extends React.Component<Props, {}> {
 
     const updatedProps = {
       ...this.props,
-      brands,
       fields: [],
-      save
+      saveForm
     };
 
     return <Form {...updatedProps} />;
   }
 }
 
-export default withProps<{}>(
+export default withProps<Props>(
   compose(
-    graphql<{}, BrandsQueryResponse>(gql(queries.brands), {
-      name: 'brandsQuery',
-      options: () => ({
-        fetchPolicy: 'network-only'
-      })
-    }),
-    graphql<
-      {},
-      AddIntegrationMutationResponse,
-      AddIntegrationMutationVariables
-    >(gql(mutations.integrationsCreateFormIntegration), {
-      name: 'addIntegrationMutation',
-      options: {
-        refetchQueries: ['formIntegrations', 'formIntegrationCounts']
-      }
-    }),
-    graphql<{}, AddFormMutationResponse, AddFormMutationVariables>(
+    graphql<Props, AddFormMutationResponse, AddFormMutationVariables>(
       gql(mutations.addForm),
       {
-        name: 'addFormMutation'
+        name: 'addFormMutation',
+        options: {
+          refetchQueries: ['fields']
+        }
       }
     ),
-    graphql<{}, AddFieldsMutationResponse, AddFieldsMutationVariables>(
+    graphql<Props, AddFieldsMutationResponse, AddFieldsMutationVariables>(
       gql(mutations.fieldsAdd),
       {
         name: 'addFieldsMutation'
       }
     )
-  )(withRouter<Props>(CreateFormContainer))
+  )(withRouter<FinalProps>(CreateFormContainer))
 );

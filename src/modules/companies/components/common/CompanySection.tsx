@@ -1,37 +1,71 @@
-import { EmptyState, Icon, ModalTrigger, Tip } from 'modules/common/components';
+import Box from 'modules/common/components/Box';
+import EmptyState from 'modules/common/components/EmptyState';
+import Icon from 'modules/common/components/Icon';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Tip from 'modules/common/components/Tip';
 import { __, urlParser } from 'modules/common/utils';
-import { ICompany } from 'modules/companies/types';
-import { Sidebar } from 'modules/layout/components';
-import { SectionBody, SectionBodyItem } from 'modules/layout/styles';
-import * as React from 'react';
+import GetConformity from 'modules/conformity/containers/GetConformity';
+import {
+  ButtonRelated,
+  SectionBody,
+  SectionBodyItem
+} from 'modules/layout/styles';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { CompanyChooser } from '../../containers';
+import CompanyChooser from '../../containers/CompanyChooser';
+import { queries } from '../../graphql';
+import { ICompany } from '../../types';
 
 type Props = {
   name: string;
-  companies?: ICompany[];
-  onSelect: (companies: ICompany[]) => void;
-  isOpen?: boolean;
+  items?: ICompany[];
+  mainType?: string;
+  mainTypeId?: string;
+  onSelect?: (companies: ICompany[]) => void;
+  collapseCallback?: () => void;
 };
 
-function CompanySection({ name, companies = [], onSelect, isOpen }: Props) {
-  const { Section } = Sidebar;
-  const { Title, QuickButtons } = Section;
-
+function Component(
+  this: any,
+  {
+    name,
+    items = [],
+    mainType = '',
+    mainTypeId = '',
+    onSelect,
+    collapseCallback
+  }: Props
+) {
   const renderCompanyChooser = props => {
     return (
       <CompanyChooser
         {...props}
-        data={{ name, companies }}
+        data={{ name, companies: items, mainType, mainTypeId }}
+        onSelect={onSelect}
+      />
+    );
+  };
+
+  const renderRelatedCompanyChooser = props => {
+    return (
+      <CompanyChooser
+        {...props}
+        data={{ name, companies: items, mainTypeId, mainType, isRelated: true }}
         onSelect={onSelect}
       />
     );
   };
 
   const companyTrigger = (
-    <a>
+    <button>
       <Icon icon="add" />
-    </a>
+    </button>
+  );
+
+  const relCompanyTrigger = (
+    <ButtonRelated>
+      <button>{__('See related companies..')}</button>
+    </ButtonRelated>
   );
 
   const quickButtons = (
@@ -43,36 +77,64 @@ function CompanySection({ name, companies = [], onSelect, isOpen }: Props) {
     />
   );
 
+  const relQuickButtons = (
+    <ModalTrigger
+      title="Related Associate"
+      trigger={relCompanyTrigger}
+      size="lg"
+      content={renderRelatedCompanyChooser}
+    />
+  );
+
   const content = (
     <SectionBody>
-      {companies.map((company, index) => (
+      {items.map((company, index) => (
         <SectionBodyItem key={index}>
-          <Link to={`/companies/details/${company._id}`}>
-            <Icon icon="logout-2" />
+          <Link to={`/contacts/companies/details/${company._id}`}>
+            <Icon icon="arrow-to-right" />
           </Link>
-          <span>{company.primaryName || 'N/A'}</span>
+          <span>{company.primaryName || 'Unknown'}</span>
           <Tip text={company.website || ''}>
-            <a target="_blank" href={`//${company.website}`}>
+            <a href={`//${company.website}`}>
               {urlParser.extractRootDomain(company.website || '')}
             </a>
           </Tip>
         </SectionBodyItem>
       ))}
-      {companies.length === 0 && (
-        <EmptyState icon="briefcase" text="No company" />
-      )}
+      {items.length === 0 && <EmptyState icon="briefcase" text="No company" />}
+      {mainTypeId && mainType && relQuickButtons}
     </SectionBody>
   );
 
   return (
-    <Section>
-      <Title>{__('Companies')}</Title>
-
-      <QuickButtons isSidebarOpen={isOpen}>{quickButtons}</QuickButtons>
-
+    <Box
+      title={__('Companies')}
+      name="showCompanies"
+      extraButtons={quickButtons}
+      isOpen={true}
+      callback={collapseCallback}
+    >
       {content}
-    </Section>
+    </Box>
   );
 }
 
-export default CompanySection;
+type IProps = {
+  mainType?: string;
+  mainTypeId?: string;
+  isOpen?: boolean;
+  onSelect?: (datas: ICompany[]) => void;
+  collapseCallback?: () => void;
+};
+
+export default (props: IProps) => {
+  return (
+    <GetConformity
+      {...props}
+      relType="company"
+      component={Component}
+      queryName="companies"
+      itemsQuery={queries.companies}
+    />
+  );
+};

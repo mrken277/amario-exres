@@ -1,24 +1,41 @@
-import { __ } from 'modules/common/utils';
-import { menuInbox } from 'modules/common/utils/menus';
-import { Header } from 'modules/layout/components';
+import { IUser } from 'modules/auth/types';
+import asyncComponent from 'modules/common/components/AsyncComponent';
+import { can } from 'modules/common/utils';
+import Header from 'modules/layout/components/Header';
 import { Contents } from 'modules/layout/styles';
-import * as React from 'react';
-import { ConversationDetail } from '../containers/conversationDetail';
-import { Sidebar } from '../containers/leftSidebar';
+import React from 'react';
+
+const Sidebar = asyncComponent(() =>
+  import(/* webpackChunkName:"Inbox-Sidebar" */ '../containers/leftSidebar/Sidebar')
+);
+
+const ConversationDetail = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-ConversationDetail" */ '../containers/conversationDetail/ConversationDetail'),
+  { height: 'auto', width: '100%', color: '#fff', margin: '10px 10px 10px 0' }
+);
 
 type Props = {
   queryParams: any;
   currentConversationId: string;
+  currentUser: IUser;
 };
 
-function Inbox({ currentConversationId, queryParams }: Props) {
-  const breadcrumb = [{ title: __('Inbox') }];
+function Inbox({ currentConversationId, queryParams, currentUser }: Props) {
+  const menuInbox = [
+    { title: 'Team Inbox', link: '/inbox/index' },
+    { title: 'Ticket', link: '/inbox/ticket' }
+  ];
+
+  if (can('showInsights', currentUser)) {
+    menuInbox.push({ title: 'Insights', link: '/inbox/insights' });
+  }
 
   return (
     <Contents>
       <Header
+        title={'Conversation'}
         queryParams={queryParams}
-        breadcrumb={breadcrumb}
         submenu={menuInbox}
       />
       <Sidebar

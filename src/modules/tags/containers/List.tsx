@@ -1,17 +1,13 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
+import ButtonMutate from 'modules/common/components/ButtonMutate';
+import { IButtonMutateProps } from 'modules/common/types';
 import { Alert, confirm, withProps } from 'modules/common/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
-import { List } from '../components';
+import React from 'react';
+import { graphql } from 'react-apollo';
+import List from '../components/List';
 import { mutations, queries } from '../graphql';
-import {
-  AddMutationResponse,
-  EditMutationResponse,
-  ITagSaveParams,
-  MutationVariables,
-  RemoveMutationResponse,
-  TagsQueryResponse
-} from '../types';
+import { RemoveMutationResponse, TagsQueryResponse } from '../types';
 
 type Props = {
   type: string;
@@ -20,18 +16,16 @@ type Props = {
 type FinalProps = {
   tagsQuery: TagsQueryResponse;
 } & Props &
-  AddMutationResponse &
-  EditMutationResponse &
   RemoveMutationResponse;
 
 const ListContainer = (props: FinalProps) => {
-  const { tagsQuery, addMutation, editMutation, removeMutation, type } = props;
+  const { tagsQuery, removeMutation, type } = props;
 
   const remove = tag => {
     confirm().then(() => {
       removeMutation({ variables: { ids: [tag._id] } })
         .then(() => {
-          Alert.success('success');
+          Alert.success('You successfully deleted a tag');
           tagsQuery.refetch();
         })
         .catch(e => {
@@ -40,44 +34,48 @@ const ListContainer = (props: FinalProps) => {
     });
   };
 
-  const save = ({ tag, doc, callback }: ITagSaveParams) => {
-    let mutation = addMutation;
-
-    if (tag) {
-      doc._id = tag._id;
-      mutation = editMutation;
-    }
-
-    mutation({ variables: doc })
-      .then(() => {
-        Alert.success('Successfully saved');
-        tagsQuery.refetch();
-        callback();
-      })
-      .catch(e => {
-        Alert.error(e.message);
-      });
+  const renderButton = ({
+    name,
+    values,
+    isSubmitted,
+    callback,
+    object
+  }: IButtonMutateProps) => {
+    return (
+      <ButtonMutate
+        mutation={object ? mutations.edit : mutations.add}
+        variables={values}
+        callback={callback}
+        refetchQueries={getRefetchQueries(type)}
+        isSubmitted={isSubmitted}
+        type="submit"
+        successMessage={`You successfully ${
+          object ? 'updated' : 'added'
+        } a ${name}`}
+      />
+    );
   };
 
   const updatedProps = {
     ...props,
     tags: tagsQuery.tags || [],
+    loading: tagsQuery.loading,
     type,
     remove,
-    save
+    renderButton
   };
 
   return <List {...updatedProps} />;
 };
 
-const options = ({ type }) => ({
-  refetchQueries: [
+const getRefetchQueries = (type: string) => {
+  return [
     {
       query: gql(queries.tags),
       variables: { type }
     }
-  ]
-});
+  ];
+};
 
 export default withProps<Props>(
   compose(
@@ -88,19 +86,13 @@ export default withProps<Props>(
         fetchPolicy: 'network-only'
       })
     }),
-    graphql<Props, AddMutationResponse, MutationVariables>(gql(mutations.add), {
-      name: 'addMutation',
-      options
-    }),
-    graphql<Props, EditMutationResponse, MutationVariables>(
-      gql(mutations.edit),
-      { name: 'editMutation', options }
-    ),
     graphql<Props, RemoveMutationResponse, { ids: string[] }>(
       gql(mutations.remove),
       {
         name: 'removeMutation',
-        options
+        options: ({ type }: Props) => ({
+          refetchQueries: getRefetchQueries(type)
+        })
       }
     )
   )(ListContainer)

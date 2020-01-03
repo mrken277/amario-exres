@@ -1,42 +1,49 @@
-import {
-  Button,
-  DataWithLoader,
-  ModalTrigger,
-  Pagination
-} from 'modules/common/components';
-import { Wrapper } from 'modules/layout/components';
-import Sidebar from 'modules/settings/Sidebar';
-import * as React from 'react';
+import Button from 'modules/common/components/Button';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Pagination from 'modules/common/components/pagination/Pagination';
+import Wrapper from 'modules/layout/components/Wrapper';
+import React from 'react';
 import { IBreadCrumbItem } from '../../../common/types';
 import { ICommonListProps } from '../types';
 
 type Props = {
-  title?: string;
-  size?: string;
+  title: string;
+  formTitle?: string;
+  size?: 'sm' | 'lg' | 'xl';
   renderForm: (doc: { save: () => void; closeModal: () => void }) => any;
   renderContent: (params: any) => any;
+  leftActionBar: React.ReactNode;
   breadcrumb?: IBreadCrumbItem[];
+  center?: boolean;
+  renderFilter?: () => any;
+  additionalButton?: React.ReactNode;
 };
 
 class List extends React.Component<Props & ICommonListProps, {}> {
   render() {
     const {
       title,
+      formTitle,
       size,
       renderContent,
       renderForm,
+      renderFilter,
+      leftActionBar,
       breadcrumb,
       totalCount,
       objects,
       loading,
       save,
       refetch,
-      remove
+      center,
+      remove,
+      additionalButton
     } = this.props;
 
     const trigger = (
       <Button btnStyle="success" size="small" icon="add">
-        {title}
+        {formTitle}
       </Button>
     );
 
@@ -44,29 +51,40 @@ class List extends React.Component<Props & ICommonListProps, {}> {
       return renderForm({ ...props, save });
     };
 
-    const actionBarLeft = (
-      <ModalTrigger
-        title={title || ''}
-        size={size}
-        trigger={trigger}
-        content={content}
-      />
+    const actionBarRight = (
+      <>
+        {additionalButton}
+        <ModalTrigger
+          title={formTitle || ''}
+          size={size}
+          enforceFocus={false}
+          trigger={trigger}
+          autoOpenKey="showListFormModal"
+          content={content}
+          dialogClassName="transform"
+        />
+      </>
     );
 
     return (
       <Wrapper
-        header={<Wrapper.Header breadcrumb={breadcrumb || []} />}
-        leftSidebar={<Sidebar />}
-        actionBar={<Wrapper.ActionBar right={actionBarLeft} />}
+        header={<Wrapper.Header title={title} breadcrumb={breadcrumb} />}
+        actionBar={
+          <Wrapper.ActionBar
+            left={leftActionBar}
+            right={actionBarRight}
+            bottom={renderFilter && renderFilter()}
+          />
+        }
         footer={<Pagination count={totalCount} />}
-        transparent={false}
+        center={center}
         content={
           <DataWithLoader
             data={renderContent({ objects, save, refetch, remove })}
             loading={loading}
             count={totalCount}
-            emptyText="There is no data."
-            emptyImage="/images/robots/robot-05.svg"
+            emptyText="Oops! No data here"
+            emptyImage="/images/actions/5.svg"
           />
         }
       />

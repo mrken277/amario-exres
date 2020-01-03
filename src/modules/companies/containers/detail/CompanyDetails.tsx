@@ -1,11 +1,14 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
+import EmptyState from 'modules/common/components/EmptyState';
+import Spinner from 'modules/common/components/Spinner';
 import { withProps } from 'modules/common/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { IUser } from '../../../auth/types';
-import { CompanyDetails } from '../../components';
+import CompanyDetails from '../../components/detail/CompanyDetails';
 import { queries } from '../../graphql';
-import { ActivityLogQueryResponse, DetailQueryResponse } from '../../types';
+import { DetailQueryResponse } from '../../types';
 
 type Props = {
   id: string;
@@ -13,17 +16,21 @@ type Props = {
 
 type FinalProps = {
   companyDetailQuery: DetailQueryResponse;
-  companyActivityLogQuery: ActivityLogQueryResponse;
   currentUser: IUser;
 } & Props;
 
 const CompanyDetailsContainer = (props: FinalProps) => {
-  const {
-    id,
-    companyDetailQuery,
-    companyActivityLogQuery,
-    currentUser
-  } = props;
+  const { id, companyDetailQuery, currentUser } = props;
+
+  if (companyDetailQuery.loading) {
+    return <Spinner objective={true} />;
+  }
+
+  if (!companyDetailQuery.companyDetail) {
+    return (
+      <EmptyState text="Company not found" image="/images/actions/24.svg" />
+    );
+  }
 
   const companyDetail = companyDetailQuery.companyDetail || {};
 
@@ -36,10 +43,8 @@ const CompanyDetailsContainer = (props: FinalProps) => {
 
   const updatedProps = {
     ...props,
-    loadingLogs: companyActivityLogQuery.loading,
     loading: companyDetailQuery.loading,
     company: companyDetail,
-    companyActivityLog: companyActivityLogQuery.activityLogsCompany || [],
     taggerRefetchQueries,
     currentUser
   };
@@ -53,17 +58,6 @@ export default withProps<Props>(
       gql(queries.companyDetail),
       {
         name: 'companyDetailQuery',
-        options: ({ id }) => ({
-          variables: {
-            _id: id
-          }
-        })
-      }
-    ),
-    graphql<Props, ActivityLogQueryResponse, { _id: string }>(
-      gql(queries.activityLogsCompany),
-      {
-        name: 'companyActivityLogQuery',
         options: ({ id }) => ({
           variables: {
             _id: id

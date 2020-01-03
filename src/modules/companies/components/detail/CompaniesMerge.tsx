@@ -1,4 +1,5 @@
-import { Button, Icon } from 'modules/common/components';
+import Button from 'modules/common/components/Button';
+import Icon from 'modules/common/components/Icon';
 import { Column, Columns, Title } from 'modules/common/styles/chooser';
 import { ModalFooter } from 'modules/common/styles/main';
 import {
@@ -12,7 +13,7 @@ import {
   InfoDetail,
   InfoTitle
 } from 'modules/customers/styles';
-import * as React from 'react';
+import React from 'react';
 import { ICompany, ICompanyLinks } from '../../types';
 
 type Props = {
@@ -71,7 +72,7 @@ class CompaniesMerge extends React.Component<Props, State> {
   handleChange = (type, key, value) => {
     const selectedValues = { ...this.state.selectedValues };
 
-    if (type === 'add') {
+    if (type === 'plus-1') {
       selectedValues[key] = value;
 
       if (key === 'links') {
@@ -163,8 +164,6 @@ class CompaniesMerge extends React.Component<Props, State> {
   }
 
   renderLinks(data: ICompanyLinks, icon: string) {
-    const { selectedValues } = this.state;
-
     return COMPANY_LINKS.ALL.map(info => {
       const field = info.field;
       const value = data[field];
@@ -197,14 +196,14 @@ class CompaniesMerge extends React.Component<Props, State> {
       <form onSubmit={this.save}>
         <Columns>
           <Column className="multiple">
-            {this.renderCompany(company1, 'add')}
+            {this.renderCompany(company1, 'plus-1')}
           </Column>
 
           <Column className="multiple">
-            {this.renderCompany(company2, 'add')}
+            {this.renderCompany(company2, 'plus-1')}
           </Column>
 
-          <Column>{this.renderCompany(selectedValues, 'minus-circle')}</Column>
+          <Column>{this.renderCompany(selectedValues, 'times')}</Column>
         </Columns>
 
         <ModalFooter>

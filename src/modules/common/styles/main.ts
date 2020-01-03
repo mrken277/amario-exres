@@ -1,26 +1,38 @@
-import { MainLoader } from 'modules/common/components/Spinner';
 import { colors, dimensions, typography } from 'modules/common/styles';
 import { rgba } from 'modules/common/styles/color';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 
-const FullContent = styledTS<{ center: boolean }>(styled.div)`
+const FullContent = styledTS<{ center: boolean; align?: boolean }>(styled.div)`
   flex: 1;
   display: flex;
   min-height: 100%;
   justify-content: ${props => props.center && 'center'};
-  align-items: center;
+  align-items: ${props => (props.align ? 'flex-start' : 'center')};
 `;
 
-const BoxRoot = styled.div`
+const MiddleContent = styledTS<{ transparent?: boolean }>(styled.div)`
+  width: 900px;
+  height: 100%;
+  height: calc(100% - 20px);
+  background: ${props => !props.transparent && colors.colorWhite};
+  margin: 10px 0;
+`;
+
+const BoxRoot = styledTS<{ selected?: boolean }>(styled.div)`
   text-align: center;
   float: left;
   background: ${colors.colorLightBlue};
-  box-shadow: 0 8px 5px ${rgba(colors.colorCoreGray, 0.08)};
+  box-shadow: ${props =>
+    props.selected
+      ? `0 10px 20px ${rgba(colors.colorCoreDarkGray, 0.12)}`
+      : `0 6px 10px 1px ${rgba(colors.colorCoreGray, 0.08)}`} ;
   margin-right: ${dimensions.coreSpacing}px;
   margin-bottom: ${dimensions.coreSpacing}px;
-  border-radius: ${dimensions.unitSpacing / 2}px;
+  border-radius: ${dimensions.unitSpacing / 2 - 1}px;
   transition: all 0.25s ease;
+  border: 1px solid
+    ${props => (props.selected ? colors.colorSecondary : colors.borderPrimary)};
 
   > a {
     display: block;
@@ -128,7 +140,7 @@ const ColumnTitle = styled.h4`
 
 const ModalFooter = styled.div`
   text-align: right;
-  margin-top: 40px;
+  margin-top: 30px;
 `;
 
 const CenterContent = styled.div`
@@ -139,14 +151,6 @@ const CenterContent = styled.div`
 const ActivityContent = styledTS<{ isEmpty: boolean }>(styled.div)`
   position: relative;
   height: ${props => props.isEmpty && '360px'};
-`;
-
-const Well = styled.div`
-  min-height: ${dimensions.coreSpacing}px;
-  padding: ${dimensions.unitSpacing}px ${dimensions.coreSpacing}px;
-  margin-bottom: ${dimensions.coreSpacing}px;
-  background-color: ${colors.bgActive};
-  border-left: 2px solid ${colors.colorSecondary};
 `;
 
 const DropIcon = styledTS<{ isOpen: boolean }>(styled.span)`
@@ -161,57 +165,48 @@ const DropIcon = styledTS<{ isOpen: boolean }>(styled.span)`
   }
 `;
 
-const UploadLoader = styled.div`
-  position: absolute;
-  top: 70%;
-  left: 100px;
+const HomeContainer = styled.div`
+  width: 320px;
+`;
 
-  ${MainLoader} {
-    width: 15px;
-    height: 15px;
-    position: sticky;
-    margin-top: -15px;
+const CloseModal = styled.div`
+  position: absolute;
+  right: -40px;
+  width: 30px;
+  height: 30px;
+  background: ${rgba(colors.colorBlack, 0.3)};
+  line-height: 30px;
+  border-radius: 15px;
+  text-align: center;
+  color: ${colors.colorWhite};
+
+  &:hover {
+    background: ${rgba(colors.colorBlack, 0.4)};
+    cursor: pointer;
   }
 
-  span {
-    padding-right: ${dimensions.coreSpacing}px;
-    color: ${colors.colorCoreGray};
+  @media screen and (max-width: 1092px) {
+    right: 10px;
+    top: 10px;
   }
 `;
 
-const Avatar = styled.div`
-  color: ${colors.colorWhite};
-  position: relative;
+const DateWrapper = styled.time`
+  font-size: 12px;
+`;
 
-  input[type='file'] {
-    display: none;
-  }
+const ScrollWrapper = styledTS<{ calcHeight?: string }>(styled.div)`
+  height: 50vh;
+  height: ${props =>
+    props.calcHeight
+      ? `calc(100vh - ${props.calcHeight}px)`
+      : 'calc(100vh - 280px)'};
+  overflow: auto;
+  padding-right: 10px;
+`;
 
-  .icon {
-    visibility: hidden;
-    transition: all 0.3s ease-in;
-    transition-timing-function: linear;
-    padding: 25px 35px;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.3);
-    position: absolute;
-    top: 25px;
-    left: 0;
-  }
-
-  img {
-    display: block;
-    width: 100px;
-    height: 100px;
-    border-radius: ${dimensions.headerSpacing}px;
-  }
-
-  &:hover {
-    .icon {
-      visibility: visible;
-      cursor: pointer;
-    }
-  }
+const TabContent = styled.div`
+  margin-top: ${dimensions.coreSpacing}px;
 `;
 
 export {
@@ -220,13 +215,16 @@ export {
   ModalFooter,
   InfoWrapper,
   Links,
-  Well,
   FormWrapper,
   FormColumn,
   ColumnTitle,
   CenterContent,
   ActivityContent,
   DropIcon,
-  UploadLoader,
-  Avatar
+  MiddleContent,
+  HomeContainer,
+  DateWrapper,
+  CloseModal,
+  ScrollWrapper,
+  TabContent
 };

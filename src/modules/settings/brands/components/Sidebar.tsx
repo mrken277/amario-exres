@@ -1,38 +1,29 @@
-import * as React from 'react';
-import { BrandForm, BrandRow } from '.';
-import {
-  EmptyState,
-  Icon,
-  LoadMore,
-  ModalTrigger,
-  Spinner
-} from '../../../common/components';
-import { __ } from '../../../common/utils';
-import { Sidebar as LeftSidebar } from '../../../layout/components';
-import { HelperButtons, SidebarList as List } from '../../../layout/styles';
+import EmptyState from 'modules/common/components/EmptyState';
+import Icon from 'modules/common/components/Icon';
+import LoadMore from 'modules/common/components/LoadMore';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Spinner from 'modules/common/components/Spinner';
+import { IButtonMutateProps } from 'modules/common/types';
+import { __ } from 'modules/common/utils';
+import LeftSidebar from 'modules/layout/components/Sidebar';
+import { HelperButtons, SidebarList as List } from 'modules/layout/styles';
+import React from 'react';
 import { IBrand } from '../types';
+import BrandForm from './BrandForm';
+import BrandRow from './BrandRow';
 
 type Props = {
   brands: IBrand[];
   remove: (brandId: string) => void;
-  save: (
-    params: {
-      doc: {
-        name: string;
-        description: string;
-      };
-    },
-    callback: () => void,
-    brand?: IBrand
-  ) => void;
   loading: boolean;
   currentBrandId?: string;
   brandsTotalCount: number;
+  renderButton: (props: IButtonMutateProps) => JSX.Element;
 };
 
 class Sidebar extends React.Component<Props, {}> {
   renderItems = () => {
-    const { brands, remove, save, currentBrandId } = this.props;
+    const { brands, remove, currentBrandId, renderButton } = this.props;
 
     return brands.map(brand => (
       <BrandRow
@@ -40,30 +31,36 @@ class Sidebar extends React.Component<Props, {}> {
         isActive={currentBrandId === brand._id}
         brand={brand}
         remove={remove}
-        save={save}
+        renderButton={renderButton}
       />
     ));
   };
 
   renderSidebarHeader() {
-    const { save } = this.props;
     const { Header } = LeftSidebar;
 
     const addBrand = (
       <HelperButtons>
-        <a>
+        <button>
           <Icon icon="add" />
-        </a>
+        </button>
       </HelperButtons>
     );
 
-    const content = props => <BrandForm {...props} save={save} />;
+    const content = props => (
+      <BrandForm {...props} renderButton={this.props.renderButton} />
+    );
 
     return (
       <Header uppercase={true}>
         {__('Brands')}
 
-        <ModalTrigger title="New Brand" trigger={addBrand} content={content} />
+        <ModalTrigger
+          title="New Brand"
+          autoOpenKey="showBrandAddModal"
+          trigger={addBrand}
+          content={content}
+        />
       </Header>
     );
   }
@@ -78,13 +75,9 @@ class Sidebar extends React.Component<Props, {}> {
           <LoadMore all={brandsTotalCount} loading={loading} />
         </List>
         {loading && <Spinner />}
-        {!loading &&
-          brandsTotalCount === 0 && (
-            <EmptyState
-              image="/images/robots/robot-03.svg"
-              text="There is no brand"
-            />
-          )}
+        {!loading && brandsTotalCount === 0 && (
+          <EmptyState image="/images/actions/18.svg" text="There is no brand" />
+        )}
       </LeftSidebar>
     );
   }

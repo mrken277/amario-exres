@@ -56,7 +56,7 @@ export const CUSTOMER_BASIC_INFO = {
   primaryPhone: 'Primary Phone',
   position: 'Position',
   department: 'Department',
-  leadStatus: 'Lead Status',
+  leadStatus: 'Pop Ups Status',
   lifecycleState: 'Lifecycle state',
   hasAuthority: 'Has Authority',
   description: 'Description',
@@ -70,7 +70,7 @@ export const CUSTOMER_BASIC_INFO = {
     { field: 'primaryPhone', label: 'Primary Phone' },
     { field: 'position', label: 'Position' },
     { field: 'department', label: 'Department' },
-    { field: 'leadStatus', label: 'Lead Status' },
+    { field: 'leadStatus', label: 'Pop Ups Status' },
     { field: 'lifecycleState', label: 'Lifecycle state' },
     { field: 'hasAuthority', label: 'Has Authority' },
     { field: 'description', label: 'Description' },
@@ -80,16 +80,12 @@ export const CUSTOMER_BASIC_INFO = {
 
 export const CUSTOMER_DATAS = {
   messengerData: 'Messenger Data',
-  twitterData: 'Twitter Data',
-  facebookData: 'Facebook Data',
   visitorContactInfo: 'Visitor contact info',
   owner: 'Owner',
   links: 'Links',
 
   ALL: [
     { field: 'messengerData', label: 'Messenger Data' },
-    { field: 'twitterData', label: 'Twitter Data' },
-    { field: 'facebookData', label: 'Facebook Data' },
     { field: 'visitorContactInfo', label: 'Visitor contact info' },
     { field: 'owner', label: 'Owner' },
     { field: 'links', label: 'Links' }
@@ -98,18 +94,15 @@ export const CUSTOMER_DATAS = {
 
 export const LEAD_STATUS_TYPES = {
   new: 'New',
-  open: 'Open',
   inProgress: 'In Progress',
-  openDeal: 'Open Deal',
-  unqualified: 'Unqualified',
   attemptedToContact: 'Attempted to contact',
-  connected: 'Connected',
-  badTiming: 'Bad Timing'
+  badTiming: 'Bad Timing',
+  unqualified: 'Unqualified'
 };
 
 export const LIFECYCLE_STATE_TYPES = {
   subscriber: 'Subscriber',
-  lead: 'Lead',
+  lead: 'Pop Ups',
   marketingQualifiedLead: 'Marketing Qualified Lead',
   salesQualifiedLead: 'Sales Qualified Lead',
   opportunity: 'Opportunity',

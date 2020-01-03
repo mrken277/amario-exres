@@ -11,19 +11,17 @@ const integrations = `
         code
       }
       languageCode
-      formData
-      formId
+      leadData
+      leadId
       tags {
         _id
         name
         colorCode
       }
       tagIds
-      form {
+      lead {
         _id
-        title
-        code
-        description
+        formId
         createdDate
         createdUserId
         createdUser {
@@ -34,7 +32,6 @@ const integrations = `
             position
           }
         }
-        buttonText
         themeColor
         contactsGathered
         viewCount
@@ -44,6 +41,31 @@ const integrations = `
           buttonText
           featuredImage
           skip
+        }
+        rules {
+          _id
+          kind
+          text
+          condition
+          value
+        }
+        form {
+          _id
+          title
+          code
+          description
+          type
+          buttonText
+          createdDate
+          createdUserId
+          createdUser {
+            _id
+            details {
+              avatar
+              fullName
+              position
+            }
+          }
         }
       }
     }
@@ -64,7 +86,7 @@ const integrationDetail = `
       brandId
       code
       formId
-      formData
+      leadData
       tagIds
       tags {
         _id
@@ -89,19 +111,37 @@ const integrationDetail = `
           featuredImage
           skip
         }
+        rules {
+          _id
+          kind
+          text
+          condition
+          value
+        }
       }
     }
   }
 `;
 
-const brands = `
-  query brands($page: Int, $perPage: Int) {
-    brands(page: $page, perPage: $perPage) {
+const formDetail = `
+  query formDetail($_id: String!) {
+    formDetail(_id: $_id) {
       _id
+      title
       code
-      name
-      createdAt
+      type
       description
+      buttonText
+      createdDate
+      createdUserId
+      createdUser {
+        _id
+        details {
+          avatar
+          fullName
+          position
+        }
+      }
     }
   }
 `;
@@ -171,7 +211,7 @@ export default {
   integrationDetail,
   integrationsTotalCount,
   fields,
-  brands,
+  formDetail,
   tags,
   forms,
   fieldsCombinedByContentType,

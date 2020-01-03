@@ -1,9 +1,14 @@
-import { DropdownToggle, Icon, ModalTrigger } from 'modules/common/components';
+import DropdownToggle from 'modules/common/components/DropdownToggle';
+import Icon from 'modules/common/components/Icon';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { DropIcon } from 'modules/common/styles/main';
+import { IButtonMutateProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
-import * as React from 'react';
-import { Dropdown, MenuItem } from 'react-bootstrap';
-import { CategoryForm, CategoryList, KnowledgeForm } from '../../containers';
+import React from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
+import CategoryForm from '../../containers/category/CategoryForm';
+import CategoryList from '../../containers/category/CategoryList';
+import KnowledgeForm from '../../containers/knowledge/KnowledgeForm';
 import { ITopic } from '../../types';
 import {
   KnowledgeBaseRow,
@@ -18,22 +23,8 @@ type Props = {
   topic: ITopic;
   articlesCount: number;
   remove: (knowledgeBaseId: string) => void;
-
-  save: (
-    params: {
-      doc: {
-        doc: {
-          title: string;
-          description: string;
-          brandId: string;
-          languageCode: string;
-          color: string;
-        };
-      };
-    },
-    callback: () => void,
-    object: any
-  ) => void;
+  refetchTopics: () => void;
+  renderButton: (props: IButtonMutateProps) => JSX.Element;
 };
 
 type State = {
@@ -83,34 +74,47 @@ class KnowledgeRow extends React.Component<Props, State> {
   }
 
   renderManage() {
-    const { topic, save, remove } = this.props;
+    const { topic, renderButton, remove, refetchTopics } = this.props;
 
-    const addCategory = <MenuItem>{__('Add category')}</MenuItem>;
-    const manageTopic = <MenuItem>{__('Manage Knowledge Base')}</MenuItem>;
+    const addCategory = <Dropdown.Item>{__('Add category')}</Dropdown.Item>;
+    const manageTopic = (
+      <Dropdown.Item>{__('Manage Knowledge Base')}</Dropdown.Item>
+    );
 
     const content = props => (
-      <KnowledgeForm {...props} save={save} topic={topic} remove={remove} />
+      <KnowledgeForm
+        {...props}
+        renderButton={renderButton}
+        topic={topic}
+        remove={remove}
+      />
     );
 
     const categoryContent = props => (
-      <CategoryForm {...props} topicIds={topic._id} />
+      <CategoryForm
+        {...props}
+        topicIds={topic._id}
+        refetchTopics={refetchTopics}
+      />
     );
 
     return (
       <RowActions>
-        <Dropdown id="dropdown-knowledgebase" pullRight={true}>
-          <DropdownToggle bsRole="toggle">
+        <Dropdown alignRight={true} style={{ float: 'left' }}>
+          <Dropdown.Toggle as={DropdownToggle} id="dropdown-knowledgebase">
             <Icon icon="settings" />
-          </DropdownToggle>
+          </Dropdown.Toggle>
           <Dropdown.Menu>
             <ModalTrigger
               title="Manage Knowledge Base"
               trigger={manageTopic}
               content={content}
+              size="lg"
             />
             <ModalTrigger
               title="Add Category"
               trigger={addCategory}
+              autoOpenKey="showKBAddCategoryModal"
               content={categoryContent}
             />
           </Dropdown.Menu>
@@ -127,7 +131,7 @@ class KnowledgeRow extends React.Component<Props, State> {
       <KnowledgeBaseRow key={topic._id}>
         <SectionHead>
           <SectionTitle onClick={this.toggle}>
-            {topic.title}
+            {topic.title} ({topic.categories.length})
             <span>{topic.description}</span>
           </SectionTitle>
           {this.renderManage()}

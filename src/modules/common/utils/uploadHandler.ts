@@ -1,4 +1,5 @@
 import { getEnv } from 'apolloClient';
+import { Alert } from 'modules/common/utils';
 
 type FileInfo = {
   name: string;
@@ -23,8 +24,47 @@ type Params = {
   afterUpload: (params: AfterUploadParams) => void;
   afterRead?: (params: AfterReadParams) => void;
   url?: string;
+  kind?: string;
   responseType?: string;
   extraFormData?: Array<{ key: string; value: string }>;
+};
+
+export const deleteHandler = (params: {
+  fileName: string;
+  url?: string;
+  afterUpload: ({ status }: { status: string }) => any;
+}) => {
+  const { REACT_APP_API_URL } = getEnv();
+
+  const {
+    url = `${REACT_APP_API_URL}/delete-file`,
+    fileName,
+    afterUpload
+  } = params;
+
+  fetch(`${url}`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    },
+    body: `fileName=${fileName}`,
+    credentials: 'include'
+  }).then(response => {
+    response
+      .text()
+      .then(text => {
+        if (!response.ok) {
+          return afterUpload({
+            status: text
+          });
+        }
+
+        return afterUpload({ status: 'ok' });
+      })
+      .catch(error => {
+        Alert.error(error.message);
+      });
+  });
 };
 
 const uploadHandler = (params: Params) => {
@@ -36,6 +76,7 @@ const uploadHandler = (params: Params) => {
     afterUpload,
     afterRead,
     url = `${REACT_APP_API_URL}/upload-file`,
+    kind = 'main',
     responseType = 'text',
     extraFormData = []
   } = params;
@@ -57,6 +98,17 @@ const uploadHandler = (params: Params) => {
 
     const fileInfo = { name: file.name, size: file.size, type: file.type };
 
+    // skip file that size is more than 15mb
+    if (fileInfo.size > 15728640) {
+      Alert.warning(
+        `Your file ${
+          fileInfo.name
+        } size too large file. Upload file size is less than 15MB`
+      );
+
+      continue;
+    }
+
     // after read proccess done
     uploadReader.onloadend = () => {
       // before upload
@@ -71,28 +123,33 @@ const uploadHandler = (params: Params) => {
         formData.append(data.key, data.value);
       }
 
-      fetch(url, {
+      fetch(`${url}?kind=${kind}`, {
         method: 'post',
         body: formData,
         credentials: 'include'
       })
         .then(response => {
-          return response[responseType]();
+          response[responseType]()
+            .then(text => {
+              if (!response.ok) {
+                return afterUpload({
+                  status: 'error',
+                  response: text,
+                  fileInfo
+                });
+              }
+
+              // after upload
+              if (afterUpload) {
+                afterUpload({ status: 'ok', response: text, fileInfo });
+              }
+            })
+            .catch(error => {
+              Alert.error(error.message);
+            });
         })
-
-        .then(response => {
-          if (!response.ok) {
-            return afterUpload({ status: 'error', response, fileInfo });
-          }
-
-          // after upload
-          if (afterUpload) {
-            afterUpload({ status: 'ok', response, fileInfo });
-          }
-        })
-
-        .catch(e => {
-          console.log(e); // tslint:disable-line
+        .catch(error => {
+          Alert.error(error.message);
         });
     };
 

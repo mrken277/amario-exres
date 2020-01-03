@@ -1,8 +1,10 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
+import { queries } from 'modules/auth/graphql';
 import { IUser } from 'modules/auth/types';
 import { Alert, withProps } from 'modules/common/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import {
   GetNotificationByEmailMutationResponse,
   GetNotificationByEmailMutationVariables,
@@ -11,7 +13,7 @@ import {
   SaveNotificationConfigMutationResponse,
   SaveNotificationConfigMutationVariables
 } from '../../../notifications/types';
-import { NotificationSettings } from '../components';
+import NotificationSettings from '../components/NotificationSettings';
 
 type Props = {
   notificationModulesQuery: NotificationModulesQueryResponse;
@@ -33,7 +35,7 @@ const NotificationSettingsContainer = (props: Props) => {
   const configGetNotificationByEmail = variables => {
     configGetNotificationByEmailMutation({ variables })
       .then(() => {
-        Alert.success('Congrats');
+        Alert.success('You successfully changed a notification setting');
       })
       .catch(error => {
         Alert.success(error.message);
@@ -44,7 +46,7 @@ const NotificationSettingsContainer = (props: Props) => {
   const saveNotificationConfigurations = variables => {
     saveNotificationConfigurationsMutation({ variables })
       .then(() => {
-        Alert.success('Congrats');
+        Alert.success('You successfully changed a notification setting');
         notificationConfigurationsQuery.refetch();
       })
       .catch(error => {
@@ -59,7 +61,7 @@ const NotificationSettingsContainer = (props: Props) => {
   let getNotificationByEmail = currentUser.getNotificationByEmail;
 
   if (getNotificationByEmail === undefined || getNotificationByEmail === null) {
-    getNotificationByEmail = true;
+    getNotificationByEmail = false;
   }
 
   const updatedProps = {
@@ -114,7 +116,14 @@ export default withProps<{}>(
         }
       `,
       {
-        name: 'configGetNotificationByEmailMutation'
+        name: 'configGetNotificationByEmailMutation',
+        options: () => ({
+          refetchQueries: [
+            {
+              query: gql(queries.currentUser)
+            }
+          ]
+        })
       }
     ),
     graphql<

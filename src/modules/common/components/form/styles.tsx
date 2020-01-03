@@ -1,51 +1,63 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { colors, dimensions, typography } from '../../styles';
 
 const inputPadding = '0px';
-const inputHeight = '16px';
+const inputHeight = '15px';
 const inputScale = '12px';
-const inputBorderWidth = '1px';
+const inputBorderWidth = '2px';
 const textInputHeight = '34px';
 
 const Label = styled.label`
   text-transform: uppercase;
   display: inline-block;
   font-weight: ${typography.fontWeightMedium};
-  color: ${colors.textSecondary};
+  color: ${colors.textPrimary};
   font-size: ${typography.fontSizeUppercase}px;
   margin-bottom: 5px;
-`;
 
-// browser default form invalid styling
-const formInvalid = `
-  &.form-invalid {
-    border-bottom: 1px solid ${colors.colorCoreRed};
+  > span {
+    color: ${colors.colorCoreRed};
   }
 `;
 
-const Formgroup = styled.div`
+const Formgroup = styledTS<{ horizontal?: boolean }>(styled.div)`
   margin-bottom: 20px;
+  position: relative;
 
-  label {
+  ${props =>
+    props.horizontal &&
+    css`
+      display: flex;
+      justify-content: center;
+
+      label {
+        margin-bottom: 0;
+        align-self: center;
+      }
+    `};
+
+  > label {
     margin-right: ${dimensions.unitSpacing}px;
   }
 
   p {
     font-size: 12px;
     color: ${colors.colorCoreGray};
-    margin: 0;
+    margin-bottom: 5px;
   }
 `;
 
-const Input = styledTS<{ round?: boolean }>(styled.input)`
-  ${formInvalid} display: block;
+const Input = styledTS<{ round?: boolean; hasError?: boolean }>(styled.input)`
+  display: block;
   border: none;
   width: 100%;
   height: ${textInputHeight};
-  padding: ${dimensions.unitSpacing}px;
+  padding: ${dimensions.unitSpacing}px 0;
   color: ${colors.textPrimary};
-  border-bottom: 1px solid ${colors.colorShadowGray};
+  border-bottom: 1px solid;
+  border-color:${props =>
+    props.hasError ? colors.colorCoreRed : colors.colorShadowGray};
   background: none;
   transition: all 0.3s ease;
 
@@ -70,21 +82,26 @@ const Input = styledTS<{ round?: boolean }>(styled.input)`
     outline: none;
     border-color: ${colors.colorSecondary};
   }
+
+  ::placeholder {
+    color: #aaa;
+  }
 `;
 
-const SelectWrapper = styled.div`
-  ${formInvalid} overflow: hidden;
-  border-bottom: 1px solid ${colors.colorShadowGray};
+const SelectWrapper = styledTS<{ hasError?: boolean }>(styled.div)`
+  overflow: hidden;
+  border-bottom: 1px solid ${props =>
+    props.hasError ? colors.colorCoreRed : colors.colorShadowGray};
   width: 100%;
   height: ${textInputHeight};
   position: relative;
 
   &:after {
     position: absolute;
-    right: 10px;
+    right: 5px;
     top: 12px;
-    content: '\\e827';
-    font-size: 10px;
+    content: '\\e9a6';
+    font-size: 14px;
     display: inline-block;
     font-family: 'erxes';
     speak: none;
@@ -100,22 +117,20 @@ const SelectWrapper = styled.div`
 `;
 
 const Select = styled(Input.withComponent('select'))`
-  ${formInvalid}
-
   border: none;
   height: ${textInputHeight};
-  padding: 0 ${dimensions.unitSpacing}px;
+  padding: 0;
   width: calc(100% + ${dimensions.coreSpacing}px);
   -webkit-appearance: none;
 `;
 
-const TextArea = styledTS<{ maxHeight?: number }>(
-  styled(Input.withComponent('textarea'))
-)`
-  ${formInvalid}
+const TextArea = styledTS<{
+  maxHeight?: number;
+}>(styled(Input.withComponent('textarea')))`
   transition: none;
   max-height: ${props => props.maxHeight && `${props.maxHeight}px`};
   min-height: 80px;
+  resize: none;
 `;
 
 const FormLabel = styled.label`
@@ -129,8 +144,8 @@ const FormLabel = styled.label`
   }
 `;
 
-const inputStyle = styled.input`
-  ${formInvalid} border: 0 !important;
+const inputStyle = styledTS<{ disabled?: boolean }>(styled.input)`
+  border: 0 !important;
   clip: rect(1px, 1px, 1px, 1px) !important;
   clip-path: inset(50%) !important;
   height: 1px !important;
@@ -139,6 +154,7 @@ const inputStyle = styled.input`
   position: absolute !important;
   width: 1px !important;
   white-space: nowrap !important;
+  cursor: ${props => props.disabled && 'not-allowed'}
 
   &:focus {
     + span {
@@ -176,12 +192,14 @@ const inputStyle = styled.input`
       content: '';
       color: ${colors.colorWhite};
       margin-right: calc(${inputHeight} * 0.25);
-      top: 51%;
+      top: 53%;
       left: 0;
       width: ${inputHeight};
       height: ${inputHeight};
       display: inline-block;
       vertical-align: text-top;
+      border-radius: 2px;
+      cursor: ${props => props.disabled && 'not-allowed'}
     }
 
     &:after {
@@ -243,7 +261,7 @@ const Checkbox = styled(inputStyle)`
   + span {
     &:after {
       background-color: transparent;
-      top: 51%;
+      top: 53%;
       left: calc(1px + ${inputHeight} / 5);
       width: calc(${inputHeight} / 2);
       height: calc(${inputHeight} / 5);
@@ -273,6 +291,17 @@ const Checkbox = styled(inputStyle)`
   }
 `;
 
+const Error = styled.label`
+  color: ${colors.colorCoreRed};
+  margin-top: ${dimensions.unitSpacing - 3}px;
+  display: block;
+  font-size: 12px;
+`;
+
+const FlexWrapper = styled.span`
+  flex: 1;
+`;
+
 export {
   Input,
   SelectWrapper,
@@ -282,5 +311,7 @@ export {
   Checkbox,
   FormLabel,
   Label,
-  Formgroup
+  Formgroup,
+  FlexWrapper,
+  Error
 };

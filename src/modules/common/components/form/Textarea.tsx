@@ -1,8 +1,9 @@
-import * as React from 'react';
+import React from 'react';
 import { TextArea } from './styles';
 
 type Props = {
   onChange?: (e: React.FormEvent<HTMLTextAreaElement>) => void;
+  hasError?: boolean;
   maxHeight?: number;
 };
 
@@ -10,7 +11,7 @@ class Textarea extends React.Component<Props> {
   private area;
 
   componentDidMount() {
-    this.area.style.height = `${this.area.scrollHeight}px`;
+    this.setHeight();
   }
 
   setHeight() {

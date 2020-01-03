@@ -90,19 +90,6 @@ export type MergeMutationResponse = {
   ) => Promise<any>;
 };
 
-export type CustomersEditCompaniesMutationVariables = {
-  _id: string;
-  companyIds: string[];
-};
-
-export type CustomersEditCompaniesMutationResponse = {
-  customersEditCompanies: (
-    params: {
-      variables: CustomersEditCompaniesMutationVariables;
-    }
-  ) => Promise<any>;
-};
-
 export type AddMutationResponse = {
   companiesAdd: (params: { variables: ICompanyDoc }) => Promise<any>;
 };
@@ -152,7 +139,7 @@ export type DetailQueryResponse = {
 };
 
 export type ActivityLogQueryResponse = {
-  activityLogsCompany: IActivityLogForMonth[];
+  activityLogs: IActivityLogForMonth[];
   loading: boolean;
 };
 

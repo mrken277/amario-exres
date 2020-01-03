@@ -1,82 +1,71 @@
-import gql from 'graphql-tag';
-import { Alert, withProps } from 'modules/common/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import ButtonMutate from 'modules/common/components/ButtonMutate';
+import { IButtonMutateProps } from 'modules/common/types';
+import React from 'react';
 import { IUser } from '../../auth/types';
 import { UsersQueryResponse } from '../../settings/team/types';
-import { CompanyForm } from '../components';
+import CompanyForm from '../components/list/CompanyForm';
 import { mutations } from '../graphql';
-import {
-  AddMutationResponse,
-  EditMutationResponse,
-  ICompany,
-  ICompanyDoc
-} from '../types';
+import { ICompany } from '../types';
 
 type Props = {
   company: ICompany;
+  getAssociatedCompany?: (companyId: string) => void;
   closeModal: () => void;
 };
 
 type FinalProps = {
   usersQuery: UsersQueryResponse;
   currentUser: IUser;
-} & Props &
-  EditMutationResponse &
-  AddMutationResponse;
+} & Props;
 
 const CompanyFromContainer = (props: FinalProps) => {
-  const { companiesEdit, company, companiesAdd } = props;
+  const renderButton = ({
+    name,
+    values,
+    isSubmitted,
+    object
+  }: IButtonMutateProps) => {
+    const { closeModal, getAssociatedCompany } = props;
 
-  let action = ({ doc }) => {
-    companiesAdd({ variables: doc })
-      .then(() => {
-        Alert.success('Success');
-      })
-      .catch(e => {
-        Alert.error(e.message);
-      });
-  };
+    const afterSave = data => {
+      closeModal();
 
-  if (company) {
-    action = ({ doc }) => {
-      companiesEdit({ variables: { _id: company._id, ...doc } })
-        .then(() => {
-          Alert.success('Success');
-        })
-        .catch(e => {
-          Alert.error(e.message);
-        });
+      if (getAssociatedCompany) {
+        getAssociatedCompany(data.companiesAdd._id);
+      }
     };
-  }
+
+    return (
+      <ButtonMutate
+        mutation={object ? mutations.companiesEdit : mutations.companiesAdd}
+        variables={values}
+        callback={afterSave}
+        refetchQueries={getRefetchQueries()}
+        isSubmitted={isSubmitted}
+        type="submit"
+        successMessage={`You successfully ${
+          object ? 'updated' : 'added'
+        } a ${name}`}
+      />
+    );
+  };
 
   const updatedProps = {
     ...props,
-    action
+    renderButton
   };
 
   return <CompanyForm {...updatedProps} />;
 };
 
-const options = () => ({
-  refetchQueries: [
+const getRefetchQueries = () => {
+  return [
     'companiesMain',
     'companyDetail',
     // companies for customer detail company associate
     'companies',
     'companyCounts'
-  ]
-});
+  ];
+};
 
-export default withProps<Props>(
-  compose(
-    graphql<{}, EditMutationResponse, ICompany>(gql(mutations.companiesEdit), {
-      name: 'companiesEdit',
-      options
-    }),
-    graphql<{}, AddMutationResponse, ICompanyDoc>(gql(mutations.companiesAdd), {
-      name: 'companiesAdd',
-      options
-    })
-  )(CompanyFromContainer)
-);
+export default CompanyFromContainer;

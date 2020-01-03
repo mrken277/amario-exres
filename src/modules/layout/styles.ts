@@ -1,8 +1,9 @@
+import { TabContainer } from 'modules/common/components/tabs/styles';
 import { twinkling } from 'modules/common/utils/animations';
 import styled, { css } from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { colors, dimensions, typography } from '../common/styles';
-import { lighten } from '../common/styles/color';
+import { lighten, rgba } from '../common/styles/color';
 
 const UserHelper = styled.div`
   height: 50px;
@@ -14,11 +15,13 @@ const UserHelper = styled.div`
   }
 `;
 
-const Layout = styled.main`
-  height: 100%;
+const Layout = styledTS<{ isSqueezed?: boolean }>(styled.main)`
+  height: ${props => (props.isSqueezed ? 'calc(100% - 36px)' : '100%')};
   display: flex;
   flex: 1;
   max-width: 100%;
+  position: relative;
+  overflow: hidden;
 `;
 
 const MainWrapper = styled.div`
@@ -33,8 +36,7 @@ const MainWrapper = styled.div`
 const Contents = styled.div`
   display: flex;
   flex: 1;
-  margin: ${dimensions.unitSpacing}px 0 ${dimensions.unitSpacing}px
-    ${dimensions.unitSpacing}px;
+  margin-left: ${dimensions.unitSpacing}px;
   max-height: 100%;
 
   @-moz-document url-prefix() {
@@ -42,18 +44,17 @@ const Contents = styled.div`
   }
 `;
 
-const MainContent = styledTS<{ transparent?: boolean }>(styled.section)`
+const MainContent = styledTS<{ transparent?: boolean; center?: boolean }>(
+  styled.section
+)`
   flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 480px;
   box-shadow: ${props =>
     !props.transparent && `0 0 6px 1px ${colors.shadowPrimary}`};
-  margin-right: ${dimensions.unitSpacing}px;
-`;
-
-const ContentSpace = styled.div`
-  padding: ${dimensions.coreSpacing}px;
+  height: ${props => props.center && '100%'};
+  margin: ${props => !props.center && '10px 10px 10px 0'};
 `;
 
 const ContentBox = styledTS<{ transparent?: boolean }>(styled.div)`
@@ -66,12 +67,16 @@ const ContentBox = styledTS<{ transparent?: boolean }>(styled.div)`
 const ContentHeader = styledTS<{ background: string }>(styled.div)`
   background: ${props =>
     props.background === 'transparent' ? 'none' : colors[props.background]};
-  min-height: ${dimensions.headerSpacing}px;
   padding: ${props =>
     props.background === 'transparent' ? 0 : `0 ${dimensions.coreSpacing}px`};
   border-bottom: 1px solid ${colors.borderPrimary};
+  z-index: 2;
+`;
+
+const HeaderContent = styled.div`
   display: flex;
   justify-content: space-between;
+  min-height: ${dimensions.headerSpacing}px;
 `;
 
 const ContenFooter = styled.div`
@@ -82,6 +87,12 @@ const ContenFooter = styled.div`
 `;
 
 const BarItems = styled.div`
+  white-space: nowrap;
+
+  .dropdown-menu {
+    min-width: 200px;
+  }
+
   > * + * {
     margin-left: ${dimensions.unitSpacing}px;
   }
@@ -95,6 +106,10 @@ const BarItems = styled.div`
 const HeaderItems = styledTS<{ rightAligned?: boolean }>(styled.div)`
   align-self: center;
   margin-left: ${props => props.rightAligned && 'auto'};
+
+  > * + * {
+    margin-left: ${dimensions.unitSpacing}px;
+  }
 `;
 
 const SideContent = styledTS<{
@@ -110,9 +125,17 @@ const SideContent = styledTS<{
   width: ${props => (props.wide ? '340px' : '290px')};
   flex: ${props => (props.half ? '1' : 'none')};
   background: ${props => (props.full ? colors.colorWhite : 'none')};
-  margin-right: ${dimensions.unitSpacing}px;
+  margin: ${dimensions.unitSpacing}px ${dimensions.unitSpacing}px ${
+  dimensions.unitSpacing
+}px 0;
   box-shadow: ${props =>
     props.full ? `0 0 6px 1px ${colors.shadowPrimary}` : 'none'};
+
+  ${TabContainer} {
+    position: sticky;
+    top: 0;
+    background: ${colors.colorWhite};
+  }
 `;
 
 const SidebarHeader = styledTS<{
@@ -127,7 +150,7 @@ const SidebarHeader = styledTS<{
   padding: 0 ${dimensions.coreSpacing}px 0 ${dimensions.coreSpacing}px;
   border-bottom: 1px solid ${colors.borderPrimary};
   text-transform: ${props => props.uppercase && 'uppercase'};
-  font-weight: ${props => (props.bold ? 'bold' : 'normal')};
+  font-weight: ${props => (props.bold ? 'bold' : '500')};
   display: flex;
   font-size: ${typography.fontSizeHeading8}px;
   flex-direction: row;
@@ -138,12 +161,13 @@ const SidebarTitle = styledTS<{ children: any }>(
   styled(SidebarHeader.withComponent('h3'))
 )`
   padding: 0 ${dimensions.coreSpacing}px;
-  margin: 0 0 -1px 0;
+  margin: 0;
   text-transform: uppercase;
 `;
 
 const SidebarMainContent = styled.div`
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   flex: 1;
   position: relative;
 `;
@@ -190,8 +214,7 @@ const SidebarToggle = styledTS<{ inverse?: boolean }>(styled.a)`
   position: absolute;
   bottom: 0;
   text-align: center;
-  padding: 2px 0;
-  font-size: 10px;
+  padding: 0;
   background: ${props => (props.inverse ? colors.colorWhite : colors.bgLight)};
   border-top: 1px solid ${colors.borderPrimary};
 
@@ -210,9 +233,9 @@ const HelperButtons = styledTS<{ isSidebarOpen?: boolean }>(styled.div)`
   top: ${props =>
     props.isSidebarOpen ? `${dimensions.unitSpacing}px` : '15px'};
   color: ${colors.colorCoreLightGray};
+  padding-right: ${props => (props.isSidebarOpen ? '25px' : '0')};
 
-  a {
-    float: left;
+  a, button {
     color: ${colors.colorCoreLightGray};
     text-transform: none;
     cursor: pointer;
@@ -220,10 +243,12 @@ const HelperButtons = styledTS<{ isSidebarOpen?: boolean }>(styled.div)`
     font-size: ${typography.fontSizeHeading8}px;
     font-weight: ${typography.fontWeightLight};
     outline: 0;
+    padding: 0;
+    border: none;
+    background: none;
 
     > i {
       font-size: 14px;
-      margin-right: ${props => (props.isSidebarOpen ? '25px' : '0')};
 
       &:hover {
         color: ${colors.colorCoreBlack};
@@ -232,7 +257,7 @@ const HelperButtons = styledTS<{ isSidebarOpen?: boolean }>(styled.div)`
   }
 `;
 
-const SidebarList = styled.ul`
+const SidebarList = styledTS<{ capitalize?: boolean }>(styled.ul)`
   margin: 0;
   padding: 0;
   list-style: none;
@@ -249,15 +274,15 @@ const SidebarList = styled.ul`
 
   &.no-link li,
   a {
-    display: block;
+    display: flex;
     padding: 6px 20px;
     color: ${colors.textPrimary};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-decoration: none;
+    text-transform: ${props => (props.capitalize ? 'capitalize' : 'normal')};
     outline: 0;
-    position: relative;
     border-left: 2px solid transparent;
     transition: background 0.3s ease;
 
@@ -278,7 +303,7 @@ const SidebarList = styled.ul`
       border-left: 2px solid ${colors.colorSecondary};
     }
   }
-
+  
   .icon {
     margin-right: 6px;
     color: ${colors.colorCoreGray};
@@ -286,18 +311,15 @@ const SidebarList = styled.ul`
 `;
 
 const SidebarCounter = styledTS<{ nowrap?: boolean; fullLength?: boolean }>(
-  styled.span
+  styled.div
 )`
   font-size: ${typography.fontSizeHeading8}px;
-  text-align: ${props => (props.nowrap ? 'left' : 'right')};
+  text-align: ${props => (props.nowrap ? 'right' : 'left')};
   color: ${colors.colorCoreGray};
   margin-top: 2px;
-  position: ${props => !props.nowrap && 'absolute'};
-  right: ${dimensions.coreSpacing}px;
-  max-width: ${props => (props.nowrap ? '100%' : '45%')};
   overflow: hidden;
   text-overflow: ${props => !props.fullLength && 'ellipsis'};
-  padding-left: ${props => (props.nowrap ? '0' : '10px')};
+  padding-left: 5px;
 
   a {
     padding: 0;
@@ -315,6 +337,13 @@ const SidebarCounter = styledTS<{ nowrap?: boolean; fullLength?: boolean }>(
       display: block;
       white-space: normal;
     `};
+`;
+
+const FieldStyle = styledTS<{ overflow?: string }>(styled.div)`
+  white-space: nowrap;
+  overflow: ${props => (props.overflow ? props.overflow : 'hidden')};
+  text-overflow: ellipsis;
+  flex: 1;
 `;
 
 const SidebarFlexRow = styled.li`
@@ -337,9 +366,15 @@ const FlexContent = styled.div`
   min-height: 100%;
 `;
 
-const FlexItem = styledTS<{ count?: number }>(styled.div)`
+const FlexItem = styledTS<{ count?: number; hasSpace?: boolean }>(styled.div)`
   flex: ${props => (props.count ? props.count : 1)};
   position: relative;
+
+  ${props =>
+    props.hasSpace &&
+    css`
+      margin-left: ${dimensions.coreSpacing}px;
+    `};
 `;
 
 const FlexRightItem = styled.div`
@@ -374,12 +409,22 @@ const Authlayout = styled.div`
     background: transparent url('/images/twinkling.png') repeat top center;
     animation: ${twinkling} 200s linear infinite;
   }
+
+  @media (max-width: 768px) {
+    overflow: auto;
+    padding-bottom: ${dimensions.coreSpacing * 5}px;
+  }
 `;
 
 const AuthContent = styled.div`
   position: relative;
   top: 50%;
   transform: translateY(-50%);
+
+  @media (max-width: 768px) {
+    top: 0;
+    transform: translateY(0);
+  }
 `;
 
 const AuthDescription = styled.div`
@@ -416,6 +461,7 @@ const SectionContainer = styled.div`
   overflow: hidden;
   padding: 10px 10px 0px 10px;
   border-top: 1px solid ${colors.borderPrimary};
+  word-break: break-word;
 `;
 
 const SectionBody = styled.div`
@@ -431,6 +477,7 @@ const SectionBody = styled.div`
 const SectionBodyItem = styled.div`
   border-top: 1px solid ${colors.borderPrimary};
   padding: 10px 20px;
+  word-break: break-word;
 
   span {
     display: inline-block;
@@ -439,8 +486,9 @@ const SectionBodyItem = styled.div`
   }
 
   i {
-    color: ${colors.colorCoreLightGray};
+    color: ${colors.colorCoreGray};
     position: absolute;
+    font-size: 13px;
     right: ${dimensions.coreSpacing}px;
 
     &:hover {
@@ -457,6 +505,48 @@ const SectionBodyItem = styled.div`
   }
 `;
 
+const MobileRecommend = styled.div`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 12px;
+  background: linear-gradient(
+    to right,
+    ${colors.colorSecondary},
+    ${colors.colorCoreTeal}
+  );
+  color: ${colors.colorWhite};
+  transition: all ease 0.3s;
+  padding: 15px ${dimensions.coreSpacing}px;
+  box-shadow: 0 -5px ${dimensions.unitSpacing}px 0 ${rgba(colors.colorBlack, 0.2)};
+`;
+
+const CenterContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  > a {
+    border: 1px solid ${colors.colorWhite};
+    color: ${colors.colorWhite};
+  }
+`;
+
+const ButtonRelated = styled.div`
+  text-align: center;
+  button {
+    background: rgba(0, 0, 0, 0.04);
+    margin: 10px auto;
+    color: #888;
+    border: 0;
+    border-radius: 25px;
+    outline: none;
+    cursor: pointer;
+    font-size: 12px;
+  }
+`;
+
 export {
   Layout,
   MainWrapper,
@@ -465,7 +555,8 @@ export {
   ContentBox,
   ContenFooter,
   ContentHeader,
-  ContentSpace,
+  HeaderContent,
+  CenterContent,
   HeaderItems,
   BarItems,
   SideContent,
@@ -491,5 +582,8 @@ export {
   AuthDescription,
   SectionContainer,
   SectionBody,
-  SectionBodyItem
+  SectionBodyItem,
+  MobileRecommend,
+  ButtonRelated,
+  FieldStyle
 };

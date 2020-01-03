@@ -1,12 +1,13 @@
 import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { Alert, withProps } from 'modules/common/utils';
-import { UserDetailForm } from 'modules/settings/team/containers';
+import UserDetailForm from 'modules/settings/team/containers/UserDetailForm';
 import { mutations, queries } from 'modules/settings/team/graphql';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { IUser, IUserDoc } from '../../../auth/types';
-import { EditProfileForm } from '../components';
+import EditProfileForm from '../components/EditProfileForm';
 import { EditProfileMutationResponse } from '../types';
 
 type Props = {
@@ -18,10 +19,11 @@ const Profile = (
 ) => {
   const { currentUser, usersEditProfile, queryParams } = props;
 
-  const save = (variables: IUserDoc) => {
+  const save = (variables: IUserDoc, callback: () => void) => {
     usersEditProfile({ variables })
       .then(() => {
-        Alert.success('Congrats');
+        Alert.success(`You managed to update your info`);
+        callback();
       })
       .catch(error => {
         Alert.error(error.message);

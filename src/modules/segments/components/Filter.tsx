@@ -1,13 +1,11 @@
-import {
-  DataWithLoader,
-  DropdownToggle,
-  Icon
-} from 'modules/common/components';
+import Box from 'modules/common/components/Box';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
+import DropdownToggle from 'modules/common/components/DropdownToggle';
+import Icon from 'modules/common/components/Icon';
 import { __ } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import { SidebarCounter, SidebarList } from 'modules/layout/styles';
-import * as React from 'react';
-import { Dropdown } from 'react-bootstrap';
+import { FieldStyle, SidebarCounter, SidebarList } from 'modules/layout/styles';
+import React from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
 import { Link } from 'react-router-dom';
 import { ISegment } from '../types';
 
@@ -30,7 +28,7 @@ class Segments extends React.Component<Props> {
     }
 
     return (
-      <a tabIndex={0} onClick={removeSegment}>
+      <a href="#cancel" tabIndex={0} onClick={removeSegment}>
         <Icon icon="cancel-1" />
       </a>
     );
@@ -38,21 +36,15 @@ class Segments extends React.Component<Props> {
 
   renderQuickBtns() {
     const { contentType } = this.props;
-    const { Section } = Wrapper.Sidebar;
 
     return (
-      <Section.QuickButtons>
-        <Dropdown
-          id="dropdown-user"
-          className="quick-button"
-          pullRight={true}
-          style={{ verticalAlign: 'top', float: 'left' }}
-        >
-          <DropdownToggle bsRole="toggle">
-            <a>
+      <>
+        <Dropdown alignRight={true} style={{ float: 'left' }}>
+          <Dropdown.Toggle as={DropdownToggle} id="dropdown-manage">
+            <a href="#settings">
               <Icon icon="settings" />
             </a>
-          </DropdownToggle>
+          </Dropdown.Toggle>
           <Dropdown.Menu>
             <li>
               <Link to={`/segments/new/${contentType}`}>
@@ -68,7 +60,7 @@ class Segments extends React.Component<Props> {
         </Dropdown>
 
         {this.renderCancelBtn()}
-      </Section.QuickButtons>
+      </>
     );
   }
 
@@ -78,7 +70,7 @@ class Segments extends React.Component<Props> {
   }
 
   renderData() {
-    const { counts, segments, currentSegment, setSegment } = this.props;
+    const { counts, segments, currentSegment } = this.props;
     const orderedSegments: ISegment[] = [];
 
     segments.forEach(segment => {
@@ -95,17 +87,17 @@ class Segments extends React.Component<Props> {
             className={segment.subOf ? 'child-segment' : ''}
           >
             <a
+              href="#active"
               tabIndex={0}
               className={currentSegment === segment._id ? 'active' : ''}
               onClick={this.onSegmentClick.bind(this, segment._id)}
             >
               {segment.subOf ? '\u00a0\u00a0' : null}
               <Icon
-                icon="piechart"
-                size={10}
+                icon="chart-pie"
                 style={{ color: segment.color, marginRight: '5px' }}
               />{' '}
-              {segment.name}
+              <FieldStyle>{segment.name}</FieldStyle>
               <SidebarCounter>{counts[segment._id]}</SidebarCounter>
             </a>
           </li>
@@ -116,25 +108,26 @@ class Segments extends React.Component<Props> {
 
   render() {
     const { segments, loading } = this.props;
-
-    const { Section, Header } = Wrapper.Sidebar;
+    const extraButtons = this.renderQuickBtns();
 
     return (
-      <Section collapsible={segments.length > 5}>
-        <Header uppercase={true}>{__('Filter by segments')}</Header>
-
-        {this.renderQuickBtns()}
-
+      <Box
+        title={__('Filter by segments')}
+        extraButtons={extraButtons}
+        collapsible={segments.length > 5}
+        isOpen={true}
+        name="showFilterBySegments"
+      >
         <DataWithLoader
           data={this.renderData()}
           loading={loading}
           count={segments.length}
-          emptyText="No segments"
-          emptyIcon="pie-graph"
+          emptyText="Open segments and starting add details"
+          emptyIcon="chart-pie"
           size="small"
           objective={true}
         />
-      </Section>
+      </Box>
     );
   }
 }

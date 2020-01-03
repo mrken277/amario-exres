@@ -1,8 +1,9 @@
-import { DropdownToggle, Icon } from 'modules/common/components';
+import DropdownToggle from 'modules/common/components/DropdownToggle';
+import Icon from 'modules/common/components/Icon';
 import { IRouterProps } from 'modules/common/types';
 import { __, router } from 'modules/common/utils';
-import * as React from 'react';
-import { Dropdown } from 'react-bootstrap';
+import React from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
 import { withRouter } from 'react-router';
 import { Option, PerPageButton } from './styles';
 
@@ -17,18 +18,20 @@ const PerPageChooser = ({ history }: IRouterProps) => {
   const renderOption = n => {
     return (
       <Option>
-        <a onClick={onClick.bind(null, n)}>{n}</a>
+        <a href="#number" onClick={onClick.bind(null, n)}>
+          {n}
+        </a>
       </Option>
     );
   };
 
   return (
-    <Dropdown id="per-page-chooser" className="dropup">
-      <DropdownToggle bsRole="toggle">
+    <Dropdown className="dropdown-btn" drop="up">
+      <Dropdown.Toggle as={DropdownToggle} id="per-page-chooser">
         <PerPageButton>
-          {currentPerPage} {__('per page')} <Icon icon="uparrow-2" />
+          {currentPerPage} {__('per page')} <Icon icon="angle-up" />
         </PerPageButton>
-      </DropdownToggle>
+      </Dropdown.Toggle>
       <Dropdown.Menu>
         {renderOption(20)}
         {renderOption(50)}

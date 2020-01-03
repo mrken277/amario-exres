@@ -1,12 +1,14 @@
 import gql from 'graphql-tag';
-import { Spinner } from 'modules/common/components';
+import Spinner from 'modules/common/components/Spinner';
 import { IRouterProps } from 'modules/common/types';
 import { Alert, withProps } from 'modules/common/utils';
 import { queries as kbQueries } from 'modules/knowledgeBase/graphql';
-import { Form } from 'modules/settings/integrations/components/messenger';
+import { queries as brandQueries } from 'modules/settings/brands/graphql';
+import Form from 'modules/settings/integrations/components/messenger/Form';
 import { integrationsListParams } from 'modules/settings/integrations/containers/utils';
-import { queries as integQueries } from 'modules/settings/integrations/graphql';
 import { mutations, queries } from 'modules/settings/integrations/graphql';
+
+import * as compose from 'lodash.flowright';
 import {
   IMessengerData,
   IUiOptions,
@@ -15,11 +17,11 @@ import {
   SaveMessengerMutationResponse,
   SaveMessengerMutationVariables
 } from 'modules/settings/integrations/types';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import { TopicsQueryResponse } from '../../../../knowledgeBase/types';
-import { BrandsQueryResponse } from '../../../brands/types';
+import { AllBrandsQueryResponse } from '../../../brands/types';
 import { UsersQueryResponse } from '../../../team/types';
 
 type Props = {
@@ -29,7 +31,7 @@ type Props = {
 
 type FinalProps = {
   usersQuery: UsersQueryResponse;
-  brandsQuery: BrandsQueryResponse;
+  brandsQuery: AllBrandsQueryResponse;
   knowledgeBaseTopicsQuery: TopicsQueryResponse;
 } & Props &
   IRouterProps &
@@ -68,7 +70,6 @@ const CreateMessenger = (props: FinalProps) => {
           variables: { _id: integrationId, messengerData }
         });
       })
-
       .then(({ data }) => {
         const integrationId = data.integrationsSaveMessengerConfigs._id;
 
@@ -76,11 +77,18 @@ const CreateMessenger = (props: FinalProps) => {
           variables: { _id: integrationId, uiOptions }
         });
       })
-
-      .then(() => {
-        Alert.success('Successfully saved.');
-        history.push('/settings/integrations?refetch=true');
-      })
+      .then(
+        ({
+          data: {
+            integrationsSaveMessengerAppearanceData: { _id }
+          }
+        }) => {
+          Alert.success('You successfully added an integration');
+          history.push(
+            `/settings/integrations?refetch=true&_id=${_id}&kind=messenger`
+          );
+        }
+      )
       .catch(error => {
         Alert.error(error.message);
       });
@@ -114,7 +122,7 @@ export default withProps<Props>(
     graphql<Props, UsersQueryResponse>(gql(queries.users), {
       name: 'usersQuery'
     }),
-    graphql<Props, BrandsQueryResponse>(gql(queries.brands), {
+    graphql<Props, AllBrandsQueryResponse>(gql(brandQueries.brands), {
       name: 'brandsQuery',
       options: () => ({
         fetchPolicy: 'network-only'
@@ -133,7 +141,7 @@ export default withProps<Props>(
         return {
           refetchQueries: [
             {
-              query: gql(integQueries.integrations),
+              query: gql(queries.integrations),
               variables: integrationsListParams(queryParams)
             },
             {

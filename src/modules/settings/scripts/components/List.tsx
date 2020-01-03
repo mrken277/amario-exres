@@ -1,20 +1,25 @@
-import {
-  Button,
-  Icon,
-  ModalTrigger,
-  Table,
-  Tip
-} from 'modules/common/components';
+import Button from 'modules/common/components/Button';
+import HeaderDescription from 'modules/common/components/HeaderDescription';
+import Icon from 'modules/common/components/Icon';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Table from 'modules/common/components/table';
+import Tip from 'modules/common/components/Tip';
+import { IButtonMutateProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
-import * as React from 'react';
-import { List, RowActions } from '../../common/components';
+import React from 'react';
+import List from '../../common/components/List';
+import RowActions from '../../common/components/RowActions';
 import { ICommonListProps } from '../../common/types';
-import { Form } from '../containers';
+import Form from '../containers/Form';
 import InstallCode from './InstallCode';
 
-class ScriptList extends React.Component<ICommonListProps> {
+type Props = {
+  renderButton: (props: IButtonMutateProps) => JSX.Element;
+} & ICommonListProps;
+
+class ScriptList extends React.Component<Props> {
   renderForm = props => {
-    return <Form {...props} />;
+    return <Form {...props} renderButton={this.props.renderButton} />;
   };
 
   installCodeAction = object => {
@@ -40,10 +45,31 @@ class ScriptList extends React.Component<ICommonListProps> {
       return (
         <tr key={index}>
           <td>{object.name}</td>
-          <td>{object.messenger ? object.messenger.name : ''}</td>
-          <td>{object.kbTopic ? object.kbTopic.title : ''}</td>
           <td>
-            {object.leads ? object.leads.map(lead => `${lead.name} `) : ''}
+            {object.messenger && (
+              <div>
+                <Tip text="Messenger" placement="top">
+                  <Icon icon="comment-1" />
+                </Tip>{' '}
+                {object.messenger.name}
+              </div>
+            )}
+            {object.kbTopic && (
+              <div>
+                <Tip text="Knowledge Base" placement="top">
+                  <Icon icon="book-open" />
+                </Tip>{' '}
+                {object.kbTopic.title}
+              </div>
+            )}
+            {object.leads.length > 0 && (
+              <div>
+                <Tip text="Pop ups" placement="top">
+                  <Icon icon="window" />
+                </Tip>
+                {object.leads.map(lead => ` ${lead.name},`)}
+              </div>
+            )}
           </td>
           <RowActions
             {...this.props}
@@ -62,10 +88,8 @@ class ScriptList extends React.Component<ICommonListProps> {
         <thead>
           <tr>
             <th>{__('Name')}</th>
-            <th>{__('Messenger')}</th>
-            <th>{__('Knowledgebase topic')}</th>
-            <th>{__('Leads')}</th>
-            <th>{__('Actions')}</th>
+            <th>{__('Integrations')}</th>
+            <th style={{ width: 100 }}>{__('Actions')}</th>
           </tr>
         </thead>
         <tbody>{this.renderRows(props)}</tbody>
@@ -76,13 +100,22 @@ class ScriptList extends React.Component<ICommonListProps> {
   render() {
     return (
       <List
-        title="New script"
+        formTitle="New script"
         breadcrumb={[
           { title: __('Settings'), link: '/settings' },
           { title: __('Scripts') }
         ]}
+        title={__('Scripts')}
+        leftActionBar={
+          <HeaderDescription
+            icon="/images/actions/23.svg"
+            title="Scripts"
+            description={`Script manager allows erxes users to quickly and easily generate and update related scripts for any of their business websites. Set up once and your marketing team will be able to easily create forms, add in chats and list FAQs on any of their businesses websites.`}
+          />
+        }
         renderForm={this.renderForm}
         renderContent={this.renderContent}
+        center={true}
         {...this.props}
       />
     );

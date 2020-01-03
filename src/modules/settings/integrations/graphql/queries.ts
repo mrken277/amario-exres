@@ -21,13 +21,19 @@ const brands = `
   }
 `;
 
+const commonFields = `
+  _id
+  name
+  brandId
+  languageCode
+  isActive
+`;
+
 const integrationDetail = `
   query integrationDetail($_id: String!) {
     integrationDetail(_id: $_id) {
-      _id
-      name
-      brandId
-      languageCode
+      ${commonFields}
+      
       messengerData
       uiOptions
     }
@@ -40,12 +46,6 @@ const integrationTotalCount = `
       total
       byKind
     }
-  }
-`;
-
-const integrationGetGoogleAuthUrl = `
-  query integrationGetGoogleAuthUrl($service: String) {
-    integrationGetGoogleAuthUrl(service: $service)
   }
 `;
 
@@ -70,18 +70,15 @@ const commonParams = `
 const integrations = `
   query integrations(${commonParamsDef}) {
     integrations(${commonParams}) {
-      _id
-      brandId
-      languageCode
-      name
+      ${commonFields}
+
       kind
       brand {
         _id
         name
         code
       }
-      formData
-      twitterData
+      leadData
       formId
       tagIds
       tags {
@@ -113,12 +110,36 @@ const messengerApps = `
   }
 `;
 
+const messengerAppsCount = `
+  query messengerAppsCount($kind: String) {
+    messengerAppsCount(kind: $kind)
+  }
+`;
+
+const engagesConfigDetail = `
+  query engagesConfigDetail {
+    engagesConfigDetail {
+      accessKeyId
+      secretAccessKey
+      region
+    }
+  }
+`;
+
+const fetchApi = `
+  query integrationsFetchApi($path: String!, $params: JSON!) {
+    integrationsFetchApi(path: $path, params: $params)
+  }
+`;
+
 export default {
+  fetchApi,
   users,
   brands,
   integrationDetail,
   integrationTotalCount,
-  integrationGetGoogleAuthUrl,
   integrations,
-  messengerApps
+  engagesConfigDetail,
+  messengerApps,
+  messengerAppsCount
 };

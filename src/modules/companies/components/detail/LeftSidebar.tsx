@@ -1,11 +1,9 @@
-import {
-  BasicInfo,
-  CustomFieldsSection
-} from 'modules/companies/containers/detail';
+import CustomFieldsSection from 'modules/companies/containers/detail/CustomFieldsSection';
 import { ICompany } from 'modules/companies/types';
-import { TaggerSection } from 'modules/customers/components/common';
-import { Sidebar } from 'modules/layout/components';
-import * as React from 'react';
+import TaggerSection from 'modules/customers/components/common/TaggerSection';
+import Sidebar from 'modules/layout/components/Sidebar';
+import React from 'react';
+import BasicInfoSection from '../common/BasicInfoSection';
 
 type Props = {
   company: ICompany;
@@ -18,7 +16,7 @@ class LeftSidebar extends React.Component<Props> {
 
     return (
       <Sidebar wide={true}>
-        <BasicInfo company={company} />
+        <BasicInfoSection company={company} />
         <CustomFieldsSection company={company} />
         <TaggerSection
           data={company}

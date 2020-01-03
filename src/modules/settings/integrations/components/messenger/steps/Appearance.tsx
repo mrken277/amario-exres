@@ -9,9 +9,10 @@ import {
   SubItem,
   WidgetBackgrounds
 } from 'modules/settings/styles';
-import * as React from 'react';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
-import { ChromePicker } from 'react-color';
+import React from 'react';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+import ChromePicker from 'react-color/lib/Chrome';
 
 type Props = {
   onChange: (
@@ -104,7 +105,7 @@ class Appearance extends React.Component<Props, State> {
   render() {
     const onChange = e => this.onChange('color', e.hex);
 
-    const popoverTop = (
+    const popoverContent = (
       <Popover id="color-picker">
         <ChromePicker color={this.state.color} onChange={onChange} />
       </Popover>
@@ -118,8 +119,8 @@ class Appearance extends React.Component<Props, State> {
             <OverlayTrigger
               trigger="click"
               rootClose={true}
-              placement="bottom"
-              overlay={popoverTop}
+              placement="bottom-start"
+              overlay={popoverContent}
             >
               <ColorPick>
                 <ColorPicker style={{ backgroundColor: this.state.color }} />

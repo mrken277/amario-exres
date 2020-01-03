@@ -19,21 +19,6 @@ const StyledTable = styledTS<{
     border-collapse: collapse;
     white-space: ${props.whiteSpace || ''};
 
-    th {
-      .table-sorter {
-        display: inline-block;
-        padding-right: 10px;
-
-        i {
-          display: block;
-
-          &:hover {
-            cursor: pointer;
-          }
-        }
-      }
-    }
-
     th,
     td {
       border-top: 1px solid ${colors.borderPrimary};
@@ -64,7 +49,7 @@ const StyledTable = styledTS<{
 
     ${
       props.hover
-        ? `tr:hover td { background-color: ${tableHoverColor}; cursor: pointer; }`
+        ? `tr:hover td { background-color: ${tableHoverColor}; }`
         : null
     } ${
     props.bordered
@@ -87,6 +72,20 @@ const StyledTable = styledTS<{
     td:last-child {
       border-right: none;
       text-align: right;
+    }
+
+    td.with-input {
+      text-align: center;
+    }
+
+    .with-input input {
+      width: 40px;
+      text-align: center;
+      outline: 0;
+      border: 1px solid ${colors.borderDarker};
+      border-radius: 2px;
+      font-size: 12px;
+      height: 24px;
     }
 
     @media (min-width: 1170px) {

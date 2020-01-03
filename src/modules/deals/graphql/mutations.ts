@@ -1,68 +1,45 @@
+import { dealFields } from './queries';
+
 const commonVariables = `
-  $name: String!,
-  $stageId: String!,
+  $stageId: String,
   $productsData: JSON,
-  $companyIds: [String],
-  $customerIds: [String],
   $closeDate: Date,
   $description: String,
   $assignedUserIds: [String],
   $order: Int,
+  $attachments: [AttachmentInput],
+  $reminderMinute: Int,
+  $isComplete: Boolean,
+  $priority: String,
+  $sourceConversationId: String,
 `;
 
 const commonParams = `
-  name: $name,
   stageId: $stageId,
   productsData: $productsData,
-  companyIds: $companyIds,
-  customerIds: $customerIds,
   closeDate: $closeDate,
   description: $description,
   assignedUserIds: $assignedUserIds,
-  order: $order
-`;
-
-const commonReturn = `
-  _id
-  name
-  stageId
-  companies {
-    _id
-    primaryName
-  }
-  customers {
-    _id
-    firstName
-    primaryEmail
-  }
-  products
-  amount
-  closeDate
-  description
-  assignedUsers {
-    _id
-    email
-    details {
-      fullName
-      avatar
-    }
-  }
-  modifiedAt
-  modifiedBy
+  order: $order,
+  attachments: $attachments,
+  reminderMinute: $reminderMinute,
+  isComplete: $isComplete,
+  priority: $priority,
+  sourceConversationId: $sourceConversationId,
 `;
 
 const dealsAdd = `
-  mutation dealsAdd(${commonVariables}) {
-    dealsAdd(${commonParams}) {
-      ${commonReturn}
+  mutation dealsAdd($name: String!, $companyIds: [String], $customerIds: [String], ${commonVariables}) {
+    dealsAdd(name: $name, companyIds: $companyIds, customerIds: $customerIds, ${commonParams}) {
+      ${dealFields}
     }
   }
 `;
 
 const dealsEdit = `
-  mutation dealsEdit($_id: String!, ${commonVariables}) {
-    dealsEdit(_id: $_id, ${commonParams}) {
-      ${commonReturn}
+  mutation dealsEdit($_id: String!, $name: String, ${commonVariables}) {
+    dealsEdit(_id: $_id, name: $name, ${commonParams}) {
+      ${dealFields}
     }
   }
 `;
@@ -70,6 +47,14 @@ const dealsEdit = `
 const dealsRemove = `
   mutation dealsRemove($_id: String!) {
     dealsRemove(_id: $_id) {
+      _id
+    }
+  }
+`;
+
+const dealsChange = `
+  mutation dealsChange($_id: String!, $destinationStageId: String!) {
+    dealsChange(_id: $_id, destinationStageId: $destinationStageId) {
       _id
     }
   }
@@ -83,26 +68,11 @@ const dealsUpdateOrder = `
   }
 `;
 
-const stagesUpdateOrder = `
-  mutation dealStagesUpdateOrder($orders: [OrderItem]) {
-    dealStagesUpdateOrder(orders: $orders) {
+const dealsWatch = `
+  mutation dealsWatch($_id: String!, $isAdd: Boolean!) {
+    dealsWatch(_id: $_id, isAdd: $isAdd) {
       _id
-    }
-  }
-`;
-
-const dealsChange = `
-  mutation dealsChange($_id: String!, $stageId: String!) {
-    dealsChange(_id: $_id, stageId: $stageId) {
-      ${commonReturn}
-    }
-  }
-`;
-
-const stagesChange = `
-  mutation dealStagesChange($_id: String!, $pipelineId: String!) {
-    dealStagesChange(_id: $_id, pipelineId: $pipelineId) {
-      _id
+      isWatched
     }
   }
 `;
@@ -111,8 +81,7 @@ export default {
   dealsAdd,
   dealsEdit,
   dealsRemove,
-  dealsUpdateOrder,
-  stagesUpdateOrder,
   dealsChange,
-  stagesChange
+  dealsUpdateOrder,
+  dealsWatch
 };

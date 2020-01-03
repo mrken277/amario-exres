@@ -1,49 +1,57 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { queries } from 'modules/settings/brands/graphql';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withProps } from '../../../common/utils';
 import { BrandsQueryResponse } from '../../../settings/brands/types';
-import { BrandFilter } from '../../components';
+import BrandFilter from '../../components/list/BrandFilter';
 import { queries as customerQueries } from '../../graphql';
 import { CountQueryResponse } from '../../types';
 
 type Props = {
-  brandsQuery: BrandsQueryResponse;
-  customersCountQuery: CountQueryResponse;
-  loading: boolean;
+  brandsQuery?: BrandsQueryResponse;
+  customersCountQuery?: CountQueryResponse;
 };
 
 class BrandFilterContainer extends React.Component<Props> {
   render() {
     const { brandsQuery, customersCountQuery } = this.props;
 
-    const counts = customersCountQuery.customerCounts || {};
+    const counts = (customersCountQuery
+      ? customersCountQuery.customerCounts
+      : null) || { byBrand: {} };
 
     const updatedProps = {
       ...this.props,
-      brands: brandsQuery.brands || [],
-      loading: brandsQuery.loading,
-      counts: counts.byBrand || {}
+      brands: (brandsQuery ? brandsQuery.brands : []) || [],
+      loading: (brandsQuery && brandsQuery.loading) || false,
+      counts: counts.byBrand
     };
 
     return <BrandFilter {...updatedProps} />;
   }
 }
 
-export default withProps<{}>(
+export default withProps<{ loadingMainQuery: boolean }>(
   compose(
-    graphql<{}, BrandsQueryResponse, {}>(gql(queries.brands), {
-      name: 'brandsQuery'
-    }),
-    graphql<{}, CountQueryResponse, { only: string }>(
-      gql(customerQueries.customerCounts),
+    graphql<{ loadingMainQuery: boolean }, BrandsQueryResponse, {}>(
+      gql(queries.brands),
       {
-        name: 'customersCountQuery',
-        options: {
-          variables: { only: 'byBrand' }
-        }
+        name: 'brandsQuery',
+        skip: ({ loadingMainQuery }) => loadingMainQuery
       }
-    )
+    ),
+    graphql<
+      { loadingMainQuery: boolean },
+      CountQueryResponse,
+      { only: string }
+    >(gql(customerQueries.customerCounts), {
+      name: 'customersCountQuery',
+      skip: ({ loadingMainQuery }) => loadingMainQuery,
+      options: {
+        variables: { only: 'byBrand' }
+      }
+    })
   )(BrandFilterContainer)
 );

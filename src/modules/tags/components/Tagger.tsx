@@ -1,7 +1,8 @@
-import { FilterableList, Spinner } from 'modules/common/components';
+import FilterableList from 'modules/common/components/filterableList/FilterableList';
+import Spinner from 'modules/common/components/Spinner';
 import { __ } from 'modules/common/utils';
 import { ITag, ITagTypes } from 'modules/tags/types';
-import * as React from 'react';
+import React from 'react';
 
 type Props = {
   type: ITagTypes | string;
@@ -55,7 +56,7 @@ class Tagger extends React.Component<Props, { tagsForList: any[] }> {
       return {
         _id,
         title: name,
-        iconClass: 'icon-tag',
+        iconClass: 'icon-tag-alt',
         iconColor: colorCode,
         selectedBy: state
       };

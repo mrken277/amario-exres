@@ -1,9 +1,9 @@
-import { CountsByTag } from 'modules/common/components';
+import CountsByTag from 'modules/common/components/CountsByTag';
 import { __, router } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import { SidebarCounter, SidebarList } from 'modules/layout/styles';
+import Wrapper from 'modules/layout/components/Wrapper';
+import { FieldStyle, SidebarCounter, SidebarList } from 'modules/layout/styles';
 import { ITag } from 'modules/tags/types';
-import * as React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { MESSAGE_KIND_FILTERS, statusFilters } from '../constants';
 
@@ -28,7 +28,7 @@ class Sidebar extends React.Component<Props> {
         <SidebarList>
           <li>
             <Link to="/engage">
-              {__('All')}
+              <FieldStyle>{__('All')}</FieldStyle>
               <SidebarCounter>{kindCounts.all}</SidebarCounter>
             </Link>
           </li>
@@ -42,7 +42,7 @@ class Sidebar extends React.Component<Props> {
                 }
                 to={`/engage?kind=${kind.name}`}
               >
-                {__(kind.text)}
+                <FieldStyle>{__(kind.text)}</FieldStyle>
                 <SidebarCounter>{kindCounts[kind.name]}</SidebarCounter>
               </Link>
             </li>
@@ -71,7 +71,7 @@ class Sidebar extends React.Component<Props> {
                 }
                 to={`/engage?status=${status.key}`}
               >
-                {__(status.value)}
+                <FieldStyle>{__(status.value)}</FieldStyle>
                 <SidebarCounter>{statusCounts[status.key]}</SidebarCounter>
               </Link>
             </li>

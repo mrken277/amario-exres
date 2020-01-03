@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { KIND_CHOICES } from 'modules/settings/integrations/constants';
 
 export type OptionsType = {
@@ -34,15 +35,16 @@ export function convertTime(second?: number) {
   const minutes = Math.floor((second - hours * 3600) / 60);
   const seconds = second - hours * 3600 - minutes * 60;
 
-  const timeFormat = (num: number) => {
-    if (num < 10) {
-      return '0' + num.toString();
-    }
-
-    return num.toString();
-  };
-
   return (
-    timeFormat(hours) + ':' + timeFormat(minutes) + ':' + timeFormat(seconds)
+    hours.toString() +
+    'h : ' +
+    minutes.toString() +
+    'm : ' +
+    seconds.toString() +
+    's'
   );
+}
+
+export function formatDate(date: string): string {
+  return dayjs(date).format('YYYY-MM-DD HH:mm');
 }

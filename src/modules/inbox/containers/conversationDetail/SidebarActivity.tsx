@@ -1,9 +1,10 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
+import { queries } from 'modules/activityLogs/graphql';
 import { IUser } from 'modules/auth/types';
-import { queries } from 'modules/customers/graphql';
 import { ActivityLogQueryResponse, ICustomer } from 'modules/customers/types';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withProps } from '../../../common/utils';
 import SidebarActivity from '../../components/conversationDetail/sidebar/SidebarActivity';
 
@@ -25,7 +26,7 @@ class SidebarActivityContainer extends React.Component<FinalProps> {
       ...this.props,
       customer,
       loadingLogs: customerActivityLogQuery.loading,
-      activityLogsCustomer: customerActivityLogQuery.activityLogsCustomer || [],
+      activityLogsCustomer: customerActivityLogQuery.activityLogs || [],
       currentUser
     };
 
@@ -35,16 +36,14 @@ class SidebarActivityContainer extends React.Component<FinalProps> {
 
 export default withProps<Props>(
   compose(
-    graphql<Props, ActivityLogQueryResponse, { _id: string }>(
-      gql(queries.activityLogsCustomer),
-      {
-        name: 'customerActivityLogQuery',
-        options: ({ customer }) => ({
-          variables: {
-            _id: customer._id
-          }
-        })
-      }
-    )
+    graphql<Props, ActivityLogQueryResponse>(gql(queries.activityLogs), {
+      name: 'customerActivityLogQuery',
+      options: ({ customer }) => ({
+        variables: {
+          contentId: customer._id,
+          contentType: 'customer'
+        }
+      })
+    })
   )(SidebarActivityContainer)
 );

@@ -1,5 +1,6 @@
 import { Input, SelectWrapper } from 'modules/common/components/form/styles';
 import { colors, dimensions, typography } from 'modules/common/styles';
+import { rgba } from 'modules/common/styles/color';
 import { FlexItem } from 'modules/layout/styles';
 import styled from 'styled-components';
 
@@ -11,13 +12,12 @@ const SegmentTitle = styled.h3`
 
 const SegmentWrapper = styled.div`
   padding: ${dimensions.coreSpacing}px;
-  font-weight: ${typography.fontWeightRegular};
-  background: ${colors.colorWhite};
 `;
 
 const ConditionWrapper = styled.div`
   ${SelectWrapper} {
     padding-right: 20px;
+    margin-left: ${dimensions.unitSpacing}px;
   }
 
   ${SelectWrapper}, ${Input} {
@@ -53,6 +53,51 @@ const ResultCount = styled.div`
     color: ${colors.colorShadowGray};
     font-size: ${typography.fontSizeHeading2}px;
   }
+
+  > div {
+    display: inline-block;
+    height: 30px;
+    width: 40px;
+  }
+`;
+
+const Field = styled.div`
+  visibility: hidden;
+  position: absolute;
+  left: ${dimensions.headerSpacing + dimensions.headerSpacing}%;
+  top: 0;
+  width: 260px;
+  background: ${colors.colorWhite};
+  box-shadow: 0 0 ${dimensions.coreSpacing}px 3px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  margin: 0;
+
+  input {
+    transition: inherit;
+    width: 100% !important;
+  }
+`;
+
+const FieldType = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: ${dimensions.unitSpacing}px ${dimensions.coreSpacing}px;
+  border-bottom: 1px solid ${colors.borderPrimary};
+  color: ${rgba(colors.textPrimary, 0.8)};
+
+  &:hover {
+    background: ${colors.bgLight};
+  }
+`;
+
+const PopoverList = styled.div`
+  position: relative;
+
+  &:hover {
+    > ${Field} {
+      visibility: visible;
+    }
+  }
 `;
 
 export {
@@ -62,5 +107,8 @@ export {
   SegmentContainer,
   ConditionItem,
   SegmentResult,
-  ResultCount
+  ResultCount,
+  PopoverList,
+  FieldType,
+  Field
 };

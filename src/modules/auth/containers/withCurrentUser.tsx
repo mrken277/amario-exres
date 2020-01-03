@@ -1,7 +1,9 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
+import Spinner from 'modules/common/components/Spinner';
 import { withProps } from 'modules/common/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { queries } from '../graphql';
 import { CurrentUserQueryResponse } from '../types';
 
@@ -14,7 +16,7 @@ const withCurrentUser = Component => {
     const { currentUserQuery } = props;
 
     if (currentUserQuery.loading) {
-      return null;
+      return <Spinner />;
     }
 
     const updatedProps = {

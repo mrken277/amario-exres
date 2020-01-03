@@ -1,18 +1,15 @@
-import { Icon } from 'modules/common/components';
+import Icon from 'modules/common/components/Icon';
 import { colors } from 'modules/common/styles';
 import { BoxRoot, FullContent } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';
 import { METHODS } from 'modules/engage/constants';
-import styledTS from 'styled-components-ts';
-
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-const Box = styledTS<{ selected: boolean }>(styled(BoxRoot))`
+const Box = styled(BoxRoot)`
   width: 320px;
-  border: 1px solid
-    ${props => (props.selected ? colors.colorPrimary : colors.borderPrimary)};
   padding: 40px;
+  background: ${colors.bgLight};
 
   i {
     font-size: 38px;
@@ -28,6 +25,7 @@ const Box = styledTS<{ selected: boolean }>(styled(BoxRoot))`
     margin: 10px 0 0;
     font-size: 12px;
     color: ${colors.colorCoreLightGray};
+    min-height: 36px;
   }
 
   &:last-of-type {
@@ -58,12 +56,12 @@ class ChannelStep extends React.Component<Props> {
       <FullContent center={true}>
         {this.renderBox(
           METHODS.EMAIL,
-          'email-1',
-          'Delivered to a user s email inbox Customize with your own templates'
+          'envelope-edit',
+          `Delivered to a user's email inbox Customize with your own templates`
         )}
         {this.renderBox(
           METHODS.MESSENGER,
-          'chat',
+          'comment-edit',
           'Delivered inside your app Reach active users'
         )}
       </FullContent>

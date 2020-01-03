@@ -1,10 +1,10 @@
-import { DataWithLoader } from 'modules/common/components';
+import Box from 'modules/common/components/Box';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
 import { IRouterProps } from 'modules/common/types';
 import { __, router } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import { SidebarCounter, SidebarList } from 'modules/layout/styles';
+import { FieldStyle, SidebarCounter, SidebarList } from 'modules/layout/styles';
 import { IBrand } from 'modules/settings/brands/types';
-import * as React from 'react';
+import React from 'react';
 import { withRouter } from 'react-router';
 
 interface IProps extends IRouterProps {
@@ -14,8 +14,6 @@ interface IProps extends IRouterProps {
 }
 
 function Brands({ history, counts, brands, loading }: IProps) {
-  const { Section, Header } = Wrapper.Sidebar;
-
   const data = (
     <SidebarList>
       {brands.map(brand => {
@@ -26,13 +24,14 @@ function Brands({ history, counts, brands, loading }: IProps) {
         return (
           <li key={brand._id}>
             <a
+              href="#filter"
               tabIndex={0}
               className={
                 router.getParam(history, 'brand') === brand._id ? 'active' : ''
               }
               onClick={onClick}
             >
-              {brand.name}
+              <FieldStyle>{brand.name}</FieldStyle>
               <SidebarCounter>{counts[brand._id]}</SidebarCounter>
             </a>
           </li>
@@ -42,19 +41,21 @@ function Brands({ history, counts, brands, loading }: IProps) {
   );
 
   return (
-    <Section collapsible={brands.length > 5}>
-      <Header uppercase={true}>{__('Filter by brand')}</Header>
-
+    <Box
+      title={__('Filter by brand')}
+      collapsible={brands.length > 5}
+      name="showFilterByBrand"
+    >
       <DataWithLoader
         data={data}
         loading={loading}
         count={brands.length}
-        emptyText="No brands"
-        emptyIcon="pie-graph"
+        emptyText="Now easier to find contacts according to your brand"
+        emptyIcon="leaf"
         size="small"
         objective={true}
       />
-    </Section>
+    </Box>
   );
 }
 

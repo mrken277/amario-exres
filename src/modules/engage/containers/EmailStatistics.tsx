@@ -1,8 +1,9 @@
 import gql from 'graphql-tag';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import * as compose from 'lodash.flowright';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withProps } from '../../common/utils';
-import { EmailStatistics } from '../components';
+import EmailStatistics from '../components/EmailStatistics';
 import { queries } from '../graphql';
 import { EngageMessageDetailQueryResponse } from '../types';
 
@@ -17,7 +18,15 @@ type FinalProps = {
 const EmailStatisticsContainer = (props: FinalProps) => {
   const { engageMessageDetailQuery } = props;
 
+  if (engageMessageDetailQuery.error) {
+    return null;
+  }
+
   if (engageMessageDetailQuery.loading) {
+    return null;
+  }
+
+  if (!engageMessageDetailQuery.engageMessageDetail) {
     return null;
   }
 
@@ -29,7 +38,7 @@ const EmailStatisticsContainer = (props: FinalProps) => {
 export default withProps<Props>(
   compose(
     graphql<Props, EngageMessageDetailQueryResponse, { _id: string }>(
-      gql(queries.engageMessageDetail),
+      gql(queries.engageMessageStats),
       {
         name: 'engageMessageDetailQuery',
         options: ({ messageId }) => ({

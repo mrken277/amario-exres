@@ -1,10 +1,11 @@
-import * as React from 'react';
+import React from 'react';
 import { withRouter } from 'react-router';
 
-import { DataWithLoader, Icon } from 'modules/common/components';
+import Box from 'modules/common/components/Box';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
+import Icon from 'modules/common/components/Icon';
 import { __, router } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import { SidebarCounter, SidebarList } from 'modules/layout/styles';
+import { FieldStyle, SidebarCounter, SidebarList } from 'modules/layout/styles';
 import { IRouterProps } from '../../../common/types';
 import { LEAD_STATUS_TYPES } from '../../constants';
 import { leadStatusChoices } from '../../utils';
@@ -31,6 +32,7 @@ class LeadStatusFilter extends React.Component<IProps> {
             return (
               <li key={Math.random()}>
                 <a
+                  href="#filter"
                   tabIndex={0}
                   className={
                     router.getParam(history, [paramKey]) === value
@@ -39,7 +41,7 @@ class LeadStatusFilter extends React.Component<IProps> {
                   }
                   onClick={onClick.bind(this, paramKey, value)}
                 >
-                  {label}
+                  <FieldStyle>{label}</FieldStyle>
                   <SidebarCounter>{counts ? counts[value] : 0}</SidebarCounter>
                 </a>
               </li>
@@ -51,33 +53,35 @@ class LeadStatusFilter extends React.Component<IProps> {
   };
 
   render() {
-    const { Section } = Wrapper.Sidebar;
+    const { history } = this.props;
 
     const onClear = () => {
       router.setParams(history, { leadStatus: null });
     };
 
-    return (
-      <Section collapsible={true}>
-        <Section.Title>{__('Filter by lead status')}</Section.Title>
-        <Section.QuickButtons>
-          {router.getParam(history, 'leadStatus') ? (
-            <a tabIndex={0} onClick={onClear}>
-              <Icon icon="cancel-1" />
-            </a>
-          ) : null}
-        </Section.QuickButtons>
+    const extraButtons = router.getParam(history, 'leadStatus') && (
+      <a href="#cancel" tabIndex={0} onClick={onClear}>
+        <Icon icon="cancel-1" />
+      </a>
+    );
 
+    return (
+      <Box
+        extraButtons={extraButtons}
+        title={__('Filter by pop ups status')}
+        collapsible={true}
+        name="showFilterByStatus"
+      >
         <DataWithLoader
           loading={this.props.loading}
           count={Object.keys(LEAD_STATUS_TYPES).length}
           data={this.renderCounts()}
-          emptyText="No leads"
+          emptyText="No Pop Ups"
           emptyIcon="type"
           size="small"
           objective={true}
         />
-      </Section>
+      </Box>
     );
   }
 }

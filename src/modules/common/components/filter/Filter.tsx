@@ -1,7 +1,8 @@
 import gql from 'graphql-tag';
-import { Chip } from 'modules/common/components';
+import Chip from 'modules/common/components/Chip';
 import { router } from 'modules/common/utils';
-import * as React from 'react';
+import { cleanIntegrationKind } from 'modules/settings/integrations/containers/utils';
+import React from 'react';
 import { withRouter } from 'react-router';
 import styled from 'styled-components';
 import { IRouterProps } from '../../types';
@@ -30,8 +31,8 @@ function Filter({ queryParams = {}, history }: IProps) {
     const onClick = () => onClickClose([paramKey]);
 
     return (
-      <Chip onClickClose={onClick}>
-        {bool ? paramKey : queryParams[paramKey]}
+      <Chip capitalize={true} onClick={onClick}>
+        {bool ? paramKey : cleanIntegrationKind(queryParams[paramKey])}
       </Chip>
     );
   };
@@ -55,7 +56,7 @@ function Filter({ queryParams = {}, history }: IProps) {
       const ChipText = createChipText(graphqlQuery, id);
 
       return (
-        <Chip normal={true} onClickClose={onClickClose.bind(null, [paramKey])}>
+        <Chip onClick={onClickClose.bind(null, [paramKey])}>
           <ChipText />
         </Chip>
       );
@@ -69,7 +70,7 @@ function Filter({ queryParams = {}, history }: IProps) {
       const onClick = () => onClickClose(['startDate', 'endDate']);
 
       return (
-        <Chip normal={true} onClickClose={onClick}>
+        <Chip onClick={onClick}>
           {queryParams.startDate} - {queryParams.endDate}
         </Chip>
       );
@@ -93,6 +94,7 @@ function Filter({ queryParams = {}, history }: IProps) {
       {renderFilterWithDate()}
       {renderFilterWithData('form', 'form', '_id title')}
       {renderFilterParam('leadStatus', false)}
+      {renderFilterParam('lifecycleState', false)}
     </Filters>
   );
 }

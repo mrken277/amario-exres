@@ -1,7 +1,10 @@
-import { Button, FormControl, SortableList } from 'modules/common/components';
+import Button from 'modules/common/components/Button';
+import FormControl from 'modules/common/components/form/Control';
+import SortableList from 'modules/common/components/SortableList';
 import { colors } from 'modules/common/styles';
+import { ScrollWrapper } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { FieldsCombinedByType, IConfigColumn } from '../types';
 
@@ -15,7 +18,7 @@ const Header = styled.div`
 
   > span {
     text-transform: uppercase;
-    padding: 5px 20px 5px 40px;
+    padding: 5px 20px 5px 30px;
     font-weight: bold;
   }
 `;
@@ -104,14 +107,14 @@ class ManageColumns extends React.Component<Props, State> {
           <span>{__('Column name')}</span>
           <span>{__('Visible')}</span>
         </Header>
-
-        <SortableList
-          fields={this.state.fields}
-          child={child}
-          onChangeFields={this.onChangeFields}
-          isModal={true}
-        />
-
+        <ScrollWrapper calcHeight="320">
+          <SortableList
+            fields={this.state.fields}
+            child={child}
+            onChangeFields={this.onChangeFields}
+            isModal={true}
+          />
+        </ScrollWrapper>
         <Footer>
           <Button
             type="button"

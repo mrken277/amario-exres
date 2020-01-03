@@ -1,8 +1,8 @@
+import HeaderDescription from 'modules/common/components/HeaderDescription';
 import { __ } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import Sidebar from 'modules/settings/integrations/components/Sidebar';
+import Wrapper from 'modules/layout/components/Wrapper';
 import { INTEGRATIONS } from 'modules/settings/integrations/constants';
-import * as React from 'react';
+import React from 'react';
 import Row from './Row';
 import { IntegrationWrapper } from './styles';
 
@@ -10,9 +10,14 @@ type Props = {
   totalCount: {
     messenger: number;
     form: number;
-    twitter: number;
     facebook: number;
     gmail: number;
+    callpro: number;
+    chatfuel: number;
+    imap: number;
+    office365: number;
+    outlook: number;
+    yahoo: number;
   };
   queryParams: any;
 };
@@ -41,8 +46,20 @@ class Home extends React.Component<Props> {
 
     return (
       <Wrapper
-        header={<Wrapper.Header breadcrumb={breadcrumb} />}
-        leftSidebar={<Sidebar />}
+        header={
+          <Wrapper.Header title={__('App store')} breadcrumb={breadcrumb} />
+        }
+        actionBar={
+          <Wrapper.ActionBar
+            left={
+              <HeaderDescription
+                icon="/images/actions/33.svg"
+                title="App store"
+                description="Set up your integrations and start connecting with your customers. Now you can reach them on wherever platform they feel most comfortable."
+              />
+            }
+          />
+        }
         content={this.renderContent()}
       />
     );

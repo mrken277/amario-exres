@@ -3,6 +3,9 @@ const listParamsDef = `
   $status: String
   $tag: String
   $ids: [String]
+  $tagIds: [String]
+  $brandIds: [String]
+  $segmentIds: [String]
   $page: Int
   $perPage: Int
 `;
@@ -12,6 +15,9 @@ const listParamsValue = `
   status: $status
   tag: $tag
   ids: $ids
+  tagIds: $tagIds
+  brandIds: $brandIds
+  segmentIds: $segmentIds
   page: $page
   perPage: $perPage
 `;
@@ -21,16 +27,15 @@ const engageMessages = `
     engageMessages(${listParamsValue}) {
       _id
       title
-      deliveryReports
       isDraft
       isLive
-      createdDate
+      createdAt
       kind
       method
-      brand {
+      brands {
         name
       }
-      segment {
+      segments {
         _id
         name
       }
@@ -43,6 +48,8 @@ const engageMessages = `
         }
       }
       tagIds
+      brandIds 
+      segmentIds 
       stats
       getTags {
         _id
@@ -55,10 +62,12 @@ const engageMessages = `
   }
 `;
 
-const engageDetailFields = `
+export const engageDetailFields = `
   _id
   kind
-  segmentId
+  segmentIds
+  tagIds
+  brandIds
   customerIds
   title
   fromUserId
@@ -67,18 +76,33 @@ const engageDetailFields = `
   isDraft
   isLive
   stopDate
-  createdDate
-  deliveryReports
+  createdAt
   messenger
+  fromUser {
+    _id
+    email
+    details {
+      fullName
+    }
+  }
   scheduleDate {
     type
     month
     day
     time
   }
-  stats
   brand {
     name
+  }
+`;
+
+const engageMessageStats = `
+  query engageMessageDetail($_id: String) {
+    engageMessageDetail(_id: $_id){
+      ${engageDetailFields}
+      stats
+      logs
+    }
   }
 `;
 
@@ -92,9 +116,10 @@ const engageMessageDetail = `
 
 const users = `
   query users {
-    users {
+    allUsers(isActive: true) {
       _id
       username
+      email
       details {
         avatar
         fullName
@@ -140,6 +165,7 @@ const customerCounts = `
     $page: Int,
     $perPage: Int,
     $segment: String,
+    $brand: String,
     $tag: String,
     $ids: [String],
     $only: String
@@ -148,6 +174,7 @@ const customerCounts = `
       page: $page,
       perPage: $perPage,
       segment: $segment,
+      brand: $brand,
       tag: $tag,
       ids: $ids,
       only: $only
@@ -173,6 +200,19 @@ const segments = `
       getSubSegments {
         ${segmentFields}
       }
+    }
+  }
+`;
+
+const tags = `
+  query tagsQuery($type: String) {
+    tags(type: $type) {
+      _id
+      name
+      type
+      colorCode
+      createdAt
+      objectCount
     }
   }
 `;
@@ -210,7 +250,7 @@ const headSegments = `
 
 const combinedFields = `
   query fieldsCombinedByContentType {
-    fieldsCombinedByContentType(contentType: "customer")
+    fieldsCombinedByContentType(contentType: "customer", source: "fromSegments")
   }
 `;
 
@@ -232,10 +272,17 @@ const tagCounts = `
   }
 `;
 
+const verifiedEmails = `
+  query engageVerifiedEmails {
+    engageVerifiedEmails
+  }
+`;
+
 export default {
   engageMessages,
   engageMessagesTotalCount,
   engageMessageDetail,
+  engageMessageStats,
   users,
   userDetail,
   segments,
@@ -247,5 +294,7 @@ export default {
   combinedFields,
   kindCounts,
   statusCounts,
-  tagCounts
+  tagCounts,
+  tags,
+  verifiedEmails
 };

@@ -1,12 +1,13 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { IRouterProps } from 'modules/common/types';
 import { queries as tagQueries } from 'modules/tags/graphql';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import { withProps } from '../../common/utils';
 import { TagsQueryResponse } from '../../tags/types';
-import { Sidebar } from '../components';
+import Sidebar from '../components/Sidebar';
 import { queries } from '../graphql';
 import { CountQueryResponse, TagCountQueryResponse } from '../types';
 
@@ -43,10 +44,7 @@ const SidebarContainer = (props: FinalProps) => {
 export default withProps<Props>(
   compose(
     graphql<Props, CountQueryResponse>(gql(queries.kindCounts), {
-      name: 'kindCountsQuery',
-      options: () => ({
-        fetchPolicy: 'network-only'
-      })
+      name: 'kindCountsQuery'
     }),
     graphql<Props, CountQueryResponse, { kind: string }>(
       gql(queries.statusCounts),
@@ -55,8 +53,7 @@ export default withProps<Props>(
         options: ({ queryParams }) => ({
           variables: {
             kind: queryParams.kind || ''
-          },
-          fetchPolicy: 'network-only'
+          }
         })
       }
     ),
@@ -77,8 +74,7 @@ export default withProps<Props>(
           variables: {
             kind: queryParams.kind || '',
             status: queryParams.status || ''
-          },
-          fetchPolicy: 'network-only'
+          }
         })
       }
     )

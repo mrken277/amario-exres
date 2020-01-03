@@ -1,16 +1,17 @@
-import { EmptyState, Icon } from 'modules/common/components';
+import Box from 'modules/common/components/Box';
+import EmptyState from 'modules/common/components/EmptyState';
+import Icon from 'modules/common/components/Icon';
 import { __ } from 'modules/common/utils';
-import { Sidebar } from 'modules/layout/components';
 import { SidebarList } from 'modules/layout/styles';
-import { Tagger } from 'modules/tags/containers';
-import * as React from 'react';
-import { Collapse } from 'react-bootstrap';
+import Tagger from 'modules/tags/containers/Tagger';
+import React from 'react';
+import Collapse from 'react-bootstrap/Collapse';
 
 type Props = {
   data: any;
   type: string;
   refetchQueries?: any[];
-  isOpen?: boolean;
+  collapseCallback?: () => void;
 };
 
 type State = {
@@ -29,57 +30,54 @@ class TaggerSection extends React.Component<Props, State> {
   toggleTagger = e => {
     e.preventDefault();
 
-    const { isTaggerVisible } = this.state;
-
-    this.setState({ isTaggerVisible: !isTaggerVisible });
+    this.setState({ isTaggerVisible: !this.state.isTaggerVisible });
   };
 
   renderTags(tags) {
     if (!tags.length) {
-      return <EmptyState icon="tag" text="Not tagged yet" size="small" />;
+      return <EmptyState icon="tag-alt" text="Not tagged yet" size="small" />;
     }
 
-    return tags.map(({ _id, colorCode, name }) => (
-      <li key={_id}>
-        <Icon icon="tag icon" style={{ color: colorCode }} />
-        {name}
-      </li>
-    ));
+    return (
+      <SidebarList className="no-link">
+        {tags.map(({ _id, colorCode, name }) => (
+          <li key={_id}>
+            <Icon icon="tag icon" style={{ color: colorCode }} />
+            {name}
+          </li>
+        ))}
+      </SidebarList>
+    );
   }
 
   render() {
-    const { Section } = Sidebar;
-    const { Title, QuickButtons } = Section;
-
-    const { data, type, refetchQueries, isOpen } = this.props;
+    const { data, type, refetchQueries, collapseCallback } = this.props;
     const tags = data.getTags || [];
 
-    const quickButtons = (
-      <a tabIndex={0} onClick={this.toggleTagger}>
+    const extraButtons = (
+      <a href="#settings" tabIndex={0} onClick={this.toggleTagger}>
         <Icon icon="settings" />
       </a>
     );
 
     return (
-      <Section>
-        <Title>{__('Tags')}</Title>
-
-        <QuickButtons isSidebarOpen={isOpen}>{quickButtons}</QuickButtons>
-
+      <Box
+        title={__('Tags')}
+        name="showTags"
+        extraButtons={extraButtons}
+        callback={collapseCallback}
+      >
         <Collapse in={this.state.isTaggerVisible}>
-          <div>
-            <Tagger
-              type={type}
-              targets={[data]}
-              className="sidebar-accordion"
-              event="onClick"
-              refetchQueries={refetchQueries}
-            />
-          </div>
+          <Tagger
+            type={type}
+            targets={[data]}
+            className="sidebar-accordion"
+            event="onClick"
+            refetchQueries={refetchQueries}
+          />
         </Collapse>
-
-        <SidebarList className="no-link">{this.renderTags(tags)}</SidebarList>
-      </Section>
+        {this.renderTags(tags)}
+      </Box>
     );
   }
 }

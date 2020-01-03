@@ -1,33 +1,34 @@
 import Icon from 'modules/common/components/Icon';
 import { colors, dimensions, typography } from 'modules/common/styles';
+import { darken } from 'modules/common/styles/color';
 import { slideDown } from 'modules/common/utils/animations';
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 
 const types = {
   info: {
-    background: colors.colorSecondary,
-    icon: 'information'
+    background: colors.colorCoreBlue,
+    icon: 'info-circle'
   },
 
   warning: {
-    background: colors.colorCoreYellow,
-    icon: 'clock'
+    background: darken(colors.colorCoreYellow, 10),
+    icon: 'exclamation-triangle'
   },
 
   error: {
     background: colors.colorCoreRed,
-    icon: 'cancel-1'
+    icon: 'times-circle'
   },
 
   success: {
     background: colors.colorCoreGreen,
-    icon: 'checked-1'
+    icon: 'check-circle'
   }
 };
 
-const AlertItem = styledTS<{ type: string }>(styled.div)`
+export const AlertItem = styledTS<{ type: string }>(styled.div)`
   display: table;
   margin: 29px auto;
   transition: all 0.5s;
@@ -37,6 +38,7 @@ const AlertItem = styledTS<{ type: string }>(styled.div)`
   font-weight: ${typography.fontWeightLight};
   background-color: ${props => types[props.type].background};
   animation-name: ${slideDown};
+  border-radius: 2px;
   animation-duration: 0.3s;
   animation-timing-function: ease;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
@@ -47,6 +49,7 @@ const AlertItem = styledTS<{ type: string }>(styled.div)`
 
   i {
     margin: 0;
+    font-size: 15px;
   }
 `;
 
@@ -63,6 +66,7 @@ export default class AlertStyled extends React.Component<Props, State> {
   static defaultProps = {
     type: 'information'
   };
+
   private timeout?: NodeJS.Timer = undefined;
 
   constructor(props: Props) {

@@ -1,11 +1,12 @@
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { IRouterProps } from 'modules/common/types';
 import { Alert, withProps } from 'modules/common/utils';
 import { router } from 'modules/common/utils';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
-import { Properties } from '../components';
+import Properties from '../components/Properties';
 import { FIELDS_GROUPS_CONTENT_TYPES } from '../constants';
 import { mutations, queries } from '../graphql';
 import {
@@ -15,7 +16,11 @@ import {
   FieldsRemoveMutationResponse,
   FieldsUpdateVisibleMutationResponse
 } from '../types';
-import { companyBasicInfos, customerBasicInfos } from '../utils';
+import {
+  companyBasicInfos,
+  customerBasicInfos,
+  productBasicInfos
+} from '../utils';
 
 type Props = {
   queryParams: any;
@@ -42,7 +47,11 @@ const PropertiesContainer = (props: FinalProps) => {
   } = props;
 
   if (!router.getParam(history, 'type')) {
-    router.setParams(history, { type: FIELDS_GROUPS_CONTENT_TYPES.CUSTOMER });
+    router.setParams(
+      history,
+      { type: FIELDS_GROUPS_CONTENT_TYPES.CUSTOMER },
+      true
+    );
   }
 
   const removePropertyGroup = ({ _id }) => {
@@ -50,7 +59,7 @@ const PropertiesContainer = (props: FinalProps) => {
       variables: { _id }
     })
       .then(() => {
-        Alert.success('Successfully Removed');
+        Alert.success('You successfully deleted a property group');
       })
       .catch(e => {
         Alert.error(e.message);
@@ -62,7 +71,7 @@ const PropertiesContainer = (props: FinalProps) => {
       variables: { _id }
     })
       .then(() => {
-        Alert.success('Succesfully Removed');
+        Alert.success('You successfully deleted a property field');
       })
       .catch(e => {
         Alert.error(e.message);
@@ -74,7 +83,7 @@ const PropertiesContainer = (props: FinalProps) => {
       variables: { _id, isVisible }
     })
       .then(() => {
-        Alert.success('Successfully Updated');
+        Alert.success('You changed a property field visibility');
       })
       .catch(e => {
         Alert.error(e.message);
@@ -86,7 +95,7 @@ const PropertiesContainer = (props: FinalProps) => {
       variables: { _id, isVisible }
     })
       .then(() => {
-        Alert.success('Successfully Updated');
+        Alert.success('You changed a property group visibility');
       })
       .catch(e => {
         Alert.error(e.message);
@@ -101,6 +110,10 @@ const PropertiesContainer = (props: FinalProps) => {
 
   if (queryParams.type === FIELDS_GROUPS_CONTENT_TYPES.CUSTOMER) {
     defaultGroup = customerBasicInfos;
+  }
+
+  if (queryParams.type === FIELDS_GROUPS_CONTENT_TYPES.PRODUCT) {
+    defaultGroup = productBasicInfos;
   }
 
   fieldsGroups.unshift(defaultGroup);

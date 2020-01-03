@@ -1,18 +1,15 @@
-import {
-  Button,
-  EmptyState,
-  FormControl,
-  Icon,
-  ModalTrigger
-} from 'modules/common/components';
+import Button from 'modules/common/components/Button';
+import EmptyState from 'modules/common/components/EmptyState';
+import FormControl from 'modules/common/components/form/Control';
+import Icon from 'modules/common/components/Icon';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { __ } from 'modules/common/utils';
-import * as React from 'react';
-import { Column, Columns, Footer, Title } from '../styles/chooser';
+import React from 'react';
+import { ActionTop, Column, Columns, Footer, Title } from '../styles/chooser';
 import { CenterContent, ModalFooter } from '../styles/main';
 
-type Props = {
+export type CommonProps = {
   data: any;
-  onSelect: (datas: any[]) => void;
   search: (value: string, reload?: boolean) => void;
   datas: any[];
   title: string;
@@ -22,8 +19,14 @@ type Props = {
   clearState: () => void;
   limit?: number;
   add?: any;
+  newItemId?: string;
   closeModal: () => void;
 };
+
+type Props = {
+  onSelect: (datas: any[]) => void;
+  renderFilter?: () => any;
+} & CommonProps;
 
 type State = {
   datas: any[];
@@ -56,15 +59,21 @@ class CommonChooser extends React.Component<Props, State> {
   }
 
   componentWillReceiveProps(newProps) {
-    const { datas, perPage } = newProps;
+    const { datas, perPage, newItemId } = newProps;
 
-    this.setState({ loadmore: datas.length === perPage });
+    this.setState({ loadmore: datas.length === perPage && datas.length > 0 });
+
+    if (newItemId) {
+      const items = datas.filter(item => item._id === newItemId);
+
+      items.map(data => this.setState({ datas: [...this.state.datas, data] }));
+    }
   }
 
   handleChange = (type, data) => {
     const { datas } = this.state;
 
-    if (type === 'add') {
+    if (type === 'plus-1') {
       if (this.props.limit && this.props.limit === datas.length) {
         return;
       }
@@ -95,7 +104,7 @@ class CommonChooser extends React.Component<Props, State> {
   };
 
   renderRow(data, icon) {
-    if (icon === 'add' && this.state.datas.some(e => e._id === data._id)) {
+    if (icon === 'plus-1' && this.state.datas.some(e => e._id === data._id)) {
       return null;
     }
 
@@ -112,9 +121,7 @@ class CommonChooser extends React.Component<Props, State> {
   renderSelected(selectedDatas) {
     if (selectedDatas.length) {
       return (
-        <ul>
-          {selectedDatas.map(data => this.renderRow(data, 'minus-circle'))}
-        </ul>
+        <ul>{selectedDatas.map(data => this.renderRow(data, 'times'))}</ul>
       );
     }
 
@@ -122,33 +129,44 @@ class CommonChooser extends React.Component<Props, State> {
   }
 
   render() {
-    const { renderForm, datas, title, data, closeModal } = this.props;
+    const {
+      renderForm,
+      datas,
+      title,
+      data,
+      closeModal,
+      renderFilter
+    } = this.props;
     const selectedDatas = this.state.datas;
 
     const addTrigger = (
       <p>
         {__("Don't see the result you're looking for? ")}
-        <a>{__(`Create a new ${title}`)}</a>
+        <span>{__(`Create a new ${title}`)}</span>
       </p>
     );
 
     return (
-      <div>
+      <>
         <Columns>
           <Column>
-            <FormControl
-              placeholder={__('Type to search')}
-              onChange={this.search}
-            />
+            <ActionTop>
+              <FormControl
+                placeholder={__('Type to search')}
+                onChange={this.search}
+              />
+              {renderFilter && renderFilter()}
+            </ActionTop>
+
             <ul>
-              {datas.map(dataItem => this.renderRow(dataItem, 'add'))}
+              {datas.map(dataItem => this.renderRow(dataItem, 'plus-1'))}
               {this.state.loadmore && (
                 <CenterContent>
                   <Button
                     size="small"
                     btnStyle="primary"
                     onClick={this.loadMore}
-                    icon="checked-1"
+                    icon="angle-double-down"
                   >
                     Load More
                   </Button>
@@ -187,7 +205,7 @@ class CommonChooser extends React.Component<Props, State> {
             </div>
           </Footer>
         </ModalFooter>
-      </div>
+      </>
     );
   }
 }

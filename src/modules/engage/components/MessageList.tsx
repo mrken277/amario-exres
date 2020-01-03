@@ -1,19 +1,17 @@
-import { Pagination } from 'modules/common/components';
-import {
-  Button,
-  DataWithLoader,
-  DropdownToggle,
-  FormControl,
-  Icon,
-  Table
-} from 'modules/common/components';
+import Button from 'modules/common/components/Button';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
+import FormControl from 'modules/common/components/form/Control';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Pagination from 'modules/common/components/pagination/Pagination';
+import Table from 'modules/common/components/table';
 import { __ } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import { TaggerPopover } from 'modules/tags/components';
-import * as React from 'react';
-import { Dropdown } from 'react-bootstrap';
+import Wrapper from 'modules/layout/components/Wrapper';
+import TaggerPopover from 'modules/tags/components/TaggerPopover';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { MessageListRow, Sidebar } from '../containers';
+import MessageListRow from '../containers/MessageListRow';
+import Sidebar from '../containers/Sidebar';
+import { ChooseBox, FlexContainer } from '../styles';
 import { IEngageMessage } from '../types';
 
 type Props = {
@@ -39,8 +37,8 @@ class List extends React.Component<Props> {
     const { bulk, emptyBulk } = this.props;
 
     const tagButton = (
-      <Button btnStyle="simple" size="small">
-        {__('Tag')} <Icon icon="downarrow" />
+      <Button btnStyle="simple" size="small" icon="tag-alt">
+        {__('Tag')}
       </Button>
     );
 
@@ -58,6 +56,56 @@ class List extends React.Component<Props> {
     );
   }
 
+  renderBox(title, desc, url) {
+    return (
+      <ChooseBox>
+        <Link to={url}>
+          <b>{__(title)}</b>
+          <p>{__(desc)}</p>
+        </Link>
+      </ChooseBox>
+    );
+  }
+
+  renderRightActionBar = () => {
+    const trigger = (
+      <Button btnStyle="success" size="small" icon="add">
+        {__('New message')}
+      </Button>
+    );
+
+    const content = props => (
+      <FlexContainer direction="column">
+        {this.renderBox(
+          'Auto message',
+          'Auto message description',
+          '/engage/messages/create?kind=auto'
+        )}
+        {this.renderBox(
+          'Manual message',
+          'Manual message description',
+          '/engage/messages/create?kind=manual'
+        )}
+        {this.renderBox(
+          'Visitor auto message',
+          'Visitor auto message description',
+          '/engage/messages/create?kind=visitorAuto'
+        )}
+      </FlexContainer>
+    );
+
+    return (
+      <ModalTrigger
+        title="New message"
+        trigger={trigger}
+        content={content}
+        hideHeader={true}
+        enforceFocus={false}
+        centered={true}
+      />
+    );
+  };
+
   render() {
     const {
       messages,
@@ -69,36 +117,11 @@ class List extends React.Component<Props> {
       isAllSelected
     } = this.props;
 
-    const actionBarRight = (
-      <Dropdown id="dropdown-engage" pullRight={true}>
-        <DropdownToggle bsRole="toggle">
-          <Button btnStyle="success" size="small" icon="add">
-            {__('New message')} <Icon icon="downarrow" />
-          </Button>
-        </DropdownToggle>
-
-        <Dropdown.Menu>
-          <li>
-            <Link to={'/engage/messages/create?kind=auto'}>
-              {__('Auto message')}
-            </Link>
-          </li>
-          <li>
-            <Link to={'/engage/messages/create?kind=manual'}>
-              {__('Manual message')}
-            </Link>
-          </li>
-          <li>
-            <Link to={'/engage/messages/create?kind=visitorAuto'}>
-              {__('Visitor auto message')}
-            </Link>
-          </li>
-        </Dropdown.Menu>
-      </Dropdown>
-    );
-
     const actionBar = (
-      <Wrapper.ActionBar left={this.renderTagger()} right={actionBarRight} />
+      <Wrapper.ActionBar
+        left={this.renderTagger()}
+        right={this.renderRightActionBar()}
+      />
     );
 
     const mainContent = (
@@ -141,6 +164,7 @@ class List extends React.Component<Props> {
       <Wrapper
         header={
           <Wrapper.Header
+            title={__('Engage')}
             breadcrumb={[{ title: __('Engage') }]}
             queryParams={queryParams}
           />
@@ -153,8 +177,8 @@ class List extends React.Component<Props> {
             data={mainContent}
             loading={loading}
             count={messages.length}
-            emptyText="There is no engage message."
-            emptyImage="/images/robots/robot-03.svg"
+            emptyText="A strong customer engagement can help to further brand growth and loyalty"
+            emptyImage="/images/actions/14.svg"
           />
         }
       />

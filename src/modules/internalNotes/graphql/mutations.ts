@@ -2,16 +2,36 @@ const internalNotesAdd = `
   mutation internalNotesAdd(
     $contentType: String!,
     $contentTypeId: String,
-    $content: String
+    $content: String,
+    $mentionedUserIds: [String]
   ) {
       internalNotesAdd(
         contentType: $contentType,
         contentTypeId: $contentTypeId,
-        content: $content
+        content: $content,
+        mentionedUserIds: $mentionedUserIds,
       ) {
         _id
         content
-        createdDate
+        createdAt
+      }
+  }
+`;
+
+const internalNotesEdit = `
+  mutation internalNotesEdit(
+    $_id: String!,
+    $content: String,
+    $mentionedUserIds: [String]
+  ) {
+    internalNotesEdit(
+        _id: $_id,
+        content: $content,
+        mentionedUserIds: $mentionedUserIds,
+      ) {
+        _id
+        content
+        createdAt
       }
   }
 `;
@@ -26,5 +46,6 @@ const internalNotesRemove = `
 
 export default {
   internalNotesAdd,
+  internalNotesEdit,
   internalNotesRemove
 };

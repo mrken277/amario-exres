@@ -15,7 +15,8 @@ const commonFields = `
   $description: String,
   $doNotDisturb: String,
   $links: JSON,
-  $customFieldsData: JSON
+  $customFieldsData: JSON,
+  $code: String
 `;
 
 const commonVariables = `
@@ -35,7 +36,8 @@ const commonVariables = `
   description: $description,
   doNotDisturb: $doNotDisturb,
   links: $links,
-  customFieldsData: $customFieldsData
+  customFieldsData: $customFieldsData,
+  code: $code
 `;
 
 const customersAdd = `
@@ -55,6 +57,7 @@ const customersEdit = `
       lastName
       primaryEmail
       primaryPhone
+      code
       phones
       emails
       ownerId
@@ -71,26 +74,6 @@ const customersEdit = `
         facebook
         github
         youtube
-        website
-      }
-    }
-  }
-`;
-
-const customersAddCompany = `
-  mutation customersAddCompany($_id: String!, $name: String!, $website: String) {
-    customersAddCompany(_id: $_id, name: $name, website: $website) {
-      _id
-    }
-  }
-`;
-
-const customersEditCompanies = `
-  mutation customersEditCompanies($_id: String!, $companyIds: [String]) {
-    customersEditCompanies(_id: $_id, companyIds: $companyIds) {
-      companies {
-        _id
-        primaryName
         website
       }
     }
@@ -114,8 +97,6 @@ const customersMerge = `
 export default {
   customersAdd,
   customersEdit,
-  customersAddCompany,
-  customersEditCompanies,
   customersRemove,
   customersMerge
 };

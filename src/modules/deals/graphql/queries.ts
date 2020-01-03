@@ -1,136 +1,51 @@
-const boards = `
-  query dealBoards {
-    dealBoards {
-      _id
-      name
+import {
+  conformityQueryFieldDefs,
+  conformityQueryFields
+} from 'modules/conformity/graphql/queries';
 
-      pipelines {
-        _id
-        name
-      }
-    }
-  }
+const commonParams = `
+  $companyIds: [String],
+  $customerIds: [String],
+  $assignedUserIds: [String],
+  $productIds: [String],
+  $labelIds: [String],
+  $search: String,
+  $priority: [String],
+  $date: ItemDate,
+  $pipelineId: String,
+  $closeDateType: String,
+  $sortField: String,
+  $sortDirection: Int,
+  ${conformityQueryFields}
 `;
 
-const boardGetLast = `
-  query dealBoardGetLast {
-    dealBoardGetLast {
-      _id
-      name
-
-      pipelines {
-        _id
-        name
-      }
-    }
-  }
+const commonParamDefs = `
+  companyIds: $companyIds,
+  customerIds: $customerIds,
+  assignedUserIds: $assignedUserIds,
+  priority: $priority,
+  productIds: $productIds,
+  labelIds: $labelIds,
+  search: $search,
+  date: $date,
+  pipelineId: $pipelineId,
+  closeDateType: $closeDateType,
+  sortField: $sortField,
+  sortDirection: $sortDirection,
+  ${conformityQueryFieldDefs}
 `;
 
-const boardDetail = `
-  query dealBoardDetail($_id: String!) {
-    dealBoardDetail(_id: $_id) {
-      _id
-      name
-
-      pipelines {
-        _id
-        name
-      }
-    }
-  }
-`;
-
-const pipelines = `
-  query dealPipelines($boardId: String!) {
-    dealPipelines(boardId: $boardId) {
-      _id
-      name
-      boardId
-    }
-  }
-`;
-
-const pipelineDetail = `
-  query dealPipelineDetail($_id: String!) {
-    dealPipelineDetail(_id: $_id) {
-      _id
-      name
-    }
-  }
-`;
-
-const pipelineGetLast = `
-  query dealPipelineGetLast {
-    dealPipelineGetLast {
-      _id
-      name
-    }
-  }
-`;
-
-const stages = `
-  query dealStages($pipelineId: String!) {
-    dealStages(pipelineId: $pipelineId) {
-      _id
-      name
-      order
-      amount
-
-      deals {
-        _id
-        name
-        amount
-        closeDate
-        assignedUsers {
-          _id
-          email
-          details {
-            fullName
-            avatar
-          }
-        }
-        modifiedAt
-        modifiedBy
-        products
-        companies {
-          _id
-          primaryName
-        }
-        customers {
-          _id
-          firstName
-          primaryEmail
-          primaryPhone
-        }
-      }
-    }
-  }
-`;
-
-const stageDetail = `
-  query dealStageDetail($_id: String!) {
-    dealStageDetail(_id: $_id) {
-      _id
-      name
-      pipelineId
-      amount
-
-      deals {
-        _id
-      }
-    }
-  }
-`;
-
-const dealFields = `
+export const dealFields = `
   _id
   name
   stageId
+  hasNotified
   pipeline {
     _id
     name
   }
   boardId
+  priority
   companies {
     _id
     primaryName
@@ -139,8 +54,10 @@ const dealFields = `
   customers {
     _id
     firstName
+    lastName
     primaryEmail
     primaryPhone
+    visitorContactInfo
   }
   products
   productsData
@@ -155,16 +72,63 @@ const dealFields = `
       avatar
     }
   }
+  labels {
+    _id
+    name
+    colorCode
+  }
+  labelIds
   stage {
     probability
+    name
+  }
+  isWatched
+  attachments {
+    name
+    url
+    type
+    size
   }
   modifiedAt
   modifiedBy
+  reminderMinute
+  isComplete
+`;
+
+const dealsTotalAmounts = `
+  query dealsTotalAmounts(
+    ${commonParams}
+  ) {
+    dealsTotalAmounts(
+      ${commonParamDefs}
+    ) {
+      _id
+      dealCount
+      totalForType {
+        _id
+        name
+        currencies {
+          name
+          amount
+        }
+      }
+    }
+  }
 `;
 
 const deals = `
-  query deals($stageId: String, $customerId: String, $companyId: String) {
-    deals(stageId: $stageId, customerId: $customerId, companyId: $companyId) {
+  query deals(
+    $initialStageId: String,
+    $stageId: String,
+    $skip: Int,
+    ${commonParams}
+  ) {
+    deals(
+      initialStageId: $initialStageId,
+      stageId: $stageId,
+      skip: $skip,
+      ${commonParamDefs}
+    ) {
       ${dealFields}
     }
   }
@@ -187,57 +151,9 @@ const productDetail = `
   }
 `;
 
-const users = `
-  query users {
-    users {
-      _id
-      username
-      email
-      details {
-        fullName
-        avatar
-      }
-    }
-  }
-`;
-
-const activityLogsDeal = `
-  query activityLogsDeal($_id: String!) {
-    activityLogsDeal(_id: $_id) {
-      date {
-        year
-        month
-      }
-      list {
-        id
-        action
-        content
-        createdAt
-        by {
-          _id
-          type
-          details {
-            avatar
-            fullName
-          }
-        }
-      }
-    }
-  }
-`;
-
 export default {
-  boards,
-  boardGetLast,
-  boardDetail,
-  pipelines,
-  pipelineGetLast,
-  pipelineDetail,
-  stages,
-  stageDetail,
   deals,
   dealDetail,
   productDetail,
-  users,
-  activityLogsDeal
+  dealsTotalAmounts
 };

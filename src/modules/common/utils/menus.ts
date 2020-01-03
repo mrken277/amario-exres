@@ -1,8 +1,18 @@
-import { __ } from 'modules/common/utils';
-
 const menuInbox = [
-  { title: __('Inbox'), link: '/inbox' },
-  { title: __('Insights'), link: '/insights' }
+  { title: 'Team Inbox', link: '/inbox/index' },
+  { title: 'Ticket', link: '/inbox/ticket/board' },
+  { title: 'Insights', link: '/inbox/insights' }
 ];
 
-export { menuInbox };
+const menuDeal = [
+  { title: 'Sales pipeline', link: '/deal/board' },
+  { title: 'Insights', link: '/deal/insights' }
+];
+
+const menuContacts = [
+  { title: 'Customers', link: '/contacts/customers/all' },
+  { title: 'Companies', link: '/contacts/companies' },
+  { title: 'Visitors', link: '/contacts/customers/visitors' }
+];
+
+export { menuContacts, menuInbox, menuDeal };

@@ -1,19 +1,16 @@
 import gql from 'graphql-tag';
-import { Spinner } from 'modules/common/components';
-import { IRouterProps } from 'modules/common/types';
-import { Alert, withProps } from 'modules/common/utils';
-import { queries as formQueries } from 'modules/forms/graphql';
+import * as compose from 'lodash.flowright';
+import ButtonMutate from 'modules/common/components/ButtonMutate';
+import Spinner from 'modules/common/components/Spinner';
+import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
+import { withProps } from 'modules/common/utils';
 import { queries } from 'modules/settings/integrations/graphql';
-import * as React from 'react';
-import { compose, graphql, withApollo } from 'react-apollo';
+import React from 'react';
+import { graphql, withApollo } from 'react-apollo';
 import { withRouter } from 'react-router';
-import { Lead } from '../../components/lead';
+import Lead from '../../components/lead/Lead';
 import { mutations } from '../../graphql';
-import {
-  IntegrationsQueryResponse,
-  LeadsQueryResponse,
-  MessengerAppsAddLeadMutationResponse
-} from '../../types';
+import { IntegrationsQueryResponse } from '../../types';
 import { integrationsListParams } from '../utils';
 
 type Props = {
@@ -23,44 +20,63 @@ type Props = {
 
 type FinalProps = {
   integrationsQuery: IntegrationsQueryResponse;
-  leadsQuery: LeadsQueryResponse;
+  leadIntegrationsQuery: IntegrationsQueryResponse;
 } & IRouterProps &
-  Props &
-  MessengerAppsAddLeadMutationResponse;
+  Props;
 
 class LeadContainer extends React.Component<FinalProps> {
   render() {
-    const { integrationsQuery, leadsQuery, saveMutation, history } = this.props;
+    const { integrationsQuery, leadIntegrationsQuery } = this.props;
 
-    if (integrationsQuery.loading && leadsQuery.loading) {
+    if (integrationsQuery.loading && leadIntegrationsQuery.loading) {
       return <Spinner objective={true} />;
     }
 
     const integrations = integrationsQuery.integrations || [];
-    const leads = leadsQuery.forms || [];
+    const leads = leadIntegrationsQuery.integrations || [];
 
-    const save = (variables, callback) => {
-      saveMutation({ variables })
-        .then(() => {
-          Alert.success('Congrats');
-          callback();
-          history.push('/settings/integrations');
-        })
-        .catch(e => {
-          Alert.error(e.message);
-        });
+    const renderButton = ({
+      name,
+      values,
+      isSubmitted,
+      callback
+    }: IButtonMutateProps) => {
+      return (
+        <ButtonMutate
+          mutation={mutations.messengerAppsAddLead}
+          variables={values}
+          callback={callback}
+          refetchQueries={getRefetchQueries()}
+          isSubmitted={isSubmitted}
+          type="submit"
+          successMessage={`You successfully added a ${name}`}
+        />
+      );
     };
 
     const updatedProps = {
       ...this.props,
       integrations,
       leads,
-      save
+      renderButton
     };
 
     return <Lead {...updatedProps} />;
   }
 }
+
+const getRefetchQueries = () => {
+  return [
+    {
+      query: gql(queries.messengerApps),
+      variables: { kind: 'lead' }
+    },
+    {
+      query: gql(queries.messengerAppsCount),
+      variables: { kind: 'lead' }
+    }
+  ];
+};
 
 export default withProps<Props>(
   compose(
@@ -77,18 +93,19 @@ export default withProps<Props>(
         };
       }
     }),
-    graphql<Props, LeadsQueryResponse>(gql(formQueries.forms), {
-      name: 'leadsQuery',
-      options: () => {
+    graphql<Props, IntegrationsQueryResponse>(gql(queries.integrations), {
+      name: 'leadIntegrationsQuery',
+      options: ({ queryParams }) => {
         return {
+          notifyOnNetworkStatusChange: true,
+          variables: {
+            ...integrationsListParams(queryParams || {}),
+            kind: 'lead'
+          },
           fetchPolicy: 'network-only'
         };
       }
     }),
-    graphql<Props, MessengerAppsAddLeadMutationResponse>(
-      gql(mutations.messengerAppsAddLead),
-      { name: 'saveMutation' }
-    ),
     withApollo
   )(withRouter<FinalProps>(LeadContainer))
 );

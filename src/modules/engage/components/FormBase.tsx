@@ -1,13 +1,14 @@
 import { IBreadCrumbItem } from 'modules/common/types';
 import { __, Alert } from 'modules/common/utils';
-import * as React from 'react';
+import React from 'react';
 import { IEngageMessageDoc } from '../types';
 
 type Props = {
   kind: string;
   content: (
     params: {
-      renderTitle: () => IBreadCrumbItem[];
+      renderTitle: () => string;
+      breadcrumbs: IBreadCrumbItem[];
       validateDoc: (
         type: string,
         doc: IEngageMessageDoc
@@ -25,38 +26,65 @@ class FormBase extends React.Component<Props> {
 
   validateDoc = (docType, doc): { status: string; doc?: IEngageMessageDoc } => {
     if (!doc.title) {
-      return this.sendError(__('Write title'));
+      return this.sendError(__('Write a title'));
     }
 
     if (!doc.fromUserId) {
-      return this.sendError(__('Choose from who'));
+      return this.sendError(__('Choose a sender'));
     }
 
-    if (doc.messenger && !doc.messenger.brandId) {
-      return this.sendError(__('Choose brand'));
+    if (doc.messenger) {
+      const { brandId, sentAs, content } = doc.messenger;
+
+      if (!brandId) {
+        return this.sendError(__('Choose a brand'));
+      }
+
+      if (!sentAs) {
+        return this.sendError(__('Choose a sent as'));
+      }
+
+      if (!content) {
+        return this.sendError(__('Write a content'));
+      }
     }
 
-    if (doc.messenger && !doc.messenger.sentAs) {
-      return this.sendError(__('Choose from sent as'));
+    if (doc.email) {
+      const { subject, content } = doc.email;
+
+      if (!subject) {
+        return this.sendError(__('Write an email subject'));
+      }
+
+      if (!content) {
+        return this.sendError(__('Write a content'));
+      }
+    }
+
+    if (
+      this.props.kind !== 'manual' &&
+      (!doc.scheduleDate || !doc.scheduleDate.type)
+    ) {
+      return this.sendError(__('Choose a schedule'));
     }
 
     if (doc.scheduleDate) {
       const { time, type, day, month } = doc.scheduleDate;
 
       if (!type && time) {
-        return this.sendError(__('Choose schedule type'));
+        return this.sendError(__('Choose a schedule day'));
       }
 
       if (type && (!time || time.length === 0)) {
-        return this.sendError(__('Choose schedule time'));
+        return this.sendError(__('Choose a schedule time'));
       }
 
       if ((type === 'year' || type === 'month') && !day) {
-        return this.sendError(__('Choose schedule day'));
+        return this.sendError(__('Choose a schedule day'));
       }
 
       if (type === 'year' && !month) {
-        return this.sendError(__('Choose schedule month'));
+        return this.sendError(__('Choose a schedule day'));
       }
     }
 
@@ -90,14 +118,20 @@ class FormBase extends React.Component<Props> {
       title = __('Visitor auto message');
     }
 
-    return [{ title: __('Engage'), link: '/engage' }, { title }];
+    return title;
   }
 
   render() {
+    const breadcrumbs = [
+      { title: __('Engage'), link: '/engage' },
+      { title: this.renderTitle() }
+    ];
+
     return (
       <React.Fragment>
         {this.props.content({
           renderTitle: () => this.renderTitle(),
+          breadcrumbs,
           validateDoc: this.validateDoc
         })}
       </React.Fragment>

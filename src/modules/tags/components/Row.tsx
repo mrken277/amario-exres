@@ -1,25 +1,24 @@
+import ActionButtons from 'modules/common/components/ActionButtons';
+import Button from 'modules/common/components/Button';
+import Icon from 'modules/common/components/Icon';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Tags from 'modules/common/components/Tags';
+import Tip from 'modules/common/components/Tip';
+import { IButtonMutateProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
-import { ITag, ITagSaveParams } from 'modules/tags/types';
-import * as React from 'react';
-import {
-  ActionButtons,
-  Button,
-  Icon,
-  ModalTrigger,
-  Tags,
-  Tip
-} from '../../common/components';
+import { ITag } from 'modules/tags/types';
+import React from 'react';
 import Form from './Form';
 
 type Props = {
   tag: ITag;
   type: string;
   count?: number;
+  renderButton: (props: IButtonMutateProps) => JSX.Element;
   remove: (tag: ITag) => void;
-  save: (params: ITagSaveParams) => void;
 };
 
-function Row({ tag, type, count, remove, save }: Props) {
+function Row({ tag, type, count, renderButton, remove }: Props) {
   function removeTag() {
     remove(tag);
   }
@@ -33,7 +32,7 @@ function Row({ tag, type, count, remove, save }: Props) {
   );
 
   const content = props => (
-    <Form {...props} type={type} tag={tag} save={save} />
+    <Form {...props} type={type} tag={tag} renderButton={renderButton} />
   );
 
   return (
@@ -41,17 +40,17 @@ function Row({ tag, type, count, remove, save }: Props) {
       <td>
         <Tags tags={[tag]} size="medium" />
       </td>
-      <td>{count}</td>
+      <td>{count || '0'}</td>
       <td>
         <ActionButtons>
           <ModalTrigger
-            title="Edit response"
+            title="Edit tag"
             trigger={editTrigger}
             content={content}
           />
 
           <Tip text={__('Delete')}>
-            <Button btnStyle="link" onClick={removeTag} icon="close-circled" />
+            <Button btnStyle="link" onClick={removeTag} icon="cancel-1" />
           </Tip>
         </ActionButtons>
       </td>

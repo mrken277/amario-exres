@@ -1,14 +1,18 @@
-import * as React from 'react';
+import React from 'react';
 import Select from 'react-select-plus';
-import { Button, FormControl, FormGroup, Icon } from '.';
+import { IFormProps } from '../types';
 import { __, Alert } from '../utils';
+import Button from './Button';
+import FormControl from './form/Control';
+import FormGroup from './form/Group';
+import Icon from './Icon';
 
 type OptionProps = {
   option: any;
   onSelect: (option: any[], e: any) => void;
 };
 
-class Option extends React.Component<OptionProps> {
+class Option extends React.PureComponent<OptionProps> {
   render() {
     const { option, onSelect } = this.props;
     const { onRemove } = option;
@@ -40,22 +44,29 @@ type Props = {
   value?: string;
   placeholder?: string;
   buttonText?: string;
+  checkFormat?: (value) => boolean;
+  adding?: boolean;
+  formProps?: IFormProps;
+  type?: string;
+  required?: boolean;
 };
 
 type State = {
   adding: boolean;
   options: any[];
   selectedOption: string;
+  inputValue: string;
 };
 
-class ModifiableSelect extends React.Component<Props, State> {
+class ModifiableSelect extends React.PureComponent<Props, State> {
   constructor(props) {
     super(props);
 
     this.state = {
-      adding: false,
+      adding: props.adding || false,
       options: props.options || [],
-      selectedOption: props.value
+      selectedOption: props.value,
+      inputValue: ''
     };
   }
 
@@ -75,30 +86,46 @@ class ModifiableSelect extends React.Component<Props, State> {
     return <span>{selectedOption}</span>;
   };
 
-  handleSave = () => {
-    const { options, selectedOption } = this.state;
+  saveValue() {
+    const { options, selectedOption, inputValue } = this.state;
     const { onChange } = this.props;
-    const value = (document.getElementById(
-      'removableSelect-value'
-    ) as HTMLInputElement).value;
-
-    const updatedOption = options.length === 0 ? value : selectedOption;
+    const updatedOption = options.length === 0 ? inputValue : selectedOption;
 
     const state: State = {
       adding: false,
-      options: [...options, value],
-      selectedOption: updatedOption
+      options: [...options, inputValue],
+      selectedOption: updatedOption,
+      inputValue
     };
 
     this.setState({ ...state }, () => {
       onChange({ options: this.state.options, selectedOption: updatedOption });
+
+      this.setState({ inputValue: '' });
     });
 
     Alert.success('Successfully added');
+  }
 
-    (document.getElementById(
-      'removableSelect-value'
-    ) as HTMLInputElement).value = '';
+  handleSave = () => {
+    const { checkFormat } = this.props;
+    const { inputValue, options } = this.state;
+
+    if (options.includes(inputValue)) {
+      return Alert.error(
+        `${inputValue} is already in the list. Please write a different option.`
+      );
+    }
+
+    if (checkFormat) {
+      if (checkFormat(inputValue)) {
+        return this.saveValue();
+      }
+
+      return Alert.error('Invalid format');
+    }
+
+    return this.saveValue();
   };
 
   handleAdding = () => {
@@ -142,12 +169,18 @@ class ModifiableSelect extends React.Component<Props, State> {
     });
   };
 
+  handleInputChange = e => {
+    e.preventDefault();
+    this.setState({ inputValue: e.target.value });
+  };
+
   renderInput = () => {
-    const { buttonText } = this.props;
+    const { buttonText, placeholder, type, required } = this.props;
 
     if (this.state.adding) {
       const onPress = e => {
         if (e.key === 'Enter') {
+          e.preventDefault();
           return this.handleSave();
         }
       };
@@ -156,13 +189,15 @@ class ModifiableSelect extends React.Component<Props, State> {
         <React.Fragment>
           <FormGroup>
             <FormControl
-              id="removableSelect-value"
+              type={type}
               autoFocus={true}
               onKeyPress={onPress}
+              placeholder={placeholder}
+              onChange={this.handleInputChange}
+              required={required}
             />
           </FormGroup>
           <Button
-            type="success"
             icon="cancel-1"
             btnStyle="simple"
             size="small"
@@ -171,7 +206,6 @@ class ModifiableSelect extends React.Component<Props, State> {
             Cancel
           </Button>
           <Button
-            type="success"
             btnStyle="success"
             size="small"
             icon="checked-1"
@@ -193,7 +227,6 @@ class ModifiableSelect extends React.Component<Props, State> {
   render() {
     const { placeholder } = this.props;
     const { selectedOption } = this.state;
-
     const onChange = obj => this.setItem(obj);
 
     return (

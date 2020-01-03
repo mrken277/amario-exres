@@ -1,35 +1,26 @@
+import client from 'apolloClient';
 import gql from 'graphql-tag';
-import { Spinner } from 'modules/common/components';
-import { IRouterProps } from 'modules/common/types';
-import { Alert, withProps } from 'modules/common/utils';
+import ButtonMutate from 'modules/common/components/ButtonMutate';
+import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
+import { Alert } from 'modules/common/utils';
 import Facebook from 'modules/settings/integrations/components/facebook/Form';
-import { queries } from 'modules/settings/linkedAccounts/graphql';
-import * as React from 'react';
-import { compose, graphql, withApollo } from 'react-apollo';
+import { mutations, queries } from 'modules/settings/integrations/graphql';
+import React from 'react';
 import { withRouter } from 'react-router';
-import { BrandsQueryResponse } from '../../../brands/types';
-import { AccountsQueryResponse } from '../../../linkedAccounts/types';
-import {
-  CreateFacebookMutationResponse,
-  CreateFacebookMutationVariables,
-  IPages
-} from '../../types';
+import { IPages } from '../../types';
+import { getRefetchQueries } from '../utils';
 
 type Props = {
-  client: any;
+  kind: string;
   type?: string;
   closeModal: () => void;
 };
 
-type FinalProps = {
-  accountsQuery: AccountsQueryResponse;
-  brandsQuery: BrandsQueryResponse;
-} & IRouterProps &
-  Props &
-  CreateFacebookMutationResponse;
+type FinalProps = {} & IRouterProps & Props;
 
 type State = {
   pages: IPages[];
+  accountId?: string;
 };
 
 class FacebookContainer extends React.Component<FinalProps, State> {
@@ -39,120 +30,72 @@ class FacebookContainer extends React.Component<FinalProps, State> {
     this.state = { pages: [] };
   }
 
-  onAccSelect = (doc: { accountId?: string }) => {
-    this.props.client
+  onAccountSelect = (accountId?: string) => {
+    if (!accountId) {
+      return this.setState({ pages: [], accountId: '' });
+    }
+
+    client
       .query({
-        query: gql`
-          query integrationFacebookPagesList($accountId: String) {
-            integrationFacebookPagesList(accountId: $accountId)
-          }
-        `,
-
-        variables: doc
-      })
-
-      .then(({ data, loading }) => {
-        if (!loading) {
-          this.setState({ pages: data.integrationFacebookPagesList });
+        query: gql(queries.fetchApi),
+        variables: {
+          path: '/facebook/get-pages',
+          params: { accountId }
         }
       })
-
+      .then(({ data, loading }: any) => {
+        if (!loading) {
+          this.setState({
+            pages: data.integrationsFetchApi,
+            accountId
+          });
+        }
+      })
       .catch(error => {
         Alert.error(error.message);
       });
   };
 
+  onRemoveAccount = () => {
+    this.setState({ pages: [] });
+  };
+
+  renderButton = ({
+    name,
+    values,
+    isSubmitted,
+    callback
+  }: IButtonMutateProps) => {
+    const { kind } = this.props;
+
+    return (
+      <ButtonMutate
+        mutation={mutations.integrationsCreateExternalIntegration}
+        variables={values}
+        callback={callback}
+        refetchQueries={getRefetchQueries(kind)}
+        isSubmitted={isSubmitted}
+        type="submit"
+        successMessage={`You successfully added a ${name}`}
+      />
+    );
+  };
+
   render() {
-    const {
-      history,
-      brandsQuery,
-      saveMutation,
-      accountsQuery,
-      closeModal
-    } = this.props;
-
-    if (brandsQuery.loading) {
-      return <Spinner objective={true} />;
-    }
-
-    const brands = brandsQuery.brands;
-    const accounts = accountsQuery.accounts || [];
-
-    const save = (variables, callback) => {
-      saveMutation({ variables })
-        .then(() => {
-          Alert.success('Congrats');
-          callback();
-          history.push('/settings/integrations');
-        })
-        .catch(e => {
-          Alert.error(e.message);
-        });
-    };
+    const { closeModal, kind } = this.props;
 
     const updatedProps = {
+      kind,
       closeModal,
-      brands,
+      accountId: this.state.accountId,
       pages: this.state.pages,
-      onAccSelect: this.onAccSelect,
-      save,
-      accounts
+      onAccountSelect: this.onAccountSelect,
+      onRemoveAccount: this.onRemoveAccount,
+      renderButton: this.renderButton
     };
 
     return <Facebook {...updatedProps} />;
   }
 }
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, BrandsQueryResponse>(
-      gql`
-        query brands {
-          brands {
-            _id
-            name
-          }
-        }
-      `,
-      {
-        name: 'brandsQuery',
-        options: () => ({
-          fetchPolicy: 'network-only'
-        })
-      }
-    ),
-    graphql<
-      Props,
-      CreateFacebookMutationResponse,
-      CreateFacebookMutationVariables
-    >(
-      gql`
-        mutation integrationsCreateFacebookIntegration(
-          $brandId: String!
-          $name: String!
-          $accountId: String!
-          $pageIds: [String!]!
-        ) {
-          integrationsCreateFacebookIntegration(
-            brandId: $brandId
-            name: $name
-            pageIds: $pageIds
-            accountId: $accountId
-          ) {
-            _id
-          }
-        }
-      `,
-      { name: 'saveMutation' }
-    ),
-    graphql<Props, AccountsQueryResponse>(gql(queries.accounts), {
-      name: 'accountsQuery',
-      options: {
-        variables: {
-          kind: 'facebook'
-        }
-      }
-    }),
-    withApollo
-  )(withRouter<FinalProps>(FacebookContainer))
-);
+export default withRouter<FinalProps>(FacebookContainer);

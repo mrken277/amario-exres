@@ -1,19 +1,25 @@
-import { Icon, Label } from 'modules/common/components';
+import Icon from 'modules/common/components/Icon';
+import Label from 'modules/common/components/Label';
 import { __ } from 'modules/common/utils';
-import * as React from 'react';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
-import { NotificationsLatest } from '../containers';
+import React from 'react';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+import NotificationsLatest from '../containers/NotificationsLatest';
+import { INotification } from '../types';
 import { NotifButton, PopoverHeader } from './styles';
 
-class Widget extends React.Component<
-  { unreadCount: number },
-  { activeFirst: boolean }
-> {
-  update = () => {
-    // rerender component
-    this.forceUpdate();
-  };
+type Props = {
+  unreadCount: number;
+  notifications: INotification[];
+  markAsRead: () => void;
+  isLoading: boolean;
+};
 
+type State = {
+  activeFirst: boolean;
+};
+
+class Widget extends React.Component<Props, State> {
   renderUnreadCount() {
     const { unreadCount } = this.props;
 
@@ -29,10 +35,13 @@ class Widget extends React.Component<
   }
 
   render() {
+    const { notifications, markAsRead, isLoading } = this.props;
+
+    const popoverProps = { notifications, markAsRead, isLoading };
     const popoverNotification = (
       <Popover id="npopover" className="notification-popover">
         <PopoverHeader>{__('Notifications')}</PopoverHeader>
-        <NotificationsLatest update={this.update} />
+        <NotificationsLatest {...popoverProps} />
       </Popover>
     );
 
@@ -41,7 +50,6 @@ class Widget extends React.Component<
         trigger="click"
         rootClose={true}
         placement="bottom"
-        containerPadding={20}
         overlay={popoverNotification}
       >
         <NotifButton>

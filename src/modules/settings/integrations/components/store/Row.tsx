@@ -1,9 +1,10 @@
-import { Pagination } from 'modules/common/components';
+import Pagination from 'modules/common/components/pagination/Pagination';
 import { __ } from 'modules/common/utils';
-import { IntegrationList } from 'modules/settings/integrations/containers/common';
+import IntegrationList from 'modules/settings/integrations/containers/common/IntegrationList';
 import MessengerAppList from 'modules/settings/integrations/containers/MessengerAppList';
-import * as React from 'react';
-import { Collapse } from 'react-bootstrap';
+import React from 'react';
+import Collapse from 'react-bootstrap/Collapse';
+import StoreEntry from '../../containers/StoreEntry';
 import Entry from './Entry';
 import { CollapsibleContent, IntegrationRow } from './styles';
 
@@ -13,9 +14,14 @@ type Props = {
   totalCount: {
     messenger: number;
     form: number;
-    twitter: number;
     facebook: number;
     gmail: number;
+    callpro: number;
+    chatfuel: number;
+    imap: number;
+    office365: number;
+    outlook: number;
+    yahoo: number;
   };
   queryParams: any;
 };
@@ -29,9 +35,13 @@ class Row extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    const {
+      queryParams: { kind }
+    } = props;
+
     this.state = {
-      isContentVisible: false,
-      kind: null
+      isContentVisible: Boolean(kind) || false,
+      kind
     };
   }
 
@@ -50,7 +60,7 @@ class Row extends React.Component<Props, State> {
   };
 
   toggleBox = selectedKind => {
-    if (!selectedKind) {
+    if (!selectedKind || selectedKind === 'amazon-ses') {
       return false;
     }
 
@@ -82,47 +92,71 @@ class Row extends React.Component<Props, State> {
     return <Pagination count={totalCount} />;
   }
 
-  renderList() {
-    const { queryParams, totalCount } = this.props;
-    const { isContentVisible, kind } = this.state;
-
-    if (!isContentVisible) {
-      return null;
+  isMessengerApp(kind: string | null) {
+    if (kind === 'lead' || kind === 'knowledgebase' || kind === 'website') {
+      return true;
     }
 
-    if (kind === 'googleMeet' || kind === 'lead' || kind === 'knowledgebase') {
+    return false;
+  }
+
+  renderEntry(integration, totalCount, queryParams) {
+    const kind = integration.kind;
+
+    const commonProp = {
+      key: integration.name,
+      integration,
+      toggleBox: this.toggleBox,
+      getClassName: this.getClassName,
+      totalCount,
+      queryParams
+    };
+
+    if (this.isMessengerApp(kind)) {
+      return <StoreEntry {...commonProp} kind={kind} />;
+    }
+
+    return <Entry {...commonProp} />;
+  }
+
+  renderList() {
+    const { queryParams, totalCount } = this.props;
+    const { kind } = this.state;
+
+    if (this.isMessengerApp(kind)) {
       return <MessengerAppList kind={kind} queryParams={queryParams} />;
     }
 
     return (
-      <React.Fragment>
+      <>
         <IntegrationList kind={kind} queryParams={queryParams} />
         {this.renderPagination(totalCount[kind || ''])}
-      </React.Fragment>
+      </>
     );
   }
 
   render() {
-    const { integrations, title, totalCount } = this.props;
+    const { integrations, title, totalCount, queryParams } = this.props;
+
+    const selected = integrations.find(
+      integration => integration.kind === this.state.kind
+    );
 
     return (
-      <React.Fragment>
+      <>
         {title && <h3>{__(title)}</h3>}
         <IntegrationRow>
-          {integrations.map(integration => (
-            <Entry
-              key={integration.name}
-              integration={integration}
-              toggleBox={this.toggleBox}
-              getClassName={this.getClassName}
-              totalCount={totalCount}
-            />
-          ))}
+          {integrations.map(integration =>
+            this.renderEntry(integration, totalCount, queryParams)
+          )}
         </IntegrationRow>
-        <Collapse in={this.state.isContentVisible}>
+        <Collapse
+          in={this.state.isContentVisible && selected}
+          unmountOnExit={true}
+        >
           <CollapsibleContent>{this.renderList()}</CollapsibleContent>
         </Collapse>
-      </React.Fragment>
+      </>
     );
   }
 }

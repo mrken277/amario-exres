@@ -1,9 +1,11 @@
-import { EmptyState, Icon, NameCard } from 'modules/common/components';
+import Box from 'modules/common/components/Box';
+import EmptyState from 'modules/common/components/EmptyState';
+import Icon from 'modules/common/components/Icon';
+import NameCard from 'modules/common/components/nameCard/NameCard';
 import { __, renderFullName } from 'modules/common/utils';
 import { ICompany } from 'modules/companies/types';
 import { Contact } from 'modules/customers/styles';
-import { Sidebar } from 'modules/layout/components';
-import * as React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -21,8 +23,8 @@ class Contacts extends React.Component<Props> {
         <NameCard.Avatar customer={customer} size={30} />
         {renderFullName(customer)}
 
-        <Link to={`/customers/details/${customer._id}`}>
-          <Icon icon="logout-2" />
+        <Link to={`/contacts/customers/details/${customer._id}`}>
+          <Icon icon="arrow-to-right" />
         </Link>
       </Contact>
     ));
@@ -41,15 +43,10 @@ class Contacts extends React.Component<Props> {
   }
 
   render() {
-    const { Section } = Sidebar;
-    const { Title } = Section;
-
     return (
-      <Section>
-        <Title>{__('Contacts')}</Title>
-
+      <Box title={__('Contacts')} name="showContacts">
         {this.renderContent()}
-      </Section>
+      </Box>
     );
   }
 }

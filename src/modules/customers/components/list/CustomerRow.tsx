@@ -1,10 +1,14 @@
 import _ from 'lodash';
-import { FormControl, NameCard, Tags } from 'modules/common/components';
+import FormControl from 'modules/common/components/form/Control';
+import Icon from 'modules/common/components/Icon';
+import NameCard from 'modules/common/components/nameCard/NameCard';
+import Tags from 'modules/common/components/Tags';
+import { formatValue } from 'modules/common/utils';
 import { FlexItem } from 'modules/companies/styles';
+import { BooleanStatus, ClickableRow } from 'modules/customers/styles';
 import { ICustomer } from 'modules/customers/types';
 import { IConfigColumn } from 'modules/settings/properties/types';
-import * as moment from 'moment';
-import * as React from 'react';
+import React from 'react';
 
 type Props = {
   customer: ICustomer;
@@ -13,36 +17,6 @@ type Props = {
   isChecked?: boolean;
   toggleBulk: (target: any, toAdd: boolean) => void;
 };
-
-function isTimeStamp(value) {
-  if (typeof value === 'string') {
-    value = parseInt(value, 10);
-  }
-
-  return (
-    Number.isInteger(value) && value > 1000000000 && value <= 999999999999999
-  );
-}
-
-function formatValue(value) {
-  if (!value) {
-    return '-';
-  }
-
-  if (typeof value === 'string') {
-    return value;
-  }
-
-  if (typeof value === 'boolean') {
-    return value ? 'Yes' : 'No';
-  }
-
-  if (moment(value, moment.ISO_8601).isValid() || isTimeStamp(value)) {
-    return moment(value).fromNow();
-  }
-
-  return value;
-}
 
 function displayValue(customer, name) {
   const value = _.get(customer, name);
@@ -64,6 +38,14 @@ function displayValue(customer, name) {
     }
 
     return '-';
+  }
+
+  if (typeof value === 'boolean') {
+    return (
+      <BooleanStatus isTrue={value}>
+        <Icon icon={value ? 'check-1' : 'times'} />
+      </BooleanStatus>
+    );
   }
 
   return formatValue(value);
@@ -89,12 +71,12 @@ function CustomerRow({
   };
 
   const onTrClick = () => {
-    history.push(`/customers/details/${customer._id}`);
+    history.push(`/contacts/customers/details/${customer._id}`);
   };
 
   return (
-    <tr onClick={onTrClick}>
-      <td onClick={onClick}>
+    <tr>
+      <td style={{ width: '50px' }} onClick={onClick}>
         <FormControl
           checked={isChecked}
           componentClass="checkbox"
@@ -102,9 +84,13 @@ function CustomerRow({
         />
       </td>
       {columnsConfig.map(({ name }, index) => (
-        <td key={index}>{displayValue(customer, name)}</td>
+        <td key={index}>
+          <ClickableRow onClick={onTrClick}>
+            {displayValue(customer, name)}
+          </ClickableRow>
+        </td>
       ))}
-      <td>
+      <td onClick={onTrClick}>
         <Tags tags={tags} limit={2} />
       </td>
     </tr>

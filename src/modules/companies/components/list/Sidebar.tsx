@@ -1,21 +1,19 @@
-import { Wrapper } from 'modules/layout/components';
-import * as React from 'react';
-import {
-  BrandFilter,
-  LeadStatusFilter,
-  LifecycleStateFilter,
-  SegmentFilter,
-  TagFilter
-} from '../../containers/filters';
+import Wrapper from 'modules/layout/components/Wrapper';
+import React from 'react';
+import BrandFilter from '../../containers/filters/BrandFilter';
+import LeadStatusFilter from '../../containers/filters/LeadStatusFilter';
+import LifecycleStateFilter from '../../containers/filters/LifecycleStateFilter';
+import SegmentFilter from '../../containers/filters/SegmentFilter';
+import TagFilter from '../../containers/filters/TagFilter';
 
-function Sidebar() {
+function Sidebar({ loadingMainQuery }: { loadingMainQuery: boolean }) {
   return (
     <Wrapper.Sidebar>
-      <SegmentFilter />
-      <TagFilter />
-      <LeadStatusFilter />
-      <LifecycleStateFilter />
-      <BrandFilter />
+      <SegmentFilter loadingMainQuery={loadingMainQuery} />
+      <TagFilter loadingMainQuery={loadingMainQuery} />
+      <LeadStatusFilter loadingMainQuery={loadingMainQuery} />
+      <LifecycleStateFilter loadingMainQuery={loadingMainQuery} />
+      <BrandFilter loadingMainQuery={loadingMainQuery} />
     </Wrapper.Sidebar>
   );
 }

@@ -1,6 +1,6 @@
 import { ICompany } from 'modules/companies/types';
 import { ITag } from 'modules/tags/types';
-import { IActivityLogForMonth } from '../activityLogs/types';
+import { IActivityLog } from '../activityLogs/types';
 import { IUser } from '../auth/types';
 import { ISegmentDoc } from '../segments/types';
 import { IIntegration } from '../settings/integrations/types';
@@ -10,19 +10,6 @@ export interface IMessengerData {
   sessionCount?: number;
   isActive?: boolean;
   customData?: any;
-}
-
-export interface ITwitterData {
-  id?: number;
-  id_str?: string;
-  name?: string;
-  screen_name?: string;
-  profile_image_url?: string;
-}
-
-export interface IFacebookData {
-  id: string;
-  profilePic?: string;
 }
 
 export interface IVisitorContact {
@@ -53,6 +40,7 @@ export interface ICustomerDoc {
   location?: {
     userAgent?: string;
     country?: string;
+    countryCode?: string;
     remoteAddress?: string;
     hostname?: string;
     language?: string;
@@ -64,11 +52,10 @@ export interface ICustomerDoc {
   description?: string;
   doNotDisturb?: string;
   links?: ICustomerLinks;
-  twitterData?: ITwitterData;
-  facebookData?: IFacebookData;
   messengerData?: IMessengerData;
   customFieldsData?: { [key: string]: any };
   visitorContactInfo?: IVisitorContact;
+  code?: string;
 }
 
 export interface ICustomer extends ICustomerDoc {
@@ -111,19 +98,6 @@ export type MergeMutationResponse = {
   customersMerge: (
     doc: {
       variables: MergeMutationVariables;
-    }
-  ) => Promise<any>;
-};
-
-export type CompaniesEditCustomersMutationVariables = {
-  _id: string;
-  customerIds: string[];
-};
-
-export type CompaniesEditCustomersMutationResponse = {
-  companiesEditCustomers: (
-    doc: {
-      variables: CompaniesEditCustomersMutationVariables;
     }
   ) => Promise<any>;
 };
@@ -187,6 +161,8 @@ export type CustomerDetailQueryResponse = {
 };
 
 export type ActivityLogQueryResponse = {
-  activityLogsCustomer: IActivityLogForMonth[];
+  activityLogs: IActivityLog[];
   loading: boolean;
+  refetch: () => void;
+  subscribeToMore: any;
 };

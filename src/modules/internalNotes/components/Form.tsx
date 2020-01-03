@@ -1,99 +1,148 @@
-import { Button, FormControl } from 'modules/common/components';
-import { colors, dimensions } from 'modules/common/styles';
-import { __ } from 'modules/common/utils';
-import * as React from 'react';
+import Button from 'modules/common/components/Button';
+import { SmallLoader } from 'modules/common/components/ButtonMutate';
+import { getMentionedUserIds } from 'modules/common/components/EditorCK';
+import EditorCK from 'modules/common/containers/EditorCK';
+import React from 'react';
 import styled from 'styled-components';
 
-export const EditorActions = styled.div`
-  padding: 0 20px 10px 20px;
-  position: absolute;
-  color: ${colors.colorCoreGray};
-  bottom: 0;
-  right: 0;
+const EditorActions = styled.div`
+  padding: 0px 15px 37px 15px;
+  text-align: right;
 `;
 
 const EditorWrapper = styled.div`
   position: relative;
 
-  textarea {
-    border-bottom: none;
-    box-sizing: border-box;
-    padding: ${dimensions.unitSpacing}px ${dimensions.coreSpacing}px
-      ${dimensions.coreSpacing * 1.5}px;
+  > .cke_chrome {
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .cke_bottom {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
+
+  .cke_toolgroup {
+    border: 0;
+    margin-left: 3px;
   }
 `;
 
-class Form extends React.Component<
-  { create: (content: string) => void },
-  { content: string; editing: boolean }
-> {
+type Prop = {
+  save: (variables, callback: () => void) => void;
+  isActionLoading: boolean;
+  content?: string;
+  callback?: () => void;
+};
+
+type State = {
+  content: string;
+};
+
+class Form extends React.PureComponent<Prop, State> {
   constructor(props) {
     super(props);
 
     this.state = {
-      content: '',
-      editing: false
+      content: props.content ? props.content : ''
     };
   }
 
-  handleChange = e => {
-    e.preventDefault();
-    this.setState({ content: e.target.value, editing: true });
-  };
-
-  handleKeyDown = e => {
-    if (e.keyCode === 13 && e.shiftKey === false && this.state.content !== '') {
-      e.preventDefault();
-      this.onSend();
-    }
+  clearContent = () => {
+    this.setState({ content: '' });
   };
 
   onSend = () => {
-    this.props.create(this.state.content);
-    this.cancelEditing();
-  };
+    const { content } = this.state;
+    const { callback } = this.props;
 
-  cancelEditing = () => {
-    this.setState({ content: '', editing: false });
+    const mentionedUserIds = getMentionedUserIds(content);
+
+    this.props.save({ content, mentionedUserIds }, () => {
+      callback ? callback() : this.clearContent();
+    });
   };
 
   renderFooter() {
-    if (!this.state.editing) {
+    const { isActionLoading, content, callback } = this.props;
+
+    if (!this.state.content) {
       return null;
     }
+
     return (
       <EditorActions>
+        {content && (
+          <Button
+            icon="cancel-1"
+            btnStyle="simple"
+            size="small"
+            onClick={callback}
+          >
+            Cancel
+          </Button>
+        )}
         <Button
-          onClick={this.cancelEditing}
-          btnStyle="simple"
+          onClick={this.clearContent}
+          btnStyle="warning"
           size="small"
-          icon="cancel-1"
+          icon="eraser-1"
         >
           Discard
         </Button>
+
         <Button
+          disabled={isActionLoading}
           onClick={this.onSend}
           btnStyle="success"
           size="small"
-          icon="send"
+          icon={isActionLoading ? undefined : 'message'}
         >
+          {isActionLoading && <SmallLoader />}
           Save
         </Button>
       </EditorActions>
     );
   }
 
+  onEditorChange = e => {
+    this.setState({
+      content: e.editor.getData()
+    });
+  };
+
   render() {
     return (
       <EditorWrapper>
-        <form onKeyDown={this.handleKeyDown} onChange={this.handleChange}>
-          <FormControl
-            componentClass="textarea"
-            placeholder={__('Start typing to leave a note')}
-            value={this.state.content}
-          />
-          {this.renderFooter()}
-        </form>
+        <EditorCK
+          onCtrlEnter={this.onSend}
+          showMentions={true}
+          content={this.state.content}
+          onChange={this.onEditorChange}
+          height={150}
+          toolbar={[
+            {
+              name: 'basicstyles',
+              items: [
+                'Bold',
+                'Italic',
+                'NumberedList',
+                'BulletedList',
+                'Link',
+                'Unlink',
+                '-',
+                'Image',
+                'EmojiPanel'
+              ]
+            }
+          ]}
+        />
+
+        {this.renderFooter()}
       </EditorWrapper>
     );
   }

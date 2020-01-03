@@ -1,40 +1,66 @@
-import { EmptyState, Icon } from 'modules/common/components';
-import * as React from 'react';
+import dayjs from 'dayjs';
+import EmptyState from 'modules/common/components/EmptyState';
+import React from 'react';
 import { IUser } from '../../auth/types';
 import { ActivityTitle, Timeline } from '../styles';
-import ActivityLogProcessor from '../utils';
+import { IActivityLog } from '../types';
 import ActivityItem from './ActivityItem';
 
 type Props = {
-  activities: any[];
+  activities: IActivityLog[];
   user: IUser;
   target?: string;
   type: string;
 };
 
 class ActivityList extends React.Component<Props> {
-  renderList(activity) {
-    const activities = activity.data;
+  renderItem(data) {
+    return data.map((item, index) => (
+      <ActivityItem key={index} activity={item} currenUser={this.props.user} />
+    ));
+  }
+
+  renderList(activity, index) {
+    const data = Object.keys(activity);
 
     return (
-      <div key={activity.title}>
-        {activities.length ? (
-          <ActivityTitle>
-            <Icon icon="calendar" /> {activity.title}
-          </ActivityTitle>
-        ) : null}
-        {activities.map((rowData, index) => (
-          <ActivityItem key={index} data={rowData} />
-        ))}
+      <div key={index}>
+        <ActivityTitle>{data}</ActivityTitle>
+        {data.map(key => this.renderItem(activity[key]))}
       </div>
     );
   }
 
-  render() {
-    let { activities } = this.props;
-    const activityLogProcessor = new ActivityLogProcessor(this.props);
+  renderTimeLine(activities) {
+    const result = activities.reduce((item, activity) => {
+      const { contentType } = activity;
+      const createdDate = dayjs(activity.createdAt).format('MMMM YYYY');
 
-    activities = activityLogProcessor.process();
+      if (
+        contentType === 'taskDetail' &&
+        dayjs(activity.createdAt) >= dayjs()
+      ) {
+        item.Upcoming = item.Upcoming || [];
+        item.Upcoming.push(activity);
+      } else {
+        item[createdDate] = item[createdDate] || [];
+        item[createdDate].push(activity);
+      }
+
+      return item;
+    }, {});
+
+    return (
+      <Timeline>
+        {Object.keys(result).map((key, index) => {
+          return this.renderList({ [key]: result[key] }, index);
+        })}
+      </Timeline>
+    );
+  }
+
+  render() {
+    const { activities } = this.props;
 
     if (!activities || activities.length < 1) {
       return (
@@ -45,7 +71,7 @@ class ActivityList extends React.Component<Props> {
       );
     }
 
-    return <Timeline>{activities.map(item => this.renderList(item))}</Timeline>;
+    return this.renderTimeLine(activities);
   }
 }
 

@@ -1,7 +1,7 @@
-import { DataWithLoader } from 'modules/common/components';
-import * as React from 'react';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
+import React from 'react';
 import { IArticle } from '../../types';
-import { ArticleRow } from './';
+import ArticleRow from './ArticleRow';
 
 type Props = {
   articles: IArticle[];
@@ -42,9 +42,8 @@ class ArticleList extends React.Component<Props> {
         <DataWithLoader
           loading={loading}
           count={articles.length}
-          emptyText="There is no article"
-          emptyImage="/images/robots/robot-05.svg"
-          objective={true}
+          emptyText="Articles can address any number of issues your customers encounter. Types of knowledge articles can include solutions to common issues, product or feature documentation, FAQ's and much more."
+          emptyImage="/images/actions/8.svg"
           data={this.renderArticles()}
         />
       </React.Fragment>

@@ -1,109 +1,82 @@
-import {
-  Button,
-  Icon,
-  ModalTrigger,
-  Tabs,
-  TabTitle
-} from 'modules/common/components';
-import { CompanyAssociate } from 'modules/companies/containers';
-import {
-  DetailInfo,
-  DevicePropertiesSection,
-  InfoSection,
-  MessengerSection,
-  TaggerSection
-} from 'modules/customers/components/common';
-import { ActionSection } from 'modules/customers/containers/common';
-import { CustomFieldsSection } from 'modules/customers/containers/common';
-import { PortableDeals } from 'modules/deals/containers';
-import { Sidebar } from 'modules/layout/components';
-import * as React from 'react';
-import {
-  Actions,
-  BasicInfo,
-  SectionContainer,
-  SidebarCollapse
-} from './styles';
+import { Tabs, TabTitle } from 'modules/common/components/tabs';
+import Sidebar from 'modules/layout/components/Sidebar';
+import React from 'react';
+import { BasicInfo, TabContent } from './styles';
 
+import asyncComponent from 'modules/common/components/AsyncComponent';
+import Box from 'modules/common/components/Box';
 import { __ } from 'modules/common/utils';
-import { Contacts } from 'modules/companies/components';
+import CompanySection from 'modules/companies/components/common/CompanySection';
 import { ICustomer } from 'modules/customers/types';
-import { SidebarActivity } from 'modules/inbox/containers/conversationDetail';
-import { MailForm } from 'modules/settings/integrations/containers/google';
 import { IConversation } from '../../../types';
-import ConversationDetails from './ConversationDetails';
 
-type BoxProps = {
-  title: string;
-  name: string;
-  children: React.ReactNode;
-  isOpen: boolean;
-  toggle: (params: { name: string; isOpen: boolean }) => void;
-};
+const ActionSection = asyncComponent(() =>
+  import(/* webpackChunkName:"Inbox-Sidebar-ActionSection" */ 'modules/customers/containers/common/ActionSection')
+);
 
-type BoxState = {
-  isOpen: boolean;
-};
+const CustomFieldsSection = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-Sidebar-CustomFieldsSection" */ 'modules/customers/containers/common/CustomFieldsSection'),
+  { height: '200px', width: '100%', color: '#fff' }
+);
 
-class Box extends React.Component<BoxProps, BoxState> {
-  constructor(props: BoxProps) {
-    super(props);
+const PortableDeals = asyncComponent(() =>
+  import(/* webpackChunkName:"Inbox-Sidebar-PortableDeals" */ 'modules/deals/components/PortableDeals')
+);
 
-    this.state = {
-      isOpen: props.isOpen
-    };
-  }
+const PortableTasks = asyncComponent(() =>
+  import(/* webpackChunkName:"Inbox-Sidebar-PortableTasks" */ 'modules/tasks/components/PortableTasks')
+);
 
-  toggle = () => {
-    const { name, toggle } = this.props;
-    const { isOpen } = this.state;
+const PortableTickets = asyncComponent(() =>
+  import(/* webpackChunkName:"Inbox-Sidebar-PortableTickets" */ 'modules/tickets/components/PortableTickets')
+);
 
-    this.setState({ isOpen: !isOpen });
+const Contacts = asyncComponent(() =>
+  import(/* webpackChunkName:"Inbox-Sidebar-Contacts" */ 'modules/companies/components/detail/Contacts')
+);
 
-    toggle({ name, isOpen: !isOpen });
-  };
+const DetailInfo = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-Sidebar-InfoSection" */ 'modules/customers/components/common/DetailInfo'),
+  { isBox: true }
+);
 
-  renderDropBtn() {
-    const icon = this.state.isOpen ? 'downarrow' : 'rightarrow-2';
+const InfoSection = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-Sidebar-InfoSection" */ 'modules/customers/components/common/InfoSection'),
+  { withImage: true }
+);
 
-    return (
-      <SidebarCollapse onClick={this.toggle}>
-        <Icon icon={icon} />
-      </SidebarCollapse>
-    );
-  }
+const DevicePropertiesSection = asyncComponent(() =>
+  import(/* webpackChunkName:"Inbox-Sidebar-DevicePropertiesSection" */ 'modules/customers/components/common/DevicePropertiesSection')
+);
 
-  render() {
-    const { Section } = Sidebar;
-    const { Title } = Section;
+const MessengerSection = asyncComponent(() =>
+  import(/* webpackChunkName:"Inbox-Sidebar-MessengerSection" */ 'modules/customers/components/common/MessengerSection')
+);
 
-    const { isOpen } = this.state;
-    const { children, title } = this.props;
+const TaggerSection = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-Sidebar-TaggerSection" */ 'modules/customers/components/common/TaggerSection'),
+  { height: '200px', width: '100%', color: '#fff' }
+);
 
-    if (!isOpen) {
-      return (
-        <SectionContainer>
-          <Title>{title}</Title>
-          {this.renderDropBtn()}
-        </SectionContainer>
-      );
-    }
+const SidebarActivity = asyncComponent(() =>
+  import(/* webpackChunkName:"Inbox-Sidebar-SidebarActivity" */ 'modules/inbox/containers/conversationDetail/SidebarActivity')
+);
 
-    return (
-      <SectionContainer>
-        {children}
-        {this.renderDropBtn()}
-      </SectionContainer>
-    );
-  }
-}
+const ConversationDetails = asyncComponent(
+  () =>
+    import(/* webpackChunkName:"Inbox-Sidebar-ConversationDetails" */ './ConversationDetails'),
+  { isBox: true }
+);
 
 type IndexProps = {
   conversation: IConversation;
   customer: ICustomer;
   loading: boolean;
-  toggleSection: (params: { name: string; isOpen: boolean }) => void;
-  config: { [key: string]: boolean };
+  toggleSection: () => void;
   taggerRefetchQueries: any;
   merge?: (doc: { ids: string[]; data: ICustomer }) => void;
 };
@@ -116,8 +89,7 @@ type IndexState = {
 interface IRenderData {
   customer: ICustomer;
   kind: string;
-  config: { [key: string]: boolean };
-  toggleSection: (params: { name: string; isOpen: boolean }) => void;
+  toggleSection: () => void;
 }
 
 class Index extends React.Component<IndexProps, IndexState> {
@@ -138,86 +110,32 @@ class Index extends React.Component<IndexProps, IndexState> {
     this.setState({ currentSubTab });
   };
 
-  renderMessengerData = ({
-    customer,
-    kind,
-    config,
-    toggleSection
-  }: IRenderData) => {
+  renderMessengerData = ({ customer, kind, toggleSection }: IRenderData) => {
     if (kind !== 'messenger') {
       return null;
     }
 
     return (
-      <Box
-        title={__('Messenger data')}
-        name="showMessengerData"
-        isOpen={config.showMessengerData || false}
-        toggle={toggleSection}
-      >
-        <MessengerSection customer={customer} />
-      </Box>
+      <MessengerSection customer={customer} collapseCallback={toggleSection} />
     );
   };
 
-  renderDeviceProperties = ({
-    customer,
-    kind,
-    config,
-    toggleSection
-  }: IRenderData) => {
+  renderDeviceProperties = ({ customer, kind, toggleSection }: IRenderData) => {
     if (!(kind === 'messenger' || kind === 'form')) {
       return null;
     }
-
     return (
-      <Box
-        title={__('Device properties')}
-        name="showDeviceProperties"
-        isOpen={config.showDeviceProperties || false}
-        toggle={toggleSection}
-      >
-        <DevicePropertiesSection customer={customer} />
-      </Box>
+      <DevicePropertiesSection
+        customer={customer}
+        collapseCallback={toggleSection}
+      />
     );
   };
 
   renderActions() {
     const { customer } = this.props;
-    const { primaryPhone, primaryEmail } = customer;
 
-    const content = props => (
-      <MailForm
-        contentType="customer"
-        contentTypeId={customer._id}
-        toEmail={primaryEmail}
-        refetchQueries={['activityLogsCustomer']}
-        closeModal={props.closeModal}
-      />
-    );
-
-    return (
-      <Actions>
-        <ModalTrigger
-          title="Email"
-          trigger={
-            <Button disabled={primaryEmail ? false : true} size="small">
-              {__('Email')}
-            </Button>
-          }
-          size="lg"
-          content={content}
-        />
-        <Button
-          href={primaryPhone && `tel:${primaryPhone}`}
-          size="small"
-          disabled={primaryPhone ? false : true}
-        >
-          {__('Call')}
-        </Button>
-        <ActionSection customer={customer} isSmall={true} />
-      </Actions>
-    );
+    return <ActionSection customer={customer} />;
   }
 
   renderTabSubContent() {
@@ -228,58 +146,38 @@ class Index extends React.Component<IndexProps, IndexState> {
       conversation,
       customer,
       toggleSection,
-      loading,
-      config
+      loading
     } = this.props;
 
     const { kind = '' } = customer.integration || {};
 
     if (currentSubTab === 'details') {
       return (
-        <React.Fragment>
-          <DetailInfo customer={customer} /> <br />
+        <TabContent>
+          <DetailInfo customer={customer} />
           <Box
             title={__('Conversation details')}
             name="showConversationDetails"
-            isOpen={config.showConversationDetails || false}
-            toggle={toggleSection}
+            callback={toggleSection}
           >
             <ConversationDetails conversation={conversation} />
           </Box>
-          <Box
-            title={__('Tags')}
-            name="showTags"
-            isOpen={config.showTags || false}
-            toggle={toggleSection}
-          >
-            <TaggerSection
-              isOpen={config.showTags}
-              data={customer}
-              type="customer"
-              refetchQueries={taggerRefetchQueries}
-            />
-          </Box>
+          <TaggerSection
+            data={customer}
+            type="customer"
+            refetchQueries={taggerRefetchQueries}
+            collapseCallback={toggleSection}
+          />
           <Box
             title={__('Contact information')}
             name="showCustomFields"
-            isOpen={config.showCustomFields || false}
-            toggle={toggleSection}
+            callback={toggleSection}
           >
             <CustomFieldsSection loading={loading} customer={customer} />
           </Box>
-          {this.renderMessengerData({
-            customer,
-            kind,
-            config,
-            toggleSection
-          })}
-          {this.renderDeviceProperties({
-            customer,
-            kind,
-            config,
-            toggleSection
-          })}
-        </React.Fragment>
+          {this.renderMessengerData({ customer, kind, toggleSection })}
+          {this.renderDeviceProperties({ customer, kind, toggleSection })}
+        </TabContent>
       );
     }
 
@@ -290,22 +188,17 @@ class Index extends React.Component<IndexProps, IndexState> {
     }
 
     return (
-      <React.Fragment>
-        <Box
-          title={__('Deals')}
-          name="showDeals"
-          isOpen={config.showDeals || false}
-          toggle={toggleSection}
-        >
-          <PortableDeals customerId={customer._id} isOpen={config.showDeals} />
-        </Box>
-      </React.Fragment>
+      <>
+        <PortableDeals mainType="customer" mainTypeId={customer._id} />
+        <PortableTickets mainType="customer" mainTypeId={customer._id} />
+        <PortableTasks mainType="customer" mainTypeId={customer._id} />
+      </>
     );
   }
 
   renderTabContent() {
     const { currentTab, currentSubTab } = this.state;
-    const { customer, config, toggleSection } = this.props;
+    const { customer, toggleSection } = this.props;
 
     if (currentTab === 'customer') {
       const detailsOnClick = () => this.onSubtabClick('details');
@@ -313,7 +206,7 @@ class Index extends React.Component<IndexProps, IndexState> {
       const relatedOnClick = () => this.onSubtabClick('related');
 
       return (
-        <React.Fragment>
+        <>
           <BasicInfo>
             <InfoSection
               customer={customer}
@@ -344,30 +237,19 @@ class Index extends React.Component<IndexProps, IndexState> {
             </TabTitle>
           </Tabs>
           {this.renderTabSubContent()}
-        </React.Fragment>
+        </>
       );
     }
 
     return (
-      <React.Fragment>
-        <Box
-          title={__('Companies')}
-          name="showCompanies"
-          isOpen={config.showCompanies || false}
-          toggle={toggleSection}
-        >
-          <CompanyAssociate isOpen={config.showCompanies} data={customer} />
-        </Box>
-
-        <Box
-          title={__('Contacts')}
-          name="showContacts"
-          isOpen={config.showContacts || false}
-          toggle={toggleSection}
-        >
-          <Contacts companies={customer.companies} customerId={customer._id} />
-        </Box>
-      </React.Fragment>
+      <>
+        <CompanySection
+          mainType="customer"
+          mainTypeId={customer._id}
+          collapseCallback={toggleSection}
+        />
+        <Contacts companies={customer.companies} customerId={customer._id} />
+      </>
     );
   }
 
@@ -383,13 +265,13 @@ class Index extends React.Component<IndexProps, IndexState> {
             className={currentTab === 'customer' ? 'active' : ''}
             onClick={customerOnClick}
           >
-            {__('CUSTOMER')}
+            {__('Customer')}
           </TabTitle>
           <TabTitle
             className={currentTab === 'company' ? 'active' : ''}
             onClick={companyOnClick}
           >
-            {__('COMPANY')}
+            {__('Company')}
           </TabTitle>
         </Tabs>
         {this.renderTabContent()}

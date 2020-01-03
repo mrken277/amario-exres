@@ -1,30 +1,36 @@
-import {
-  ActionButtons,
-  Button,
-  Icon,
-  ModalTrigger,
-  Tip
-} from 'modules/common/components';
+import ActionButtons from 'modules/common/components/ActionButtons';
+import Button from 'modules/common/components/Button';
+import Icon from 'modules/common/components/Icon';
+import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
-import * as React from 'react';
+import React from 'react';
 
 type Props = {
-  size?: string;
+  size?: 'sm' | 'lg' | 'xl';
   object: any;
   renderForm: (
     doc: { object: any; closeModal: () => void; save: () => void }
   ) => void;
   additionalActions?: (object: any) => void;
-  remove: (id: string) => void;
+  remove?: (id: string) => void;
   save: () => void;
 };
 
 export default class RowActions extends React.Component<Props, {}> {
   remove = () => {
-    this.props.remove(this.props.object._id);
+    const { remove } = this.props;
+
+    if (remove) {
+      remove(this.props.object._id);
+    }
   };
 
   renderRemoveAction = () => {
+    if (!this.props.remove) {
+      return null;
+    }
+
     return (
       <Tip text={__('Delete')}>
         <Button btnStyle="link" onClick={this.remove} icon="cancel-1" />
@@ -51,6 +57,7 @@ export default class RowActions extends React.Component<Props, {}> {
       <ModalTrigger
         size={size}
         title="Edit"
+        enforceFocus={false}
         trigger={editTrigger}
         content={content}
       />

@@ -1,6 +1,7 @@
-import { EmptyState, LoadMore } from 'modules/common/components';
-import { ConversationItem } from 'modules/inbox/containers/leftSidebar';
-import * as React from 'react';
+import EmptyState from 'modules/common/components/EmptyState';
+import LoadMore from 'modules/common/components/LoadMore';
+import ConversationItem from 'modules/inbox/containers/leftSidebar/ConversationItem';
+import React from 'react';
 import { IConversation } from '../../types';
 import { ConversationItems } from './styles';
 
@@ -44,9 +45,9 @@ export default class ConversationList extends React.Component<Props> {
         </ConversationItems>
         {!loading && conversations.length === 0 && (
           <EmptyState
-            text="There is no message."
+            text="Let's get you messaging away!"
             size="full"
-            image="/images/robots/robot-02.svg"
+            image="/images/actions/6.svg"
           />
         )}
 

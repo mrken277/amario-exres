@@ -5,22 +5,23 @@ import {
 } from 'modules/customers/constants';
 import { ICustomer } from 'modules/customers/types';
 import {
+  FieldStyle,
   SidebarCounter,
   SidebarFlexRow,
   SidebarList
 } from 'modules/layout/styles';
-import * as React from 'react';
+import React from 'react';
 
 type Props = {
   customer: ICustomer;
   hasPosition?: boolean;
 };
 
-class DetailInfo extends React.Component<Props> {
+class DetailInfo extends React.PureComponent<Props> {
   renderRow(label, value) {
     return (
       <li>
-        {__(`${label}`)}:
+        <FieldStyle>{__(`${label}`)}:</FieldStyle>
         <SidebarCounter fullLength={label === 'Description'}>
           {value || '-'}
         </SidebarCounter>
@@ -45,6 +46,7 @@ class DetailInfo extends React.Component<Props> {
 
     return (
       <SidebarList className="no-link">
+        {this.renderRow('Code', customer.code)}
         {this.renderRow('Primary email', customer.primaryEmail)}
         {this.renderRow('Primary phone', customer.primaryPhone)}
         {this.renderPosition(customer)}
@@ -56,7 +58,7 @@ class DetailInfo extends React.Component<Props> {
         )}
         {this.renderRow('Department', customer.department)}
         {this.renderRow(
-          'Lead Status',
+          'Pop Ups Status',
           LEAD_STATUS_TYPES[customer.leadStatus || '']
         )}
         {this.renderRow(

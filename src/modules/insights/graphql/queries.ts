@@ -12,9 +12,31 @@ const listParamsValue = `
   endDate: $endDate
 `;
 
-const pieChart = `
-  query insights(${listParamsDef}) {
-    insights(${listParamsValue})
+const dealParamsDef = `
+  $pipelineIds: String,
+  $boardId: String,
+  $startDate: String,
+  $endDate: String
+  $status: String
+`;
+
+const dealParamsValue = `
+  pipelineIds: $pipelineIds,
+  boardId: $boardId,
+  startDate: $startDate,
+  endDate: $endDate
+  status: $status
+`;
+
+const integrationChart = `
+  query insightsIntegrations(${listParamsDef}) {
+    insightsIntegrations(${listParamsValue})
+  }
+`;
+
+const tagChart = `
+  query insightsTags(${listParamsDef}) {
+    insightsTags(${listParamsValue})
   }
 `;
 
@@ -24,9 +46,15 @@ const punchCard = `
   }
 `;
 
-const main = `
-  query insightsMain($type: String, ${listParamsDef}) {
-    insightsMain(type: $type, ${listParamsValue})
+const trend = `
+  query insightsTrend($type: String, ${listParamsDef}) {
+    insightsTrend(type: $type, ${listParamsValue})
+  }
+`;
+
+const summaryData = `
+  query insightsSummaryData($type: String, ${listParamsDef}) {
+    insightsSummaryData(type: $type, ${listParamsValue})
   }
 `;
 
@@ -57,40 +85,65 @@ const brands = `
   }
 `;
 
-const insightVolumeReportExport = `
-  query insightVolumeReportExport($type: String, ${listParamsDef}) {
-    insightVolumeReportExport(type: $type, ${listParamsValue})
+const dealInsightsMain = `
+  query dealInsightsMain(${dealParamsDef}) {
+    dealInsightsMain(${dealParamsValue})
   }
 `;
 
-const insightActivityReportExport = `
-  query insightActivityReportExport(${listParamsDef}) {
-    insightActivityReportExport(${listParamsValue})
+const dealInsightsPunchCard = `
+  query dealInsightsPunchCard(${dealParamsDef}) {
+    dealInsightsPunchCard(${dealParamsValue})
   }
 `;
 
-const insightFirstResponseReportExport = `
-  query insightFirstResponseReportExport($type: String, $userId: String, ${listParamsDef}) {
-    insightFirstResponseReportExport(type: $type, userId: $userId, ${listParamsValue})
+const dealInsightsByTeamMember = `
+  query dealInsightsByTeamMember(${dealParamsDef}) {
+    dealInsightsByTeamMember(${dealParamsValue})
   }
 `;
 
-const insightTagReportExport = `
-  query insightTagReportExport(${listParamsDef}) {
-    insightTagReportExport(${listParamsValue})
+const insightsConversationCustomerAvg = `
+  query insightsConversationCustomerAvg(${listParamsDef}) {
+    insightsConversationCustomerAvg(${listParamsValue})
+  }
+`;
+
+const insightsConversationInternalAvg = `
+  query insightsConversationInternalAvg(${listParamsDef}) {
+    insightsConversationInternalAvg(${listParamsValue})
+  }
+`;
+
+const insightsConversationOverallAvg = `
+  query insightsConversationOverallAvg(${listParamsDef}) {
+    insightsConversationOverallAvg(${listParamsValue})
+  }
+`;
+
+const insightsConversationSummary = `
+  query insightsConversationSummary(${listParamsDef}) {
+    insightsConversationSummary(${listParamsValue})
   }
 `;
 
 export default {
-  main,
-  pieChart,
+  trend,
+  summaryData,
+  integrationChart,
+  tagChart,
   punchCard,
   firstResponse,
   responseClose,
   responseSummary,
   brands,
-  insightVolumeReportExport,
-  insightActivityReportExport,
-  insightFirstResponseReportExport,
-  insightTagReportExport
+
+  insightsConversationCustomerAvg,
+  insightsConversationInternalAvg,
+  insightsConversationOverallAvg,
+  insightsConversationSummary,
+
+  dealInsightsMain,
+  dealInsightsPunchCard,
+  dealInsightsByTeamMember
 };

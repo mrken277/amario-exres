@@ -1,5 +1,5 @@
-import * as React from 'react';
-import Modal from 'react-bootstrap/lib/Modal';
+import React from 'react';
+import Modal from 'react-bootstrap/Modal';
 import styled from 'styled-components';
 import { colors, dimensions } from '../styles';
 import Button from './Button';
@@ -8,7 +8,7 @@ import Icon from './Icon';
 const ModalBody = styled.div`
   text-align: center;
   padding: ${dimensions.coreSpacing}px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
 `;
 
@@ -18,11 +18,11 @@ const ModalFooter = styled.div`
   border-top: 1px solid ${colors.borderPrimary};
   border-radius: 4px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
 `;
 
 const IconWrapper = styled.div`
-  font-size: 38px;
+  font-size: 40px;
   color: ${colors.colorSecondary};
 `;
 
@@ -33,7 +33,7 @@ type Props = {
     enableEscape?: boolean;
   };
   confirmation?: string;
-  proceed: (value: string) => void;
+  proceed: () => void;
   dismiss: () => void;
 };
 
@@ -54,14 +54,30 @@ class ConfirmDialog extends React.Component<Props, State> {
     });
   };
 
-  proceed = value => {
+  proceed = () => {
     this.setState({ show: false }, () => {
-      this.props.proceed(value);
+      this.props.proceed();
     });
   };
 
+  handleKeydown = e => {
+    if (e.key === 'Enter') {
+      this.proceed();
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeydown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeydown);
+  }
+
   render() {
-    const { confirmation = 'Are you sure?' } = this.props;
+    const {
+      confirmation = 'Are you sure? This cannot be undone.'
+    } = this.props;
 
     const {
       okLabel = 'Yes, I am',
@@ -75,11 +91,12 @@ class ConfirmDialog extends React.Component<Props, State> {
         onHide={this.dismiss}
         backdrop={enableEscape ? true : 'static'}
         keyboard={enableEscape}
-        bsSize="small"
+        size="sm"
+        centered={true}
       >
         <ModalBody>
           <IconWrapper>
-            <Icon icon="information" />
+            <Icon icon="exclamation-triangle" />
           </IconWrapper>
           {confirmation}
         </ModalBody>

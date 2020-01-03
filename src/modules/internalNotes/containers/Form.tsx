@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
-import { queries } from 'modules/activityLogs/graphql';
-import * as React from 'react';
-import { compose, graphql } from 'react-apollo';
-import { Form } from '../components';
+import * as compose from 'lodash.flowright';
+import React from 'react';
+import { graphql } from 'react-apollo';
+import Form from '../components/Form';
 import { mutations } from '../graphql';
 import {
   InternalNotesAddMutationResponse,
@@ -16,22 +16,39 @@ type Props = {
 
 type FinalProps = Props & InternalNotesAddMutationResponse;
 
-const FormContainer = (props: FinalProps) => {
-  const { contentType, contentTypeId, internalNotesAdd } = props;
+class FormContainer extends React.Component<
+  FinalProps,
+  { isLoading: boolean }
+> {
+  constructor(props: FinalProps) {
+    super(props);
 
-  // create internalNote
-  const create = content => {
-    internalNotesAdd({
-      variables: {
-        contentType,
-        contentTypeId,
-        content
-      }
-    });
-  };
+    this.state = { isLoading: false };
+  }
 
-  return <Form create={create} />;
-};
+  render() {
+    const { contentType, contentTypeId, internalNotesAdd } = this.props;
+
+    // create internalNote
+    const create = (variables, callback: () => void) => {
+      this.setState({ isLoading: true });
+
+      internalNotesAdd({
+        variables: {
+          contentType,
+          contentTypeId,
+          ...variables
+        }
+      }).then(() => {
+        callback();
+
+        this.setState({ isLoading: false });
+      });
+    };
+
+    return <Form save={create} isActionLoading={this.state.isLoading} />;
+  }
+}
 
 export default compose(
   graphql<
@@ -40,14 +57,9 @@ export default compose(
     InternalNotesAddMutationVariables
   >(gql(mutations.internalNotesAdd), {
     name: 'internalNotesAdd',
-    options: (props: Props) => {
+    options: () => {
       return {
-        refetchQueries: [
-          {
-            query: gql(queries[`${props.contentType}ActivityLogQuery`]),
-            variables: { _id: props.contentTypeId }
-          }
-        ]
+        refetchQueries: ['activityLogs']
       };
     }
   })

@@ -1,9 +1,9 @@
-import { EmptyState } from 'modules/common/components';
+import EmptyState from 'modules/common/components/EmptyState';
 import { __ } from 'modules/common/utils';
-import * as React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { INotification } from '../types';
-import { NotificationRow } from './';
+import NotificationRow from './NotificationRow';
 import {
   NotificationList,
   NotificationSeeAll,
@@ -41,6 +41,41 @@ class NotificationsLatest extends React.Component<Props> {
               markAsRead={markAsRead}
             />
           ))}
+          {notifications.map((notif, key) => (
+            <NotificationRow
+              notification={notif}
+              key={key}
+              markAsRead={markAsRead}
+            />
+          ))}
+          {notifications.map((notif, key) => (
+            <NotificationRow
+              notification={notif}
+              key={key}
+              markAsRead={markAsRead}
+            />
+          ))}
+          {notifications.map((notif, key) => (
+            <NotificationRow
+              notification={notif}
+              key={key}
+              markAsRead={markAsRead}
+            />
+          ))}
+          {notifications.map((notif, key) => (
+            <NotificationRow
+              notification={notif}
+              key={key}
+              markAsRead={markAsRead}
+            />
+          ))}
+          {notifications.map((notif, key) => (
+            <NotificationRow
+              notification={notif}
+              key={key}
+              markAsRead={markAsRead}
+            />
+          ))}
         </NotificationList>
         <NotificationSeeAll>
           <Link to="/notifications">{__('See all')}</Link>
@@ -51,8 +86,8 @@ class NotificationsLatest extends React.Component<Props> {
     const emptyContent = (
       <PopoverContent>
         <EmptyState
-          text={__('No notifications')}
-          image="/images/robots/robot-05.svg"
+          text={__('Looks like you are all caught up')}
+          image="/images/actions/17.svg"
         />
       </PopoverContent>
     );

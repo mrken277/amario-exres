@@ -1,10 +1,10 @@
-import { DataWithLoader } from 'modules/common/components';
+import Box from 'modules/common/components/Box';
+import DataWithLoader from 'modules/common/components/DataWithLoader';
 import { IRouterProps } from 'modules/common/types';
 import { __, router } from 'modules/common/utils';
-import { Wrapper } from 'modules/layout/components';
-import { SidebarCounter, SidebarList } from 'modules/layout/styles';
-import { KIND_CHOICES } from 'modules/settings/integrations/constants';
-import * as React from 'react';
+import { FieldStyle, SidebarCounter, SidebarList } from 'modules/layout/styles';
+import { KIND_CHOICES_WITH_TEXT } from 'modules/settings/integrations/constants';
+import React from 'react';
 import { withRouter } from 'react-router';
 
 interface IProps extends IRouterProps {
@@ -12,27 +12,26 @@ interface IProps extends IRouterProps {
 }
 
 function IntegrationFilter({ history, counts }: IProps) {
-  const { Section, Header } = Wrapper.Sidebar;
-
   const onClick = kind => {
     router.setParams(history, { integrationType: kind });
   };
 
   const data = (
-    <SidebarList>
-      {KIND_CHOICES.ALL_LIST.map((kind, index) => (
+    <SidebarList capitalize={true}>
+      {KIND_CHOICES_WITH_TEXT.map((kind, index) => (
         <li key={index}>
           <a
+            href="#filter"
             tabIndex={0}
             className={
-              router.getParam(history, 'integrationType') === kind
+              router.getParam(history, 'integrationType') === kind.value
                 ? 'active'
                 : ''
             }
-            onClick={onClick.bind(null, kind)}
+            onClick={onClick.bind(null, kind.value)}
           >
-            {kind}
-            <SidebarCounter>{counts[kind]}</SidebarCounter>
+            <FieldStyle>{kind.text}</FieldStyle>
+            <SidebarCounter>{counts[kind.value] || 0}</SidebarCounter>
           </a>
         </li>
       ))}
@@ -40,19 +39,17 @@ function IntegrationFilter({ history, counts }: IProps) {
   );
 
   return (
-    <Section>
-      <Header uppercase={true}>{__('Filter by integrations')}</Header>
-
+    <Box title={__('Filter by integrations')} name="showFilterByIntegrations">
       <DataWithLoader
         data={data}
         loading={false}
-        count={KIND_CHOICES.ALL_LIST.length}
+        count={KIND_CHOICES_WITH_TEXT.length}
         emptyText="No integrations"
-        emptyIcon="pie-graph"
+        emptyIcon="puzzle"
         size="small"
         objective={true}
       />
-    </Section>
+    </Box>
   );
 }
 

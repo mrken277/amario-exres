@@ -1,3 +1,8 @@
+import {
+  conformityQueryFieldDefs,
+  conformityQueryFields
+} from 'modules/conformity/graphql/queries';
+
 const basicFields = `
   _id
   firstName
@@ -12,6 +17,8 @@ const basicFields = `
   isUser
   visitorContactInfo
 
+  modifiedAt
+
   position
   department
   leadStatus
@@ -19,6 +26,8 @@ const basicFields = `
   hasAuthority
   description
   doNotDisturb
+  code
+
   links {
     linkedIn
     twitter
@@ -45,8 +54,6 @@ const customerFields = `
 
   customFieldsData
   messengerData
-  twitterData
-  facebookData
 
   tagIds
   getTags {
@@ -61,6 +68,7 @@ const listParamsDef = `
   $perPage: Int,
   $segment: String,
   $tag: String,
+  $type: String,
   $ids: [String],
   $searchValue: String,
   $brand: String,
@@ -71,7 +79,8 @@ const listParamsDef = `
   $leadStatus: String,
   $lifecycleState: String,
   $sortField: String,
-  $sortDirection: Int
+  $sortDirection: Int,
+  ${conformityQueryFields}
 `;
 
 const listParamsValue = `
@@ -79,6 +88,7 @@ const listParamsValue = `
   perPage: $perPage,
   segment: $segment,
   tag: $tag,
+  type: $type,
   ids: $ids,
   searchValue: $searchValue,
   brand: $brand,
@@ -89,7 +99,8 @@ const listParamsValue = `
   leadStatus: $leadStatus,
   lifecycleState: $lifecycleState,
   sortField: $sortField,
-  sortDirection: $sortDirection
+  sortDirection: $sortDirection,
+  ${conformityQueryFieldDefs}
 `;
 
 const customers = `
@@ -131,6 +142,7 @@ const customerDetail = `
       integration {
         kind
         name
+        isActive
       }
       getMessengerCustomData
       companies {
@@ -189,31 +201,6 @@ const customersListConfig = `
   }
 `;
 
-const activityLogsCustomer = `
-  query activityLogsCustomer($_id: String!) {
-    activityLogsCustomer(_id: $_id) {
-      date {
-        year
-        month
-      }
-      list {
-        id
-        action
-        content
-        createdAt
-        by {
-          _id
-          type
-          details {
-            avatar
-            fullName
-          }
-        }
-      }
-    }
-  }
-`;
-
 export default {
   basicFields,
   customers,
@@ -221,6 +208,5 @@ export default {
   customerCounts,
   customerDetail,
   customersListConfig,
-  activityLogsCustomer,
   customersExport
 };

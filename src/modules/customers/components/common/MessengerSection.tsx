@@ -1,18 +1,27 @@
-import { EmptyState, Label } from 'modules/common/components';
-import { __ } from 'modules/common/utils';
-import { Sidebar } from 'modules/layout/components';
-import { SidebarCounter, SidebarList } from 'modules/layout/styles';
-import * as moment from 'moment';
-import * as React from 'react';
+import dayjs from 'dayjs';
+import Box from 'modules/common/components/Box';
+import EmptyState from 'modules/common/components/EmptyState';
+import Label from 'modules/common/components/Label';
+import { __, isTimeStamp, isValidDate } from 'modules/common/utils';
+import { FieldStyle, SidebarCounter, SidebarList } from 'modules/layout/styles';
+import React from 'react';
 import { ICustomer } from '../../types';
 
 type Props = {
   customer: ICustomer;
-  // TODO: check query params. Because it was in context
   queryParams?: any;
+  collapseCallback?: () => void;
 };
 
 class MessengerSection extends React.Component<Props> {
+  renderCustomValue = (value: string) => {
+    if (isValidDate(value) || isTimeStamp(value)) {
+      return dayjs(value).format('lll');
+    }
+
+    return value;
+  };
+
   renderContent() {
     const { customer } = this.props;
     const { messengerData } = customer;
@@ -26,7 +35,7 @@ class MessengerSection extends React.Component<Props> {
     return (
       <SidebarList className="no-link">
         <li>
-          {__('Status')}
+          <FieldStyle>{__('Status')}</FieldStyle>
           <SidebarCounter>
             {messengerData.isActive ? (
               <Label lblStyle="success">Online</Label>
@@ -36,19 +45,21 @@ class MessengerSection extends React.Component<Props> {
           </SidebarCounter>
         </li>
         <li>
-          {__('Last online')}
+          <FieldStyle>{__('Last online')}</FieldStyle>
           <SidebarCounter>
-            {moment(messengerData.lastSeenAt).format('lll')}
+            {dayjs(messengerData.lastSeenAt).format('lll')}
           </SidebarCounter>
         </li>
         <li>
-          {__('Session count')}
+          <FieldStyle>{__('Session count')}</FieldStyle>
           <SidebarCounter>{messengerData.sessionCount}</SidebarCounter>
         </li>
         {customData.map((data, index) => (
           <li key={index}>
-            {data.name}
-            <SidebarCounter>{data.value}</SidebarCounter>
+            <FieldStyle>{data.name}</FieldStyle>
+            <SidebarCounter>
+              {this.renderCustomValue(data.value)}
+            </SidebarCounter>
           </li>
         ))}
       </SidebarList>
@@ -56,15 +67,16 @@ class MessengerSection extends React.Component<Props> {
   }
 
   render() {
-    const { Section } = Sidebar;
-    const { Title } = Section;
+    const { collapseCallback } = this.props;
 
     return (
-      <Section>
-        <Title>{__('Messenger data')}</Title>
-
+      <Box
+        title={__('Messenger data')}
+        name="showMessengerData"
+        callback={collapseCallback}
+      >
         {this.renderContent()}
-      </Section>
+      </Box>
     );
   }
 }

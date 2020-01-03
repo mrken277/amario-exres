@@ -66,17 +66,18 @@ const LogoContainer = styled.div`
   }
 `;
 
-const ColorPick = styledTS<{ full?: boolean }>(styled.div)`
+const ColorPick = styled.div`
   border-radius: 4px;
-  display: ${props => (props.full ? 'block' : 'inline-block')};
-  padding: 5px;
-  border: 1px solid ${colors.borderPrimary};
+  display: inline-block;
+  padding: 3px;
+  border: 1px solid ${colors.borderDarker};
   cursor: pointer;
 `;
 
-const ColorPicker = styledTS<{ full?: boolean }>(styled.div)`
-  width: ${props => (props.full ? '100%' : '80px')};
-  height: 15px;
+const ColorPicker = styled.div`
+  width: 80px;
+  height: 27px;
+  border-radius: 2px;
 `;
 
 const WidgetApperance = styled.div`
@@ -95,11 +96,20 @@ const WidgetBackgrounds = styled.div`
 
 const SubHeading = styled.h4`
   text-transform: uppercase;
-  font-weight: ${typography.fontWeightMedium};
+  font-weight: 600;
   border-bottom: 1px dotted ${colors.colorShadowGray};
-  padding-bottom: ${coreSpace};
+  padding-bottom: ${dimensions.unitSpacing + 5}px;
   font-size: ${typography.fontSizeHeading8}px;
-  margin: 0 0 ${coreSpace};
+  margin: 0 0 ${dimensions.unitSpacing}px;
+  color: ${colors.colorCoreDarkGray};
+
+  span {
+    display: block;
+    text-transform: none;
+    font-weight: normal;
+    margin-top: ${dimensions.unitSpacing}px;
+    color: ${colors.colorCoreGray};
+  }
 `;
 
 const MarkdownWrapper = styled.div`
@@ -107,6 +117,7 @@ const MarkdownWrapper = styled.div`
   background: ${colors.colorWhite};
   border: 1px solid ${colors.colorShadowGray};
   border-radius: 2px;
+  margin: ${dimensions.unitSpacing - 5}px 0;
 
   > div {
     background: none;
@@ -122,6 +133,7 @@ const MarkdownWrapper = styled.div`
     border: none;
     background: none;
     margin: 0;
+    padding: 20px;
   }
 `;
 
@@ -238,6 +250,16 @@ const SidebarListItem = styledTS<{ isActive: boolean }>(styled.li)`
   }
 `;
 
+const Description = styled.div`
+  color: ${colors.colorCoreGray};
+  font-size: 12px;
+`;
+
+const ExpandWrapper = styled.div`
+  flex: 1;
+  margin-right: 20px;
+`;
+
 export {
   ContentBox,
   ModuleBox,
@@ -252,5 +274,7 @@ export {
   ColorPicker,
   LogoContainer,
   SidebarListItem,
-  ActionButtons
+  ActionButtons,
+  Description,
+  ExpandWrapper
 };

@@ -1,9 +1,11 @@
-import { Button, Icon } from 'modules/common/components';
+import dayjs from 'dayjs';
+import Button from 'modules/common/components/Button';
+import { SmallLoader } from 'modules/common/components/ButtonMutate';
+import Icon from 'modules/common/components/Icon';
 import { Column, Columns, Title } from 'modules/common/styles/chooser';
 import { ModalFooter } from 'modules/common/styles/main';
 import { __, renderFullName } from 'modules/common/utils';
-import * as moment from 'moment';
-import * as React from 'react';
+import React from 'react';
 import { IUser } from '../../../auth/types';
 import {
   CUSTOMER_BASIC_INFO,
@@ -15,14 +17,13 @@ import {
   ICustomer,
   ICustomerDoc,
   ICustomerLinks,
-  IFacebookData,
   IMessengerData,
-  ITwitterData,
   IVisitorContact
 } from '../../types';
 
 type Props = {
   objects: ICustomer[];
+  mergeCustomerLoading: boolean;
   save: (
     doc: {
       ids: string[];
@@ -74,7 +75,7 @@ class CustomersMerge extends React.Component<Props, State> {
   ) => {
     const selectedValues = { ...this.state.selectedValues };
 
-    if (type === 'add') {
+    if (type === 'plus-1') {
       selectedValues[key] = value;
 
       if (key === 'links') {
@@ -135,10 +136,6 @@ class CustomersMerge extends React.Component<Props, State> {
 
   renderValue(field: string, value: any) {
     switch (field) {
-      case 'facebookData':
-        return this.renderFacebookData(value);
-      case 'twitterData':
-        return this.renderTwitterData(value);
       case 'messengerData':
         return this.renderMessengerData(value);
       case 'visitorContactInfo':
@@ -153,40 +150,13 @@ class CustomersMerge extends React.Component<Props, State> {
     }
   }
 
-  renderFacebookData(data: IFacebookData) {
-    return (
-      <div>
-        <InfoDetail>
-          <a
-            target="_blank"
-            href={`http://facebook.com/${data.id}`}
-            rel="noopener noreferrer"
-          >
-            [view]
-          </a>
-        </InfoDetail>
-      </div>
-    );
-  }
-
   renderMessengerData(data: IMessengerData) {
     return (
       <Info>
         <InfoTitle>{__('Last seen at')}:</InfoTitle>
-        <InfoDetail>{moment(data.lastSeenAt).format('lll')}</InfoDetail>
+        <InfoDetail>{dayjs(data.lastSeenAt).format('lll')}</InfoDetail>
         <InfoTitle>{__('Session count')}:</InfoTitle>
         <InfoDetail>{data.sessionCount}</InfoDetail>
-      </Info>
-    );
-  }
-
-  renderTwitterData(data: ITwitterData) {
-    return (
-      <Info>
-        <InfoTitle>{__('Name')}: </InfoTitle>
-        <InfoDetail>{data.name}</InfoDetail>
-        <InfoTitle>{__('Screen name')}: </InfoTitle>
-        <InfoDetail>{data.screen_name}</InfoDetail>
       </Info>
     );
   }
@@ -237,28 +207,34 @@ class CustomersMerge extends React.Component<Props, State> {
 
   render() {
     const { selectedValues } = this.state;
-    const { objects, closeModal } = this.props;
+    const { objects, closeModal, mergeCustomerLoading } = this.props;
     const [customer1, customer2] = objects;
 
     return (
       <form onSubmit={this.save}>
         <Columns>
           <Column className="multiple">
-            {this.renderCustomer(customer1, 'add')}
+            {this.renderCustomer(customer1, 'plus-1')}
           </Column>
 
           <Column className="multiple">
-            {this.renderCustomer(customer2, 'add')}
+            {this.renderCustomer(customer2, 'plus-1')}
           </Column>
 
-          <Column>{this.renderCustomer(selectedValues, 'minus-circle')}</Column>
+          <Column>{this.renderCustomer(selectedValues, 'times')}</Column>
         </Columns>
 
         <ModalFooter>
           <Button btnStyle="simple" onClick={closeModal} icon="cancel-1">
             Cancel
           </Button>
-          <Button type="submit" btnStyle="success" icon="checked-1">
+          <Button
+            type="submit"
+            btnStyle="success"
+            icon={mergeCustomerLoading ? undefined : 'checked-1'}
+            disabled={mergeCustomerLoading}
+          >
+            {mergeCustomerLoading && <SmallLoader />}
             Save
           </Button>
         </ModalFooter>
