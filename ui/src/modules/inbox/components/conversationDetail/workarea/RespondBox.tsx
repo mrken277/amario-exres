@@ -22,6 +22,7 @@ import {
   RespondBoxStyled,
   SmallEditor
 } from 'modules/inbox/styles';
+import CreateRoom from 'modules/videoCall/containers/CreateRoom';
 import React from 'react';
 import { IUser } from '../../../../auth/types';
 import { IIntegration } from '../../../../settings/integrations/types';
@@ -291,6 +292,12 @@ class RespondBox extends React.Component<Props, State> {
     }
   };
 
+  sendVideoChatInvitationLink = (content: string) => {
+    this.setState({ content }, () => {
+      this.addMessage();
+    });
+  };
+
   toggleForm = () => {
     this.setState({
       isInternal: !this.state.isInternal
@@ -412,6 +419,11 @@ class RespondBox extends React.Component<Props, State> {
     return (
       <EditorActions>
         {this.renderCheckbox(integration.kind)}
+
+        <CreateRoom
+          conversationId={conversation._id}
+          callback={this.sendVideoChatInvitationLink}
+        />
 
         <Tip text={__('Attach file')}>
           <label>

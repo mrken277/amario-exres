@@ -245,6 +245,12 @@ const convertToInfo = `
   }
 `;
 
+const getVideoRoom = `
+  query conversationsGetVideoRoom($_id: String!) {
+    conversationsGetVideoRoom(_id: $_id)
+  }
+`;
+
 const generateCustomerDetailQuery = params => {
   const {
     showDeviceProperties = false,
@@ -342,5 +348,6 @@ export default {
   unreadConversationsCount,
   lastConversation,
   generateCustomerDetailQuery,
-  convertToInfo
+  convertToInfo,
+  getVideoRoom
 };

@@ -23,6 +23,7 @@ import SettingsRoutes from './modules/settings/routes';
 import TagsRoutes from './modules/tags/routes';
 import TaskRoutes from './modules/tasks/routes';
 import TicketRoutes from './modules/tickets/routes';
+import VideoCallRoutes from './modules/videoCall/routes';
 
 const MainLayout = asyncComponent(() =>
   import(/* webpackChunkName: "MainLayout" */ 'modules/layout/containers/MainLayout')
@@ -36,28 +37,31 @@ const renderRoutes = currentUser => {
   if (currentUser) {
     return (
       <>
-        <MainLayout currentUser={currentUser}>
-          <MainWrapper>
-            <NotifProvider currentUser={currentUser}>
-              <MainBar />
-              <NotificationRoutes />
-            </NotifProvider>
-            <InboxRoutes />
-            <SegmentsRoutes />
-            <CustomersRoutes />
-            <CompaniesRoutes />
-            <InsightsRoutes />
-            <EngageRoutes />
-            <KnowledgeBaseRoutes />
-            <LeadRoutes />
-            <SettingsRoutes />
-            <TagsRoutes />
-            <DealsRoutes />
-            <TicketRoutes />
-            <TaskRoutes />
-            <GrowthHackRoutes />
-          </MainWrapper>
-        </MainLayout>
+        <Switch>
+          <MainLayout currentUser={currentUser}>
+            <MainWrapper>
+              <NotifProvider currentUser={currentUser}>
+                <MainBar />
+                <NotificationRoutes />
+              </NotifProvider>
+              <InboxRoutes />
+              <SegmentsRoutes />
+              <CustomersRoutes />
+              <CompaniesRoutes />
+              <InsightsRoutes />
+              <EngageRoutes />
+              <KnowledgeBaseRoutes />
+              <LeadRoutes />
+              <SettingsRoutes />
+              <TagsRoutes />
+              <DealsRoutes />
+              <TicketRoutes />
+              <TaskRoutes />
+              <GrowthHackRoutes />
+              <VideoCallRoutes />
+            </MainWrapper>
+          </MainLayout>
+        </Switch>
       </>
     );
   }
