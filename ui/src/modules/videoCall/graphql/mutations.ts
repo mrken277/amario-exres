@@ -1,7 +1,7 @@
-const createVideoChatRoom = `
-  mutation conversationCreateVideoChatRoom($conversationId: String) {
-    conversationCreateVideoChatRoom(conversationId: $conversationId) {
-      name
+const createDailyVideoCall = `
+  mutation conversationCreateDailyVideoCall($conversationId: String) {
+    conversationCreateDailyVideoCall(conversationId: $conversationId) {
+      roomName
     }
   }
 `;
@@ -15,6 +15,6 @@ const deleteVideoChatRoom = `
 `;
 
 export default {
-  createVideoChatRoom,
+  createDailyVideoCall,
   deleteVideoChatRoom
 };

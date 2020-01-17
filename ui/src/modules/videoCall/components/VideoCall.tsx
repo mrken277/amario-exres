@@ -9,8 +9,14 @@ type Props = {
   queryParams: any;
 };
 
-class VideoCall extends React.Component<Props> {
+class VideoCall extends React.Component<Props, { errorMessage: string }> {
   private callFrame;
+
+  constructor(props) {
+    super(props);
+
+    this.state = { errorMessage: '' };
+  }
 
   componentDidMount() {
     const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';
@@ -26,6 +32,10 @@ class VideoCall extends React.Component<Props> {
       document.getElementById('call-frame-container'),
       {}
     );
+
+    this.callFrame.on('error', e => {
+      this.setState({ errorMessage: e.errorMsg });
+    });
 
     this.callFrame.join(owner);
   }
@@ -50,12 +60,6 @@ class VideoCall extends React.Component<Props> {
       });
   };
 
-  onLeave = () => {
-    this.callFrame.leave();
-
-    window.close();
-  };
-
   renderControls() {
     const { name } = this.props.queryParams;
 
@@ -63,18 +67,14 @@ class VideoCall extends React.Component<Props> {
       return 'No room';
     }
 
-    return (
-      <>
-        <span onClick={this.onLeave}>Leave room</span>
-        <span onClick={this.onDelete}>Delete room</span>
-      </>
-    );
+    return <span onClick={this.onDelete}>Delete room</span>;
   }
 
   render() {
     return (
       <>
         {this.renderControls()}
+        {this.state.errorMessage}
         <div
           id="call-frame-container"
           style={{ width: '100%', height: '500px' }}

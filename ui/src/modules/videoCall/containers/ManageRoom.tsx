@@ -14,16 +14,16 @@ type Props = {
 };
 
 type FinalProps = {
-  createVideoChatRoomMutation: any;
+  createDailyVideoCallMutation: any;
   getVideoRoomQuery: any;
 } & Props;
 
 class ManageRoom extends React.Component<FinalProps> {
   createVideoRoom = () => {
     const {
-      conversationId,
-      callback,
-      createVideoChatRoomMutation
+      conversationId
+      // callback,
+      // createDailyVideoCallMutation
     } = this.props;
 
     client
@@ -37,6 +37,8 @@ class ManageRoom extends React.Component<FinalProps> {
       .then(({ data }: any) => {
         const name = data.conversationsGetVideoRoom;
 
+        console.log('name: ', name);
+
         if (name) {
           window.open(
             `/videoCall?name=${name}`,
@@ -47,23 +49,25 @@ class ManageRoom extends React.Component<FinalProps> {
           return;
         }
 
-        createVideoChatRoomMutation({ variables: { conversationId } }).then(
-          ({ data: { conversationCreateVideoChatRoom } }) => {
-            const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';
+        return;
 
-            const createdName = conversationCreateVideoChatRoom.name;
+        // createDailyVideoCallMutation({ variables: { conversationId } }).then(
+        //   ({ data: { conversationCreateDailyVideoCall } }) => {
+        //     const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';
 
-            const anchor = `<a href="${REACT_DAILY_END_POINT}/${createdName}">Join a call</a>`;
+        //     const createdName = conversationCreateDailyVideoCall.roomName;
 
-            callback(anchor);
+        //     const anchor = `<a href="${REACT_DAILY_END_POINT}/${createdName}">Join a call</a>`;
 
-            window.open(
-              `/videoCall?name=${createdName}`,
-              '_blank',
-              'location=yes,height=570,width=520,scrollbars=yes,status=yes'
-            );
-          }
-        );
+        //     callback(anchor);
+
+        //     window.open(
+        //       `/videoCall?name=${createdName}`,
+        //       '_blank',
+        //       'location=yes,height=570,width=520,scrollbars=yes,status=yes'
+        //     );
+        //   }
+        // );
       })
       .catch(error => {
         Alert.error(error.message);
@@ -81,8 +85,8 @@ class ManageRoom extends React.Component<FinalProps> {
 
 export default withProps<Props>(
   compose(
-    graphql<Props>(gql(mutations.createVideoChatRoom), {
-      name: 'createVideoChatRoomMutation'
+    graphql<Props>(gql(mutations.createDailyVideoCall), {
+      name: 'createDailyVideoCallMutation'
     })
   )(ManageRoom)
 );
