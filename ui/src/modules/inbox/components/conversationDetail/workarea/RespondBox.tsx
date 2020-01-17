@@ -22,7 +22,7 @@ import {
   RespondBoxStyled,
   SmallEditor
 } from 'modules/inbox/styles';
-import CreateRoom from 'modules/videoCall/containers/CreateRoom';
+import ManageVideoRoom from 'modules/videoCall/containers/ManageRoom';
 import React from 'react';
 import { IUser } from '../../../../auth/types';
 import { IIntegration } from '../../../../settings/integrations/types';
@@ -420,10 +420,12 @@ class RespondBox extends React.Component<Props, State> {
       <EditorActions>
         {this.renderCheckbox(integration.kind)}
 
-        <CreateRoom
-          conversationId={conversation._id}
-          callback={this.sendVideoChatInvitationLink}
-        />
+        {!this.state.isInternal && (
+          <ManageVideoRoom
+            conversationId={conversation._id}
+            callback={this.sendVideoChatInvitationLink}
+          />
+        )}
 
         <Tip text={__('Attach file')}>
           <label>

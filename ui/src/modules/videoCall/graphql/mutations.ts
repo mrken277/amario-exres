@@ -6,6 +6,15 @@ const createVideoChatRoom = `
   }
 `;
 
+const deleteVideoChatRoom = `
+  mutation conversationDeleteVideoChatRoom($name: String!) {
+    conversationDeleteVideoChatRoom(name: $name) {
+      deleted
+    }
+  }
+`;
+
 export default {
-  createVideoChatRoom
+  createVideoChatRoom,
+  deleteVideoChatRoom
 };

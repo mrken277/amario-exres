@@ -18,29 +18,28 @@ type FinalProps = {
   getVideoRoomQuery: any;
 } & Props;
 
-class CreateRoom extends React.Component<FinalProps> {
+class ManageRoom extends React.Component<FinalProps> {
   createVideoRoom = () => {
     const {
-      conversationId
-      // callback,
-      // createVideoChatRoomMutation,
+      conversationId,
+      callback,
+      createVideoChatRoomMutation
     } = this.props;
-
-    const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';
 
     client
       .query({
         query: gql(queries.getVideoRoom),
         variables: {
           _id: conversationId
-        }
+        },
+        fetchPolicy: 'network-only'
       })
       .then(({ data }: any) => {
         const name = data.conversationsGetVideoRoom;
 
         if (name) {
           window.open(
-            `/videoCall?url=${REACT_DAILY_END_POINT}/${name}`,
+            `/videoCall?name=${name}`,
             '_blank',
             'location=yes,height=570,width=520,scrollbars=yes,status=yes'
           );
@@ -48,34 +47,30 @@ class CreateRoom extends React.Component<FinalProps> {
           return;
         }
 
-        return null;
+        createVideoChatRoomMutation({ variables: { conversationId } }).then(
+          ({ data: { conversationCreateVideoChatRoom } }) => {
+            const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';
+
+            const createdName = conversationCreateVideoChatRoom.name;
+
+            const anchor = `<a href="${REACT_DAILY_END_POINT}/${createdName}">Join a call</a>`;
+
+            callback(anchor);
+
+            window.open(
+              `/videoCall?name=${createdName}`,
+              '_blank',
+              'location=yes,height=570,width=520,scrollbars=yes,status=yes'
+            );
+          }
+        );
       })
       .catch(error => {
         Alert.error(error.message);
       });
-
-    // createVideoChatRoomMutation({ variables: { conversationId } }).then(
-    //   ({ data }) => {
-    //     const createdUrl = data.conversationCreateVideoChatRoom.url;
-
-    //     const anchor = `<a href="${createdUrl}">Join a call</a>`;
-
-    //     callback(anchor);
-
-    //     window.open(
-    //       `/videoCall?url=${createdUrl}`,
-    //       '_blank',
-    //       'location=yes,height=570,width=520,scrollbars=yes,status=yes'
-    //     );
-    //   }
-    // );
-
-    return;
   };
 
   render() {
-    console.log('conversationId: ', this.props.conversationId);
-
     return (
       <label onClick={this.createVideoRoom}>
         <Icon icon="video" />
@@ -89,5 +84,5 @@ export default withProps<Props>(
     graphql<Props>(gql(mutations.createVideoChatRoom), {
       name: 'createVideoChatRoomMutation'
     })
-  )(CreateRoom)
+  )(ManageRoom)
 );
