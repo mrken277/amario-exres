@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
-import Spinner from 'modules/common/components/Spinner';
 import React from 'react';
 import List from '../components/List';
 import { mutations, queries } from '../graphql';
@@ -50,11 +49,11 @@ export default () => {
   };
 
   if (currencyConfigQueryLoading || uomConfigQueryLoading) {
-    return <Spinner objective={true} />;
+    return <p>Loading...</p>;
   }
 
   if (currencyConfigQueryError || uomConfigQueryError || insertConfigError) {
-    return <p>Loading...</p>;
+    return <p>Error...</p>;
   }
 
   const currencies = currencyConfigQueryData && currencyConfigQueryData.configsDetail;

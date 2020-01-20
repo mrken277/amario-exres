@@ -66,7 +66,7 @@ describe('Account default', () => {
 	it('error', async () => {
 		const component = create(
 			<MockedProvider
-				mocks={[configErrorMock]}
+				mocks={[insertConfigMutationMocks, configErrorMock]}
 				addTypename={false}
 			>
 				<ListContainer />
@@ -78,7 +78,7 @@ describe('Account default', () => {
 		});
 
 		const tree = component.toJSON();
-		expect(tree.children).toContain('Error!');
+		expect(tree.children).toContain('Error');
 	});
 
 	it('should render content', async () => {
