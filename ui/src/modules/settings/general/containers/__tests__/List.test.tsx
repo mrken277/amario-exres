@@ -6,7 +6,7 @@ import * as React from 'react';
 import { act, create } from 'react-test-renderer';
 import wait from 'waait';
 import { mutations, queries } from '../../graphql';
-import List from '../List';
+import ListContainer from '../List';
 
 const configVariables = { code: '' };
 
@@ -55,7 +55,7 @@ describe('Account default', () => {
 	it('should render loading state initially', () => {
 		const component = create(
 			<MockedProvider mocks={[]}>
-				<List />
+				<ListContainer />
 			</MockedProvider>
 		);
 
@@ -69,7 +69,7 @@ describe('Account default', () => {
 				mocks={[configErrorMock]}
 				addTypename={false}
 			>
-				<List />
+				<ListContainer />
 			</MockedProvider>
 		);
 
@@ -87,7 +87,7 @@ describe('Account default', () => {
 				mocks={[configQueryMock, insertConfigMutationMocks]}
 				addTypename={false}
 			>
-				<List />
+				<ListContainer />
 			</MockedProvider>
 		);
 
