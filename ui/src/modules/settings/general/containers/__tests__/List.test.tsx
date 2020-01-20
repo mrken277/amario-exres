@@ -5,7 +5,7 @@ import { configsDetailFactory } from 'modules/testing-utils/factories';
 import * as React from 'react';
 import { act, create } from 'react-test-renderer';
 import wait from 'waait';
-import { queries } from '../../graphql';
+import { mutations, queries } from '../../graphql';
 import List from '../List';
 
 const configVariables = { code: '' };
@@ -20,7 +20,7 @@ const configErrorMock = {
 	}
 };
 
-const configMock = {
+const configQueryMock = {
 	request: {
 		query: gql(queries.configsDetail),
 		variables: configVariables,
@@ -36,6 +36,18 @@ const configMock = {
 				})
 			]
 		},
+	},
+};
+
+const insertConfigMutationMocks = {
+	request: {
+		query: gql(mutations.insertConfig),
+		variables: { code: '', value: [''] },
+	},
+	result: {
+		data: {
+			code: '', value: ['']
+		}
 	},
 };
 
@@ -72,7 +84,7 @@ describe('Account default', () => {
 	it('should render content', async () => {
 		const component = create(
 			<MockedProvider
-				mocks={[configMock]}
+				mocks={[configQueryMock, insertConfigMutationMocks]}
 				addTypename={false}
 			>
 				<List />
@@ -80,6 +92,9 @@ describe('Account default', () => {
 		);
 
 		await wait(0); // wait for response
+
+		const button = component.root.findByType('button');
+		button.props.onClick(); // fires the mutation
 
 		const tree = component.toJSON();
 		expect(tree).toBe(null);
