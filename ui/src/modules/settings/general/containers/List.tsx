@@ -1,10 +1,9 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import Spinner from 'modules/common/components/Spinner';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import List from '../components/List';
 import { mutations, queries } from '../graphql';
 import {
@@ -13,90 +12,70 @@ import {
   ConfigsInsertMutationVariables
 } from '../types';
 
-type FinalProps = {
-  currencyConfigQuery: ConfigDetailQueryResponse;
-  uomConfigQuery: ConfigDetailQueryResponse;
-} & ConfigsInsertMutationResponse;
-
-class ListContainer extends React.Component<FinalProps> {
-  render() {
-    const { insertConfig, currencyConfigQuery, uomConfigQuery } = this.props;
-
-    if (currencyConfigQuery.loading || uomConfigQuery.loading) {
-      return <Spinner objective={true} />;
+export default () => {
+  const {
+    loading: currencyConfigQueryLoading,
+    error: currencyConfigQueryError,
+    data: currencyConfigQueryData
+  } = useQuery<ConfigDetailQueryResponse, { code: string }>(
+    gql(queries.configsDetail),
+    {
+      fetchPolicy: 'network-only',
+      variables: {
+        code: 'dealCurrency'
+      }
     }
+  );
 
-    // create or update action
-    const save = (code, value) => {
-      insertConfig({
-        variables: { code, value }
-      })
-        .then(() => {
-          currencyConfigQuery.refetch();
-          uomConfigQuery.refetch();
+  const {
+    loading: uomConfigQueryLoading,
+    error: uomConfigQueryError,
+    data: uomConfigQueryData
+  } = useQuery<ConfigDetailQueryResponse, { code: string }>(
+    gql(queries.configsDetail),
+    {
+      fetchPolicy: 'network-only',
+      variables: {
+        code: 'dealUOM'
+      }
+    }
+  );
 
-          Alert.success('You successfully updated general settings');
-        })
-        .catch(error => {
-          Alert.error(error.message);
-        });
-    };
-
-    const currencies = currencyConfigQuery.configsDetail;
-    const uom = uomConfigQuery.configsDetail;
-
-    const updatedProps = {
-      ...this.props,
-      currencies: currencies ? currencies.value : [],
-      uom: uom ? uom.value : [],
-      save
-    };
-
-    return (
-      <AppConsumer>
-        {({ currentLanguage, changeLanguage }) => (
-          <List
-            {...updatedProps}
-            currentLanguage={currentLanguage}
-            changeLanguage={changeLanguage}
-          />
-        )}
-      </AppConsumer>
+  const [mutate, { error: insertConfigError }] =
+    useMutation<ConfigsInsertMutationResponse, ConfigsInsertMutationVariables>(
+      gql(mutations.insertConfig), { refetchQueries: ['configsDetail'] }
     );
-  }
-}
 
-export default withProps<{}>(
-  compose(
-    graphql<{}, ConfigDetailQueryResponse, { code: string }>(
-      gql(queries.configsDetail),
-      {
-        name: 'currencyConfigQuery',
-        options: () => ({
-          variables: {
-            code: 'dealCurrency'
-          },
-          fetchPolicy: 'network-only'
-        })
-      }
-    ),
-    graphql<{}, ConfigDetailQueryResponse, { code: string }>(
-      gql(queries.configsDetail),
-      {
-        name: 'uomConfigQuery',
-        options: () => ({
-          variables: {
-            code: 'dealUOM'
-          },
-          fetchPolicy: 'network-only'
-        })
-      }
-    ),
-    graphql<{}, ConfigsInsertMutationResponse, ConfigsInsertMutationVariables>(
-      gql(mutations.insertConfig),
-      {
-        name: 'insertConfig'
-      }
-    )
-  )(ListContainer)
-);
+  const save = (code, value) => {
+    mutate({ variables: { code, value } })
+  };
+
+  if (currencyConfigQueryLoading || uomConfigQueryLoading) {
+    return <Spinner objective={true} />;
+  }
+
+  if (currencyConfigQueryError || uomConfigQueryError || insertConfigError) {
+    return Alert.error('Error!');
+  }
+
+  const currencies = currencyConfigQueryData && currencyConfigQueryData.configsDetail;
+  const uom = uomConfigQueryData && uomConfigQueryData.configsDetail;
+
+  const updatedProps = {
+    currencies: currencies ? currencies.value : [],
+    uom: uom ? uom.value : [],
+    save
+  };
+
+  return (
+    <AppConsumer>
+      {({ currentLanguage, changeLanguage }) => (
+        <List
+          {...updatedProps}
+          currentLanguage={currentLanguage}
+          changeLanguage={changeLanguage}
+        />
+      )}
+    </AppConsumer>
+  );
+}
