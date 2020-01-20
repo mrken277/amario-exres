@@ -20,7 +20,7 @@ type FinalProps = Props & {
 };
 
 class DealColumnContainer extends React.Component<FinalProps> {
-  componentWillReceiveProps(nextProps: FinalProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: FinalProps) {
     const { updatedAt, dealsQuery, dealsTotalAmountsQuery } = this.props;
 
     if (updatedAt !== nextProps.updatedAt) {

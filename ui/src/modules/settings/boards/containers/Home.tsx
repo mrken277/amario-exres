@@ -23,7 +23,7 @@ type Props = {
 };
 
 class HomeContainer extends React.Component<HomeContainerProps & Props> {
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { history, boardId } = nextProps;
 
     if (!routerUtils.getParam(history, 'boardId') && boardId) {

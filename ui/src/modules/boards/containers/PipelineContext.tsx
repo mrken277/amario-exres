@@ -79,7 +79,7 @@ export class PipelineProvider extends React.Component<Props, State> {
     PipelineProvider.currentTask = null;
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const { queryParams, queryParamsChanged } = this.props;
 
     if (queryParamsChanged(queryParams, nextProps)) {

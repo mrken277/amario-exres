@@ -46,7 +46,7 @@ class Pipelines extends React.Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.pipelines !== this.props.pipelines) {
       this.setState({ pipelines: nextProps.pipelines });
     }

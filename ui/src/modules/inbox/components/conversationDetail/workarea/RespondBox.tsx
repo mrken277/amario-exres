@@ -115,7 +115,7 @@ class RespondBox extends React.Component<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.conversation.customer !== nextProps.conversation.customer) {
       this.setState({
         isInactive: !this.checkIsActive(nextProps.conversation)
