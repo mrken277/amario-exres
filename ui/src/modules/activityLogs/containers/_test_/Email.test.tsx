@@ -4,7 +4,8 @@ import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { queries } from 'modules/activityLogs/graphql';
 import { queries as engageQueries } from 'modules/engage/graphql';
-import { brandFactory, emailDeliveryFactory, engageMessageFactory, segmentFactory, tagFactory, userFactory } from 'modules/testing-utils/factories';
+import { brandFactory } from 'modules/testing-utils/factories/brands'
+import {  emailDeliveryFactory, engageMessageFactory, segmentFactory, tagFactory, userFactory } from 'modules/testing-utils/factories/engage';
 import { withRouter } from 'modules/testing-utils/withRouter';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
