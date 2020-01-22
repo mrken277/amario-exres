@@ -5,7 +5,8 @@
 // css
 import "./index.css";
 
-import { generateIntegrationUrl, getBrowserInfo } from "../../utils";
+import { generateIntegrationUrl } from "../../simpleUtils";
+import { getBrowserInfo } from "../../utils";
 
 declare const window: any;
 
