@@ -11,7 +11,14 @@ window.addEventListener("message", event => {
 
   const url = `${API_URL}/receive-event`;
 
-  fetch(url, { method: "post", body: data.event }).catch(errorResponse => {
+  fetch(url, {
+    method: "post",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data.event)
+  }).catch(errorResponse => {
     console.log(errorResponse);
   });
 });
