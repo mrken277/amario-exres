@@ -251,6 +251,7 @@ const getVideoRoom = `
       name
       created
       token
+      ownerToken
     }
   }
 `;

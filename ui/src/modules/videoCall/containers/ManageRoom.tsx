@@ -10,11 +10,7 @@ type Props = {
   callback: (content: string) => void;
 };
 
-type FinalProps = {
-  getVideoRoomQuery: any;
-} & Props;
-
-class ManageRoom extends React.Component<FinalProps> {
+class ManageRoom extends React.Component<Props> {
   createVideoRoom = () => {
     const { conversationId, callback } = this.props;
 
@@ -27,7 +23,12 @@ class ManageRoom extends React.Component<FinalProps> {
         fetchPolicy: 'network-only'
       })
       .then(({ data }: any) => {
-        const { name, created, token } = data.conversationsGetVideoRoom;
+        const {
+          name,
+          created,
+          token,
+          ownerToken
+        } = data.conversationsGetVideoRoom;
 
         if (created) {
           const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';
@@ -38,7 +39,7 @@ class ManageRoom extends React.Component<FinalProps> {
         }
 
         window.open(
-          `/videoCall?name=${name}`,
+          `/videoCall?name=${name}&t=${ownerToken}`,
           '_blank',
           'location=yes,height=570,width=520,scrollbars=yes,status=yes'
         );

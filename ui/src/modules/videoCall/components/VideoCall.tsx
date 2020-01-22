@@ -20,13 +20,13 @@ class VideoCall extends React.Component<Props, { errorMessage: string }> {
 
   componentDidMount() {
     const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';
-    const { name } = this.props.queryParams;
+    const { name, t } = this.props.queryParams;
 
-    if (!name) {
+    if (!name || !t) {
       return;
     }
 
-    const owner = { url: `${REACT_DAILY_END_POINT}/${name}` };
+    const owner = { url: `${REACT_DAILY_END_POINT}/${name}?t=${t}` };
 
     this.callFrame = DailyIframe.createFrame(
       document.getElementById('call-frame-container'),
