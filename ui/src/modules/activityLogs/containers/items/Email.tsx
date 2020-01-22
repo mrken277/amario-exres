@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import Email from 'modules/activityLogs/components/items/email/Email';
 import EngageEmail from 'modules/activityLogs/components/items/email/EngageEmail';
+import { ActivityContent } from 'modules/activityLogs/styles';
 import { EmailDeliveryDetailQueryResponse } from 'modules/activityLogs/types';
 import EmptyState from 'modules/common/components/EmptyState';
 import { queries as engageQueries } from 'modules/engage/graphql';
@@ -16,59 +17,62 @@ type Props = {
 };
 
 export default (props: Props) => {
-    const { emailId, emailType } = props;
-    
-    const { 
-      loading: engageMessageDetailQueryLoading,
-      error: engageMessageDetailQueryError,
-      data: engageMessageDetailQueryData
-    } = useQuery<EngageMessageDetailQueryResponse> (
-      gql(engageQueries.engageMessageDetail), {
-				skip: emailType === 'engage',
-				variables: {
-					_id: emailId
-				}
-			}
-    );
-
-    const { 
-      loading: emailDeliveryDetailQueryLoading,
-      error: emailDeliveryDetailQueryError,
-      data: emailDeliveryDetailQueryData
-    } = useQuery<EmailDeliveryDetailQueryResponse> (
-      gql(queries.emailDeliveryDetail), {
-				skip: emailType === 'engage',
-				variables: {
-					_id: emailId
-				}
-			}
-    );
-    
-    if (engageMessageDetailQueryError || emailDeliveryDetailQueryError) {
-      return <p>Error!</p>;
-    }
-
-    if (engageMessageDetailQueryLoading || emailDeliveryDetailQueryLoading) {
-      return null;
-    }
-
-    if (emailType === 'engage') {
-      if (!engageMessageDetailQueryData || !emailDeliveryDetailQueryData) {
-        return <EmptyState icon="email-4" text="Email not found" />;
+  const { emailId, emailType } = props;
+  
+  const {
+    loading: engageMessageDetailQueryLoading,
+    error: engageMessageDetailQueryError,
+    data: engageMessageDetailQueryData
+  } = useQuery<EngageMessageDetailQueryResponse> (
+    gql(engageQueries.engageMessageDetail), {
+      skip: emailType === 'engage',
+      variables: {
+        _id: emailId
       }
+    }
+  );
 
-      return (
-        <EngageEmail
-          {...props}
-          email={engageMessageDetailQueryData.engageMessageDetail || []}
-        />
-      );
+  const { 
+    loading: emailDeliveryDetailQueryLoading,
+    error: emailDeliveryDetailQueryError,
+    data: emailDeliveryDetailQueryData
+  } = useQuery<EmailDeliveryDetailQueryResponse> (
+    gql(queries.emailDeliveryDetail), {
+      skip: emailType === 'engage',
+      variables: {
+        _id: emailId
+      }
+    }
+  );
+ if(!emailDeliveryDetailQueryData) {
+   return null;
+ } 
+
+  if (engageMessageDetailQueryError || emailDeliveryDetailQueryError) {
+    return <p>Error!</p>;
+  }
+
+  if (engageMessageDetailQueryLoading || emailDeliveryDetailQueryLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (emailType === 'engage') {
+    if (!engageMessageDetailQueryData || !emailDeliveryDetailQueryData) {
+      return <EmptyState icon="email-4" text="Email not found" />;
     }
 
     return (
-      <Email
+      <EngageEmail
         {...props}
-        email={emailDeliveryDetailQueryData.emailDeliveryDetail || []}
+        email={engageMessageDetailQueryData.engageMessageDetail || []}
       />
     );
-  };
+  }
+  
+  return (
+    <Email
+      {...props}
+      email={emailDeliveryDetailQueryData.emailDeliveryDetail}
+    />
+  );
+};
