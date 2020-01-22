@@ -3,7 +3,7 @@ import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { configsDetailFactory } from 'modules/testing-utils/factories';
 import * as React from 'react';
-import { act, create } from 'react-test-renderer';
+import { create } from 'react-test-renderer';
 import wait from 'waait';
 import { mutations, queries } from '../../graphql';
 import ListContainer from '../List';
@@ -16,7 +16,7 @@ const configErrorMock = {
 		variables: configVariables,
 	},
 	result: {
-		errors: [new GraphQLError('errorrrrr123!')],
+		errors: [new GraphQLError('forced error')],
 	}
 };
 
@@ -66,19 +66,17 @@ describe('Account default', () => {
 	it('error', async () => {
 		const component = create(
 			<MockedProvider
-				mocks={[insertConfigMutationMocks, configErrorMock]}
+				mocks={[configErrorMock]}
 				addTypename={false}
 			>
 				<ListContainer />
 			</MockedProvider>
 		);
 
-		await act(async () => {
-			await wait(0);
-		});
+		await wait(0);
 
 		const tree = component.toJSON();
-		expect(tree.children).toContain('Error');
+		expect(tree.children).toContain('Error!')
 	});
 
 	it('should render content', async () => {
@@ -92,9 +90,6 @@ describe('Account default', () => {
 		);
 
 		await wait(0); // wait for response
-
-		const button = component.root.findByType('button');
-		button.props.onClick(); // fires the mutation
 
 		const tree = component.toJSON();
 		expect(tree).toBe(null);

@@ -48,12 +48,12 @@ export default () => {
     mutate({ variables: { code, value } })
   };
 
-  if (currencyConfigQueryLoading || uomConfigQueryLoading) {
-    return <p>Loading...</p>;
+  if (currencyConfigQueryError || uomConfigQueryError || insertConfigError) {
+    return <p>Error!</p>;
   }
 
-  if (currencyConfigQueryError || uomConfigQueryError || insertConfigError) {
-    return <p>Error...</p>;
+  if (currencyConfigQueryLoading || uomConfigQueryLoading) {
+    return <p>Loading...</p>;
   }
 
   const currencies = currencyConfigQueryData && currencyConfigQueryData.configsDetail;
