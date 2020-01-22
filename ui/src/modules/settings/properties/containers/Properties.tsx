@@ -1,10 +1,9 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import { IRouterProps } from 'modules/common/types';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import { router } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import Properties from '../components/Properties';
 import { FIELDS_GROUPS_CONTENT_TYPES } from '../constants';
@@ -26,25 +25,10 @@ type Props = {
   queryParams: any;
 };
 
-type FinalProps = {
-  fieldsGroupsQuery: FieldsGroupsQueryResponse;
-} & Props &
-  FieldsGroupsRemoveMutationResponse &
-  FieldsRemoveMutationResponse &
-  FieldsGroupsUpdateVisibleMutationResponse &
-  FieldsUpdateVisibleMutationResponse &
-  IRouterProps;
+type FinalProps = {} & Props & IRouterProps;
 
 const PropertiesContainer = (props: FinalProps) => {
-  const {
-    fieldsGroupsQuery,
-    history,
-    fieldsGroupsRemove,
-    fieldsRemove,
-    fieldsGroupsUpdateVisible,
-    fieldsUpdateVisible,
-    queryParams
-  } = props;
+  const { queryParams, history } = props;
 
   if (!router.getParam(history, 'type')) {
     router.setParams(
@@ -54,8 +38,53 @@ const PropertiesContainer = (props: FinalProps) => {
     );
   }
 
+  const options = ({
+    refetchQueries: [
+      {
+        query: gql`
+          ${queries.fieldsGroups}
+        `,
+        variables: { contentType: queryParams.type }
+      }
+    ]
+  });
+
+  const {
+    loading: fieldsGroupsQueryLoading,
+    error: fieldsGroupsQueryError,
+    data: fieldsGroupsQueryData
+  } = useQuery<FieldsGroupsQueryResponse>(
+    gql(queries.fieldsGroups),
+    {
+      variables: {
+        contentType: queryParams.type || ''
+      }
+    }
+  );
+
+  const [removeFieldsGroups, { error: removeFieldsGroupsError, }] =
+    useMutation<FieldsGroupsRemoveMutationResponse, { _id: string }>(
+      gql(mutations.fieldsGroupsRemove),
+      options
+    );
+
+  const [removeFields, { error: removeFieldsError }] =
+    useMutation<FieldsRemoveMutationResponse, { _id: string }>(
+      gql(mutations.fieldsRemove), options
+    );
+
+  const [updateFieldsGroups, { error: updateFieldsGroupsError }] =
+    useMutation<FieldsGroupsUpdateVisibleMutationResponse, { _id: string; isVisible: boolean }>(
+      gql(mutations.fieldsGroupsUpdateVisible), options
+    );
+
+  const [updateFields, { error: updateFieldsError }] =
+    useMutation<FieldsUpdateVisibleMutationResponse, { _id: string; isVisible: boolean }>(
+      gql(mutations.fieldsUpdateVisible), options
+    );
+
   const removePropertyGroup = ({ _id }) => {
-    fieldsGroupsRemove({
+    removeFieldsGroups({
       variables: { _id }
     })
       .then(() => {
@@ -67,7 +96,7 @@ const PropertiesContainer = (props: FinalProps) => {
   };
 
   const removeProperty = ({ _id }) => {
-    fieldsRemove({
+    removeFields({
       variables: { _id }
     })
       .then(() => {
@@ -79,7 +108,7 @@ const PropertiesContainer = (props: FinalProps) => {
   };
 
   const updatePropertyVisible = ({ _id, isVisible }) => {
-    fieldsUpdateVisible({
+    updateFieldsGroups({
       variables: { _id, isVisible }
     })
       .then(() => {
@@ -91,7 +120,7 @@ const PropertiesContainer = (props: FinalProps) => {
   };
 
   const updatePropertyGroupVisible = ({ _id, isVisible }) => {
-    fieldsGroupsUpdateVisible({
+    updateFields({
       variables: { _id, isVisible }
     })
       .then(() => {
@@ -102,8 +131,16 @@ const PropertiesContainer = (props: FinalProps) => {
       });
   };
 
+  if (fieldsGroupsQueryError || removeFieldsGroupsError || removeFieldsError || updateFieldsGroupsError || updateFieldsError) {
+    return <p>Error!</p>;
+  }
+
+  if (fieldsGroupsQueryLoading) {
+    return <p>Loading...</p>;
+  }
+
   const currentType = router.getParam(history, 'type');
-  const fieldsGroups = [...(fieldsGroupsQuery.fieldsGroups || [])];
+  const fieldsGroups = [...(fieldsGroupsQueryData && fieldsGroupsQueryData.fieldsGroups || [])];
 
   // Initializing default properties for customer and company
   let defaultGroup = companyBasicInfos;
@@ -131,56 +168,4 @@ const PropertiesContainer = (props: FinalProps) => {
   return <Properties {...updatedProps} />;
 };
 
-const options = ({ queryParams }) => ({
-  refetchQueries: [
-    {
-      query: gql`
-        ${queries.fieldsGroups}
-      `,
-      variables: { contentType: queryParams.type }
-    }
-  ]
-});
-
-export default withProps<Props>(
-  compose(
-    graphql<Props, FieldsGroupsQueryResponse>(gql(queries.fieldsGroups), {
-      name: 'fieldsGroupsQuery',
-      options: ({ queryParams }) => ({
-        variables: {
-          contentType: queryParams.type || ''
-        }
-      })
-    }),
-    graphql<Props, FieldsGroupsRemoveMutationResponse, { _id: string }>(
-      gql(mutations.fieldsGroupsRemove),
-      {
-        name: 'fieldsGroupsRemove',
-        options
-      }
-    ),
-    graphql<Props, FieldsRemoveMutationResponse, { _id: string }>(
-      gql(mutations.fieldsRemove),
-      {
-        name: 'fieldsRemove',
-        options
-      }
-    ),
-    graphql<
-      Props,
-      FieldsUpdateVisibleMutationResponse,
-      { _id: string; isVisible: boolean }
-    >(gql(mutations.fieldsUpdateVisible), {
-      name: 'fieldsUpdateVisible',
-      options
-    }),
-    graphql<
-      Props,
-      FieldsGroupsUpdateVisibleMutationResponse,
-      { _id: string; isVisible: boolean }
-    >(gql(mutations.fieldsGroupsUpdateVisible), {
-      name: 'fieldsGroupsUpdateVisible',
-      options
-    })
-  )(withRouter<FinalProps>(PropertiesContainer))
-);
+export default (withRouter<FinalProps>(PropertiesContainer));
