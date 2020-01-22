@@ -15,10 +15,12 @@ export const getEnv = () => {
   const getItem = name => wenv[name] || process.env[name];
 
   return {
+    NODE_ENV: getItem('NODE_ENV'),
     REACT_APP_API_URL: getItem('REACT_APP_API_URL'),
     REACT_APP_API_SUBSCRIPTION_URL: getItem('REACT_APP_API_SUBSCRIPTION_URL'),
     REACT_APP_CDN_HOST: getItem('REACT_APP_CDN_HOST'),
-    REACT_APP_CDN_HOST_API: getItem('REACT_APP_CDN_HOST_API')
+    REACT_APP_CDN_HOST_API: getItem('REACT_APP_CDN_HOST_API'),
+    REACT_APP_SENTRY_DSN: getItem('REACT_APP_SENTRY_DSN')
   };
 };
 

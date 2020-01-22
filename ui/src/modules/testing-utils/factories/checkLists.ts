@@ -1,7 +1,7 @@
-import dayjs from 'dayjs';
 import * as Factory from 'factory.ts';
 import { IUser, IUserConversation, IUserDetails, IUserLinks } from 'modules/auth/types';
 import { IChecklist, IChecklistItem } from 'modules/checklists/types';
+<<<<<<< HEAD:ui/src/modules/testing-utils/factories.ts
 import { IAttachment, IConditionsRule } from 'modules/common/types';
 import { IEmailDelivery, IEngageEmail, IEngageMessage,  IEngageMessenger, IEngageScheduleDate, IEngageStats } from 'modules/engage/types';
 import { ISegment, ISegmentCondition } from 'modules/segments/types';
@@ -17,6 +17,8 @@ export const brandFactory = Factory.Sync.makeFactory<IBrand>({
   description: 'special brand',
   emailConfig: { type: '', template: '' }
 });
+=======
+>>>>>>> bea6dba79062857ef06fc7d26f523793437db770:ui/src/modules/testing-utils/factories/checkLists.ts
 
 const checkListItemFactory = Factory.Sync.makeFactory<IChecklistItem>({
   _id: '1',
