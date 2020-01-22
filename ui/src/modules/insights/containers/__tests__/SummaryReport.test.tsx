@@ -1,11 +1,10 @@
-import * as React from 'react';
-
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { createMemoryHistory } from 'history';
 import { brandFactory } from 'modules/testing-utils/factories';
 import { withRouter } from 'modules/testing-utils/withRouter';
+import * as React from 'react';
 import { act, create } from 'react-test-renderer';
 import wait from 'waait';
 import { queries } from '../../graphql';
@@ -63,18 +62,22 @@ const history = createMemoryHistory({
 
 describe('Summary Report', () => {
   it('should render loading state initially', () => {
-    const component = create(
+    const testRenderer = create(
       <MockedProvider mocks={[]}>
         <SummaryReport queryParams={queryParams} history={history} />
       </MockedProvider>
     );
 
-    const tree = component.toJSON();
-    expect(tree.children).toContain('Loading...');
+    const testInstance = testRenderer.root;
+    const loader = testInstance.findByProps({ objective: true }).type;
+
+    const spinner = loader({});
+
+    expect(spinner.props.objective).toEqual(false);
   });
 
   it('error', async () => {
-    const component = create(
+    const testRenderer = create(
       <MockedProvider
         mocks={[brandsMock, summaryErrorMock]}
         addTypename={false}
@@ -89,12 +92,13 @@ describe('Summary Report', () => {
       await wait(0);
     });
 
-    const tree = component.toJSON();
-    expect(tree.children).toContain('Error!');
+    const testInstance = testRenderer.root;
+    const span = testInstance.findByType('span');
+    expect(span.children).toContain('forced error');
   });
 
   it('should render content', async () => {
-    const component = create(
+    const testRenderer = create(
       <MockedProvider
         mocks={[brandsMock, summaryQueryMock]}
         addTypename={false}
@@ -107,7 +111,7 @@ describe('Summary Report', () => {
 
     await wait(0); // wait for response
 
-    const tree = component.toJSON();
+    const tree = testRenderer.toJSON();
     expect(tree).toBe(null);
   });
 });

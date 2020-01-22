@@ -17,6 +17,7 @@ pipeline:
         - master
         - develop
         - staging
+        - apm
       event:
         - push
 
@@ -80,6 +81,7 @@ pipeline:
         - master
         - develop
         - staging
+        - apm
       event:
         - push
 

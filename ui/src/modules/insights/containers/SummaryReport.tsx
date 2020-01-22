@@ -1,5 +1,8 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
+import checkError from 'modules/common/utils/checkError';
 import React from 'react';
 import { BrandsQueryResponse } from '../../settings/brands/types';
 import SummaryReport from '../components/SummaryReport';
@@ -34,11 +37,13 @@ export default (props: Props) => {
   } = useQuery<BrandsQueryResponse>(gql(queries.brands));
 
   if (summaryQueryError || brandsQueryError) {
-    return <p>Error!</p>;
+    const error = checkError([summaryQueryError, brandsQueryError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
   }
 
   if (summaryQueryLoading || brandsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />;
   }
 
   const data = summaryQueryData && summaryQueryData.insightsConversation;
@@ -49,7 +54,7 @@ export default (props: Props) => {
     trend: (data && data.trend) || [],
     brands: (brandsQueryData && brandsQueryData.brands) || [],
     summary: (data && data.summary) || [],
-    loading: summaryQueryLoading
+    loading: summaryQueryLoading || brandsQueryLoading
   };
 
   return <SummaryReport {...extendedProps} />;

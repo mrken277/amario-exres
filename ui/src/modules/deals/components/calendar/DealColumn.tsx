@@ -13,7 +13,7 @@ import Deal from '../DealItem';
 type Props = {
   deals: IDeal[];
   date: IDateColumn;
-  dealTotalAmounts: IDealTotalAmount;
+  dealTotalAmounts?: IDealTotalAmount;
   onUpdate: (deal: IDeal) => void;
   onRemove: () => void;
   onLoadMore: (skip: number) => void;
@@ -109,6 +109,11 @@ class DealColumn extends React.Component<Props, {}> {
 
   renderTotalAmount() {
     const { dealTotalAmounts } = this.props;
+
+    if (!dealTotalAmounts) {
+      return;
+    }
+
     const totalForType = dealTotalAmounts.totalForType || [];
 
     return (
@@ -125,7 +130,7 @@ class DealColumn extends React.Component<Props, {}> {
 
   renderFooter() {
     const { deals, dealTotalAmounts } = this.props;
-    const count = dealTotalAmounts.dealCount;
+    const count = (dealTotalAmounts && dealTotalAmounts.dealCount) || 0;
 
     if (deals.length === count || deals.length > count) {
       return null;
