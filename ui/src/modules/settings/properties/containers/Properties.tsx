@@ -140,7 +140,7 @@ const PropertiesContainer = (props: FinalProps) => {
   }
 
   const currentType = router.getParam(history, 'type');
-  const fieldsGroups = [...(fieldsGroupsQueryData && fieldsGroupsQueryData.fieldsGroups || [])];
+  const fieldsGroups = [...(fieldsGroupsQueryData ? fieldsGroupsQueryData.fieldsGroups : [])];
 
   // Initializing default properties for customer and company
   let defaultGroup = companyBasicInfos;
