@@ -2,12 +2,11 @@ import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { propertiesFactory } from 'modules/testing-utils/factories/settings/properties';
-import { withRouter } from 'modules/testing-utils/withRouter';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
-import { mutations, queries } from '../../graphql';
-import PropertiesContainer from '../Properties';
+import { queries } from '../../graphql';
+import PropertyFormContainer from '../PropertyForm';
 
 const queryParams = { type: '' };
 
@@ -39,51 +38,11 @@ const fieldsGroupsQueryMock = {
   },
 };
 
-const fieldsGroupsRemoveMutationMocks = {
-  request: {
-    query: gql(mutations.fieldsGroupsRemove),
-    variables: { _id: '' },
-  },
-  result: {
-    data: { _id: '' }
-  },
-};
-
-const fieldsRemoveMutationMocks = {
-  request: {
-    query: gql(mutations.fieldsRemove),
-    variables: { _id: '' },
-  },
-  result: {
-    data: { _id: '' }
-  },
-};
-
-const fieldsGroupsUpdateVisibleMutationMocks = {
-  request: {
-    query: gql(mutations.fieldsGroupsUpdateVisible),
-    variables: { _id: '', isVisible: false },
-  },
-  result: {
-    data: { _id: '' }
-  },
-};
-
-const fieldsUpdateVisibleMutationMocks = {
-  request: {
-    query: gql(mutations.fieldsUpdateVisible),
-    variables: { _id: '', isVisible: false },
-  },
-  result: {
-    data: { _id: '' }
-  },
-};
-
 describe('Properties', () => {
   it('should render loading state initially', () => {
     const component = create(
       <MockedProvider mocks={[]}>
-        {withRouter(<PropertiesContainer queryParams={queryParams} />)}
+        <PropertyFormContainer queryParams={queryParams} />
       </MockedProvider>
     );
 
@@ -97,23 +56,23 @@ describe('Properties', () => {
         mocks={[fieldsGroupsErrorMock]}
         addTypename={false}
       >
-        {withRouter(<PropertiesContainer queryParams={queryParams} />)}
+        <PropertyFormContainer queryParams={queryParams} />
       </MockedProvider>
     );
 
     await wait(0);
 
     const tree = component.toJSON();
-    expect(tree.children).toContain('Error!')
+    expect(tree.children).toContain('forced error')
   });
 
   it('should render content', async () => {
     const component = create(
       <MockedProvider
-        mocks={[fieldsGroupsQueryMock, fieldsGroupsRemoveMutationMocks, fieldsRemoveMutationMocks, fieldsGroupsUpdateVisibleMutationMocks, fieldsUpdateVisibleMutationMocks]}
+        mocks={[fieldsGroupsQueryMock]}
         addTypename={false}
       >
-        {withRouter(<PropertiesContainer queryParams={queryParams} />)}
+        <PropertyFormContainer queryParams={queryParams} />
       </MockedProvider>
     );
 

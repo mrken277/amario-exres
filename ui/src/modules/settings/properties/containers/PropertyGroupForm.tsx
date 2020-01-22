@@ -12,7 +12,6 @@ type Props = {
 
 const PropertyGroupFormContainer = (props: Props) => {
   const { queryParams } = props;
-  const { type } = queryParams;
 
   const renderButton = ({
     name,
@@ -33,14 +32,14 @@ const PropertyGroupFormContainer = (props: Props) => {
         type="submit"
         successMessage={`You successfully ${
           object ? 'updated' : 'added'
-        } a ${name}`}
+          } a ${name}`}
       />
     );
   };
 
   const updatedProps = {
     ...props,
-    type,
+    type: queryParams.type,
     renderButton
   };
 
