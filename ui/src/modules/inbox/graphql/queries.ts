@@ -247,7 +247,11 @@ const convertToInfo = `
 
 const getVideoRoom = `
   query conversationsGetVideoRoom($_id: String!) {
-    conversationsGetVideoRoom(_id: $_id)
+    conversationsGetVideoRoom(_id: $_id) {
+      name
+      created
+      token
+    }
   }
 `;
 

@@ -1,12 +1,9 @@
 import client from 'apolloClient';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import Icon from 'modules/common/components/Icon';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import { queries } from 'modules/inbox/graphql';
 import React from 'react';
-import { graphql } from 'react-apollo';
-import { mutations } from '../graphql';
 
 type Props = {
   conversationId: string;
@@ -14,17 +11,12 @@ type Props = {
 };
 
 type FinalProps = {
-  createDailyVideoCallMutation: any;
   getVideoRoomQuery: any;
 } & Props;
 
 class ManageRoom extends React.Component<FinalProps> {
   createVideoRoom = () => {
-    const {
-      conversationId
-      // callback,
-      // createDailyVideoCallMutation
-    } = this.props;
+    const { conversationId, callback } = this.props;
 
     client
       .query({
@@ -35,39 +27,21 @@ class ManageRoom extends React.Component<FinalProps> {
         fetchPolicy: 'network-only'
       })
       .then(({ data }: any) => {
-        const name = data.conversationsGetVideoRoom;
+        const { name, created, token } = data.conversationsGetVideoRoom;
 
-        console.log('name: ', name);
+        if (created) {
+          const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';
 
-        if (name) {
-          window.open(
-            `/videoCall?name=${name}`,
-            '_blank',
-            'location=yes,height=570,width=520,scrollbars=yes,status=yes'
-          );
+          const anchor = `<a href="${REACT_DAILY_END_POINT}/${name}?t=${token}">Join a call</a>`;
 
-          return;
+          callback(anchor);
         }
 
-        return;
-
-        // createDailyVideoCallMutation({ variables: { conversationId } }).then(
-        //   ({ data: { conversationCreateDailyVideoCall } }) => {
-        //     const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';
-
-        //     const createdName = conversationCreateDailyVideoCall.roomName;
-
-        //     const anchor = `<a href="${REACT_DAILY_END_POINT}/${createdName}">Join a call</a>`;
-
-        //     callback(anchor);
-
-        //     window.open(
-        //       `/videoCall?name=${createdName}`,
-        //       '_blank',
-        //       'location=yes,height=570,width=520,scrollbars=yes,status=yes'
-        //     );
-        //   }
-        // );
+        window.open(
+          `/videoCall?name=${name}`,
+          '_blank',
+          'location=yes,height=570,width=520,scrollbars=yes,status=yes'
+        );
       })
       .catch(error => {
         Alert.error(error.message);
@@ -83,10 +57,4 @@ class ManageRoom extends React.Component<FinalProps> {
   }
 }
 
-export default withProps<Props>(
-  compose(
-    graphql<Props>(gql(mutations.createDailyVideoCall), {
-      name: 'createDailyVideoCallMutation'
-    })
-  )(ManageRoom)
-);
+export default ManageRoom;
