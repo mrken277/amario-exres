@@ -1,20 +1,18 @@
+import { useQuery } from '@apollo/react-hooks';
 import client from 'apolloClient';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
 import { IButtonMutateProps } from 'modules/common/types';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import { queries as companyQueries } from 'modules/companies/graphql';
 import { queries as customerQueries } from 'modules/customers/graphql';
-import React from 'react';
-import { graphql } from 'react-apollo';
+import React, { useState } from 'react';
 import { FieldsCombinedByTypeQueryResponse } from '../../settings/properties/types';
 import SegmentsForm from '../components/SegmentsForm';
 import { mutations, queries } from '../graphql';
 import {
-  AddMutationResponse,
-  EditMutationResponse,
   HeadSegmentsQueryResponse,
+  ISegment,
   ISegmentDoc,
   SegmentDetailQueryResponse
 } from '../types';
@@ -25,38 +23,72 @@ type Props = {
   id?: string;
 };
 
-type FinalProps = {
-  segmentDetailQuery: SegmentDetailQueryResponse;
-  headSegmentsQuery: HeadSegmentsQueryResponse;
-  combinedFieldsQuery: FieldsCombinedByTypeQueryResponse;
-} & Props &
-  AddMutationResponse &
-  EditMutationResponse;
+type State = {
+  total: { byFakeSegment?: number };
+  loading: boolean;
+};
 
-class SegmentsFormContainer extends React.Component<
-  FinalProps,
-  { total: { byFakeSegment?: number }; loading: boolean }
-> {
-  constructor(props) {
-    super(props);
+const SegmentsFormContainer = (props: Props, state: State) => {
+  const { contentType, id, history } = props;
+  const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState({ byFakeSegment: 0 });
 
-    this.state = {
-      total: {
-        byFakeSegment: 0
-      },
-      loading: false
-    };
+  const {
+    loading: segmentDetailQueryLoading,
+    error: segmentDetailQueryError,
+    data: segmentDetailQueryData
+  } = useQuery<SegmentDetailQueryResponse, { _id?: string }>(
+    gql(queries.segmentDetail),
+    {
+      variables: { _id: id },
+      fetchPolicy: 'network-only'
+    }
+  );
+
+  const {
+    loading: headSegmentsQueryLoading,
+    error: headSegmentsQueryError,
+    data: headSegmentsQueryData
+  } = useQuery<HeadSegmentsQueryResponse, { contentType: string }>(
+    gql(queries.headSegments)
+  );
+
+  const {
+    loading: combinedFieldsQueryLoading,
+    error: combinedFieldsQueryError,
+    data: combinedFieldsQueryData
+  } = useQuery<FieldsCombinedByTypeQueryResponse, { contentType: string }>(gql(queries.combinedFields), {
+    variables: { contentType }
+  });
+
+  if (segmentDetailQueryError || headSegmentsQueryError || combinedFieldsQueryError) {
+    return <p>Error!</p>;
   }
 
-  renderButton = ({
+  if (segmentDetailQueryLoading || headSegmentsQueryLoading || combinedFieldsQueryLoading) {
+    return <p>Loading...</p>;
+  }
+
+  const fields = (combinedFieldsQueryData ? combinedFieldsQueryData.fieldsCombinedByContentType : []).map(
+    ({ name, label, brandName, brandId }) => ({
+      _id: name,
+      title: label,
+      brandName,
+      brandId,
+      selectedBy: 'none'
+    })
+  );
+
+  const segment = segmentDetailQueryData ? segmentDetailQueryData.segmentDetail : {} as ISegment;
+  const headSegments = headSegmentsQueryData ? headSegmentsQueryData.segmentsGetHeads : [];
+
+  const renderButton = ({
     name,
     values,
     isSubmitted,
     callback,
     object
   }: IButtonMutateProps) => {
-    const { contentType, history } = this.props;
-
     const callBackResponse = () => {
       history.push(`/segments/${contentType}`);
 
@@ -76,15 +108,13 @@ class SegmentsFormContainer extends React.Component<
         type="submit"
         successMessage={`You successfully ${
           object ? 'updated' : 'added'
-        } a ${name}`}
+          } a ${name}`}
       />
     );
   };
 
-  count = (segment: ISegmentDoc) => {
-    const { contentType } = this.props;
-
-    this.setState({ loading: true });
+  const count = (segmentCount: ISegmentDoc) => {
+    setLoading(true)
 
     let query = companyQueries.companyCounts;
 
@@ -97,60 +127,32 @@ class SegmentsFormContainer extends React.Component<
         query: gql(query),
         variables: {
           contentType,
-          byFakeSegment: segment
+          byFakeSegment: segmentCount
         }
       })
       .then(({ data }: any) => {
-        this.setState({
-          total: data[`${contentType}Counts`]
-        });
+        setTotal(data[`${contentType}Counts`])
       })
       .catch(e => {
         Alert.error(e.message);
       });
 
-    this.setState({ loading: false });
+    setLoading(false)
   };
 
-  render() {
-    const {
-      contentType,
-      segmentDetailQuery,
-      headSegmentsQuery,
-      combinedFieldsQuery
-    } = this.props;
+  const updatedProps = {
+    ...props,
+    fields,
+    segment,
+    headSegments: headSegments.filter(s => s.contentType === contentType),
+    renderButton,
+    count,
+    counterLoading: loading,
+    total
+  };
 
-    if (segmentDetailQuery.loading || combinedFieldsQuery.loading) {
-      return null;
-    }
-
-    const fields = (combinedFieldsQuery.fieldsCombinedByContentType || []).map(
-      ({ name, label, brandName, brandId }) => ({
-        _id: name,
-        title: label,
-        brandName,
-        brandId,
-        selectedBy: 'none'
-      })
-    );
-
-    const segment = segmentDetailQuery.segmentDetail;
-    const headSegments = headSegmentsQuery.segmentsGetHeads || [];
-
-    const updatedProps = {
-      ...this.props,
-      fields,
-      segment,
-      headSegments: headSegments.filter(s => s.contentType === contentType),
-      renderButton: this.renderButton,
-      count: this.count,
-      counterLoading: this.state.loading,
-      total: this.state.total
-    };
-
-    return <SegmentsForm {...updatedProps} />;
-  }
-}
+  return <SegmentsForm {...updatedProps} />;
+};
 
 const getRefetchQueries = (contentType: string) => {
   return [
@@ -169,28 +171,4 @@ const generateRefetchQuery = ({ contentType }) => {
   return companyQueries.companyCounts;
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, SegmentDetailQueryResponse, { _id?: string }>(
-      gql(queries.segmentDetail),
-      {
-        name: 'segmentDetailQuery',
-        options: ({ id }) => ({
-          variables: { _id: id }
-        })
-      }
-    ),
-    graphql<Props, HeadSegmentsQueryResponse, { contentType: string }>(
-      gql(queries.headSegments),
-      {
-        name: 'headSegmentsQuery'
-      }
-    ),
-    graphql<Props>(gql(queries.combinedFields), {
-      name: 'combinedFieldsQuery',
-      options: ({ contentType }) => ({
-        variables: { contentType }
-      })
-    })
-  )(SegmentsFormContainer)
-);
+export default SegmentsFormContainer;
