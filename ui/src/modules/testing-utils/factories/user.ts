@@ -1,7 +1,7 @@
 import * as Factory from 'factory.ts';
 import { IUser, IUserConversation, IUserDetails, IUserLinks } from 'modules/auth/types';
-import { brandFactory } from './brands';
 import { emailSignatureFactory } from './engage';
+import { brandFactory } from './settings/brands';
 
 export const userDetailsFactory = Factory.Sync.makeFactory<IUserDetails>({
   avatar: 'images',

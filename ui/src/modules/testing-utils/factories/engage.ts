@@ -1,10 +1,11 @@
 import * as Factory from 'factory.ts';
 import { IAttachment } from 'modules/common/types';
 import { IEmailDelivery, IEngageEmail, IEngageMessage, IEngageMessenger, IEngageScheduleDate, IEngageStats } from 'modules/engage/types';
+import { IEngageData } from 'modules/inbox/types';
 import { ISegment, ISegmentCondition } from 'modules/segments/types';
 import { IEmailSignature } from 'modules/settings/email/types';
-import { brandFactory } from './brands';
 import { conditionsRuleFactory } from './common';
+import { brandFactory } from './settings/brands';
 import { tagFactory } from './tags';
 import { userFactory } from './user';
 
@@ -16,6 +17,26 @@ export const engageMessengerFactory = Factory.Sync.makeFactory<IEngageMessenger>
   rules: [
     conditionsRuleFactory.build(),
     conditionsRuleFactory.build({ _id: '21' })
+  ]
+});
+
+export const engageDataRulesFactory = Factory.Sync.makeFactory<IEngageDataRules>({
+  kind: 'manual',
+  text: 'test11',
+  condition: 'content',
+  value: 'engagedata',
+});
+
+export const engageDataFactory = Factory.Sync.makeFactory<IEngageData>({
+  messageId: '21',
+  brandId: '3',
+  content: 'content',
+  fromUserId: '11',
+  kind: 'manual',
+  sentAs: 'me',
+  rules: [
+    engageDataRulesFactory.build(),
+    engageDataRulesFactory.build({ kind: 'manual', text: 'test11' })
   ]
 });
 

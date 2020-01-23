@@ -9,7 +9,7 @@ export const messagesItemFactory = Factory.Sync.makeFactory<IMessagesItem>({
 });
 
 export const messagesFactory = Factory.Sync.makeFactory<IMessages>({
-  [key: string]: messagesItemFactory.build({ away: 'away' })
+  supporterIds: messagesItemFactory.build({ greetings: { title: 'Erxes', message: 'message' }, away: 'away' })
 });
 
 export const onlineHourFactory = Factory.Sync.makeFactory<IOnlineHour>({
@@ -26,7 +26,7 @@ export const linkFactory = Factory.Sync.makeFactory<ILink>({
 });
 
 export const messengerDataFactory = Factory.Sync.makeFactory<IMessengerData>({
-  messages: messagesFactory.build({ key: 'key' }),
+  messages: messagesFactory.build({ supporterIds: ({ greetings: { title: 'Erxes', message: 'message' }, away: 'away' }) }),
   notifyCustomer: false,
   supporterIds: ['string'],
   availabilityMethod: 'string',

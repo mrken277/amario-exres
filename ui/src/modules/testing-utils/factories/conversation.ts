@@ -1,10 +1,20 @@
 import * as Factory from 'factory.ts';
-import { IConversation } from 'modules/inbox/types';
+import { IConversation, IFacebookPost } from 'modules/inbox/types';
 import { customerFactory } from './customer';
 import { integrationFacroty } from './integration';
 import { tagFactory } from './tags';
 import { userFactory } from './user';
 
+export const facebookPostFactory = Factory.Sync.makeFactory<IFacebookPost>({
+  postId: '66',
+  recipientId: '22',
+  senderId: 'erxet',
+  content: 'sainuu',
+  erxesApiId: '11',
+  attachments: ['img1', 'img2'],
+  timestamp: new Date(),
+  commentCount: 23
+});
 
 export const conversationFactory = Factory.Sync.makeFactory<IConversation>({
   _id: '1',
@@ -40,6 +50,6 @@ export const conversationFactory = Factory.Sync.makeFactory<IConversation>({
   ],
   updatedAt: new Date(),
   idleTime: 56,
-  facebookPost: IFacebookPost,
+  facebookPost: facebookPostFactory.build({ postId: '66' }),
   callProAudio: 'string'
 });

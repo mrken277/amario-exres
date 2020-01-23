@@ -1,5 +1,6 @@
 import * as Factory from 'factory.ts';
 import { ICustomer, ICustomerLinks, IVisitorContact } from 'modules/customers/types';
+import { companyFactory } from './companies';
 import { integrationFacroty } from './integration';
 import { messengerDataFactory } from './messengerdata';
 import { tagFactory } from './tags';
@@ -63,7 +64,7 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
     messengerDataFactory.build(),
     messengerDataFactory.build({ isOnline: true })
   ),
-  customFieldsData: { [key: string]: any },
+  customFieldsData: { customFieldIds: 'any' },
   visitorContactInfo: visitorContactFactory.build({
     email: 'dulamaa@yahoo.com',
     phone: '99889988'

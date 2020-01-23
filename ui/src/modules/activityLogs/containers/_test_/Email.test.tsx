@@ -4,8 +4,8 @@ import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { queries } from 'modules/activityLogs/graphql';
 import { queries as engageQueries } from 'modules/engage/graphql';
-import { brandFactory } from 'modules/testing-utils/factories/brands'
 import { emailDeliveryFactory, engageMessageFactory, segmentFactory } from 'modules/testing-utils/factories/engage';
+import { brandFactory } from 'modules/testing-utils/factories/settings/brands'
 import { tagFactory } from 'modules/testing-utils/factories/tags';
 import { userFactory } from 'modules/testing-utils/factories/user';
 import { withRouter } from 'modules/testing-utils/withRouter';
