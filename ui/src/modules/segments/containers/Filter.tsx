@@ -1,10 +1,7 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { IRouterProps } from 'modules/common/types';
-import { router, withProps } from 'modules/common/utils';
+import { router } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router';
 import Filter from '../components/Filter';
 import { queries } from '../graphql';
 import { Counts, SegmentsQueryResponse } from '../types';
@@ -12,15 +9,31 @@ import { Counts, SegmentsQueryResponse } from '../types';
 type Props = {
   contentType: string;
   counts: Counts;
+  history: any;
 };
 
-type FinalProps = {
-  segmentsQuery: SegmentsQueryResponse;
-} & Props &
-  IRouterProps;
+const FilterContainer = (props: Props) => {
+  const { history, contentType } = props;
 
-const FilterContainer = (props: FinalProps) => {
-  const { segmentsQuery, history } = props;
+  const {
+    loading: segmentsQueryLoading,
+    error: segmentsQueryError,
+    data: segmentsQueryData
+  } = useQuery<SegmentsQueryResponse, { contentType: string }>(
+    gql(queries.segments),
+    {
+      variables: { contentType },
+      fetchPolicy: 'network-only'
+    }
+  );
+
+  if (segmentsQueryError) {
+    return <p>Error!</p>;
+  }
+
+  if (segmentsQueryLoading) {
+    return <p>Loading...</p>;
+  }
 
   const currentSegment = router.getParam(history, 'segment');
 
@@ -37,20 +50,11 @@ const FilterContainer = (props: FinalProps) => {
     currentSegment,
     setSegment,
     removeSegment,
-    segments: segmentsQuery.segments || [],
-    loading: segmentsQuery.loading
+    segments: segmentsQueryData ? segmentsQueryData.segments : [],
+    loading: segmentsQueryLoading
   };
 
   return <Filter {...extendedProps} />;
 };
 
-export default withProps<Props>(
-  compose(
-    graphql(gql(queries.segments), {
-      name: 'segmentsQuery',
-      options: ({ contentType }: { contentType: string }) => ({
-        variables: { contentType }
-      })
-    })
-  )(withRouter<FinalProps>(FilterContainer))
-);
+export default FilterContainer;
