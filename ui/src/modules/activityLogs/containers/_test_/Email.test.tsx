@@ -5,7 +5,9 @@ import gql from 'graphql-tag';
 import { queries } from 'modules/activityLogs/graphql';
 import { queries as engageQueries } from 'modules/engage/graphql';
 import { brandFactory } from 'modules/testing-utils/factories/brands'
-import {  emailDeliveryFactory, engageMessageFactory, segmentFactory, tagFactory, userFactory } from 'modules/testing-utils/factories/engage';
+import { emailDeliveryFactory, engageMessageFactory, segmentFactory } from 'modules/testing-utils/factories/engage';
+import { tagFactory } from 'modules/testing-utils/factories/tags';
+import { userFactory } from 'modules/testing-utils/factories/user';
 import { withRouter } from 'modules/testing-utils/withRouter';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
@@ -17,35 +19,35 @@ const emailType = 'engage';
 const emailId = '11';
 
 const engageMessageErrorMock = {
-	request: {
-		query: gql(engageQueries.engageMessageDetail),
-		variables: emailVariables,
-	},
-	result: {
-		errors: [new GraphQLError('errorEngageMessage!')],
-	}
+  request: {
+    query: gql(engageQueries.engageMessageDetail),
+    variables: emailVariables,
+  },
+  result: {
+    errors: [new GraphQLError('errorEngageMessage!')],
+  }
 };
 
 const emailDeliveryErrorMock = {
-	request: {
-		query: gql(queries.emailDeliveryDetail),
-		variables: emailVariables,
-	},
-	result: {
-		errors: [new GraphQLError('errorEmailDelivery!')],
-	}
+  request: {
+    query: gql(queries.emailDeliveryDetail),
+    variables: emailVariables,
+  },
+  result: {
+    errors: [new GraphQLError('errorEmailDelivery!')],
+  }
 };
 
 const emailDeliveryMock = {
-	request: {
-		query: gql(queries.emailDeliveryDetail),
-		variables: emailVariables,
-	},
-	result: {
-		data: {
-			emailDeliveryDetail: [
-				emailDeliveryFactory.build(),
-				emailDeliveryFactory.build({
+  request: {
+    query: gql(queries.emailDeliveryDetail),
+    variables: emailVariables,
+  },
+  result: {
+    data: {
+      emailDeliveryDetail: [
+        emailDeliveryFactory.build(),
+        emailDeliveryFactory.build({
           _id: '33',
           subject: 'test',
           body: 'Body',
@@ -60,22 +62,22 @@ const emailDeliveryMock = {
 
           fromUser: userFactory.build({ _id: '12' }),
           fromEmail: 'erxes@nmma.co'
-				})
-			]
-		},
-	},
+        })
+      ]
+    },
+  },
 };
 
 const engageMessageMock = {
-	request: {
-		query: gql(engageQueries.engageMessageDetail),
-		variables: emailVariables,
-	},
-	result: {
-		data: {
-			engageMessageDetail: [
-				engageMessageFactory.build(),
-				engageMessageFactory.build({
+  request: {
+    query: gql(engageQueries.engageMessageDetail),
+    variables: emailVariables,
+  },
+  result: {
+    data: {
+      engageMessageDetail: [
+        engageMessageFactory.build(),
+        engageMessageFactory.build({
           _id: '4',
           stopDate: new Date(),
           createdDate: new Date(),
@@ -86,13 +88,13 @@ const engageMessageMock = {
           tagIds: ['12', '13'],
           getTags: [
             tagFactory.build(),
-            tagFactory.build({ _id: '23'})
+            tagFactory.build({ _id: '23' })
           ],
           title: 'test'
-				})
-			]
-		},
-	},
+        })
+      ]
+    },
+  },
 };
 
 
@@ -100,7 +102,7 @@ describe('email', () => {
   it('should render loading state initially', () => {
     const component = create(
       <MockedProvider mocks={[]}>
-        <Email  
+        <Email
           activity={activity}
           emailId={emailId}
           emailType={emailType}
@@ -108,26 +110,26 @@ describe('email', () => {
       </MockedProvider>
     );
 
-      const tree = component.toJSON();
-      expect(tree.children).toContain('Loading...');
+    const tree = component.toJSON();
+    expect(tree.children).toContain('Loading...');
   });
 
   it('error', async () => {
     const component = create(
       <MockedProvider mocks={[engageMessageErrorMock, emailDeliveryErrorMock]} addTypename={false}>
         {withRouter(
-          <Email 
+          <Email
             activity={activity}
             emailId={emailId}
             emailType={emailType}
-          /> 
+          />
         )}
       </MockedProvider>
     );
 
     await act(async () => {
       await wait(0);
-    }); 
+    });
 
     const tree = component.toJSON();
     expect(tree.children).toContain('Error!');
@@ -137,7 +139,7 @@ describe('email', () => {
     const component = create(
       <MockedProvider mocks={[emailDeliveryMock, engageMessageMock]} addTypename={false}>
         {withRouter(
-          <Email 
+          <Email
             activity={activity}
             emailId={emailId}
             emailType={emailType}
@@ -145,7 +147,7 @@ describe('email', () => {
         )}
       </MockedProvider>
     );
-    await wait(0); 
+    await wait(0);
 
     const tree = component.toJSON();
     expect(tree).toBe(null);
