@@ -50,7 +50,7 @@ class Move extends React.Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.stages !== nextProps.stages) {
       this.setState({ stages: nextProps.stages });
     }

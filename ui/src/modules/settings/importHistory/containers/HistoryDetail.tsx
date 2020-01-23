@@ -23,7 +23,7 @@ class HistoryDetailContainer extends React.Component<
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { importHistoryDetailQuery, id } = this.props;
 
     importHistoryDetailQuery.subscribeToMore({

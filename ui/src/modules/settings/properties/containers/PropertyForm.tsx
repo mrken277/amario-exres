@@ -1,10 +1,11 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
-import { withProps } from 'modules/common/utils';
+import checkError from 'modules/common/utils/checkError';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import PropertyForm from '../components/PropertyForm';
 import { mutations, queries } from '../graphql';
 import {
@@ -25,8 +26,30 @@ type FinalProps = {
   FieldsEditMutationResponse;
 
 const PropertyFormContainer = (props: FinalProps) => {
-  const { fieldsGroupsQuery, queryParams } = props;
-  const { type } = queryParams;
+  const { queryParams } = props;
+
+  const {
+    loading: fieldsGroupsQueryLoading,
+    error: fieldsGroupsQueryError,
+    data: fieldsGroupsQueryData
+  } = useQuery<FieldsGroupsQueryResponse>(
+    gql(queries.fieldsGroups),
+    {
+      variables: {
+        contentType: queryParams.type || ''
+      }
+    }
+  );
+
+  if (fieldsGroupsQueryError) {
+    const error = checkError([fieldsGroupsQueryError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  }
+
+  if (fieldsGroupsQueryLoading) {
+    return <Spinner objective={true} />;
+  }
 
   const renderButton = ({
     name,
@@ -45,16 +68,16 @@ const PropertyFormContainer = (props: FinalProps) => {
         type="submit"
         successMessage={`You successfully ${
           object ? 'updated' : 'added'
-        } a ${name}`}
+          } a ${name}`}
       />
     );
   };
 
   const updatedProps = {
     ...props,
-    type,
+    type: queryParams.type,
     renderButton,
-    groups: fieldsGroupsQuery.fieldsGroups,
+    groups: fieldsGroupsQueryData ? fieldsGroupsQueryData.fieldsGroups : [],
     refetchQueries: getRefetchQueries(queryParams)
   };
 
@@ -70,18 +93,4 @@ const getRefetchQueries = queryParams => {
   ];
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, FieldsGroupsQueryResponse, { contentType: string }>(
-      gql(queries.fieldsGroups),
-      {
-        name: 'fieldsGroupsQuery',
-        options: ({ queryParams }) => ({
-          variables: {
-            contentType: queryParams.type
-          }
-        })
-      }
-    )
-  )(PropertyFormContainer)
-);
+export default PropertyFormContainer;
