@@ -21,11 +21,13 @@ import {
 
 type Props = {
   queryParams: any;
+  history: any;
 };
 
 const PropertiesContainer = (props: Props) => {
-  const { queryParams } = props;
-
+  const { queryParams, history } = props;
+  // tslint:disable-next-line:no-console
+  console.log(history);
   if (!router.getParam(history, 'type')) {
     router.setParams(
       history,

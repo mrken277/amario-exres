@@ -83,7 +83,7 @@ describe('Properties', () => {
   it('should render loading state initially', () => {
     const component = create(
       <MockedProvider mocks={[]}>
-        {withRouter(<PropertiesContainer queryParams={queryParams} />)}
+        {withRouter(<PropertiesContainer queryParams={queryParams} history={history} />)}
       </MockedProvider>
     );
 
@@ -97,7 +97,7 @@ describe('Properties', () => {
         mocks={[fieldsGroupsErrorMock]}
         addTypename={false}
       >
-        {withRouter(<PropertiesContainer queryParams={queryParams} />)}
+        {withRouter(<PropertiesContainer queryParams={queryParams} history={history} />)}
       </MockedProvider>
     );
 
@@ -113,7 +113,7 @@ describe('Properties', () => {
         mocks={[fieldsGroupsQueryMock, fieldsGroupsRemoveMutationMocks, fieldsRemoveMutationMocks, fieldsGroupsUpdateVisibleMutationMocks, fieldsUpdateVisibleMutationMocks]}
         addTypename={false}
       >
-        {withRouter(<PropertiesContainer queryParams={queryParams} />)}
+        {withRouter(<PropertiesContainer queryParams={queryParams} history={history} />)}
       </MockedProvider>
     );
 
