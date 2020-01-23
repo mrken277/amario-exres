@@ -1,9 +1,9 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import Tagger from '../components/Tagger';
+import { mutations, queries } from '../graphql';
 import {
   ITagTypes,
   TagMutationResponse,
@@ -21,13 +21,33 @@ type Props = {
   refetchQueries?: any[];
 };
 
-type FinalProps = {
-  tagsQuery: TagsQueryResponse;
-} & Props &
-  TagMutationResponse;
+const TaggerContainer = (props: Props) => {
+  const { type, targets = [], successCallback, refetchQueries } = props;
 
-const TaggerContainer = (props: FinalProps) => {
-  const { type, targets = [], successCallback, tagsQuery, tagMutation } = props;
+  const {
+    loading: tagsQueryLoading,
+    error: tagsQueryError,
+    data: tagsQueryData
+  } = useQuery<TagsQueryResponse, { type: string }>(
+    gql(queries.tags),
+    {
+      variables: { type },
+      fetchPolicy: 'network-only'
+    }
+  );
+
+  const [tagger, { error: tagsTagMutationError }] =
+    useMutation<TagMutationResponse, TagMutationVariables>(
+      gql(mutations.tagger), { refetchQueries }
+    );
+
+  if (tagsQueryError || tagsTagMutationError) {
+    return <p>Error!</p>;
+  }
+
+  if (tagsQueryLoading) {
+    return <p>Loading...</p>;
+  }
 
   const tag = selectedTagIds => {
     const variables = {
@@ -36,7 +56,7 @@ const TaggerContainer = (props: FinalProps) => {
       tagIds: selectedTagIds
     };
 
-    tagMutation({ variables })
+    tagger({ variables })
       .then(() => {
         let message = `The ${type} has been tagged!`;
 
@@ -57,47 +77,12 @@ const TaggerContainer = (props: FinalProps) => {
 
   const updatedProps = {
     ...props,
-    loading: tagsQuery.loading,
-    tags: tagsQuery.tags || [],
+    loading: tagsQueryLoading,
+    tags: tagsQueryData ? tagsQueryData.tags : [],
     tag
   };
 
   return <Tagger {...updatedProps} />;
 };
 
-const query = gql`
-  query($type: String!) {
-    tags(type: $type) {
-      _id
-      name
-      colorCode
-    }
-  }
-`;
-
-const mutation = gql`
-  mutation tagsTag(
-    $type: String!
-    $targetIds: [String!]!
-    $tagIds: [String!]!
-  ) {
-    tagsTag(type: $type, targetIds: $targetIds, tagIds: $tagIds)
-  }
-`;
-
-export default withProps<Props>(
-  compose(
-    graphql<Props, TagsQueryResponse, { type: string }>(query, {
-      name: 'tagsQuery',
-      options: (props: Props) => ({
-        variables: { type: props.type }
-      })
-    }),
-    graphql<Props, TagMutationResponse, TagMutationVariables>(mutation, {
-      name: 'tagMutation',
-      options: ({ refetchQueries }) => ({
-        refetchQueries
-      })
-    })
-  )(TaggerContainer)
-);
+export default TaggerContainer;
