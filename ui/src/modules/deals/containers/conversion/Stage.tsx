@@ -19,7 +19,7 @@ type State = {
   loadingDeals: boolean;
 };
 
-export default (props: Props, state: State) => {
+function StageContainer(props: Props, state: State) {
   const { stage, pipelineId, queryParams } = props;
   const [loadingDeals, setLoadingDeals] = useState(false);
 
@@ -111,7 +111,7 @@ export default (props: Props, state: State) => {
       loadingDeals={loadingDeals}
     />
   );
-};
+}
 
 const getFilterParams = queryParams => {
   if (!queryParams) {
@@ -128,3 +128,5 @@ const getFilterParams = queryParams => {
     labelIds: queryParams.labelIds
   };
 };
+
+export default StageContainer;

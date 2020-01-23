@@ -97,13 +97,13 @@ class DealColumn extends React.Component<Props, {}> {
 
   renderAmount(currencies: [{ name: string; amount: number }]) {
     return currencies.map((total, index) => (
-      <>
+      <label key={index}>
         {total.amount.toLocaleString()}{' '}
         <span>
           {total.name}
           {index < currencies.length - 1 && ', '}
         </span>
-      </>
+      </label>
     ));
   }
 

@@ -14,7 +14,7 @@ type Props = {
   queryParams: IQueryParams;
 };
 
-export default (props: Props) => {
+function SummaryReportContainer(props: Props) {
   const { history, queryParams } = props;
 
   const {
@@ -58,4 +58,6 @@ export default (props: Props) => {
   };
 
   return <SummaryReport {...extendedProps} />;
-};
+}
+
+export default SummaryReportContainer;

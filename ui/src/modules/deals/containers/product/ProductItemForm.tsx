@@ -25,7 +25,7 @@ const getValue = (data?: ConfigDetailQueryResponse) => {
   return data && data.configsDetail ? data.configsDetail.value : [];
 };
 
-export default (props: Props) => {
+function ProductItemFormContainer(props: Props) {
   const {
     error: getUomError,
     loading: getUomLoading,
@@ -72,4 +72,6 @@ export default (props: Props) => {
   };
 
   return <ProductItemForm {...extendedProps} />;
-};
+}
+
+export default ProductItemFormContainer;

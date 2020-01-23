@@ -15,7 +15,7 @@ type Props = {
   type: string;
 };
 
-export default (props: Props) => {
+function StagesContainer(props: Props) {
   const { type, pipelineId, queryParams } = props;
 
   const {
@@ -66,4 +66,6 @@ export default (props: Props) => {
   }
 
   return <List stages={stages} />;
-};
+}
+
+export default StagesContainer;
