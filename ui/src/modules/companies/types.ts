@@ -58,7 +58,7 @@ export interface ICompanyActivityLog {
 export interface ICompany extends ICompanyDoc {
   _id: string;
   owner: IUser;
-  parentCompany: ICompany;
+  parentCompany?: ICompany;
   getTags: ITag[];
   customers: ICustomer[];
 }
