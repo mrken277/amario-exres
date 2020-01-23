@@ -4,10 +4,11 @@ import Attachment from 'modules/common/components/Attachment';
 import NameCard from 'modules/common/components/nameCard/NameCard';
 import TextDivider from 'modules/common/components/TextDivider';
 import Tip from 'modules/common/components/Tip';
+import { __ } from 'modules/common/utils';
 import React from 'react';
 import xss from 'xss';
 import { IMessage } from '../../../../../types';
-import { MessageBody, MessageContent, MessageItem } from '../styles';
+import { AppMessageBox, CallButton, MessageBody, MessageContent, MessageItem, UserInfo } from '../styles';
 
 type Props = {
   message: IMessage;
@@ -50,6 +51,24 @@ export default class SimpleMessage extends React.Component<Props, {}> {
 
     if (renderContent) {
       return renderContent();
+    }
+
+    if (message.contentType === 'video') {
+      return (
+        <AppMessageBox>
+          <UserInfo>
+            <h5>{__('Video call invitation sent')}</h5>
+            <h3>
+              <span role="img" aria-label="Wave">
+                👏
+              </span>
+            </h3>
+          </UserInfo>
+          <CallButton>
+            <div dangerouslySetInnerHTML={{ __html: xss(message.content) }} />
+          </CallButton>
+        </AppMessageBox>
+      );
     }
 
     if (!message.content) {

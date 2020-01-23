@@ -115,6 +115,7 @@ export interface IMessage {
   conversationId: string;
   internal?: boolean;
   fromBot?: boolean;
+  contentType?: string;
   customerId?: string;
   userId?: string;
   isCustomerRead?: boolean;
@@ -146,6 +147,7 @@ export type ReplyMutationResponse = {
 export type AddMessageMutationVariables = {
   conversationId: string;
   content: string;
+  contentType?: string;
   mentionedUserIds?: string[];
   internal?: boolean;
   attachments?: any;

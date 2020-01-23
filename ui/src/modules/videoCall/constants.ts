@@ -1,0 +1,1 @@
+export const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';

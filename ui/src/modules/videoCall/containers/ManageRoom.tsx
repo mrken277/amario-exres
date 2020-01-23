@@ -1,19 +1,39 @@
 import client from 'apolloClient';
 import gql from 'graphql-tag';
+import { SmallLoader } from 'modules/common/components/ButtonMutate';
 import Icon from 'modules/common/components/Icon';
-import { Alert } from 'modules/common/utils';
+import Tip from 'modules/common/components/Tip';
+import { __, Alert } from 'modules/common/utils';
 import { queries } from 'modules/inbox/graphql';
-import React from 'react';
+import React, { useState } from 'react';
+import { REACT_DAILY_END_POINT } from '../constants';
 
 type Props = {
   conversationId: string;
-  callback: (content: string) => void;
+  callback: (content: string, contentType: string) => void;
 };
 
-class ManageRoom extends React.Component<Props> {
-  createVideoRoom = () => {
-    const { conversationId, callback } = this.props;
+function ManageRoom (props: Props) {
+  const [loading, setLoading] = useState(false);
 
+  const openWindow = (name: string, token: string) => {
+    const height = 600;
+    const width = 480;
+
+    const y = window.top.outerHeight / 2 + window.top.screenY - ( height / 2);
+    const x = window.top.outerWidth / 2 + window.top.screenX - ( width / 2);
+
+    window.open(
+      `/videoCall?name=${name}&t=${token}`,
+      '_blank',
+      `toolbar=no,titlebar=no,directories=no,menubar=no,location=no,scrollbars=yes,status=no,height=${height},width=${width},top=${y},left=${x}`
+    );
+  }
+
+  const createVideoRoom = () => {
+    const { conversationId, callback } = props;
+    
+    setLoading(true);
     client
       .query({
         query: gql(queries.getVideoRoom),
@@ -31,31 +51,26 @@ class ManageRoom extends React.Component<Props> {
         } = data.conversationsGetVideoRoom;
 
         if (created) {
-          const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';
+          const anchor = `<a target="_blank" href="${REACT_DAILY_END_POINT}/${name}?t=${token}">Join a call</a>`;
 
-          const anchor = `<a href="${REACT_DAILY_END_POINT}/${name}?t=${token}">Join a call</a>`;
-
-          callback(anchor);
+          callback(anchor, 'video');
         }
 
-        window.open(
-          `/videoCall?name=${name}&t=${ownerToken}`,
-          '_blank',
-          'location=yes,height=570,width=520,scrollbars=yes,status=yes'
-        );
+        openWindow(name, ownerToken);
+        setLoading(false);
       })
       .catch(error => {
         Alert.error(error.message);
       });
   };
 
-  render() {
-    return (
-      <label onClick={this.createVideoRoom}>
-        <Icon icon="video" />
+  return (
+    <Tip text={__('Invite video call')}>
+      <label onClick={createVideoRoom}>
+        {loading ? <SmallLoader /> : <Icon icon="video" />}
       </label>
-    );
-  }
+    </Tip>
+  );
 }
 
 export default ManageRoom;

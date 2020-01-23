@@ -1,25 +1,54 @@
 import DailyIframe from '@daily-co/daily-js';
 import client from 'apolloClient';
 import gql from 'graphql-tag';
+import { SimpleButton } from 'modules/common/styles/main';
 import { Alert } from 'modules/common/utils';
 import React from 'react';
+import styled from 'styled-components';
+import styledTS from 'styled-components-ts';
+import { REACT_DAILY_END_POINT } from '../constants';
 import { mutations } from '../graphql';
+
+const Control = styledTS<{ disabled?: boolean; }>(
+  styled(SimpleButton)
+)`
+  width: auto;
+  height: auto;
+  position: absolute;
+  right: 3px;
+  padding: 0 10px;
+  font-size: 13px;
+  background: #fafafa;
+  top: 3px;
+  pointer-events: ${props => props.disabled && 'none'};
+  opacity: ${props => props.disabled && '0.9'};
+`;
+
+const Error = styled.div`
+  position: absolute;
+  height: 30px;
+  width: 100%;
+  color: #721c24;
+  background-color: #f8d7da;
+  line-height: 28px;
+  text-align: center;
+  border: 1px solid #f5c6cb;
+`;
 
 type Props = {
   queryParams: any;
 };
 
-class VideoCall extends React.Component<Props, { errorMessage: string }> {
+class VideoCall extends React.Component<Props, { loading:boolean, errorMessage: string }> {
   private callFrame;
 
   constructor(props) {
     super(props);
 
-    this.state = { errorMessage: '' };
+    this.state = { errorMessage: '', loading: false };
   }
 
   componentDidMount() {
-    const REACT_DAILY_END_POINT = 'https://erxes-inc.daily.co';
     const { name, t } = this.props.queryParams;
 
     if (!name || !t) {
@@ -41,6 +70,7 @@ class VideoCall extends React.Component<Props, { errorMessage: string }> {
   }
 
   onDelete = () => {
+    this.setState({ loading: true });
     client
       .mutate({
         mutation: gql(mutations.deleteVideoChatRoom),
@@ -50,9 +80,8 @@ class VideoCall extends React.Component<Props, { errorMessage: string }> {
       })
       .then(({ data: { conversationDeleteVideoChatRoom: { deleted } } }) => {
         if (deleted) {
-          Alert.success('Амжилттай устгалаа');
-
           window.close();
+          this.setState({ loading: false });
         }
       })
       .catch(error => {
@@ -64,20 +93,24 @@ class VideoCall extends React.Component<Props, { errorMessage: string }> {
     const { name } = this.props.queryParams;
 
     if (!name) {
-      return 'No room';
+      return;
     }
 
-    return <span onClick={this.onDelete}>Delete room</span>;
+    return (
+      <Control onClick={this.onDelete} disabled={this.state.loading}>
+        {this.state.loading ? 'Please wait...' : 'Delete room'} 
+      </Control>
+    );
   }
 
   render() {
     return (
       <>
         {this.renderControls()}
-        {this.state.errorMessage}
+        {this.state.errorMessage && <Error>{this.state.errorMessage}</Error>}
         <div
           id="call-frame-container"
-          style={{ width: '100%', height: '500px' }}
+          style={{ width: '100%', height: '100%' }}
         />
       </>
     );

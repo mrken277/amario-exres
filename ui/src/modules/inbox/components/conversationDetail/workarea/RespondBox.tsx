@@ -262,12 +262,14 @@ class RespondBox extends React.Component<Props, State> {
     return text.replace(/&nbsp;/g, ' ');
   }
 
-  addMessage = () => {
+  addMessage = (contentType?: string ) => {
     const { conversation, sendMessage } = this.props;
     const { isInternal, attachments, content, mentionedUserIds } = this.state;
+
     const message = {
       conversationId: conversation._id,
       content: this.cleanText(content) || ' ',
+      contentType: contentType || 'text',
       internal: isInternal,
       attachments,
       mentionedUserIds
@@ -292,9 +294,9 @@ class RespondBox extends React.Component<Props, State> {
     }
   };
 
-  sendVideoChatInvitationLink = (content: string) => {
+  sendVideoChatInvitationLink = (content: string, contentType: string) => {
     this.setState({ content }, () => {
-      this.addMessage();
+      this.addMessage(contentType);
     });
   };
 
