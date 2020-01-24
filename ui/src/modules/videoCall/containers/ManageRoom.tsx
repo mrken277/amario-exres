@@ -51,7 +51,7 @@ function ManageRoom (props: Props) {
         } = data.conversationsGetVideoRoom;
 
         if (created) {
-          const anchor = `<a target="_blank" href="${REACT_DAILY_END_POINT}/${name}?t=${token}">Join a call</a>`;
+          const anchor = `<a target="_blank" href="${REACT_DAILY_END_POINT}/${name}?t=${token}">${__('Join a call')}</a>`;
 
           callback(anchor, 'video');
         }
@@ -65,7 +65,7 @@ function ManageRoom (props: Props) {
   };
 
   return (
-    <Tip text={__('Invite video call')}>
+    <Tip text={__('Invite to video call')}>
       <label onClick={createVideoRoom}>
         {loading ? <SmallLoader /> : <Icon icon="video" />}
       </label>
