@@ -24,7 +24,7 @@ type Props = {
   onSelect: (products: IProduct[]) => void;
 };
 
-export default (props: Props, state: any) => {
+function ProductChooserContainer(props: Props, state: any) {
   const defaultPerPage = 20;
   const { data, onSelect, categoryId, onChangeCategory } = props;
   const [perPage, setPerPage] = useState(defaultPerPage);
@@ -135,4 +135,6 @@ export default (props: Props, state: any) => {
   return (
     <Chooser {...updatedProps} renderFilter={renderProductCategoryChooser} />
   );
-};
+}
+
+export default ProductChooserContainer;

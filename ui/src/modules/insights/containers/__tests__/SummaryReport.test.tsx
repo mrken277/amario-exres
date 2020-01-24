@@ -2,7 +2,7 @@ import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { createMemoryHistory } from 'history';
-import { brandFactory } from 'modules/testing-utils/factories';
+import { brandFactory } from 'modules/testing-utils/factories/settings/brands';
 import { withRouter } from 'modules/testing-utils/withRouter';
 import * as React from 'react';
 import { act, create } from 'react-test-renderer';

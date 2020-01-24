@@ -35,7 +35,7 @@ export interface IConversation {
   callProAudio?: string;
 }
 
-interface IEngageDataRules {
+export interface IEngageDataRules {
   kind: string;
   text: string;
   condition: string;

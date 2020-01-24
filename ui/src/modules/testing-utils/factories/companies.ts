@@ -1,4 +1,7 @@
 import * as Factory from 'factory.ts';
+import { ICompany, ICompanyLinks } from 'modules/companies/types';
+import { customerFactory } from './customer';
+import { userFactory } from './user';
 
 export const companyLinksFactory = Factory.Sync.makeFactory<ICompanyLinks>({
   linkedIn: 'linkedIn',

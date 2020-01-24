@@ -12,7 +12,7 @@ import {
   DealsTotalAmountsQueryResponse,
   IDeal
 } from 'modules/deals/types';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { queries } from '../../graphql';
 
 type Props = {
@@ -38,17 +38,8 @@ const getCommonParams = queryParams => {
   };
 };
 
-export default (props: Props) => {
-  // componentWillReceiveProps(nextProps: FinalProps) {
-  //   const { updatedAt, dealsQuery, dealsTotalAmountsQuery } = this.props;
-
-  //   if (updatedAt !== nextProps.updatedAt) {
-  //     dealsQuery.refetch();
-  //     dealsTotalAmountsQuery.refetch();
-  //   }
-  // }
-
-  const { date, pipelineId, queryParams } = props;
+function DealColumnContainer(props: Props) {
+  const { date, pipelineId, queryParams, updatedAt } = props;
 
   const {
     error: dealsError,
@@ -79,13 +70,13 @@ export default (props: Props) => {
     }
   });
 
-  // Update calendar after stage updated
-  if (localStorage.getItem('cacheInvalidated') === 'true') {
-    localStorage.setItem('cacheInvalidated', 'false');
-
-    dealsRefetch();
-    dealsTotalAmountsRefetch();
-  }
+  useEffect(
+    () => {
+      dealsRefetch();
+      dealsTotalAmountsRefetch();
+    },
+    [updatedAt]
+  ); // Only re-run the effect if updatedAt changes
 
   if (dealsError || dealsTotalAmountsError) {
     const error = checkError([dealsError, dealsTotalAmountsError]);
@@ -95,6 +86,14 @@ export default (props: Props) => {
 
   if (dealsLoading || dealsTotalAmountsLoading) {
     return <Spinner objective={true} />;
+  }
+
+  // Update calendar after stage updated
+  if (localStorage.getItem('cacheInvalidated') === 'true') {
+    localStorage.setItem('cacheInvalidated', 'false');
+
+    dealsRefetch();
+    dealsTotalAmountsRefetch();
   }
 
   const title = getMonthTitle(date.month);
@@ -143,4 +142,6 @@ export default (props: Props) => {
   };
 
   return <DealColumn {...updatedProps} />;
-};
+}
+
+export default DealColumnContainer;

@@ -1,17 +1,18 @@
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import InternalNote from 'modules/activityLogs/components/items/InternalNote';
 import { IUser } from 'modules/auth/types';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
 import Spinner from 'modules/common/components/Spinner';
-import { Alert, confirm, withProps } from 'modules/common/utils';
+import { Alert, confirm } from 'modules/common/utils';
+import checkError from 'modules/common/utils/checkError';
 import { mutations, queries } from 'modules/internalNotes/graphql';
 import {
   InternalNoteDetailQueryResponse,
   InternalNotesEditMutationResponse,
   InternalNotesRemoveMutationResponse
 } from 'modules/internalNotes/types';
-import React from 'react';
-import { graphql } from 'react-apollo';
+import React, { useState } from 'react';
+import { useMutation, useQuery } from 'react-apollo';
 
 type Props = {
   activity: any;
@@ -19,106 +20,91 @@ type Props = {
   currenUser: IUser;
 };
 
-type FinalProps = {
-  internalNoteDetailsQuery: InternalNoteDetailQueryResponse;
-  editMutation: InternalNotesEditMutationResponse;
-} & Props &
-  InternalNotesRemoveMutationResponse;
+function InternalNoteContainer(props: Props, state: any) {
+  const defaultisLoading = false;
+  const isLoading = useState(defaultisLoading);
+  const { noteId } = props;
 
-class InternalNoteContainer extends React.Component<
-  FinalProps,
-  { isLoading: boolean }
-> {
-  constructor(props: FinalProps) {
-    super(props);
-
-    this.state = { isLoading: false };
+  const {
+    data: internalNoteDetailsData,
+    error: internalNoteDetailsError,
+    loading: internalNoteDetailsLoading
+  } = useQuery<InternalNoteDetailQueryResponse>(
+    gql(queries.internalNoteDetail), {
+    variables: {
+      _id: noteId
+    }
   }
+  );
 
-  render() {
-    const {
-      internalNoteDetailsQuery,
-      noteId,
-      editMutation,
-      internalNotesRemove
-    } = this.props;
+  const [
+    editMutation,
+    { data: editMutationData, error: editMutationError }
+  ] = useMutation<InternalNotesEditMutationResponse>(
+    gql(mutations.internalNotesEdit)
+  );
 
-    if (internalNoteDetailsQuery.loading) {
-      return <Spinner />;
+  const [
+    internalNotesRemove,
+    { data: internalNotesRemoveData, error: internalNotesRemoveError }
+  ] = useMutation<InternalNotesRemoveMutationResponse>(
+    gql(mutations.internalNotesRemove), {
+    refetchQueries: ['activityLogs']
+  }
+  );
+
+  if (internalNoteDetailsLoading) {
+    return <Spinner />;
+  };
+
+  if (internalNoteDetailsError) {
+    const error = checkError([internalNoteDetailsError]);
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  };
+
+  const internalNote = internalNoteDetailsData && internalNoteDetailsData.internalNoteDetail;
+
+  const edit = (variables, callback) => {
+    useState({ isLoading: true })
+
+    editMutation({ variables: { _id: noteId, ...variables } });
+
+    if (editMutationError) {
+      Alert.error(editMutationError.message);
+      useState({ isLoading: false })
     }
 
-    const internalNote = internalNoteDetailsQuery.internalNoteDetail;
+    if (editMutationData) {
+      Alert.success('You successfully updated a note.');
 
-    const edit = (variables, callback) => {
-      this.setState({ isLoading: true });
+      if (callback) {
+        callback();
+      }
 
-      editMutation({ variables: { _id: noteId, ...variables } })
-        .then(() => {
-          Alert.success('You successfully updated a note.');
+      useState({ isLoading: false })
+    }
 
-          if (callback) {
-            callback();
-          }
+  };
 
-          this.setState({ isLoading: false });
-        })
-        .catch(error => {
-          Alert.error(error.message);
-          this.setState({ isLoading: false });
-        });
-    };
+  const remove = () => {
+    confirm()
+    internalNotesRemove({ variables: { _id: noteId } })
+    if (internalNotesRemoveError) {
+      Alert.error(internalNotesRemoveError.message);
+    }
 
-    const remove = () => {
-      confirm().then(() =>
-        internalNotesRemove({ variables: { _id: noteId } })
-          .then(() => {
-            Alert.success('You successfully deleted a note.');
-          })
-          .catch(error => {
-            Alert.error(error.message);
-          })
-      );
-    };
-
-    const updatedProps = {
-      ...this.props,
-      internalNote,
-      edit,
-      remove,
-      isLoading: this.state.isLoading
-    };
-
-    return <InternalNote {...updatedProps} />;
+    if (internalNotesRemoveData) {
+      Alert.success('You successfully deleted a note.');
+    }
   }
-}
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, InternalNoteDetailQueryResponse>(
-      gql(queries.internalNoteDetail),
-      {
-        name: 'internalNoteDetailsQuery',
-        options: ({ noteId }) => ({
-          variables: {
-            _id: noteId
-          }
-        })
-      }
-    ),
-    graphql<Props, InternalNotesEditMutationResponse>(
-      gql(mutations.internalNotesEdit),
-      {
-        name: 'editMutation'
-      }
-    ),
-    graphql<Props, InternalNotesRemoveMutationResponse>(
-      gql(mutations.internalNotesRemove),
-      {
-        name: 'internalNotesRemove',
-        options: () => ({
-          refetchQueries: ['activityLogs']
-        })
-      }
-    )
-  )(InternalNoteContainer)
-);
+  const updatedProps = {
+    ...props,
+    internalNote,
+    edit,
+    remove,
+    isLoading
+  };
+
+  return <InternalNote {...updatedProps} />;
+};
