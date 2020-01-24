@@ -1,9 +1,9 @@
 import * as Factory from 'factory.ts';
 import { ICustomer, ICustomerLinks, IVisitorContact } from 'modules/customers/types';
 import { companyFactory } from './companies';
-import { integrationFacroty } from './integration';
 import { messengerDataFactory } from './messengerdata';
-import { tagFactory } from './tags';
+import { integrationFacroty } from './settings/integration';
+import { tagsFactory } from './tags';
 import { userFactory } from './user';
 
 export const customerLinksFactory = Factory.Sync.makeFactory<ICustomerLinks>({
@@ -25,14 +25,8 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   owner: userFactory.build({ _id: '12' }),
   integration: integrationFacroty.build({ _id: '21' }),
   getMessengerCustomData: 'any',
-  getTags: [
-    tagFactory.build(),
-    tagFactory.build({ _id: '6' })
-  ],
-  companies: [
-    companyFactory.build(),
-    companyFactory.build({ _id: '22' })
-  ],
+  getTags: [tagsFactory.build(), tagsFactory.build({ _id: '6' })],
+  companies: [companyFactory.build(), companyFactory.build({ _id: '22' })],
 
   // ICustomerDocs
   firstName: 'string',
@@ -60,10 +54,7 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   description: 'string',
   doNotDisturb: 'string',
   links: customerLinksFactory.build({ facebook: 'facebook' }),
-  messengerData: (
-    messengerDataFactory.build(),
-    messengerDataFactory.build({ isOnline: true })
-  ),
+  messengerData: messengerDataFactory.build({ notifyCustomer: false }),
   customFieldsData: { customFieldIds: 'any' },
   visitorContactInfo: visitorContactFactory.build({
     email: 'dulamaa@yahoo.com',

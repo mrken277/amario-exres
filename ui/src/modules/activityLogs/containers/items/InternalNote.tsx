@@ -1,3 +1,4 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import InternalNote from 'modules/activityLogs/components/items/InternalNote';
 import { IUser } from 'modules/auth/types';
@@ -12,7 +13,6 @@ import {
   InternalNotesRemoveMutationResponse
 } from 'modules/internalNotes/types';
 import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-apollo';
 
 type Props = {
   activity: any;
@@ -62,16 +62,17 @@ function InternalNoteContainer(props: Props, state: any) {
     return <ErrorMsg>{error.message}</ErrorMsg>;
   };
 
-  const internalNote = internalNoteDetailsData && internalNoteDetailsData.internalNoteDetail;
+  const internalNote = internalNoteDetailsData && internalNoteDetailsData.internalNoteDetail || [];
 
+  console.log(internalNote);
   const edit = (variables, callback) => {
-    useState({ isLoading: true })
+    useState({ isLoading: true });
 
     editMutation({ variables: { _id: noteId, ...variables } });
 
     if (editMutationError) {
       Alert.error(editMutationError.message);
-      useState({ isLoading: false })
+      useState({ isLoading: defaultisLoading });
     }
 
     if (editMutationData) {
@@ -81,7 +82,7 @@ function InternalNoteContainer(props: Props, state: any) {
         callback();
       }
 
-      useState({ isLoading: false })
+      useState({ isLoading: defaultisLoading });
     }
 
   };
@@ -107,4 +108,5 @@ function InternalNoteContainer(props: Props, state: any) {
   };
 
   return <InternalNote {...updatedProps} />;
-};
+}
+export default InternalNoteContainer;
