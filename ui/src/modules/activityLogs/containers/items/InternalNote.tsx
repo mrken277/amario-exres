@@ -64,14 +64,15 @@ function InternalNoteContainer(props: Props, state: any) {
 
   const internalNote = internalNoteDetailsData && internalNoteDetailsData.internalNoteDetail || [];
 
-  console.log(internalNote);
   const edit = (variables, callback) => {
+    // tslint:disable-next-line: react-hooks-nesting
     useState({ isLoading: true });
 
     editMutation({ variables: { _id: noteId, ...variables } });
 
     if (editMutationError) {
       Alert.error(editMutationError.message);
+      // tslint:disable-next-line: react-hooks-nesting
       useState({ isLoading: defaultisLoading });
     }
 
@@ -82,6 +83,7 @@ function InternalNoteContainer(props: Props, state: any) {
         callback();
       }
 
+      // tslint:disable-next-line: react-hooks-nesting
       useState({ isLoading: defaultisLoading });
     }
 
