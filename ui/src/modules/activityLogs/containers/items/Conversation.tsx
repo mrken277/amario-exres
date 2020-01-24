@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import Conversation from 'modules/activityLogs/components/items/Conversation';
 import { IActivityLog } from 'modules/activityLogs/types';
@@ -8,14 +9,13 @@ import {
   MessagesQueryResponse
 } from 'modules/inbox/types';
 import React from 'react';
-import { useQuery } from 'react-apollo';
 
 type Props = {
   activity: IActivityLog;
   conversationId: string;
 };
 
-export default (props: Props) => {
+function ConversationContainer(props: Props) {
 
   const { conversationId, activity } = props;
 
@@ -83,6 +83,6 @@ export default (props: Props) => {
   };
 
   return <Conversation {...updatedProps} />;
-
 }
+export default ConversationContainer;
 

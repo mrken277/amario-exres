@@ -20,9 +20,14 @@ type Props = {
   currenUser: IUser;
 };
 
-function InternalNoteContainer(props: Props, state: any) {
-  const defaultisLoading = false;
-  const isLoading = useState(defaultisLoading);
+type useState = {
+  isLoading: boolean;
+};
+
+function InternalNoteContainer(props: Props, state: useState) {
+
+  const defaultLoading = false;
+  const [isLoading] = useState(defaultLoading);
   const { noteId } = props;
 
   const {
@@ -62,18 +67,17 @@ function InternalNoteContainer(props: Props, state: any) {
     return <ErrorMsg>{error.message}</ErrorMsg>;
   };
 
-  const internalNote = internalNoteDetailsData && internalNoteDetailsData.internalNoteDetail || [];
+  if (!internalNoteDetailsData) {
+    return null;
+  };
+
+  const internalNote = internalNoteDetailsData.internalNoteDetail;
 
   const edit = (variables, callback) => {
-    // tslint:disable-next-line: react-hooks-nesting
-    useState({ isLoading: true });
-
     editMutation({ variables: { _id: noteId, ...variables } });
 
     if (editMutationError) {
       Alert.error(editMutationError.message);
-      // tslint:disable-next-line: react-hooks-nesting
-      useState({ isLoading: defaultisLoading });
     }
 
     if (editMutationData) {
@@ -82,9 +86,6 @@ function InternalNoteContainer(props: Props, state: any) {
       if (callback) {
         callback();
       }
-
-      // tslint:disable-next-line: react-hooks-nesting
-      useState({ isLoading: defaultisLoading });
     }
 
   };
