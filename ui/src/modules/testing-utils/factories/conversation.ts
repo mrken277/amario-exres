@@ -1,6 +1,6 @@
 import * as Factory from 'factory.ts';
 import { IConversation, IFacebookPost } from 'modules/inbox/types';
-import { customerFactory } from './customer';
+import { customerFactory } from './customer/customer';
 import { integrationFacroty } from './settings/integration';
 import { tagsFactory } from './tags';
 import { userFactory } from './user';

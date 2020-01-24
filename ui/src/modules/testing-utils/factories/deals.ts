@@ -3,7 +3,7 @@ import { IBoard, IPipeline, IStage } from 'modules/boards/types';
 import { IDeal } from 'modules/deals/types';
 import { userFactory } from './auth';
 import { companyFactory } from './companies';
-import { customerFactory } from './customer';
+import { customerFactory } from './customer/customer';
 
 export const boardFactory = Factory.Sync.makeFactory<IBoard>({
   _id: '1',

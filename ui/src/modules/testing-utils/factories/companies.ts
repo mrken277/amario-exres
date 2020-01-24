@@ -1,6 +1,6 @@
 import * as Factory from 'factory.ts';
 import { ICompany, ICompanyLinks } from 'modules/companies/types';
-import { customerFactory } from './customer';
+import { customerFactory } from './customer/customer';
 import { userFactory } from './user';
 
 export const companyLinksFactory = Factory.Sync.makeFactory<ICompanyLinks>({
@@ -15,7 +15,7 @@ export const companyLinksFactory = Factory.Sync.makeFactory<ICompanyLinks>({
 export const companyFactory = Factory.Sync.makeFactory<ICompany>({
   _id: 'string',
   owner: userFactory.build({ _id: '12' }),
-  parentCompany: {},
+  parentCompany: {} as ICompany,
   getTags: [],
   customers: [
     customerFactory.build(),

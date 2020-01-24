@@ -2,7 +2,7 @@ import * as Factory from 'factory.ts';
 import { ICallout, ILeadData } from 'modules/leads/types';
 import { conditionsRuleFactory } from './common';
 import { formFactory } from './forms';
-import { tagFactory } from './tags';
+import { tagsFactory } from './tags';
 import { userFactory } from './user';
 
 export const calloutFactory = Factory.Sync.makeFactory<ICallout>({
@@ -37,8 +37,8 @@ export const leadDataFactory = Factory.Sync.makeFactory<ILeadData>({
   contactsGathered: 23,
   tagIds: ['tagd'],
   getTags: [
-    tagFactory.build(),
-    tagFactory.build({ _id: '23' })
+    tagsFactory.build(),
+    tagsFactory.build({ _id: '23' })
   ],
   form: formFactory.build({ _id: '3' })
 });

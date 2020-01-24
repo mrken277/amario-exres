@@ -1,12 +1,11 @@
 import * as Factory from 'factory.ts';
-import { IAttachment } from 'modules/common/types';
-import { IEmailDelivery, IEngageEmail, IEngageMessage, IEngageMessenger, IEngageScheduleDate, IEngageStats } from 'modules/engage/types';
-import { IEngageData } from 'modules/inbox/types';
-import { ISegment, ISegmentCondition } from 'modules/segments/types';
-import { IEmailSignature } from 'modules/settings/email/types';
+import { IEngageEmail, IEngageMessage, IEngageMessenger, IEngageScheduleDate, IEngageStats } from 'modules/engage/types';
+import { IEngageData, IEngageDataRules } from 'modules/inbox/types';
+import { attachmentFactory } from './attachment';
 import { conditionsRuleFactory } from './common';
+import { segmentFactory } from './segment';
 import { brandFactory } from './settings/brands';
-import { tagFactory } from './tags';
+import { tagsFactory } from './tags';
 import { userFactory } from './user';
 
 export const engageMessengerFactory = Factory.Sync.makeFactory<IEngageMessenger>({
@@ -40,13 +39,6 @@ export const engageDataFactory = Factory.Sync.makeFactory<IEngageData>({
   ]
 });
 
-export const attachmentFactory = Factory.Sync.makeFactory<IAttachment>({
-  name: 'Images1',
-  type: 'img',
-  url: '/images/logo',
-  size: 12
-});
-
 export const engageEmailFactory = Factory.Sync.makeFactory<IEngageEmail>({
   templateId: '3',
   subject: 'Subject',
@@ -55,38 +47,6 @@ export const engageEmailFactory = Factory.Sync.makeFactory<IEngageEmail>({
     attachmentFactory.build(),
     attachmentFactory.build({ name: 'Images1' })
   ],
-});
-
-export const segmentConditionFactory = Factory.Sync.makeFactory<ISegmentCondition>({
-  _id: '15',
-  field: 'auto',
-  value: 'string',
-  operator: 'string',
-  dateUnit: 'string',
-  type: 'string',
-  brandId: 'string',
-});
-
-export const segmentFactory = Factory.Sync.makeFactory<ISegment>({
-  _id: '5',
-  contentType: 'type',
-  getSubSegments: [],
-  getParentSegment: {} as ISegment,
-  // ISegmentDocs
-  name: 'segment',
-  description: 'desc',
-  color: '#fff',
-  connector: 'connect',
-  conditions: [
-    segmentConditionFactory.build(),
-    segmentConditionFactory.build({ _id: '15' })
-  ],
-  subOf: 'sub'
-});
-
-export const emailSignatureFactory = Factory.Sync.makeFactory<IEmailSignature>({
-  brandId: '22',
-  signature: 'erxes'
 });
 
 export const engageStatsFactory = Factory.Sync.makeFactory<IEngageStats>({
@@ -118,8 +78,8 @@ export const engageMessageFactory = Factory.Sync.makeFactory<IEngageMessage>({
   fromUser: userFactory.build({ _id: '12', email: 'erxes@nmma.co' }),
   tagIds: ['12', '13'],
   getTags: [
-    tagFactory.build(),
-    tagFactory.build({ _id: '23' })
+    tagsFactory.build(),
+    tagsFactory.build({ _id: '23' })
   ],
   stats: engageStatsFactory.build({}),
   logs: [{ message: 'string' }],
@@ -137,21 +97,4 @@ export const engageMessageFactory = Factory.Sync.makeFactory<IEngageMessage>({
   email: engageEmailFactory.build({ templateId: '3' }),
   messenger: engageMessengerFactory.build({ brandId: '22' }),
   scheduleDate: engageScheduleDateFactory.build({ type: 'everyday', month: 'July', day: '12', time: '2' })
-});
-
-export const emailDeliveryFactory = Factory.Sync.makeFactory<IEmailDelivery>({
-  _id: '33',
-  subject: 'subject',
-  body: 'Body',
-  to: 'Dulam@yahoo.com',
-  cc: 'erxes@gmail.com',
-  bcc: 'erxes@nmma.co',
-  attachments: [JSON],
-  from: 'erxes',
-  kind: 'auto',
-  userId: '12',
-  customerId: '22',
-
-  fromUser: userFactory.build({ _id: '12' }),
-  fromEmail: 'erxes@nmma.co'
 });

@@ -1,10 +1,10 @@
 import * as Factory from 'factory.ts';
 import { ICustomer, ICustomerLinks, IVisitorContact } from 'modules/customers/types';
-import { companyFactory } from './companies';
+import { companyFactory } from '../companies';
+import { integrationFacroty } from '../settings/integration';
+import { tagsFactory } from '../tags';
+import { userFactory } from '../user';
 import { messengerDataFactory } from './messengerdata';
-import { integrationFacroty } from './settings/integration';
-import { tagsFactory } from './tags';
-import { userFactory } from './user';
 
 export const customerLinksFactory = Factory.Sync.makeFactory<ICustomerLinks>({
   website: 'website',
@@ -19,6 +19,13 @@ export const visitorContactFactory = Factory.Sync.makeFactory<IVisitorContact>({
   email: 'dulamaa@yahoo.com',
   phone: '99889988'
 });
+
+export interface IMessengerData {
+  lastSeenAt?: number;
+  sessionCount?: number;
+  isActive?: boolean;
+  customData?: any;
+}
 
 export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   _id: '1',
@@ -54,7 +61,7 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   description: 'string',
   doNotDisturb: 'string',
   links: customerLinksFactory.build({ facebook: 'facebook' }),
-  messengerData: messengerDataFactory.build({ notifyCustomer: false }),
+  messengerData: messengerDataFactory.build({ isActive: true }),
   customFieldsData: { customFieldIds: 'any' },
   visitorContactInfo: visitorContactFactory.build({
     email: 'dulamaa@yahoo.com',
