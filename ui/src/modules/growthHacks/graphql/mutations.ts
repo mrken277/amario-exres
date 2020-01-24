@@ -11,6 +11,7 @@ const commonVariables = `
   $impact: Int,
   $confidence: Int,
   $ease: Int,
+  $status: String,
   $attachments: [AttachmentInput]
 `;
 
@@ -25,6 +26,7 @@ const commonParams = `
   reach: $reach,
   impact: $impact,
   confidence: $confidence,
+  status: $status,
   ease: $ease
 `;
 

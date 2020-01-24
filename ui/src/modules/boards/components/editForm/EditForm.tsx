@@ -1,3 +1,4 @@
+import { ArchiveStatus } from 'modules/boards/styles/item';
 import Icon from 'modules/common/components/Icon';
 import { CloseModal } from 'modules/common/styles/main';
 import { __, extractAttachment } from 'modules/common/utils';
@@ -97,7 +98,20 @@ class EditForm extends React.Component<Props, State> {
     this.closeModal();
   };
 
-  renderHeader = () => {
+  renderArchiveStatus() {
+    if (this.props.item.status === 'archived') {
+      return (
+        <ArchiveStatus>
+          <Icon icon="archive-alt" />
+          <span>{__('This card is archived.')}</span>
+        </ArchiveStatus>
+      );
+    }
+
+    return null;
+  }
+
+  renderHeader() {
     if (this.props.hideHeader) {
       return (
         <CloseModal onClick={this.onHideModal}>
@@ -111,7 +125,7 @@ class EditForm extends React.Component<Props, State> {
         <Modal.Title>{__('Edit')}</Modal.Title>
       </Modal.Header>
     );
-  };
+  }
 
   render() {
     return (
@@ -123,6 +137,7 @@ class EditForm extends React.Component<Props, State> {
         onHide={this.onHideModal}
         animation={false}
       >
+        {this.renderArchiveStatus()}
         {this.renderHeader()}
         <Modal.Body>
           {this.props.formContent({
