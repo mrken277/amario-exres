@@ -1,14 +1,13 @@
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import Email from 'modules/activityLogs/components/items/email/Email';
 import EngageEmail from 'modules/activityLogs/components/items/email/EngageEmail';
+import { ActivityContent } from 'modules/activityLogs/styles';
 import { EmailDeliveryDetailQueryResponse } from 'modules/activityLogs/types';
 import EmptyState from 'modules/common/components/EmptyState';
-import { withProps } from 'modules/common/utils';
 import { queries as engageQueries } from 'modules/engage/graphql';
 import { EngageMessageDetailQueryResponse } from 'modules/engage/types';
 import React from 'react';
-import { graphql } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 import { queries } from '../../graphql';
 
 type Props = {
@@ -17,74 +16,63 @@ type Props = {
   emailType: string;
 };
 
-type FinalProps = {
-  engageMessageDetailQuery: EngageMessageDetailQueryResponse;
-  emailDeliveryDetailQuery: EmailDeliveryDetailQueryResponse;
-} & Props;
-
-class EmailContainer extends React.Component<FinalProps> {
-  render() {
-    const {
-      engageMessageDetailQuery,
-      emailDeliveryDetailQuery,
-      emailType
-    } = this.props;
-
-    if (engageMessageDetailQuery && engageMessageDetailQuery.loading) {
-      return null;
-    }
-
-    if (emailDeliveryDetailQuery && emailDeliveryDetailQuery.loading) {
-      return null;
-    }
-
-    if (emailType === 'engage') {
-      if (!engageMessageDetailQuery.engageMessageDetail) {
-        return <EmptyState icon="email-4" text="Email not found" />;
+export default (props: Props) => {
+  const { emailId, emailType } = props;
+  
+  const {
+    loading: engageMessageDetailQueryLoading,
+    error: engageMessageDetailQueryError,
+    data: engageMessageDetailQueryData
+  } = useQuery<EngageMessageDetailQueryResponse> (
+    gql(engageQueries.engageMessageDetail), {
+      skip: emailType === 'engage',
+      variables: {
+        _id: emailId
       }
+    }
+  );
 
-      return (
-        <EngageEmail
-          {...this.props}
-          email={engageMessageDetailQuery.engageMessageDetail}
-        />
-      );
+  const { 
+    loading: emailDeliveryDetailQueryLoading,
+    error: emailDeliveryDetailQueryError,
+    data: emailDeliveryDetailQueryData
+  } = useQuery<EmailDeliveryDetailQueryResponse> (
+    gql(queries.emailDeliveryDetail), {
+      skip: emailType === 'engage',
+      variables: {
+        _id: emailId
+      }
+    }
+  );
+ if(!emailDeliveryDetailQueryData) {
+   return null;
+ } 
+
+  if (engageMessageDetailQueryError || emailDeliveryDetailQueryError) {
+    return <p>Error!</p>;
+  }
+
+  if (engageMessageDetailQueryLoading || emailDeliveryDetailQueryLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (emailType === 'engage') {
+    if (!engageMessageDetailQueryData || !emailDeliveryDetailQueryData) {
+      return <EmptyState icon="email-4" text="Email not found" />;
     }
 
     return (
-      <Email
-        {...this.props}
-        email={emailDeliveryDetailQuery.emailDeliveryDetail}
+      <EngageEmail
+        {...props}
+        email={engageMessageDetailQueryData.engageMessageDetail || []}
       />
     );
   }
-}
-
-export default withProps<Props>(
-  compose(
-    graphql<Props, EngageMessageDetailQueryResponse>(
-      gql(engageQueries.engageMessageDetail),
-      {
-        name: 'engageMessageDetailQuery',
-        skip: ({ emailType }) => emailType === 'email',
-        options: ({ emailId }) => ({
-          variables: {
-            _id: emailId
-          }
-        })
-      }
-    ),
-    graphql<Props, EngageMessageDetailQueryResponse>(
-      gql(queries.emailDeliveryDetail),
-      {
-        name: 'emailDeliveryDetailQuery',
-        skip: ({ emailType }) => emailType === 'engage',
-        options: ({ emailId }) => ({
-          variables: {
-            _id: emailId
-          }
-        })
-      }
-    )
-  )(EmailContainer)
-);
+  
+  return (
+    <Email
+      {...props}
+      email={emailDeliveryDetailQueryData.emailDeliveryDetail}
+    />
+  );
+};

@@ -1,10 +1,10 @@
 import * as Factory from 'factory.ts';
 import { IIntegration, IUiOptions } from 'modules/settings/integrations/types';
 import { channelFactory } from './channel';
-import { formFactory } from '../forms';
-import { leadDataFactory } from '../leads';
-import { messengerDataFactory } from '../messengerdata';
-import { brandFactory } from './brands';
+import { formFactory } from './forms';
+import { leadDataFactory } from './leads';
+import { messengerDataFactory } from './messengerdata';
+import { brandFactory } from './settings/brands';
 
 export const uiOptionsFactory = Factory.Sync.makeFactory<IUiOptions>({
   color: '#fcfcfc',
