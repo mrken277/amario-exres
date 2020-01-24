@@ -1,6 +1,7 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
+import { createMemoryHistory } from 'history';
 import { propertiesFactory } from 'modules/testing-utils/factories/settings/properties';
 import { withRouter } from 'modules/testing-utils/withRouter';
 import * as React from 'react';
@@ -78,6 +79,11 @@ const fieldsUpdateVisibleMutationMocks = {
     data: { _id: '' }
   },
 };
+
+const route = '/settings/properties/';
+const history = createMemoryHistory({
+  initialEntries: [route]
+});
 
 describe('Properties', () => {
   it('should render loading state initially', () => {

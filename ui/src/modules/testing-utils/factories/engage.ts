@@ -9,12 +9,12 @@ import {
   IEngageStats
 } from 'modules/engage/types';
 import { IEngageData, IEngageDataRules } from 'modules/inbox/types';
-import { ISegment, ISegmentCondition } from 'modules/segments/types';
 import { IEmailSignature } from 'modules/settings/email/types';
 import { conditionsRuleFactory } from './common';
 import { brandFactory } from './settings/brands';
 import { tagFactory } from './tags';
 import { userFactory } from './user';
+import { segmentFactory } from './segments';
 
 export const engageMessengerFactory = Factory.Sync.makeFactory<
   IEngageMessenger
@@ -66,35 +66,6 @@ export const engageEmailFactory = Factory.Sync.makeFactory<IEngageEmail>({
     attachmentFactory.build(),
     attachmentFactory.build({ name: 'Images1' })
   ]
-});
-
-export const segmentConditionFactory = Factory.Sync.makeFactory<
-  ISegmentCondition
->({
-  _id: '15',
-  field: 'auto',
-  value: 'string',
-  operator: 'string',
-  dateUnit: 'string',
-  type: 'string',
-  brandId: 'string'
-});
-
-export const segmentFactory = Factory.Sync.makeFactory<ISegment>({
-  _id: '5',
-  contentType: 'type',
-  getSubSegments: [],
-  getParentSegment: {} as ISegment,
-  // ISegmentDocs
-  name: 'segment',
-  description: 'desc',
-  color: '#fff',
-  connector: 'connect',
-  conditions: [
-    segmentConditionFactory.build(),
-    segmentConditionFactory.build({ _id: '15' })
-  ],
-  subOf: 'sub'
 });
 
 export const emailSignatureFactory = Factory.Sync.makeFactory<IEmailSignature>({
