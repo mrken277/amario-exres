@@ -8,6 +8,7 @@ import { __, generateRandomColorCode } from 'modules/common/utils';
 import { FlexContent, FlexItem } from 'modules/layout/styles';
 import {
   IConditionFilter,
+  IEvent,
   ISegment,
   ISegmentCondition,
   ISegmentWithConditionDoc
@@ -22,7 +23,7 @@ import PropertyCondition from './PropertyCondition';
 type Props = {
   contentType?: string;
   fields: any[];
-  events: string[];
+  events: IEvent[];
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   edit?: (params: { _id: string; doc: ISegmentWithConditionDoc }) => void;
   segment?: ISegment;
@@ -190,7 +191,6 @@ class Form extends React.Component<Props, State> {
         events={events}
         key={condition.key}
         conditionKey={condition.key || ''}
-        attributeNames={['purchaseCount', 'createdAt']}
         name={condition.eventName || ''}
         attributeFilters={condition.eventAttributeFilters || []}
         onChange={this.changeEventCondition}

@@ -6,14 +6,14 @@ import Sidebar from 'modules/layout/components/Sidebar';
 import Wrapper from 'modules/layout/components/Wrapper';
 import { FlexContent } from 'modules/layout/styles';
 import React from 'react';
-import { ISegment, ISegmentDoc } from '../types';
+import { IEvent, ISegment, ISegmentDoc } from '../types';
 import Form from './common/Form';
 import { ResultCount, SegmentResult } from './styles';
 
 type Props = {
   contentType: string;
   fields: any[];
-  events: string[];
+  events: IEvent[];
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   segment: ISegment;
   headSegments: ISegment[];

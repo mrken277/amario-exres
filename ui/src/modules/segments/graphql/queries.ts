@@ -49,9 +49,9 @@ const combinedFields = `
   }
 `;
 
-const eventNames = `
-  query eventNames {
-    segmentsEventNames
+const events = `
+  query events {
+    segmentsEvents
   }
 `;
 
@@ -59,6 +59,6 @@ export default {
   segments,
   segmentDetail,
   headSegments,
-  eventNames,
+  events,
   combinedFields
 };

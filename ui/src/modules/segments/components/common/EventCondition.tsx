@@ -3,15 +3,14 @@ import { FormControl } from 'modules/common/components/form';
 import { __ } from 'modules/common/utils';
 import { FlexContent, FlexItem, FlexRightItem } from 'modules/layout/styles';
 import React from 'react';
-import { IConditionFilter } from '../../types';
+import { IConditionFilter, IEvent } from '../../types';
 import { ConditionItem } from '../styles';
 import Filter from './Filter';
 
 type Props = {
-  events: string[];
+  events: IEvent[];
   conditionKey: string;
   name: string;
-  attributeNames: string[];
   attributeFilters: IConditionFilter[];
   onChange: (args: { key: string, name: string, attributeFilters: IConditionFilter[] }) => void;
   onRemove: (id: string) => void;
@@ -19,7 +18,7 @@ type Props = {
 
 type State = {
   attributeFilters: IConditionFilter[];
-  currentEvent?: string;
+  currentEventName?: string;
 }
 
 class Condition extends React.Component<Props, State> {
@@ -27,7 +26,7 @@ class Condition extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      currentEvent: props.name,
+      currentEventName: props.name,
       attributeFilters: props.attributeFilters.map(filter => ({ key: Math.random().toString(), ...filter }))
     }
   }
@@ -38,11 +37,11 @@ class Condition extends React.Component<Props, State> {
 
   onChangeFilter = () => {
     const { onChange, conditionKey } = this.props;
-    const { currentEvent, attributeFilters } = this.state;
+    const { currentEventName, attributeFilters } = this.state;
 
     return onChange({
       key: conditionKey,
-      name: currentEvent || '',
+      name: currentEventName || '',
       attributeFilters,
     });
   }
@@ -62,7 +61,7 @@ class Condition extends React.Component<Props, State> {
   };
 
   onChangeEvents = (e) => {
-    this.setState({ currentEvent: e.currentTarget.value }, this.onChangeFilter);
+    this.setState({ currentEventName: e.currentTarget.value }, this.onChangeFilter);
   }
 
   addAttributeFilter = () => {
@@ -81,14 +80,19 @@ class Condition extends React.Component<Props, State> {
   }
 
   renderAttributeFilters = () => {
-    const { attributeFilters } = this.state;
-    const { attributeNames } = this.props;
+    const { attributeFilters, currentEventName } = this.state;
+    const { events } = this.props;
+    const currentEvent = events.find(e => e.name === currentEventName);
+
+    if (!currentEvent) {
+      return;
+    }
 
     return attributeFilters.map((filter, index) => {
       return (
         <Filter
           key={index}
-          names={attributeNames}
+          names={currentEvent.attributeNames}
           filter={filter}
           onChange={this.onChangeAttributeFilter}
           onRemove={this.onRemoveAttributeFilter}
@@ -99,15 +103,15 @@ class Condition extends React.Component<Props, State> {
 
   renderNames() {
     const { events } = this.props;
-    const { currentEvent } = this.state;
+    const { currentEventName } = this.state;
 
     return (
-      <FormControl componentClass="select" placeholder={__("select")} onChange={this.onChangeEvents} value={currentEvent}>
+      <FormControl componentClass="select" placeholder={__("select")} onChange={this.onChangeEvents} value={currentEventName}>
         <option />
 
-        {events.map((name, index) => (
-          <option value={name} key={index}>
-            {name}
+        {events.map((event, index) => (
+          <option value={event.name} key={index}>
+            {event.name}
           </option>
         ))}
       </FormControl>

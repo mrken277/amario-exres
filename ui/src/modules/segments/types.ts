@@ -1,3 +1,8 @@
+export interface IEvent {
+  name: string;
+  attributeNames: string[];
+}
+
 export interface IConditionFilter {
   key?: string;
   name: string;
@@ -59,8 +64,8 @@ export type HeadSegmentsQueryResponse = {
   loading: boolean;
 };
 
-export type EventNamesQueryResponse = {
-  segmentsEventNames: string[];
+export type EventsQueryResponse = {
+  segmentsEvents: Array<{ name: string, attributeNames: string[] }>;
   loading: boolean;
 };
 

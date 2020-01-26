@@ -14,7 +14,7 @@ import { mutations, queries } from '../graphql';
 import {
   AddMutationResponse,
   EditMutationResponse,
-  EventNamesQueryResponse,
+  EventsQueryResponse,
   HeadSegmentsQueryResponse,
   ISegmentDoc,
   SegmentDetailQueryResponse
@@ -29,7 +29,7 @@ type Props = {
 type FinalProps = {
   segmentDetailQuery: SegmentDetailQueryResponse;
   headSegmentsQuery: HeadSegmentsQueryResponse;
-  eventNamesQuery: EventNamesQueryResponse;
+  eventsQuery: EventsQueryResponse;
   combinedFieldsQuery: FieldsCombinedByTypeQueryResponse;
 } & Props &
   AddMutationResponse &
@@ -119,7 +119,7 @@ class SegmentsFormContainer extends React.Component<
       contentType,
       segmentDetailQuery,
       headSegmentsQuery,
-      eventNamesQuery,
+      eventsQuery,
       combinedFieldsQuery
     } = this.props;
 
@@ -127,7 +127,7 @@ class SegmentsFormContainer extends React.Component<
       return null;
     }
 
-    const events = eventNamesQuery.segmentsEventNames || [];
+    const events = eventsQuery.segmentsEvents || [];
     const fields = combinedFieldsQuery.fieldsCombinedByContentType || [];
 
     const segment = segmentDetailQuery.segmentDetail;
@@ -184,9 +184,9 @@ export default withProps<Props>(
       }
     ),
     graphql<Props>(
-      gql(queries.eventNames),
+      gql(queries.events),
       {
-        name: 'eventNamesQuery'
+        name: 'eventsQuery'
       }
     ),
     graphql<Props>(gql(queries.combinedFields), {

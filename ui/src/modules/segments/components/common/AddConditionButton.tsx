@@ -30,12 +30,7 @@ class AddConditionButton extends React.Component<Props> {
     this.props.addCondition({
       key: Math.random().toString(),
       type: 'event',
-      eventAttributeFilters: [{
-        key: Math.random().toString(),
-        name: '',
-        operator: '',
-        value: ''
-      }],
+      eventAttributeFilters: [],
     });
 
     this.overlayTrigger.hide();
