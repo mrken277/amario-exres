@@ -8,9 +8,10 @@ import { ConditionItem } from '../styles';
 import Filter from './Filter';
 
 type Props = {
-  events: any[];
+  events: string[];
   conditionKey: string;
   name: string;
+  attributeNames: string[];
   attributeFilters: IConditionFilter[];
   onChange: (args: { key: string, name: string, attributeFilters: IConditionFilter[] }) => void;
   onRemove: (id: string) => void;
@@ -27,7 +28,7 @@ class Condition extends React.Component<Props, State> {
 
     this.state = {
       currentEvent: props.name,
-      attributeFilters: props.attributeFilters.map(filter => ({...filter }))
+      attributeFilters: props.attributeFilters.map(filter => ({ key: Math.random().toString(), ...filter }))
     }
   }
 
@@ -46,15 +47,53 @@ class Condition extends React.Component<Props, State> {
     });
   }
 
+  onChangeAttributeFilter = (filter: IConditionFilter) => {
+    this.setState({
+      attributeFilters: this.state.attributeFilters.map(f =>
+        f.key === filter.key ? filter : f
+      )
+    }, this.onChangeFilter);
+  };
+
+  onRemoveAttributeFilter = (key: string) => {
+    const attributeFilters = this.state.attributeFilters.filter(f => f.key !== key);
+
+    this.setState({ attributeFilters }, this.onChangeFilter);
+  };
+
   onChangeEvents = (e) => {
     this.setState({ currentEvent: e.currentTarget.value }, this.onChangeFilter);
   }
 
-  renderAttributeFilters = () => {
-    const { attributeFilters, events } = this.props;
+  addAttributeFilter = () => {
+    const attributeFilter = {
+      key: Math.random().toString(),
+      name: '',
+      operator: '',
+      value: ''
+    };
 
-    return attributeFilters.map(filter => {
-      return <Filter key={filter.key} names={events} filter={filter} onChange={this.onChangeFilter} />;
+    const { attributeFilters } = this.state;
+
+    attributeFilters.push(attributeFilter);
+
+    this.setState({ attributeFilters });
+  }
+
+  renderAttributeFilters = () => {
+    const { attributeFilters } = this.state;
+    const { attributeNames } = this.props;
+
+    return attributeFilters.map((filter, index) => {
+      return (
+        <Filter
+          key={index}
+          names={attributeNames}
+          filter={filter}
+          onChange={this.onChangeAttributeFilter}
+          onRemove={this.onRemoveAttributeFilter}
+        />
+      );
     });
   }
 
@@ -81,7 +120,18 @@ class Condition extends React.Component<Props, State> {
         <FlexContent>
           <FlexItem>
             {this.renderNames()}
+
+            <div>
+              {this.renderAttributeFilters()}
+            </div>
+
+            <div>
+              <Button onClick={this.addAttributeFilter}>
+                Add attribute
+              </Button>
+            </div>
           </FlexItem>
+
           <FlexRightItem>
             <Button
               btnStyle="danger"

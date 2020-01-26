@@ -190,6 +190,7 @@ class Form extends React.Component<Props, State> {
         events={events}
         key={condition.key}
         conditionKey={condition.key || ''}
+        attributeNames={['purchaseCount', 'createdAt']}
         name={condition.eventName || ''}
         attributeFilters={condition.eventAttributeFilters || []}
         onChange={this.changeEventCondition}
