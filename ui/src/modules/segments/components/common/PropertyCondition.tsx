@@ -1,43 +1,45 @@
 import Button from 'modules/common/components/Button';
 import { FlexContent, FlexItem, FlexRightItem } from 'modules/layout/styles';
 import React from 'react';
-import { IConditionFilter, ISegmentCondition } from '../../types';
+import { IConditionFilter } from '../../types';
 import { ConditionItem } from '../styles';
 import Filter from './Filter';
 
 type Props = {
   fields: any[];
-  condition: ISegmentCondition;
-  changeCondition: (condition: ISegmentCondition) => void;
-  removeCondition: (id: string) => void;
+  conditionKey: string;
+  name: string,
+  operator: string,
+  value: string,
+  onChange: (args: { key: string, name: string, operator: string, value: string }) => void;
+  onRemove: (id: string) => void;
 };
 
 class Condition extends React.Component<Props, {}> {
   removeCondition = () => {
-    this.props.removeCondition(this.props.condition.key);
+    this.props.onRemove(this.props.conditionKey);
   };
 
   onChangeFilter = (filter: IConditionFilter) => {
-    const { changeCondition, condition } = this.props;
+    const { onChange, conditionKey } = this.props;
 
-    return changeCondition({
-      key: condition.key,
-      type: 'property',
-      propertyName: filter.name,
-      propertyOperator: filter.operator,
-      propertyValue: filter.value
+    return onChange({
+      key: conditionKey,
+      name: filter.name,
+      operator: filter.operator,
+      value: filter.value
     });
   }
 
   render() {
-    const { fields, condition } = this.props;
+    const { fields, conditionKey, name, operator, value } = this.props;
     const names = fields.map(field => field.name);
 
     const filter = {
-      key: condition.key,
-      name: condition.propertyName || '',
-      operator: condition.propertyOperator || '',
-      value: condition.propertyValue || ''
+      key: conditionKey,
+      name,
+      operator,
+      value
     }
 
     return (

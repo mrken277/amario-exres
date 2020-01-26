@@ -18,7 +18,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ConditionWrapper, SegmentTitle, SegmentWrapper } from '../styles';
 import AddConditionButton from './AddConditionButton';
-import Conditions from './Conditions';
+import PropertyCondition from './PropertyCondition';
 
 type Props = {
   contentType?: string;
@@ -48,7 +48,6 @@ class Form extends React.Component<Props, State> {
 
     const segment: ISegment = props.segment || {
       name: '',
-      type: 'properties',
       description: '',
       subOf: '',
       color: generateRandomColorCode(),
@@ -72,7 +71,15 @@ class Form extends React.Component<Props, State> {
     });
   };
 
-  changeCondition = (condition: ISegmentCondition) => {
+  changePropertyCondition = (args: { key: string, name: string, operator: string, value: string }) => {
+    const condition = {
+      type: 'property',
+      key: args.key,
+      propertyName: args.name,
+      propertyOperator: args.operator,
+      propertyValue: args.value,
+    }
+
     this.setState({
       conditions: this.state.conditions.map(c =>
         c.key === condition.key ? condition : c
@@ -121,9 +128,52 @@ class Form extends React.Component<Props, State> {
     };
   };
 
+  renderParent() {
+    const { contentType } = this.props;
+    const { subOf } = this.state;
+
+    if (!subOf) {
+      return null;
+    }
+
+    return (
+      <React.Fragment>
+        <Link
+          to={`/segments/edit/${contentType}/${subOf}`}
+          target="_blank"
+        >
+          <Button icon="eye" ignoreTrans={true}>
+            {__('Parent segment conditions')}
+          </Button>
+        </Link>
+        <hr />
+      </React.Fragment>
+    );
+  }
+
+  renderCondition(condition: ISegmentCondition) {
+    const { fields } = this.props;
+
+    if (condition.type === 'property') {
+      return (
+        <PropertyCondition
+          fields={fields}
+          key={condition.key}
+          conditionKey={condition.key}
+          name={condition.propertyName || ''}
+          operator={condition.propertyOperator || ''}
+          value={condition.propertyValue || ''}
+          onChange={this.changePropertyCondition}
+          onRemove={this.removeCondition}
+        />
+      )
+    }
+
+    return null;
+  }
+
   renderConditions() {
-    const { contentType, fields, events } = this.props;
-    const { conditions, connector, subOf } = this.state;
+    const { conditions, connector } = this.state;
 
     const connectorOnChange = (e: React.FormEvent) =>
       this.handleChange(
@@ -147,17 +197,11 @@ class Form extends React.Component<Props, State> {
             {__('of the below conditions')}
           </FormGroup>
 
-          <Conditions
-            contentType={contentType}
-            fields={fields}
-            parentSegmentId={subOf}
-            conditions={conditions}
-            changeCondition={this.changeCondition}
-            removeCondition={this.removeCondition}
-          />
-        </ConditionWrapper>
+          {this.renderParent()}
 
-        <AddConditionButton fields={fields} events={events} addCondition={this.addCondition} />
+          {conditions.map(condition => this.renderCondition(condition))}
+          </ConditionWrapper>
+        <AddConditionButton addCondition={this.addCondition} />
       </React.Fragment>
     );
   }

@@ -44,7 +44,6 @@ export interface ISegmentDoc {
 export interface ISegment extends ISegmentDoc {
   _id: string;
   contentType: string;
-  type: string;
   getSubSegments: ISegment[];
   getParentSegment: ISegment;
 }

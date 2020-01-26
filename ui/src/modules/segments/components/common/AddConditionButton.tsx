@@ -4,51 +4,51 @@ import { __ } from 'modules/common/utils';
 import React from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import { ISegmentCondition, ISegmentField } from '../../types';
+import { ISegmentCondition } from '../../types';
 import { FieldType, PopoverList } from '../styles';
 
 type Props = {
-  fields: ISegmentField[];
-  events: string[];
   addCondition: (condition: ISegmentCondition) => void;
 };
 
 class AddConditionButton extends React.Component<Props> {
   private overlayTrigger;
 
-  addCondition = (type: string) => {
+  addPropertyCondition = () => {
     this.props.addCondition({
       key: Math.random().toString(),
+      type: 'property',
       propertyName: '',
       propertyValue: '',
       propertyOperator: '',
-      type,
+    });
+
+    this.overlayTrigger.hide();
+  };
+
+  addEventCondition = () => {
+    this.props.addCondition({
+      key: Math.random().toString(),
+      type: 'event',
+      eventAttributeFilters: [],
     });
 
     this.overlayTrigger.hide();
   };
 
   renderPopover() {
-    const addPropertyCondition = () => {
-      return this.addCondition('property');
-    }
-
-    const addEventCondition = () => {
-      return this.addCondition('event');
-    }
-
     return (
       <Popover id="condition-popover">
         <Popover.Title as="h3">{__('Select a field')}</Popover.Title>
         <Popover.Content>
-          <PopoverList onClick={addPropertyCondition}>
+          <PopoverList onClick={this.addPropertyCondition}>
             <FieldType>
-              {__("Fields")}
+              {__("Properties")}
               <Icon icon="information" />
             </FieldType>
           </PopoverList>
 
-          <PopoverList onClick={addEventCondition}>
+          <PopoverList onClick={this.addEventCondition}>
             <FieldType>
               {__("Events")}
               <Icon icon="settings-3" />
