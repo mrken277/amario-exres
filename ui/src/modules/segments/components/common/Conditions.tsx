@@ -2,8 +2,8 @@ import Button from 'modules/common/components/Button';
 import { __ } from 'modules/common/utils';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ISegmentCondition } from '../types';
-import Condition from './Condition';
+import { ISegmentCondition } from '../../types';
+import Condition from './PropertyCondition';
 
 type Props = {
   fields: any[];
@@ -43,13 +43,14 @@ class Conditions extends React.Component<Props> {
     return (
       <React.Fragment>
         {this.renderParent()}
+
         {conditions.map(condition => (
           <Condition
             fields={fields}
             condition={condition}
             changeCondition={changeCondition}
             removeCondition={removeCondition}
-            key={condition._id}
+            key={condition.key}
           />
         ))}
       </React.Fragment>

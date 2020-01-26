@@ -2,16 +2,24 @@ export interface ISegmentField {
   _id: string;
 }
 
-export interface ISegmentConditionDoc {
-  field: string;
-  value: string;
+export interface IConditionFilter {
+  key: string;
+  name: string;
   operator: string;
-  dateUnit: string;
+  value: string;
+}
+export interface ISegmentConditionDoc {
   type: string;
-  brandId?: string;
+
+  propertyName?: string;
+  propertyOperator?: string;
+  propertyValue?: string;
+
+  eventName?: string;
+  eventAttributeFilters?: IConditionFilter[]
 }
 export interface ISegmentCondition extends ISegmentConditionDoc {
-  _id: string;
+  key: string;
 }
 
 export interface ISegmentWithConditionDoc {
@@ -36,6 +44,7 @@ export interface ISegmentDoc {
 export interface ISegment extends ISegmentDoc {
   _id: string;
   contentType: string;
+  type: string;
   getSubSegments: ISegment[];
   getParentSegment: ISegment;
 }
@@ -54,6 +63,11 @@ export type SegmentsQueryResponse = {
 
 export type HeadSegmentsQueryResponse = {
   segmentsGetHeads: ISegment[];
+  loading: boolean;
+};
+
+export type EventNamesQueryResponse = {
+  segmentsEventNames: string[];
   loading: boolean;
 };
 

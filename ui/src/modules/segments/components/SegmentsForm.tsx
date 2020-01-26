@@ -13,6 +13,7 @@ import { ResultCount, SegmentResult } from './styles';
 type Props = {
   contentType: string;
   fields: ISegmentField[];
+  events: string[];
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   segment: ISegment;
   headSegments: ISegment[];
@@ -51,6 +52,7 @@ const SegmentsForm = (props: Props) => {
     fields,
     renderButton,
     segment,
+    events,
     headSegments,
     count
   } = props;
@@ -69,6 +71,7 @@ const SegmentsForm = (props: Props) => {
         <Form
           contentType={contentType}
           fields={fields}
+          events={events}
           renderButton={renderButton}
           segment={segment}
           headSegments={headSegments}

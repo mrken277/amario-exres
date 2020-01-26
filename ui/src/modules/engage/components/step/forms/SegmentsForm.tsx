@@ -17,6 +17,7 @@ const SegmentsForm = (props: Props) => {
   return (
     <Form
       fields={fields}
+      events={[]}
       renderButton={renderButton}
       headSegments={headSegments}
       count={count}

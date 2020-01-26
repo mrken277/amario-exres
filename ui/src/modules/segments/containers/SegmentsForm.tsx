@@ -14,6 +14,7 @@ import { mutations, queries } from '../graphql';
 import {
   AddMutationResponse,
   EditMutationResponse,
+  EventNamesQueryResponse,
   HeadSegmentsQueryResponse,
   ISegmentDoc,
   SegmentDetailQueryResponse
@@ -28,6 +29,7 @@ type Props = {
 type FinalProps = {
   segmentDetailQuery: SegmentDetailQueryResponse;
   headSegmentsQuery: HeadSegmentsQueryResponse;
+  eventNamesQuery: EventNamesQueryResponse;
   combinedFieldsQuery: FieldsCombinedByTypeQueryResponse;
 } & Props &
   AddMutationResponse &
@@ -117,6 +119,7 @@ class SegmentsFormContainer extends React.Component<
       contentType,
       segmentDetailQuery,
       headSegmentsQuery,
+      eventNamesQuery,
       combinedFieldsQuery
     } = this.props;
 
@@ -124,15 +127,8 @@ class SegmentsFormContainer extends React.Component<
       return null;
     }
 
-    const fields = (combinedFieldsQuery.fieldsCombinedByContentType || []).map(
-      ({ name, label, brandName, brandId }) => ({
-        _id: name,
-        title: label,
-        brandName,
-        brandId,
-        selectedBy: 'none'
-      })
-    );
+    const events = eventNamesQuery.segmentsEventNames || [];
+    const fields = combinedFieldsQuery.fieldsCombinedByContentType || [];
 
     const segment = segmentDetailQuery.segmentDetail;
     const headSegments = headSegmentsQuery.segmentsGetHeads || [];
@@ -142,6 +138,7 @@ class SegmentsFormContainer extends React.Component<
       fields,
       segment,
       headSegments: headSegments.filter(s => s.contentType === contentType),
+      events,
       renderButton: this.renderButton,
       count: this.count,
       counterLoading: this.state.loading,
@@ -184,6 +181,12 @@ export default withProps<Props>(
       gql(queries.headSegments),
       {
         name: 'headSegmentsQuery'
+      }
+    ),
+    graphql<Props>(
+      gql(queries.eventNames),
+      {
+        name: 'eventNamesQuery'
       }
     ),
     graphql<Props>(gql(queries.combinedFields), {

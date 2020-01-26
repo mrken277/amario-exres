@@ -51,7 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 document.getElementById('ad').addEventListener('click', () => {
-  window.Erxes.sendEvent('click', { duration: 1 })
+  window.Erxes.sendEvent('pageView', { duration: 1 })
+  window.Erxes.sendEvent('add page', { duration: 1 })
+  window.Erxes.sendEvent('regiter page', { duration: 1 })
+  window.Erxes.sendEvent('login page', { duration: 1 })
 })
 
 </script>

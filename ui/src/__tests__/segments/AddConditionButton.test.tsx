@@ -1,7 +1,7 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 
-import AddConditionButton from '../../modules/segments/components/AddConditionButton';
+import AddConditionButton from '../../modules/segments/components/common/AddConditionButton';
 
 describe('AddConditionButton component', () => {
   const defaultProps = {

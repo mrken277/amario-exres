@@ -45,7 +45,13 @@ const headSegments = `
 
 const combinedFields = `
   query fieldsCombinedByContentType($contentType: String!) {
-    fieldsCombinedByContentType(contentType: $contentType, source: "fromSegments")
+    fieldsCombinedByContentType(contentType: $contentType)
+  }
+`;
+
+const eventNames = `
+  query eventNames {
+    segmentsEventNames
   }
 `;
 
@@ -53,5 +59,6 @@ export default {
   segments,
   segmentDetail,
   headSegments,
+  eventNames,
   combinedFields
 };
