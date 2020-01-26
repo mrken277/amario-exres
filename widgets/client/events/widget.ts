@@ -26,15 +26,12 @@ iframe.onload = async () => {
   }
 
   window.Erxes = {
-    sendEvent: (name: string, data: any) => {
+    sendEvent: (event: any) => {
       contentWindow.postMessage(
         {
           fromPublisher: true,
           action: "sendEvent",
-          event: {
-            name,
-            data
-          }
+          event
         },
         "*"
       );

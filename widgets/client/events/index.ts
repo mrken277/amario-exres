@@ -17,7 +17,7 @@ window.addEventListener("message", event => {
       Accept: "application/json",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(data.event)
+    body: JSON.stringify({ ...data.event })
   }).catch(errorResponse => {
     console.log(errorResponse);
   });

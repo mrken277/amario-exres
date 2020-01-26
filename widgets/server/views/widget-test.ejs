@@ -51,10 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 document.getElementById('ad').addEventListener('click', () => {
-  window.Erxes.sendEvent('pageView', { duration: 1 })
-  window.Erxes.sendEvent('add page', { duration: 1 })
-  window.Erxes.sendEvent('regiter page', { duration: 1 })
-  window.Erxes.sendEvent('login page', { duration: 1 })
+  window.Erxes.sendEvent({ name: 'pageView', customerId: 'mmmmmm', attributes: { duration: 1 } })
+  window.Erxes.sendEvent({ name: 'purchase', customerId: 'mmmmmm', attributes: { productName: 'laptop', price: 1000 } })
+  window.Erxes.sendEvent({ name: 'click', customerId: 'mmmmmm', attributes: { buttonName: 'button', count: 100 } })
 })
 
 </script>
