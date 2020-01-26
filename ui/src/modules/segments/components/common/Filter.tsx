@@ -27,7 +27,7 @@ class Filter extends React.Component<Props, State> {
     const { filter } = this.props;
 
     this.state = {
-      key: filter.key,
+      key: filter.key || '',
       currentName: filter.name,
       currentOperator: filter.operator,
       currentValue: filter.value,
@@ -93,7 +93,7 @@ class Filter extends React.Component<Props, State> {
     const { onRemove } = this.props;
 
     if (onRemove) {
-      onRemove(this.props.filter.key);
+      onRemove(this.props.filter.key || '');
     }
   };
 

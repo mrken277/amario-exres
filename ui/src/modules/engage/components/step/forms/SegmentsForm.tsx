@@ -1,10 +1,10 @@
 import { IButtonMutateProps } from 'modules/common/types';
 import Form from 'modules/segments/components/common/Form';
-import { ISegment, ISegmentDoc, ISegmentField } from 'modules/segments/types';
+import { ISegment, ISegmentDoc } from 'modules/segments/types';
 import React from 'react';
 
 type Props = {
-  fields: ISegmentField[];
+  fields: any[];
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   headSegments: ISegment[];
   count: (segment: ISegmentDoc) => void;

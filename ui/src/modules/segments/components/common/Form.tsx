@@ -7,28 +7,27 @@ import { IButtonMutateProps, IFormProps } from 'modules/common/types';
 import { __, generateRandomColorCode } from 'modules/common/utils';
 import { FlexContent, FlexItem } from 'modules/layout/styles';
 import {
+  IConditionFilter,
   ISegment,
   ISegmentCondition,
-  ISegmentConditionDoc,
-  ISegmentDoc,
-  ISegmentField,
   ISegmentWithConditionDoc
 } from 'modules/segments/types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ConditionWrapper, SegmentTitle, SegmentWrapper } from '../styles';
 import AddConditionButton from './AddConditionButton';
+import EventCondition from './EventCondition';
 import PropertyCondition from './PropertyCondition';
 
 type Props = {
   contentType?: string;
-  fields: ISegmentField[];
+  fields: any[];
   events: string[];
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   edit?: (params: { _id: string; doc: ISegmentWithConditionDoc }) => void;
   segment?: ISegment;
   headSegments: ISegment[];
-  count: (segment: ISegmentDoc) => void;
+  count: (segment: ISegment) => void;
   isForm?: boolean;
   afterSave?: () => void;
 };
@@ -56,7 +55,7 @@ class Form extends React.Component<Props, State> {
     };
 
     segment.conditions = segment.conditions.map(
-      (cond: ISegmentConditionDoc) => ({
+      (cond: ISegmentCondition) => ({
         key: Math.random().toString(),
         ...cond
       })
@@ -68,6 +67,25 @@ class Form extends React.Component<Props, State> {
   addCondition = (condition: ISegmentCondition) => {
     this.setState({
       conditions: [...this.state.conditions, condition]
+    });
+  };
+
+  changeEventCondition = (args: { key: string, name: string, attributeFilters: IConditionFilter[] }) => {
+    const condition = {
+      type: 'event',
+      key: args.key,
+      eventName: args.name,
+      eventAttributeFilters: (args.attributeFilters || []).map(filter => {
+        const { key, ...rest } = filter;
+
+        return rest;
+      })
+    }
+
+    this.setState({
+      conditions: this.state.conditions.map(c =>
+        c.key === condition.key ? condition : c
+      )
     });
   };
 
@@ -107,17 +125,15 @@ class Form extends React.Component<Props, State> {
     const { connector, conditions } = this.state;
     const finalValues = values;
 
-    const updatedConditions: ISegmentConditionDoc[] = [];
+    const updatedConditions: ISegmentCondition[] = [];
 
     if (segment) {
       finalValues._id = segment._id;
     }
 
     conditions.forEach((cond: ISegmentCondition) => {
-      if (cond.propertyOperator) {
-        const { key, ...rest } = cond;
-        updatedConditions.push(rest);
-      }
+      const { key, ...rest } = cond;
+      updatedConditions.push(rest);
     });
 
     return {
@@ -152,14 +168,14 @@ class Form extends React.Component<Props, State> {
   }
 
   renderCondition(condition: ISegmentCondition) {
-    const { fields } = this.props;
+    const { fields, events } = this.props;
 
     if (condition.type === 'property') {
       return (
         <PropertyCondition
           fields={fields}
           key={condition.key}
-          conditionKey={condition.key}
+          conditionKey={condition.key || ''}
           name={condition.propertyName || ''}
           operator={condition.propertyOperator || ''}
           value={condition.propertyValue || ''}
@@ -169,7 +185,17 @@ class Form extends React.Component<Props, State> {
       )
     }
 
-    return null;
+    return (
+      <EventCondition
+        events={events}
+        key={condition.key}
+        conditionKey={condition.key || ''}
+        name={condition.eventName || ''}
+        attributeFilters={condition.eventAttributeFilters || []}
+        onChange={this.changeEventCondition}
+        onRemove={this.removeCondition}
+      />
+    )
   }
 
   renderConditions() {

@@ -1,14 +1,12 @@
-export interface ISegmentField {
-  _id: string;
-}
-
 export interface IConditionFilter {
-  key: string;
+  key?: string;
   name: string;
   operator: string;
   value: string;
 }
-export interface ISegmentConditionDoc {
+export interface ISegmentCondition {
+  key?: string;
+
   type: string;
 
   propertyName?: string;
@@ -18,17 +16,13 @@ export interface ISegmentConditionDoc {
   eventName?: string;
   eventAttributeFilters?: IConditionFilter[]
 }
-export interface ISegmentCondition extends ISegmentConditionDoc {
-  key: string;
-}
-
 export interface ISegmentWithConditionDoc {
   name: string;
   description: string;
   subOf: string;
   color: string;
   connector: string;
-  conditions: ISegmentConditionDoc[];
+  conditions: ISegmentCondition[];
 }
 
 export interface ISegmentDoc {
