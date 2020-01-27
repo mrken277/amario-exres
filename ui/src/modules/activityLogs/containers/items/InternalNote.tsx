@@ -93,15 +93,16 @@ function InternalNoteContainer(props: Props, state: State) {
   };
 
   const remove = () => {
-    confirm()
-    internalNotesRemove({ variables: { _id: noteId } })
-    if (internalNotesRemoveError) {
-      Alert.error(internalNotesRemoveError.message);
-    }
+    confirm().then(() => {
+      internalNotesRemove({ variables: { _id: noteId } })
+      if (internalNotesRemoveError) {
+        Alert.error(internalNotesRemoveError.message);
+      }
 
-    if (internalNotesRemoveData) {
-      Alert.success('You successfully deleted a note.');
-    }
+      if (internalNotesRemoveData) {
+        Alert.success('You successfully deleted a note.');
+      }
+    });
   }
 
   const updatedProps = {
