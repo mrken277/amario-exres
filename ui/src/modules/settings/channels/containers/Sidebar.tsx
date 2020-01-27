@@ -1,11 +1,9 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
-import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
-import { Alert, confirm, withProps } from 'modules/common/utils';
+import { IButtonMutateProps } from 'modules/common/types';
+import { Alert, confirm } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { mutations, queries } from '../graphql';
 import {
@@ -18,26 +16,41 @@ import {
 type Props = {
   queryParams: any;
   currentChannelId?: string;
+  history?: any;
 };
 
-type FinalProps = {
-  channelsQuery: ChannelsQueryResponse;
-  channelsCountQuery: ChannelsCountQueryResponse;
-} & Props & IRouterProps &
-  RemoveChannelMutationResponse;
-
-const SidebarContainer = (props: FinalProps) => {
+const SidebarContainer = (props: Props) => {
   const {
-    channelsQuery,
-    channelsCountQuery,
-    removeMutation,
     queryParams,
     history,
     currentChannelId
   } = props;
 
-  const channels = channelsQuery.channels || [];
-  const channelsTotalCount = channelsCountQuery.channelsTotalCount || 0;
+  const {
+    loading: channelsQueryLoading,
+    error: channelsQueryError,
+    data: channelsQueryData
+  } = useQuery<ChannelsQueryResponse, { perPage: number }>(
+    gql(queries.channels),
+    {
+      variables: {
+        perPage: queryParams.limit ? parseInt(queryParams.limit, 10) : 20
+      },
+      fetchPolicy: 'network-only'
+    }
+  );
+
+  const {
+    loading: channelsCountQueryLoading,
+    error: channelsCountQueryError,
+    data: channelsCountQueryData
+  } = useQuery<ChannelsCountQueryResponse>(gql(queries.channels));
+
+  const [removeMutation, { error: channelRemoveMutationError }] =
+    useMutation<RemoveChannelMutationResponse, RemoveChannelMutationVariables>(
+      gql(mutations.channelRemove), {
+      refetchQueries: getRefetchQueries(queryParams, currentChannelId)
+    });
 
   // remove action
   const remove = channelId => {
@@ -73,10 +86,21 @@ const SidebarContainer = (props: FinalProps) => {
         type="submit"
         successMessage={`You successfully ${
           object ? 'updated' : 'added'
-        } a ${name}`}
+          } a ${name}`}
       />
     );
   };
+
+  const channels = channelsQueryData ? channelsQueryData.channels : [];
+  const channelsTotalCount = channelsCountQueryData ? channelsCountQueryData.channelsTotalCount : 0;
+
+  if (channelsQueryError || channelsCountQueryError || channelRemoveMutationError) {
+    return <p>Error!</p>;
+  }
+
+  if (channelsCountQueryLoading || channelsQueryLoading) {
+    return <p>Loading...</p>;
+  }
 
   const updatedProps = {
     ...props,
@@ -84,7 +108,7 @@ const SidebarContainer = (props: FinalProps) => {
     channelsTotalCount,
     remove,
     renderButton,
-    loading: channelsQuery.loading
+    loading: channelsQueryLoading
   };
 
   return <Sidebar {...updatedProps} />;
@@ -114,32 +138,4 @@ const getRefetchQueries = (queryParams, currentChannelId?: string) => {
   ];
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, ChannelsQueryResponse, { perPage: number }>(
-      gql(queries.channels),
-      {
-        name: 'channelsQuery',
-        options: ({ queryParams }: { queryParams: any }) => ({
-          variables: {
-            perPage: queryParams.limit ? parseInt(queryParams.limit, 10) : 20
-          },
-          fetchPolicy: 'network-only'
-        })
-      }
-    ),
-    graphql<Props, ChannelsCountQueryResponse, {}>(gql(queries.channelsCount), {
-      name: 'channelsCountQuery'
-    }),
-    graphql<
-      Props,
-      RemoveChannelMutationResponse,
-      RemoveChannelMutationVariables
-    >(gql(mutations.channelRemove), {
-      name: 'removeMutation',
-      options: ({ queryParams, currentChannelId }: Props) => ({
-        refetchQueries: getRefetchQueries(queryParams, currentChannelId)
-      })
-    })
-  )(withRouter<FinalProps>(SidebarContainer))
-);
+export default SidebarContainer;

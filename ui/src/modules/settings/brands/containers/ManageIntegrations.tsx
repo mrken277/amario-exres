@@ -1,13 +1,12 @@
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import ManageIntegrations from 'modules/settings/integrations/containers/common/ManageIntegrations';
 import { integrationsListParams } from 'modules/settings/integrations/containers/utils';
 import { queries as integQueries } from 'modules/settings/integrations/graphql';
 import { IIntegration } from 'modules/settings/integrations/types';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import { mutations, queries } from '../graphql';
 import { BrandsManageIntegrationsMutationResponse, IBrandDoc } from '../types';
 import ChooseBrand from './ChooseBrand';
@@ -17,18 +16,40 @@ type Props = {
   queryParams: any;
 };
 
-type FinalProps = BrandsManageIntegrationsMutationResponse & Props;
+const ManageIntegrationsContainer = (props: Props) => {
+  const { currentBrand, queryParams } = props;
 
-class ManageIntegrationsContainer extends React.Component<FinalProps> {
-  renderConfirm(integration: IIntegration, actionTrigger, icon, handleChange) {
+  const [saveMutation, { error: brandManageIntegrationsError }] =
+    useMutation<BrandsManageIntegrationsMutationResponse, {}>(
+      gql(mutations.brandManageIntegrations), {
+      refetchQueries: [
+        {
+          query: gql(integQueries.integrations),
+          variables: {
+            brandId: currentBrand._id,
+            ...integrationsListParams(queryParams)
+          }
+        },
+        {
+          query: gql(queries.brandDetail),
+          variables: { _id: currentBrand._id }
+        },
+        {
+          query: gql(queries.integrationsCount),
+          variables: { brandId: currentBrand._id }
+        }
+      ]
+    });
+
+  const renderConfirm = (integration: IIntegration, actionTrigger, icon, handleChange) => {
     if (icon === 'add') {
       return null;
     }
 
     const onSave = () => handleChange(icon, integration);
 
-    const content = props => (
-      <ChooseBrand {...props} integration={integration} onSave={onSave} />
+    const content = modalProps => (
+      <ChooseBrand {...modalProps} integration={integration} onSave={onSave} />
     );
 
     return (
@@ -41,9 +62,7 @@ class ManageIntegrationsContainer extends React.Component<FinalProps> {
     );
   }
 
-  save = (integrationIds: string[]): Promise<any> => {
-    const { currentBrand, saveMutation } = this.props;
-
+  const save = (integrationIds: string[]): Promise<any> => {
     return saveMutation({
       variables: {
         _id: currentBrand._id,
@@ -58,54 +77,18 @@ class ManageIntegrationsContainer extends React.Component<FinalProps> {
       });
   };
 
-  render() {
-    const { currentBrand } = this.props;
-
-    const updatedProps = {
-      ...this.props,
-      current: currentBrand,
-      save: this.save,
-      renderConfirm: this.renderConfirm
-    };
-
-    return <ManageIntegrations {...updatedProps} />;
+  if (brandManageIntegrationsError) {
+    return <p>Error!</p>;
   }
+
+  const updatedProps = {
+    ...props,
+    current: currentBrand,
+    save,
+    renderConfirm
+  };
+
+  return <ManageIntegrations {...updatedProps} />;
 }
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, BrandsManageIntegrationsMutationResponse, {}>(
-      gql(mutations.brandManageIntegrations),
-      {
-        name: 'saveMutation',
-        options: ({
-          queryParams,
-          currentBrand
-        }: {
-          queryParams: any;
-          currentBrand: IBrandDoc;
-        }) => {
-          return {
-            refetchQueries: [
-              {
-                query: gql(integQueries.integrations),
-                variables: {
-                  brandId: currentBrand._id,
-                  ...integrationsListParams(queryParams)
-                }
-              },
-              {
-                query: gql(queries.brandDetail),
-                variables: { _id: currentBrand._id }
-              },
-              {
-                query: gql(queries.integrationsCount),
-                variables: { brandId: currentBrand._id }
-              }
-            ]
-          };
-        }
-      }
-    )
-  )(ManageIntegrationsContainer)
-);
+export default ManageIntegrationsContainer;
