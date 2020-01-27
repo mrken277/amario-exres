@@ -7,6 +7,7 @@ import { IUser } from "../../types";
 import { readFile } from "../../utils";
 import { Attachment, User } from "../components/common";
 import { IAttachment, IMessengerAppData } from "../types";
+import VideoChatMessage from "./VideoChatMessage";
 
 type Props = {
   content: string;
@@ -15,6 +16,7 @@ type Props = {
   attachments: IAttachment[];
   user?: IUser;
   color?: string;
+  contentType?: string;
 };
 
 class Message extends React.Component<Props> {
@@ -40,7 +42,14 @@ class Message extends React.Component<Props> {
   }
 
   renderContent() {
-    const { messengerAppData, attachments, color, user, content } = this.props;
+    const {
+      messengerAppData,
+      attachments,
+      color,
+      user,
+      content,
+      contentType
+    } = this.props;
     const messageClasses = classNames("erxes-message", {
       attachment: attachments && attachments.length > 0,
       "from-customer": !user
@@ -49,6 +58,10 @@ class Message extends React.Component<Props> {
     const messageBackground = {
       backgroundColor: !user ? color : ""
     };
+
+    if (contentType === "video") {
+      return <VideoChatMessage content={content} />;
+    }
 
     if (messengerAppData) {
       return this.renderMessengerAppMessage();
