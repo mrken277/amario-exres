@@ -10,33 +10,31 @@ type Props = {
   afterSave: () => void;
 };
 
-class AddFormContainer extends React.Component<Props> {
-  render() {
-    const renderButton = ({
-      values,
-      isSubmitted,
-      callback
-    }: IButtonMutateProps) => {
-      return (
-        <ButtonMutate
-          mutation={mutations.checklistsAdd}
-          variables={values}
-          callback={callback}
-          refetchQueries={['checklists']}
-          isSubmitted={isSubmitted}
-          btnSize="small"
-          type="submit"
-        />
-      );
-    };
+function AddFormContainer(props: Props) {
 
-    const updatedProps = {
-      ...this.props,
-      renderButton
-    };
+  const renderButton = ({
+    values,
+    isSubmitted,
+    callback
+  }: IButtonMutateProps) => {
+    return (
+      <ButtonMutate
+        mutation={mutations.checklistsAdd}
+        variables={values}
+        callback={callback}
+        refetchQueries={['checklists']}
+        isSubmitted={isSubmitted}
+        btnSize="small"
+        type="submit"
+      />
+    );
+  };
 
-    return <AddForm {...updatedProps} />;
-  }
+  const updatedProps = {
+    ...props,
+    renderButton
+  };
+
+  return <AddForm {...updatedProps} />;
 }
-
 export default AddFormContainer;

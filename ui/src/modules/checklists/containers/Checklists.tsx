@@ -1,57 +1,53 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import { IItemParams } from 'modules/boards/types';
-import { withProps } from 'modules/common/utils';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import { queries } from '../graphql';
 import { ChecklistsQueryResponse, IChecklistsParam } from '../types';
 import List from './List';
 
-type IProps = {
+type Props = {
   contentType: string;
   contentTypeId: string;
   stageId: string;
   addItem: (doc: IItemParams, callback: () => void) => void;
 };
 
-type FinalProps = {
-  checklistsQuery: ChecklistsQueryResponse;
-} & IProps;
+function ChecklistsContainer(props: Props) {
+  const { stageId, addItem, contentType, contentTypeId } = props;
 
-const ChecklistsContainer = (props: FinalProps) => {
-  const { checklistsQuery, stageId, addItem } = props;
+  const {
+    loading: checklistsQueryLoading,
+    data: checklistsQueryData,
+    error: checklistsQueryError
+  } = useQuery<ChecklistsQueryResponse, IChecklistsParam>(gql(queries.checklists), {
+    variables: {
+      contentType,
+      contentTypeId
+    },
+    refetchQueries: ['checklists'],
+  });
 
-  if (checklistsQuery.loading) {
-    return null;
-  }
+  if (checklistsQueryLoading) {
+    return <Spinner objective={true} />;
+  };
 
-  const checklists = checklistsQuery.checklists || [];
+  if (checklistsQueryError) {
+    return <ErrorMsg>{checklistsQueryError.message}</ErrorMsg>;
+  };
 
-  return checklists.map(list => (
+  const checklists = checklistsQueryData ? checklistsQueryData.checklists : [];
+
+  return <>{checklists.map(list => (
     <List
       key={list._id}
       listId={list._id}
       stageId={stageId}
       addItem={addItem}
     />
-  ));
-};
+  ))}</>;
+}
 
-export default withProps<IProps>(
-  compose(
-    graphql<IProps, ChecklistsQueryResponse, IChecklistsParam>(
-      gql(queries.checklists),
-      {
-        name: 'checklistsQuery',
-        options: ({ contentType, contentTypeId }) => ({
-          variables: {
-            contentType,
-            contentTypeId
-          },
-          refetchQueries: ['checklists']
-        })
-      }
-    )
-  )(ChecklistsContainer)
-);
+export default ChecklistsContainer;

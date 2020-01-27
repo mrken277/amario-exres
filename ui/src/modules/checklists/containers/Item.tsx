@@ -1,8 +1,8 @@
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { withProps } from 'modules/common/utils';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import checkError from 'modules/common/utils/checkError';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import Item from '../components/Item';
 import { mutations, queries } from '../graphql';
 import {
@@ -17,74 +17,79 @@ type Props = {
   convertToCard: (name: string, callback: () => void) => void;
 };
 
-type FinalProps = {
-  editItemMutation: EditItemMutationResponse;
-  removeItemMutation: RemoveItemMutationResponse;
-} & Props;
+function ItemContainer(props: Props) {
+  const { item } = props;
 
-class ItemContainer extends React.Component<FinalProps> {
-  render() {
-    const { editItemMutation, item, removeItemMutation } = this.props;
-
-    const editItem = (
-      doc: { content: string; isChecked: boolean },
-      callback?: () => void
-    ) => {
-      editItemMutation({
-        variables: {
-          ...doc,
-          _id: item._id
+  const [
+    editItemMutation
+  ] = useMutation<EditItemMutationResponse, EditItemMutationVariables>(
+    gql(mutations.checklistItemsEdit),
+    {
+      refetchQueries: [
+        {
+          query: gql(queries.checklistDetail),
+          variables: {
+            _id: item.checklistId
+          }
         }
-      }).then(() => {
-        if (callback) {
-          callback();
+      ]
+    }
+  );
+
+  const [
+    removeItemMutation,
+    { error: removeItemMutationError }
+  ] = useMutation<RemoveItemMutationResponse, { _id: string }>(
+    gql(mutations.checklistItemsRemove),
+    {
+      refetchQueries: [
+        {
+          query: gql(queries.checklistDetail),
+          variables: {
+            _id: item.checklistId
+          }
         }
-      });
-    };
+      ]
+    }
+  );
 
-    const removeItem = (checklistItemId: string) => {
-      removeItemMutation({ variables: { _id: checklistItemId } });
-    };
+  if (removeItemMutationError) {
+    const error = checkError([removeItemMutationError]);
 
-    const extendedProps = {
-      ...this.props,
-      item,
-      editItem,
-      removeItem
-    };
-
-    return <Item {...extendedProps} />;
+    return <ErrorMsg>{error.message}</ErrorMsg>;
   }
+
+  const editItem = (
+    doc: {
+      content: string; isChecked: boolean;
+    },
+    callback?: () => void
+  ) => {
+    editItemMutation({
+      variables: {
+        ...doc,
+        _id: item._id,
+        checklistId: item.checklistId
+      }
+    }).then(() => {
+      if (callback) {
+        callback();
+      }
+    });
+  };
+
+  const removeItem = (checklistItemId: string) => {
+    removeItemMutation({ variables: { _id: checklistItemId } });
+  };
+
+  const extendedProps = {
+    ...props,
+    item,
+    editItem,
+    removeItem
+  };
+
+  return <Item {...extendedProps} />;
 }
 
-const options = (props: Props) => {
-  return {
-    refetchQueries: [
-      {
-        query: gql(queries.checklistDetail),
-        variables: {
-          _id: props.item.checklistId
-        }
-      }
-    ]
-  };
-};
-
-export default withProps<Props>(
-  compose(
-    graphql<Props, EditItemMutationResponse, EditItemMutationVariables>(
-      gql(mutations.checklistItemsEdit),
-      {
-        name: 'editItemMutation',
-        options
-      }
-    ),
-    graphql<Props, RemoveItemMutationResponse, { _id: string }>(
-      gql(mutations.checklistItemsRemove),
-      {
-        name: 'removeItemMutation',
-        options
-      }
-    )
-  )(ItemContainer)
-);
+export default ItemContainer;
