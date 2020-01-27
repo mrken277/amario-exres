@@ -3,9 +3,9 @@ import { IEngageEmail, IEngageMessage, IEngageMessenger, IEngageScheduleDate, IE
 import { IEngageData, IEngageDataRules } from 'modules/inbox/types';
 import { attachmentFactory } from './attachment';
 import { conditionsRuleFactory } from './common';
-import { segmentFactory } from './segment';
+import { segmentFactory } from './segments';
 import { brandFactory } from './settings/brands';
-import { tagsFactory } from './tags';
+import { tagFactory } from './tags';
 import { userFactory } from './user';
 
 export const engageMessengerFactory = Factory.Sync.makeFactory<IEngageMessenger>({
@@ -78,8 +78,8 @@ export const engageMessageFactory = Factory.Sync.makeFactory<IEngageMessage>({
   fromUser: userFactory.build({ _id: '12', email: 'erxes@nmma.co' }),
   tagIds: ['12', '13'],
   getTags: [
-    tagsFactory.build(),
-    tagsFactory.build({ _id: '23' })
+    tagFactory.build(),
+    tagFactory.build({ _id: '23' })
   ],
   stats: engageStatsFactory.build({}),
   logs: [{ message: 'string' }],

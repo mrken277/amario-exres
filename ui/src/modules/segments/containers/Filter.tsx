@@ -9,7 +9,7 @@ import { Counts, SegmentsQueryResponse } from '../types';
 type Props = {
   contentType: string;
   counts: Counts;
-  history: any;
+  history?: any;
 };
 
 const FilterContainer = (props: Props) => {

@@ -10,7 +10,7 @@ import {
   ConfigsInsertMutationVariables
 } from '../types';
 
-export default () => {
+const ListContainer = () => {
   const {
     loading: currencyConfigQueryLoading,
     error: currencyConfigQueryError,
@@ -77,3 +77,5 @@ export default () => {
     </AppConsumer>
   );
 }
+
+export default ListContainer;

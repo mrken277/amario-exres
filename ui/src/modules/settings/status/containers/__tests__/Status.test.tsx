@@ -1,57 +1,45 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { createMemoryHistory } from 'history';
-// tslint:disable-next-line:ordered-imports
-import { segmentFactory } from 'modules/testing-utils/factories/segments';
-import { withRouter } from 'modules/testing-utils/withRouter';
+import { projectVersionsFactory } from 'modules/testing-utils/factories/settings/status';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
 import { queries } from '../../graphql';
-import FilterContainer from '../Filter';
+import StatusContainer from '../Status';
 
-const segmentsErrorMock = {
+const statusErrorMock = {
   request: {
-    query: gql(queries.segments),
-    variables: { contentType: 'type' },
+    query: gql(queries.configsVersions)
   },
   result: {
     errors: [new GraphQLError('forced error')],
   }
 };
 
-const segmentsQueryMock = {
+const statusQueryMock = {
   request: {
-    query: gql(queries.segmentDetail),
-    variables: { contentType: 'type' },
+    query: gql(queries.configsVersions)
   },
   result: {
     data: {
-      segmentDetail: [
-        segmentFactory.build(),
-        segmentFactory.build({
-          _id: '1'
+      configsVersions: [
+        projectVersionsFactory.build(),
+        projectVersionsFactory.build({
+          erxesVersion: {
+            packageVersion: '1.3'
+          }
         })
       ]
     },
   },
 };
 
-const route = '/segments/:contentType';
-const history = createMemoryHistory({
-  initialEntries: [route]
-});
-
-const counts = { "key": 0 }
-
-describe('Account default', () => {
+describe('Status', () => {
   it('should render loading state initially', () => {
     const component = create(
       <MockedProvider mocks={[]}>
-        {withRouter(
-          <FilterContainer contentType='' counts={counts} history={history} />
-        )}
+        <StatusContainer />
       </MockedProvider>
     );
 
@@ -62,10 +50,10 @@ describe('Account default', () => {
   it('error', async () => {
     const component = create(
       <MockedProvider
-        mocks={[segmentsErrorMock]}
+        mocks={[statusErrorMock]}
         addTypename={false}
       >
-        <FilterContainer contentType='' counts={counts} history={history} />
+        <StatusContainer />
       </MockedProvider>
     );
 
@@ -78,10 +66,10 @@ describe('Account default', () => {
   it('should render content', async () => {
     const component = create(
       <MockedProvider
-        mocks={[segmentsQueryMock]}
+        mocks={[statusQueryMock]}
         addTypename={false}
       >
-        <FilterContainer contentType='' counts={counts} history={history} />
+        <StatusContainer />
       </MockedProvider>
     );
 

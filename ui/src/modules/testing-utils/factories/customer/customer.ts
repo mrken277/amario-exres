@@ -2,7 +2,7 @@ import * as Factory from 'factory.ts';
 import { ICustomer, ICustomerLinks, IVisitorContact } from 'modules/customers/types';
 import { companyFactory } from '../companies';
 import { integrationFacroty } from '../settings/integration';
-import { tagsFactory } from '../tags';
+import { tagFactory } from '../tags';
 import { userFactory } from '../user';
 import { messengerDataFactory } from './messengerdata';
 
@@ -32,7 +32,7 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   owner: userFactory.build({ _id: '12' }),
   integration: integrationFacroty.build({ _id: '21' }),
   getMessengerCustomData: 'any',
-  getTags: [tagsFactory.build(), tagsFactory.build({ _id: '6' })],
+  getTags: [tagFactory.build(), tagFactory.build({ _id: '6' })],
   companies: [companyFactory.build(), companyFactory.build({ _id: '22' })],
 
   // ICustomerDocs

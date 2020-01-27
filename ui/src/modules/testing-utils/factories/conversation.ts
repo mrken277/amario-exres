@@ -2,7 +2,7 @@ import * as Factory from 'factory.ts';
 import { IConversation, IFacebookPost } from 'modules/inbox/types';
 import { customerFactory } from './customer/customer';
 import { integrationFacroty } from './settings/integration';
-import { tagsFactory } from './tags';
+import { tagFactory } from './tags';
 import { userFactory } from './user';
 
 export const facebookPostFactory = Factory.Sync.makeFactory<IFacebookPost>({
@@ -45,8 +45,8 @@ export const conversationFactory = Factory.Sync.makeFactory<IConversation>({
     userFactory.build({ _id: '5' })
   ],
   tags: [
-    tagsFactory.build(),
-    tagsFactory.build({ _id: '6' })
+    tagFactory.build(),
+    tagFactory.build({ _id: '6' })
   ],
   updatedAt: new Date(),
   idleTime: 56,
