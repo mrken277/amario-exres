@@ -20,14 +20,13 @@ type Props = {
   currenUser: IUser;
 };
 
-type useState = {
-  isLoading: boolean;
+type State = {
+  loading: boolean;
 };
 
-function InternalNoteContainer(props: Props, state: useState) {
+function InternalNoteContainer(props: Props, state: State) {
 
-  const defaultLoading = false;
-  const [isLoading] = useState(defaultLoading);
+  const [loading, setLoading] = useState(false);
   const { noteId } = props;
 
   const {
@@ -74,10 +73,12 @@ function InternalNoteContainer(props: Props, state: useState) {
   const internalNote = internalNoteDetailsData.internalNoteDetail;
 
   const edit = (variables, callback) => {
+    setLoading(true);
     editMutation({ variables: { _id: noteId, ...variables } });
 
     if (editMutationError) {
       Alert.error(editMutationError.message);
+      setLoading(false);
     }
 
     if (editMutationData) {
@@ -86,6 +87,7 @@ function InternalNoteContainer(props: Props, state: useState) {
       if (callback) {
         callback();
       }
+      setLoading(false);
     }
 
   };
@@ -107,7 +109,7 @@ function InternalNoteContainer(props: Props, state: useState) {
     internalNote,
     edit,
     remove,
-    isLoading
+    isLoading: loading
   };
 
   return <InternalNote {...updatedProps} />;
