@@ -5,7 +5,6 @@ const segmentFields = `
   description
   subOf
   color
-  connector
   conditions
 `;
 

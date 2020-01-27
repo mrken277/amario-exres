@@ -39,7 +39,6 @@ type State = {
   subOf: string;
   color: string;
   conditions: ISegmentCondition[];
-  connector: string;
 };
 
 class Form extends React.Component<Props, State> {
@@ -52,7 +51,6 @@ class Form extends React.Component<Props, State> {
       subOf: '',
       color: generateRandomColorCode(),
       conditions: [],
-      connector: 'any'
     };
 
     segment.conditions = segment.conditions.map(
@@ -123,7 +121,7 @@ class Form extends React.Component<Props, State> {
     color: string;
   }) => {
     const { segment, contentType } = this.props;
-    const { connector, conditions } = this.state;
+    const { conditions } = this.state;
     const finalValues = values;
 
     const updatedConditions: ISegmentCondition[] = [];
@@ -140,7 +138,6 @@ class Form extends React.Component<Props, State> {
     return {
       ...finalValues,
       contentType,
-      connector,
       conditions: updatedConditions
     };
   };
@@ -200,32 +197,12 @@ class Form extends React.Component<Props, State> {
   }
 
   renderConditions() {
-    const { conditions, connector } = this.state;
-
-    const connectorOnChange = (e: React.FormEvent) =>
-      this.handleChange(
-        'connector',
-        (e.currentTarget as HTMLInputElement).value
-      );
+    const { conditions } = this.state;
 
     return (
       <React.Fragment>
         <ConditionWrapper>
-          <FormGroup>
-            {__('Users who match')}
-            <FormControl
-              componentClass="select"
-              value={connector}
-              onChange={connectorOnChange}
-            >
-              <option value="any">{__('any')}</option>
-              <option value="all">{__('all')}</option>
-            </FormControl>
-            {__('of the below conditions')}
-          </FormGroup>
-
           {this.renderParent()}
-
           {conditions.map(condition => this.renderCondition(condition))}
           </ConditionWrapper>
         <AddConditionButton addCondition={this.addCondition} />

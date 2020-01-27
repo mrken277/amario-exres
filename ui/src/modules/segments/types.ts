@@ -26,7 +26,6 @@ export interface ISegmentWithConditionDoc {
   description: string;
   subOf: string;
   color: string;
-  connector: string;
   conditions: ISegmentCondition[];
 }
 
@@ -35,7 +34,6 @@ export interface ISegmentDoc {
   contentType?: string;
   description: string;
   color: string;
-  connector: string;
   conditions: ISegmentCondition[];
   subOf: string;
 }
@@ -82,7 +80,6 @@ export type AddMutationVariables = {
   description: string;
   subOf: string;
   color: string;
-  connector: string;
   conditions: ISegmentCondition[];
 };
 
