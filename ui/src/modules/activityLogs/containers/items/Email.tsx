@@ -1,13 +1,12 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import Email from 'modules/activityLogs/components/items/email/Email';
 import EngageEmail from 'modules/activityLogs/components/items/email/EngageEmail';
-import { ActivityContent } from 'modules/activityLogs/styles';
 import { EmailDeliveryDetailQueryResponse } from 'modules/activityLogs/types';
 import EmptyState from 'modules/common/components/EmptyState';
 import { queries as engageQueries } from 'modules/engage/graphql';
 import { EngageMessageDetailQueryResponse } from 'modules/engage/types';
 import React from 'react';
-import { useQuery } from 'react-apollo';
 import { queries } from '../../graphql';
 
 type Props = {
@@ -16,37 +15,37 @@ type Props = {
   emailType: string;
 };
 
-export default (props: Props) => {
+function EmailContainer(props: Props) {
   const { emailId, emailType } = props;
-  
+
   const {
     loading: engageMessageDetailQueryLoading,
     error: engageMessageDetailQueryError,
     data: engageMessageDetailQueryData
-  } = useQuery<EngageMessageDetailQueryResponse> (
+  } = useQuery<EngageMessageDetailQueryResponse>(
     gql(engageQueries.engageMessageDetail), {
-      skip: emailType === 'engage',
-      variables: {
-        _id: emailId
-      }
+    skip: emailType === 'engage',
+    variables: {
+      _id: emailId
     }
+  }
   );
 
-  const { 
+  const {
     loading: emailDeliveryDetailQueryLoading,
     error: emailDeliveryDetailQueryError,
     data: emailDeliveryDetailQueryData
-  } = useQuery<EmailDeliveryDetailQueryResponse> (
+  } = useQuery<EmailDeliveryDetailQueryResponse>(
     gql(queries.emailDeliveryDetail), {
-      skip: emailType === 'engage',
-      variables: {
-        _id: emailId
-      }
+    skip: emailType === 'engage',
+    variables: {
+      _id: emailId
     }
+  }
   );
- if(!emailDeliveryDetailQueryData) {
-   return null;
- } 
+  if (!emailDeliveryDetailQueryData) {
+    return null;
+  }
 
   if (engageMessageDetailQueryError || emailDeliveryDetailQueryError) {
     return <p>Error!</p>;
@@ -68,11 +67,13 @@ export default (props: Props) => {
       />
     );
   }
-  
+
   return (
     <Email
       {...props}
       email={emailDeliveryDetailQueryData.emailDeliveryDetail}
     />
   );
-};
+}
+
+export default EmailContainer;

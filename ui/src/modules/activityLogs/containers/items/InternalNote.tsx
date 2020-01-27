@@ -20,9 +20,13 @@ type Props = {
   currenUser: IUser;
 };
 
-function InternalNoteContainer(props: Props, state: any) {
-  const defaultisLoading = false;
-  const isLoading = useState(defaultisLoading);
+type State = {
+  loading: boolean;
+};
+
+function InternalNoteContainer(props: Props, state: State) {
+
+  const [loading, setLoading] = useState(false);
   const { noteId } = props;
 
   const {
@@ -62,18 +66,19 @@ function InternalNoteContainer(props: Props, state: any) {
     return <ErrorMsg>{error.message}</ErrorMsg>;
   };
 
-  const internalNote = internalNoteDetailsData && internalNoteDetailsData.internalNoteDetail || [];
+  if (!internalNoteDetailsData) {
+    return null;
+  };
+
+  const internalNote = internalNoteDetailsData.internalNoteDetail;
 
   const edit = (variables, callback) => {
-    // tslint:disable-next-line: react-hooks-nesting
-    useState({ isLoading: true });
-
+    setLoading(true);
     editMutation({ variables: { _id: noteId, ...variables } });
 
     if (editMutationError) {
       Alert.error(editMutationError.message);
-      // tslint:disable-next-line: react-hooks-nesting
-      useState({ isLoading: defaultisLoading });
+      setLoading(false);
     }
 
     if (editMutationData) {
@@ -82,23 +87,22 @@ function InternalNoteContainer(props: Props, state: any) {
       if (callback) {
         callback();
       }
-
-      // tslint:disable-next-line: react-hooks-nesting
-      useState({ isLoading: defaultisLoading });
+      setLoading(false);
     }
 
   };
 
   const remove = () => {
-    confirm()
-    internalNotesRemove({ variables: { _id: noteId } })
-    if (internalNotesRemoveError) {
-      Alert.error(internalNotesRemoveError.message);
-    }
+    confirm().then(() => {
+      internalNotesRemove({ variables: { _id: noteId } })
+      if (internalNotesRemoveError) {
+        Alert.error(internalNotesRemoveError.message);
+      }
 
-    if (internalNotesRemoveData) {
-      Alert.success('You successfully deleted a note.');
-    }
+      if (internalNotesRemoveData) {
+        Alert.success('You successfully deleted a note.');
+      }
+    });
   }
 
   const updatedProps = {
@@ -106,7 +110,7 @@ function InternalNoteContainer(props: Props, state: any) {
     internalNote,
     edit,
     remove,
-    isLoading
+    isLoading: loading
   };
 
   return <InternalNote {...updatedProps} />;
