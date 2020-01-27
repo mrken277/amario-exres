@@ -6,33 +6,32 @@ import Tip from 'modules/common/components/Tip';
 import { __, Alert } from 'modules/common/utils';
 import { queries } from 'modules/inbox/graphql';
 import React, { useState } from 'react';
-import { REACT_DAILY_END_POINT } from '../constants';
 
 type Props = {
   conversationId: string;
   callback: (content: string, contentType: string) => void;
 };
 
-function ManageRoom (props: Props) {
+function ManageRoom(props: Props) {
   const [loading, setLoading] = useState(false);
 
-  const openWindow = (name: string, token: string) => {
+  const openWindow = (url, name: string, token: string) => {
     const height = 600;
     const width = 480;
 
-    const y = window.top.outerHeight / 2 + window.top.screenY - ( height / 2);
-    const x = window.top.outerWidth / 2 + window.top.screenX - ( width / 2);
+    const y = window.top.outerHeight / 2 + window.top.screenY - height / 2;
+    const x = window.top.outerWidth / 2 + window.top.screenX - width / 2;
 
     window.open(
-      `/videoCall?name=${name}&t=${token}`,
+      `/videoCall?url=${url}&name=${name}&t=${token}`,
       '_blank',
       `toolbar=no,titlebar=no,directories=no,menubar=no,location=no,scrollbars=yes,status=no,height=${height},width=${width},top=${y},left=${x}`
     );
-  }
+  };
 
   const createVideoRoom = () => {
     const { conversationId, callback } = props;
-    
+
     setLoading(true);
     client
       .query({
@@ -44,6 +43,7 @@ function ManageRoom (props: Props) {
       })
       .then(({ data }: any) => {
         const {
+          url,
           name,
           created,
           token,
@@ -51,15 +51,19 @@ function ManageRoom (props: Props) {
         } = data.conversationsGetVideoRoom;
 
         if (created) {
-          const anchor = `<a target="_blank" href="${REACT_DAILY_END_POINT}/${name}?t=${token}">${__('Join a call')}</a>`;
+          const anchor = `<a target="_blank" href="${url}?t=${token}">${__(
+            'Join a call'
+          )}</a>`;
 
           callback(anchor, 'video');
         }
 
-        openWindow(name, ownerToken);
+        openWindow(url, name, ownerToken);
         setLoading(false);
       })
       .catch(error => {
+        setLoading(false);
+
         Alert.error(error.message);
       });
   };

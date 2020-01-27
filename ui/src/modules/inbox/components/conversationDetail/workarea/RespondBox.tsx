@@ -262,7 +262,7 @@ class RespondBox extends React.Component<Props, State> {
     return text.replace(/&nbsp;/g, ' ');
   }
 
-  addMessage = (contentType?: string ) => {
+  addMessage = (contentType?: string) => {
     const { conversation, sendMessage } = this.props;
     const { isInternal, attachments, content, mentionedUserIds } = this.state;
 
@@ -412,6 +412,22 @@ class RespondBox extends React.Component<Props, State> {
     );
   }
 
+  renderVideoRoom() {
+    const { conversation } = this.props;
+    const integration = conversation.integration || ({} as IIntegration);
+
+    if (this.state.isInternal || integration.kind !== 'messenger') {
+      return null;
+    }
+
+    return (
+      <ManageVideoRoom
+        conversationId={conversation._id}
+        callback={this.sendVideoChatInvitationLink}
+      />
+    );
+  }
+
   renderButtons() {
     const { conversation } = this.props;
     const integration = conversation.integration || ({} as IIntegration);
@@ -422,12 +438,7 @@ class RespondBox extends React.Component<Props, State> {
       <EditorActions>
         {this.renderCheckbox(integration.kind)}
 
-        {!this.state.isInternal && (
-          <ManageVideoRoom
-            conversationId={conversation._id}
-            callback={this.sendVideoChatInvitationLink}
-          />
-        )}
+        {this.renderVideoRoom()}
 
         <Tip text={__('Attach file')}>
           <label>

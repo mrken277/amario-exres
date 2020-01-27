@@ -248,6 +248,7 @@ const convertToInfo = `
 const getVideoRoom = `
   query conversationsGetVideoRoom($_id: String!) {
     conversationsGetVideoRoom(_id: $_id) {
+      url
       name
       created
       token

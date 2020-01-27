@@ -6,12 +6,9 @@ import { Alert } from 'modules/common/utils';
 import React from 'react';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
-import { REACT_DAILY_END_POINT } from '../constants';
 import { mutations } from '../graphql';
 
-const Control = styledTS<{ disabled?: boolean; }>(
-  styled(SimpleButton)
-)`
+const Control = styledTS<{ disabled?: boolean }>(styled(SimpleButton))`
   width: auto;
   height: auto;
   position: absolute;
@@ -39,7 +36,10 @@ type Props = {
   queryParams: any;
 };
 
-class VideoCall extends React.Component<Props, { loading:boolean, errorMessage: string }> {
+class VideoCall extends React.Component<
+  Props,
+  { loading: boolean; errorMessage: string }
+> {
   private callFrame;
 
   constructor(props) {
@@ -49,13 +49,9 @@ class VideoCall extends React.Component<Props, { loading:boolean, errorMessage: 
   }
 
   componentDidMount() {
-    const { name, t } = this.props.queryParams;
+    const { url, t } = this.props.queryParams;
 
-    if (!name || !t) {
-      return;
-    }
-
-    const owner = { url: `${REACT_DAILY_END_POINT}/${name}?t=${t}` };
+    const owner = { url: `${url}?t=${t}` };
 
     this.callFrame = DailyIframe.createFrame(
       document.getElementById('call-frame-container'),
@@ -90,20 +86,20 @@ class VideoCall extends React.Component<Props, { loading:boolean, errorMessage: 
   };
 
   renderControls() {
-    const { name } = this.props.queryParams;
-
-    if (!name) {
-      return;
-    }
-
     return (
       <Control onClick={this.onDelete} disabled={this.state.loading}>
-        {this.state.loading ? 'Please wait...' : 'Delete room'} 
+        {this.state.loading ? 'Please wait...' : 'Delete room'}
       </Control>
     );
   }
 
   render() {
+    const { url, name, t } = this.props.queryParams;
+
+    if (!url || !name || !t) {
+      return;
+    }
+
     return (
       <>
         {this.renderControls()}
