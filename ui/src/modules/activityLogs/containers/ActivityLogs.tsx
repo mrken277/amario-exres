@@ -1,10 +1,10 @@
+import { useQuery } from '@apollo/react-hooks';
 import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import { IUser } from 'modules/auth/types';
-import { withProps } from 'modules/common/utils';
-import React from 'react';
-import { graphql } from 'react-apollo';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import checkError from 'modules/common/utils/checkError';
+import React, { useState } from 'react';
 import { ActivityLogQueryResponse } from '../../customers/types';
 import ActivityLogs from '../components/ActivityLogs';
 import { queries, subscriptions } from '../graphql';
@@ -14,103 +14,83 @@ type Props = {
   contentType: string;
   target?: string;
   extraTabs: Array<{ name: string; label: string }>;
+  activityType: string;
 };
 
-type FinalProps = {
-  activityLogQuery: ActivityLogQueryResponse;
-} & WithDataProps;
+type State = {
+  activityType: ''
+};
 
-class Container extends React.Component<FinalProps, {}> {
+export function ActivityContainer(props: Props, state: State, currentTab: string) {
+  const { contentId, contentType, target, extraTabs } = props;
+
+  const [activityType, setActivityType] = useState(currentTab);
+
+  const onChangeActivityTab = () => {
+    setActivityType(currentTab)
+  };
+
+  type WithDataProps = Props & {
+    onChangeActivityTab: (currentTab: string) => void;
+    activityType: string;
+  };
+
+  const {
+    data: ActivityLogQueryData,
+    error: ActivityLogQueryError,
+    loading: ActivityLogQueryLoading
+  } = useQuery<WithDataProps, ActivityLogQueryResponse>(
+    gql(queries.activityLogs), {
+    variables: {
+      contentId,
+      contentType,
+      activityType: activityType === 'activity' ? '' : activityType
+    }
+  }
+  );
+
+  if (ActivityLogQueryError) {
+    const error = checkError([ActivityLogQueryError]);
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  };
+
   UNSAFE_componentWillMount() {
-    const { activityLogQuery } = this.props;
-
-    activityLogQuery.subscribeToMore({
+    ActivityLogQueryData.subscribeToMore({
       document: gql(subscriptions.activityLogsChanged),
       updateQuery: () => {
-        this.props.activityLogQuery.refetch();
+        ActivityLogQueryData.refetch();
       }
     });
   }
 
-  render() {
-    const {
-      target,
-      activityLogQuery,
-      onChangeActivityTab,
-      extraTabs
-    } = this.props;
-
-    const props = {
-      target,
-      loadingLogs: activityLogQuery.loading,
-      activityLogs: activityLogQuery.activityLogs || [],
-      onTabClick: onChangeActivityTab,
-      extraTabs
-    };
-
-    return (
-      <AppConsumer>
-        {({ currentUser }) => (
-          <ActivityLogs {...props} currentUser={currentUser || ({} as IUser)} />
-        )}
-      </AppConsumer>
-    );
-  }
-}
-
-type WithDataProps = Props & {
-  onChangeActivityTab: (currentTab: string) => void;
-  activityType: string;
-};
-
-const WithData = withProps<WithDataProps>(
-  compose(
-    graphql<WithDataProps, ActivityLogQueryResponse>(
-      gql(queries.activityLogs),
-      {
-        name: 'activityLogQuery',
-        options: ({ contentId, contentType, activityType }: WithDataProps) => {
-          return {
-            variables: {
-              contentId,
-              contentType,
-              activityType: activityType === 'activity' ? '' : activityType
-            }
-          };
-        }
-      }
-    )
-  )(Container)
-);
-
-export default class Wrapper extends React.Component<
-  Props,
-  { activityType: string }
-> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      activityType: ''
-    };
-  }
-
-  onChangeActivityTab = (currentTab: string) => {
-    this.setState({ activityType: currentTab });
+  const updateprops = {
+    target,
+    loadingLogs: ActivityLogQueryLoading,
+    activityLogs: ActivityLogQueryData && ActivityLogQueryData.activityLogs || [],
+    onTabClick: onChangeActivityTab,
+    extraTabs
   };
 
-  render() {
-    const { contentId, contentType, target, extraTabs } = this.props;
+  return (
+    <AppConsumer>
+      {({ currentUser }) => (
+        <ActivityLogs {...updateprops} currentUser={currentUser || ({} as IUser)} />
+      )}
+    </AppConsumer>
+  );
+};
 
-    return (
-      <WithData
-        target={target}
-        contentId={contentId}
-        contentType={contentType}
-        extraTabs={extraTabs}
-        activityType={this.state.activityType}
-        onChangeActivityTab={this.onChangeActivityTab}
-      />
-    );
-  }
-}
+return (
+  <ActivityContainer
+    target={target}
+    contentId={contentId}
+    contentType={contentType}
+    extraTabs={extraTabs}
+    activityType={activityType}
+    onChangeActivityTab={onChangeActivityTab}
+  />
+);
+
+
+
+
