@@ -1,15 +1,13 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { Alert, withProps } from 'modules/common/utils';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import { Alert } from 'modules/common/utils';
 import {
   EditIntegrationMutationResponse,
   EditIntegrationMutationVariables,
   LeadIntegrationDetailQueryResponse
 } from 'modules/settings/integrations/types';
-import React from 'react';
-import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router';
-import { IRouterProps } from '../../common/types';
+import React, { useState } from 'react';
 import Lead from '../components/Lead';
 import { mutations, queries } from '../graphql';
 import { ILeadData } from '../types';
@@ -18,12 +16,13 @@ type Props = {
   contentTypeId: string;
   formId: string;
   queryParams: any;
+  history?: any;
 };
 
 type State = {
-  isLoading: boolean;
-  isReadyToSaveForm: boolean;
-  doc?: {
+  isloadingLeads: boolean;
+  isReadyToSave: boolean;
+  leadDoc?: {
     brandId: string;
     name: string;
     languageCode: string;
@@ -32,106 +31,94 @@ type State = {
   };
 };
 
-type FinalProps = {
-  integrationDetailQuery: LeadIntegrationDetailQueryResponse;
-} & Props &
-  EditIntegrationMutationResponse &
-  IRouterProps;
+function EditLeadContainer(props: Props, state: State) {
+  const { contentTypeId, formId, history } = props;
+  const [isloadingLeads, setLoadingLeads] = useState(false);
+  const [isReadyToSave, setReadyToSaveForm] = useState(false);
+  const [leadDoc, setDoc] = useState(state.leadDoc);
 
-class EditLeadContainer extends React.Component<FinalProps, State> {
-  constructor(props: FinalProps) {
-    super(props);
+  const
+    { loading: integrationDetailQueryLoading,
+      data: integrationDetailQueryData,
+      error: integrationDetailQueryError
+    } = useQuery<LeadIntegrationDetailQueryResponse, { _id: string }>(gql(queries.integrationDetail), {
+      variables: {
+        _id: contentTypeId
+      }
+    });
 
-    this.state = { isLoading: false, isReadyToSaveForm: false };
+  const [editIntegrationMutation,
+    { data: editIntegrationMutationData,
+      error: editIntegrationMutationError
+    }] = useMutation<EditIntegrationMutationResponse, EditIntegrationMutationVariables>(gql(mutations.integrationsEditLeadIntegration), {
+      refetchQueries: [
+        'leadIntegrations',
+        'leadIntegrationCounts',
+        'formDetail'
+      ]
+    });
+
+  if (!integrationDetailQueryData) {
+    return null;
+  };
+
+  if (integrationDetailQueryLoading) {
+    return false;
   }
 
-  render() {
-    const {
-      formId,
-      integrationDetailQuery,
-      editIntegrationMutation,
-      history
-    } = this.props;
+  if (integrationDetailQueryError) {
+    return <ErrorMsg>{integrationDetailQueryError.message}</ErrorMsg>;
+  }
 
-    if (integrationDetailQuery.loading) {
-      return false;
+  const integration = integrationDetailQueryData.integrationDetail || {};
+
+  const afterFormDbSave = () => {
+    if (leadDoc) {
+      const { leadData, brandId, name, languageCode } = leadDoc;
+
+      editIntegrationMutation({
+        variables: {
+          _id: integration._id,
+          formId,
+          leadData,
+          brandId,
+          name,
+          languageCode
+        }
+      })
+      if (editIntegrationMutationData) {
+        Alert.success('You successfully updated a lead');
+
+        history.push('/leads');
+
+        setLoadingLeads(false);
+        setReadyToSaveForm(false);
+      }
+
+      if (editIntegrationMutationError) {
+        Alert.error(editIntegrationMutationError.message);
+
+        setLoadingLeads(false);
+        setReadyToSaveForm(false);
+      };
     }
+  };
 
-    const integration = integrationDetailQuery.integrationDetail || {};
+  const save = doc => {
+    setLoadingLeads(true);
+    setReadyToSaveForm(true);
+    setDoc(doc);
+  };
 
-    const afterFormDbSave = () => {
-      if (this.state.doc) {
-        const { leadData, brandId, name, languageCode } = this.state.doc;
+  const updatedProps = {
+    ...props,
+    integration,
+    save,
+    afterFormDbSave,
+    isActionLoading: isloadingLeads,
+    isReadyToSaveForm: isReadyToSave
+  };
 
-        editIntegrationMutation({
-          variables: {
-            _id: integration._id,
-            formId,
-            leadData,
-            brandId,
-            name,
-            languageCode
-          }
-        })
-          .then(() => {
-            Alert.success('You successfully updated a lead');
-
-            history.push('/leads');
-
-            this.setState({ isReadyToSaveForm: false, isLoading: false });
-          })
-
-          .catch(error => {
-            Alert.error(error.message);
-
-            this.setState({ isReadyToSaveForm: false, isLoading: false });
-          });
-      }
-    };
-
-    const save = doc => {
-      this.setState({ isLoading: true, isReadyToSaveForm: true, doc });
-    };
-
-    const updatedProps = {
-      ...this.props,
-      integration,
-      save,
-      afterFormDbSave,
-      isActionLoading: this.state.isLoading,
-      isReadyToSaveForm: this.state.isReadyToSaveForm
-    };
-
-    return <Lead {...updatedProps} />;
-  }
+  return <Lead {...updatedProps} />;
 }
-
-export default withProps<Props>(
-  compose(
-    graphql<Props, LeadIntegrationDetailQueryResponse, { _id: string }>(
-      gql(queries.integrationDetail),
-      {
-        name: 'integrationDetailQuery',
-        options: ({ contentTypeId }) => ({
-          variables: {
-            _id: contentTypeId
-          }
-        })
-      }
-    ),
-    graphql<
-      Props,
-      EditIntegrationMutationResponse,
-      EditIntegrationMutationVariables
-    >(gql(mutations.integrationsEditLeadIntegration), {
-      name: 'editIntegrationMutation',
-      options: {
-        refetchQueries: [
-          'leadIntegrations',
-          'leadIntegrationCounts',
-          'formDetail'
-        ]
-      }
-    })
-  )(withRouter<FinalProps>(EditLeadContainer))
-);
+export default EditLeadContainer;

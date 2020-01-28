@@ -1,14 +1,12 @@
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import {
   AddIntegrationMutationResponse,
   AddIntegrationMutationVariables
 } from 'modules/settings/integrations/types';
 import { AddFieldsMutationResponse } from 'modules/settings/properties/types';
-import React from 'react';
-import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router';
+import React, { useState } from 'react';
 import { IRouterProps } from '../../common/types';
 import Lead from '../components/Lead';
 import { mutations } from '../graphql';
@@ -21,7 +19,7 @@ type Props = {} & IRouterProps &
 type State = {
   isLoading: boolean;
   isReadyToSaveForm: boolean;
-  doc?: {
+  leadDoc?: {
     brandId: string;
     name: string;
     languageCode: string;
@@ -30,74 +28,68 @@ type State = {
   };
 };
 
-class CreateLeadContainer extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
+function CreateLeadContainer(props: Props, state: State) {
+  const [isloadingLeads, setLoadingLeads] = useState(false);
+  const [isReadyToSaveForm, setReadyToSaveForm] = useState(false);
+  // see you again!!!
+  const [leadDoc, setDoc] = useState(state.leadDoc);
 
-    this.state = { isLoading: false, isReadyToSaveForm: false };
-  }
+  const { history } = props;
 
-  render() {
-    const { addIntegrationMutation, history } = this.props;
+  const [addIntegrationMutation,
+    { data: leadsQueryData,
+      error: leadsQueryError
+    }] = useMutation<AddIntegrationMutationResponse, AddIntegrationMutationVariables>(gql(mutations.integrationsCreateLeadIntegration), {
+      refetchQueries: ['leadIntegrations', 'leadIntegrationCounts']
+    });
 
-    const afterFormDbSave = id => {
-      this.setState({ isReadyToSaveForm: false });
+  const afterFormDbSave = id => {
+    setReadyToSaveForm(false);
 
-      if (this.state.doc) {
-        const { leadData, brandId, name, languageCode } = this.state.doc;
+    if (leadDoc) {
+      const { leadData, brandId, name, languageCode } = leadDoc;
 
-        addIntegrationMutation({
-          variables: {
-            formId: id,
-            leadData,
-            brandId,
-            name,
-            languageCode
-          }
-        })
-          .then(() => {
-            Alert.success('You successfully added a lead');
-            history.push('/leads');
+      addIntegrationMutation({
+        variables: {
+          formId: id,
+          leadData,
+          brandId,
+          name,
+          languageCode
+        }
+      });
 
-            this.setState({ isLoading: false });
-          })
+      if (leadsQueryData) {
+        Alert.success('You successfully added a lead');
+        history.push('/leads');
 
-          .catch(error => {
-            Alert.error(error.message);
+        setLoadingLeads(false);
+      };
 
-            this.setState({ isLoading: false });
-          });
-      }
-    };
+      if (leadsQueryError) {
+        Alert.error(leadsQueryError.message);
 
-    const save = doc => {
-      this.setState({ isLoading: true, isReadyToSaveForm: true, doc });
-    };
+        setLoadingLeads(false);
+      };
+    }
+  };
 
-    const updatedProps = {
-      ...this.props,
-      fields: [],
-      save,
-      afterFormDbSave,
-      isActionLoading: this.state.isLoading,
-      isReadyToSaveForm: this.state.isReadyToSaveForm
-    };
+  const save = doc => {
+    setLoadingLeads(true);
+    setReadyToSaveForm(true);
+    setDoc(doc);
+  };
 
-    return <Lead {...updatedProps} />;
-  }
+  const updatedProps = {
+    ...props,
+    fields: [],
+    save,
+    afterFormDbSave,
+    isActionLoading: isloadingLeads,
+    isReadyToSaveForm
+  };
+
+  return <Lead {...updatedProps} />;
 }
 
-export default withProps<{}>(
-  compose(
-    graphql<
-      {},
-      AddIntegrationMutationResponse,
-      AddIntegrationMutationVariables
-    >(gql(mutations.integrationsCreateLeadIntegration), {
-      name: 'addIntegrationMutation',
-      options: {
-        refetchQueries: ['leadIntegrations', 'leadIntegrationCounts']
-      }
-    })
-  )(withRouter<Props>(CreateLeadContainer))
-);
+export default CreateLeadContainer;
