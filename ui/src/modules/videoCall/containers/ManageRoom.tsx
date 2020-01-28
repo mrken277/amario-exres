@@ -55,7 +55,7 @@ function ManageRoom(props: Props) {
             'Join a call'
           )}</a>`;
 
-          callback(anchor, 'video');
+          callback(anchor, 'videoCall');
         }
 
         openWindow(url, name, ownerToken);
