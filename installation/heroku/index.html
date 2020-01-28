@@ -69,102 +69,82 @@
 <p>Heroku is a container-based cloud Platform as a Service (PaaS).</p>
 <p>In order to deploy erxes and other related apps, you will need <code>mLab MongoDB</code> (MongoDB), <code>Heroku Redis</code> (Redis), and <code>CloudAMQP</code> (RabbitMQ) addons.</p>
 <p>To add any addon to an app, you will need to register your credit card. So please add your creadit card and verify your account prior to proceeding further.</p>
-<h3><a class="anchor" aria-hidden="true" id="one-click-deployment"></a><a href="#one-click-deployment" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>One Click deployment</h3>
+<h2><a class="anchor" aria-hidden="true" id="one-click-deployment"></a><a href="#one-click-deployment" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>One Click deployment</h2>
 <p>In this installation guide, we pretend the following app names will be available on Heroku and they will be used to demonstrate - we expect you to choose any available names on Heroku.</p>
 <ul>
 <li><code>erxes</code> - <strong>erxes</strong> <code>(https://erxes.herokuapp.com)</code></li>
 <li><code>erxes API</code> - <strong>erxes-api</strong> <code>(https://erxes-api.herokuapp.com)</code></li>
 <li><code>erxes Widget</code> - <strong>erxes-widget</strong> <code>(https://erxes-widget.herokuapp.com)</code></li>
-<li><code>erxes Widget API</code> - <strong>erxes-widget-api</strong> <code>(https://erxes-widget-api.herokuapp.com)</code></li>
 </ul>
 <p>Try the following 4 steps to install all required apps on Heroku.</p>
-<p><strong>Note</strong> - When setting up config vars (environment vars), do not change the PORT numbers of all apps.</p>
-<p>1.<strong>Install erxes</strong></p>
+<p><strong>Note</strong>: When setting up config vars (environment vars), do not change the PORT numbers of all apps.</p>
+<h3><a class="anchor" aria-hidden="true" id="1-install-erxes"></a><a href="#1-install-erxes" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. Install erxes</h3>
 <p>Please try clicking the deploy button below, then set all the config vars and hit the Deploy app button.</p>
 <p><strong>Config vars:</strong></p>
 <pre><code class="hljs css language-sh">REACT_APP_API_SUBSCRIPTION_URL = ws://erxes-api.herokuapp.com/subscriptions
 REACT_APP_API_URL = https://erxes-api.herokuapp.com
 REACT_APP_CDN_HOST = https://erxes-widget.herokuapp.com
-REACT_APP_CDN_HOST_API = https://erxes-widget-api.herokuapp.com
 </code></pre>
-<p><a href="https://heroku.com/deploy?template=https://github.com/erxes/erxes"><img src="https://www.herokucdn.com/deploy/button.svg#heroku" alt="Deploy erxes" title="Deploy erxes"></a></p>
-<p>2.<strong>Install erxes API</strong></p>
+<p><a href="https://heroku.com/deploy?template=https://github.com/erxes/erxes/tree/develop"><img src="https://www.herokucdn.com/deploy/button.svg#heroku" alt="Deploy erxes" title="Deploy erxes"></a></p>
+<h3><a class="anchor" aria-hidden="true" id="2-install-erxes-api"></a><a href="#2-install-erxes-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. Install erxes API</h3>
 <p>Now it's time to install erxes API - click the button below and set the config vars.</p>
 <p><strong>Config vars:</strong></p>
-<pre><code class="hljs css language-sh">AWS_ACCESS_KEY_ID = your_acess_key_id
-AWS_BUCKET = bucket_name
-AWS_PREFIX = prefix
-AWS_REGION = your_bucket_region
-AWS_SECRET_ACCESS_KEY = secret_key
-AWS_SES_ACCESS_KEY_ID = access_key
-AWS_SES_CONFIG_SET = config
-AWS_SES_SECRET_ACCESS_KEY = secret_key
-COMPANY_EMAIL_FROM = noreply@erxes.io
-DEFAULT_EMAIL_SERVICE = sendgrid
-DOMAIN = https://erxes-api.herokuapp.com
-FILE_SYSTEM_PUBLIC = <span class="hljs-literal">false</span>
-HTTPS = <span class="hljs-literal">true</span>
+<pre><code class="hljs css language-sh">DOMAIN = https://erxes-api.herokuapp.com
 INTEGRATIONS_API_DOMAIN = https://ERXESINTEGRATIONSAPINAME.herokuapp.com
-MAIL_HOST = your_mail_host
-MAIL_PASS = pass
-MAIL_PORT = port
-MAIL_SERVICE = sendgrid
-MAIL_USER = your_user
 MAIN_APP_DOMAIN = https://erxes.herokuapp.com
 MONGO_URL = mongodb:// <span class="hljs-comment"># leave it as is, we will update it later on</span>
 PORT = 3300
-PUBSUB_TYPE = REDIS
+RABBITMQ_HOST = RABBITMQ_HOST
 REDIS_HOST = REDIS_HOST <span class="hljs-comment"># we will update it later on</span>
 REDIS_PASSWORD = REDIS_PASS <span class="hljs-comment"># we will update it later on</span>
 REDIS_PORT = 28229 <span class="hljs-comment"># update it later on</span>
-UPLOAD_FILE_TYPES = image/png,image/jpeg,image/jpg,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,
-UPLOAD_SERVICE_TYPE = AWS
-USE_BRAND_RESTRICTIONS = <span class="hljs-literal">false</span>
-WIDGETS_API_DOMAIN = https://erxes-widget-api.herokuapp.com
 WIDGETS_DOMAIN = https://erxes-widget.herokuapp.com
 </code></pre>
-<p><a href="https://heroku.com/deploy?template=https://github.com/erxes/erxes-api"><img src="https://www.herokucdn.com/deploy/button.svg#heroku" alt="Deploy erxes API" title="Deploy erxes API"></a></p>
-<p>3.<strong>Install erxes Widgets</strong></p>
+<p><a href="https://heroku.com/deploy?template=https://github.com/erxes/erxes-api/tree/develop"><img src="https://www.herokucdn.com/deploy/button.svg#heroku" alt="Deploy erxes API" title="Deploy erxes API"></a></p>
+<p>Now go to Heroku dashboard and select the <strong>erxes-api app</strong> from the Apps tab.</p>
+<p>Go to Settings tab where you can manage your Config Vars as you need to update config vars of <strong>erxes-api</strong> app.</p>
+<p>In the Config Vars section, click a button 'Reveal Config Vars' so that you will be able to see all the config vars.</p>
+<p>Copy MONGO_URI's value and paste it into MONGO_URL.</p>
+<p>Copy RABBITMQ_URL's value and paste into RABBITMQ_HOST.</p>
+<p>Update REDIS_HOST, REDIS_PASSWORD, and REDIS_PORT values using REDIS_URL's value.</p>
+<p>Please now go to Resources tab as you will need to start <code>cronjob</code> and <code>worker</code> processes.
+Start <code>cronjob</code> and <code>worker</code>.</p>
+<p>The last step is to insert initial data. To do that you will need to clone <code>erxes-api</code> repo and <code>mongorestore</code> tool.</p>
+<p>Clone the <code>erxes-api</code> and run the following commands in the terminal.</p>
+<p><code>cd erxes-api</code></p>
+<p><code>mongorestore --host=host --port=port -u user -d db initialData</code></p>
+<p><code>mongorestore --host=host --port=port -u user -d db permissionData</code></p>
+<p><strong>Note</strong>: extract <code>host</code>, <code>port</code>, <code>user</code>, <code>db</code> from the <code>MONGO_URI</code> config var.</p>
+<p>Now you can log into <code>https://erxes.herokuapp.com</code> using the following credentials.</p>
+<pre><code class="hljs css language-sh">username: admin@erxes.io
+password: erxes
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="3-install-erxes-widgets"></a><a href="#3-install-erxes-widgets" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>3. Install erxes Widgets</h3>
 <p>Now install erxes Widget app by clicking the deploy button below and set config vars.</p>
 <p><strong>Config vars:</strong></p>
-<pre><code class="hljs css language-sh">API_GRAPHQL_URL = https://erxes-widget-api.herokuapp.com/graphql
-API_SUBSCRIPTIONS_URL = ws://erxes-api.herokuapp.com/subscriptions
+<pre><code class="hljs css language-sh">API_SUBSCRIPTIONS_URL = ws://erxes-api.herokuapp.com/subscriptions
 MAIN_API_URL = https://erxes.herokuapp.com
 PORT = 3200
 ROOT_URL = https://erxes-widget.herokuapp.com
 </code></pre>
-<p><a href="https://heroku.com/deploy?template=https://github.com/erxes/erxes-widgets"><img src="https://www.herokucdn.com/deploy/button.svg#heroku" alt="Deploy Widgets" title="Deploy erxes Widgets"></a></p>
-<p>4.<strong>Install erxes Widgets API</strong></p>
-<p>You are doing great! And now it's time to install last app - erxes Widgets API.</p>
+<p><a href="https://heroku.com/deploy?template=https://github.com/batnasan/erxes-widgets-heroku-button"><img src="https://www.herokucdn.com/deploy/button.svg#heroku" alt="Deploy Widgets" title="Deploy erxes Widgets"></a></p>
+<p>Now it's time to grab yourself a cup of coffee and enjoy using <strong>erxes</strong>.</p>
+<h2><a class="anchor" aria-hidden="true" id="extra-features"></a><a href="#extra-features" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Extra features</h2>
+<p>There is a several apps available for you to install and make erxes even more powerful.<br>
+The steps of installing them are same as above.</p>
+<h3><a class="anchor" aria-hidden="true" id="1-install-erxes-integrations"></a><a href="#1-install-erxes-integrations" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. Install erxes integrations</h3>
 <p><strong>Config vars:</strong></p>
-<pre><code class="hljs css language-sh">MONGO_URL = mongodb://localhost/erxes
-PORT = 3100
-RABBITMQ_HOST = amqp://localhost <span class="hljs-comment"># we will update it later on</span>
-WIDGET_URL = https://erxes-widget.herokuapp.com <span class="hljs-comment"># we will update it later on</span>
+<pre><code class="hljs css language-sh">PORT = 3400
+DOMAIN = https://erxes-integration.herokuapp.com
+MAIN_API_DOMAIN = MAIN_API_DOMAIN
+MAIN_APP_DOMAIN = MAIN_APP_DOMAIN
+MONGO_URL = MONGO_URL <span class="hljs-comment"># we will update it later on</span>
+RABBITMQ_HOST = copy and paste from erxes-api RABBITMQ_HOST config var
 </code></pre>
-<p><a href="https://heroku.com/deploy?template=https://github.com/erxes/erxes-widgets-api"><img src="https://www.herokucdn.com/deploy/button.svg#heroku" alt="Deploy Widgets API" title="Deploy erxes Widgets API"></a></p>
-<p>Now go to Heroku dashboard and select the <strong>erxes-api app</strong> from the Apps tab.</p>
-<p>Go to Resources tab where you can manage your resources. You need to share MongoDB and RabbitMQ addons with <strong>erxes-widget-api</strong> app so that the <strong>erxes-widget-api</strong> will be able to access these two addons.</p>
-<p>To do that, click a button 'Attached as RABBITMQ' in Add-ons section and then click 'Manage Attachments'.<br>
-Now click '+ Attach to another app' button and search for 'erxes widget app' name you have chosen and select it.
-Repeat the step for MongoDB.</p>
-<p>If you find it difficult, please go to <a href="https://devcenter.heroku.com/articles/managing-add-ons#using-the-dashboard-attaching-an-add-on-to-another-app">Heroku Dev Center</a>.</p>
-<p>Finally, you need to update config vars of <strong>erxes-api</strong> and <strong>erxes-widget-api</strong> apps.</p>
-<p>Please go to <strong>erxes-api</strong> app and select Settings tab.<br>
-In the Config Vars section, click a button 'Reveal Config Vars'.<br>
-Now you will be able to see all the config vars.<br>
-Copy MONGO_URI's value and paste it into MONGO_URL.<br>
-Copy RABBITMQ_URL's value and paste into RABBITMQ_HOST.<br>
-Update REDIS_HOST, REDIS_PASSWORD, and REDIS_PORT values using REDIS_URL's value.</p>
-<p>Now please go to <strong>erxes-widget-api</strong> and update RABBITMQ_HOST and MONGO_URL config vars.<br>
-Use CLOUDAMQP_URL and MONGODB_URI config vars values'.</p>
-<p>Now go back to <strong>erxes-api</strong> and click 'More' button in the top right corner, then select 'Run console'.<br>
-Run 'yarn initProject' command which will create the following credentials for you to log into <code>https://erxes.herokuapp.com</code>.</p>
-<pre><code class="hljs css language-sh">username: admin@erxes.io
-password: erxes
-</code></pre>
-<p>Now it's time to grab yourself a cup of coffee and enjoy using <strong>Erxes</strong>.</p>
-</span></div></article></div><div class="docLastUpdate"><em>Last updated on 1/9/2020 by Batchimeg.a</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/installation/docker"><span class="arrow-prev">← </span><span>Docker</span></a><a class="docs-next button" href="/installation/kubernetes"><span>Kubernetes</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#deploying-erxes-on-heroku">Deploying erxes on Heroku</a><ul class="toc-headings"><li><a href="#one-click-deployment">One Click deployment</a></li></ul></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+<p><a href="https://heroku.com/deploy?template=https://github.com/erxes/erxes-integrations/tree/develop"><img src="https://www.herokucdn.com/deploy/button.svg#heroku" alt="Deploy Widgets" title="Deploy erxes engages email sender"></a></p>
+<p>Once the app is deployed, go to <code>Settings</code> and click <code>Config Vars</code> button.<br>
+Copy <code>MONGODB_URI</code>'s value and paste it into <code>MONGO_URL</code>.</p>
+</span></div></article></div><div class="docLastUpdate"><em>Last updated on 1/28/2020 by Batnasan Byambasuren</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/installation/docker"><span class="arrow-prev">← </span><span>Docker</span></a><a class="docs-next button" href="/installation/kubernetes"><span>Kubernetes</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#deploying-erxes-on-heroku">Deploying erxes on Heroku</a></li><li><a href="#one-click-deployment">One Click deployment</a><ul class="toc-headings"><li><a href="#1-install-erxes">1. Install erxes</a></li><li><a href="#2-install-erxes-api">2. Install erxes API</a></li><li><a href="#3-install-erxes-widgets">3. Install erxes Widgets</a></li></ul></li><li><a href="#extra-features">Extra features</a><ul class="toc-headings"><li><a href="#1-install-erxes-integrations">1. Install erxes integrations</a></li></ul></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
