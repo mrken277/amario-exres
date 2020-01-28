@@ -1,7 +1,6 @@
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import React from 'react';
-import { graphql } from 'react-apollo';
+import React, { useState } from 'react';
 import Form from '../components/Form';
 import { mutations } from '../graphql';
 import {
@@ -14,53 +13,35 @@ type Props = {
   contentTypeId: string;
 };
 
-type FinalProps = Props & InternalNotesAddMutationResponse;
+type State = {
+  isLoading: boolean;
+};
 
-class FormContainer extends React.Component<
-  FinalProps,
-  { isLoading: boolean }
-> {
-  constructor(props: FinalProps) {
-    super(props);
+function FormContainer(props: Props, state: State) {
+  const { contentType, contentTypeId } = props;
+  const [isLoading, setLoading] = useState(false);
 
-    this.state = { isLoading: false };
-  }
+  const [internalNotesAdd] = useMutation<InternalNotesAddMutationResponse, InternalNotesAddMutationVariables>(gql(mutations.internalNotesAdd), {
+    refetchQueries: ['activityLogs']
+  });
 
-  render() {
-    const { contentType, contentTypeId, internalNotesAdd } = this.props;
+  // create internalNote
+  const create = (variables, callback: () => void) => {
+    setLoading(true);
 
-    // create internalNote
-    const create = (variables, callback: () => void) => {
-      this.setState({ isLoading: true });
+    internalNotesAdd({
+      variables: {
+        contentType,
+        contentTypeId,
+        ...variables
+      }
+    }).then(() => {
+      callback();
 
-      internalNotesAdd({
-        variables: {
-          contentType,
-          contentTypeId,
-          ...variables
-        }
-      }).then(() => {
-        callback();
+      setLoading(false);
+    });
+  };
 
-        this.setState({ isLoading: false });
-      });
-    };
-
-    return <Form save={create} isActionLoading={this.state.isLoading} />;
-  }
+  return <Form save={create} isActionLoading={isLoading} />;
 }
-
-export default compose(
-  graphql<
-    Props,
-    InternalNotesAddMutationResponse,
-    InternalNotesAddMutationVariables
-  >(gql(mutations.internalNotesAdd), {
-    name: 'internalNotesAdd',
-    options: () => {
-      return {
-        refetchQueries: ['activityLogs']
-      };
-    }
-  })
-)(FormContainer);
+export default FormContainer;
