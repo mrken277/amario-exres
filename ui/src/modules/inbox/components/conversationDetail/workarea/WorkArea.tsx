@@ -63,6 +63,7 @@ type Props = {
       kind: string;
     }
   ) => void;
+  refetchMessages: () => void;
 };
 
 type State = {
@@ -158,7 +159,8 @@ export default class WorkArea extends React.Component<Props, State> {
       conversationMessages,
       addMessage,
       loading,
-      typingInfo
+      typingInfo,
+      refetchMessages
     } = this.props;
 
     const tags = currentConversation.tags || [];
@@ -252,6 +254,7 @@ export default class WorkArea extends React.Component<Props, State> {
               conversation={currentConversation}
               setAttachmentPreview={this.setAttachmentPreview}
               addMessage={addMessage}
+              refetchMessages={refetchMessages}
             />
           </ContenFooter>
         )}

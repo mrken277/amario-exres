@@ -110,6 +110,7 @@ export interface IEngageData {
 
 export interface IMessage {
   content: string;
+  dailyStatus?: string;
   attachments?: any;
   mentionedUserIds?: string[];
   conversationId: string;

@@ -50,6 +50,7 @@ type Props = {
   setAttachmentPreview?: (data: IAttachmentPreview) => void;
   responseTemplates: IResponseTemplate[];
   teamMembers: IUser[];
+  refetchMessages: () => void;
 };
 
 type State = {
@@ -294,12 +295,6 @@ class RespondBox extends React.Component<Props, State> {
     }
   };
 
-  sendVideoChatInvitationLink = (content: string, contentType: string) => {
-    this.setState({ content }, () => {
-      this.addMessage(contentType);
-    });
-  };
-
   toggleForm = () => {
     this.setState({
       isInternal: !this.state.isInternal
@@ -413,7 +408,7 @@ class RespondBox extends React.Component<Props, State> {
   }
 
   renderVideoRoom() {
-    const { conversation } = this.props;
+    const { conversation, refetchMessages } = this.props;
     const integration = conversation.integration || ({} as IIntegration);
 
     if (this.state.isInternal || integration.kind !== 'messenger') {
@@ -422,8 +417,8 @@ class RespondBox extends React.Component<Props, State> {
 
     return (
       <ManageVideoRoom
+        refetch={refetchMessages}
         conversationId={conversation._id}
-        callback={this.sendVideoChatInvitationLink}
       />
     );
   }

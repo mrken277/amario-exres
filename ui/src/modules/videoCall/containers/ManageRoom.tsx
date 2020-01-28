@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 
 type Props = {
   conversationId: string;
-  callback: (content: string, contentType: string) => void;
+  refetch: () => void;
 };
 
 function ManageRoom(props: Props) {
@@ -30,7 +30,7 @@ function ManageRoom(props: Props) {
   };
 
   const createVideoRoom = () => {
-    const { conversationId, callback } = props;
+    const { conversationId, refetch } = props;
 
     setLoading(true);
     client
@@ -46,16 +46,11 @@ function ManageRoom(props: Props) {
           url,
           name,
           created,
-          token,
           ownerToken
         } = data.conversationsGetVideoRoom;
 
         if (created) {
-          const anchor = `<a target="_blank" href="${url}?t=${token}">${__(
-            'Join a call'
-          )}</a>`;
-
-          callback(anchor, 'videoCall');
+          refetch();
         }
 
         openWindow(url, name, ownerToken);

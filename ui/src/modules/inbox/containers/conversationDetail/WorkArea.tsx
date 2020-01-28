@@ -280,6 +280,7 @@ class WorkArea extends React.Component<FinalProps, State> {
       loadMoreMessages: this.loadMoreMessages,
       addMessage: this.addMessage,
       loading: messagesQuery.loading || loadingMessages,
+      refetchMessages: messagesQuery.refetch,
       typingInfo
     };
 

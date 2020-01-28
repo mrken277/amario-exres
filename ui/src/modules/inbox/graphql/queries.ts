@@ -251,7 +251,6 @@ const getVideoRoom = `
       url
       name
       created
-      token
       ownerToken
     }
   }

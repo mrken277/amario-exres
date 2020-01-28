@@ -9,6 +9,7 @@ export default `
   }
   mentionedUserIds
   conversationId
+  dailyStatus
   internal
   fromBot
   contentType

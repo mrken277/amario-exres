@@ -8,7 +8,14 @@ import { __ } from 'modules/common/utils';
 import React from 'react';
 import xss from 'xss';
 import { IMessage } from '../../../../../types';
-import { AppMessageBox, CallButton, MessageBody, MessageContent, MessageItem, UserInfo } from '../styles';
+import {
+  AppMessageBox,
+  CallButton,
+  MessageBody,
+  MessageContent,
+  MessageItem,
+  UserInfo
+} from '../styles';
 
 type Props = {
   message: IMessage;
@@ -46,6 +53,32 @@ export default class SimpleMessage extends React.Component<Props, {}> {
     ));
   }
 
+  renderVideoCall() {
+    const { message } = this.props;
+
+    if (message.dailyStatus === 'end') {
+      return <AppMessageBox>Call ended</AppMessageBox>;
+    }
+
+    return (
+      <AppMessageBox>
+        <UserInfo>
+          <h5>{__('Video call invitation sent')}</h5>
+          <h3>
+            <span role="img" aria-label="Wave">
+              👏
+            </span>
+          </h3>
+        </UserInfo>
+        <CallButton>
+          <a target="_blank" rel="noopener noreferrer" href={message.content}>
+            Join a call
+          </a>
+        </CallButton>
+      </AppMessageBox>
+    );
+  }
+
   renderContent(hasAttachment: boolean) {
     const { message, renderContent, isStaff } = this.props;
 
@@ -53,22 +86,8 @@ export default class SimpleMessage extends React.Component<Props, {}> {
       return renderContent();
     }
 
-    if (message.contentType === 'video') {
-      return (
-        <AppMessageBox>
-          <UserInfo>
-            <h5>{__('Video call invitation sent')}</h5>
-            <h3>
-              <span role="img" aria-label="Wave">
-                👏
-              </span>
-            </h3>
-          </UserInfo>
-          <CallButton>
-            <div dangerouslySetInnerHTML={{ __html: xss(message.content) }} />
-          </CallButton>
-        </AppMessageBox>
-      );
+    if (message.contentType === 'videoCall') {
+      return this.renderVideoCall();
     }
 
     if (!message.content) {

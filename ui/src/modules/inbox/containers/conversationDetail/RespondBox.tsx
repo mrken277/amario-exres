@@ -26,6 +26,7 @@ type Props = {
       callback: (error: Error) => void;
     }
   ) => void;
+  refetchMessages: () => void;
 };
 
 type FinalProps = {
@@ -61,7 +62,13 @@ const RespondBoxContainer = (props: FinalProps) => {
     variables: AddMessageMutationVariables,
     callback: (error: Error) => void
   ) => {
-    const { conversationId, content, attachments, internal, contentType } = variables;
+    const {
+      conversationId,
+      content,
+      attachments,
+      internal,
+      contentType
+    } = variables;
 
     let optimisticResponse;
 
