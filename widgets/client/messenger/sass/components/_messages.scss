@@ -276,6 +276,10 @@ $darker-blue: #3b85f4;
     margin-left: 50px;
   }
 
+  &.flexible {
+    display: inline-block;
+  }
+
   .user-info {
     align-items: center;
     display: flex;
@@ -307,6 +311,10 @@ $darker-blue: #3b85f4;
       line-height: 60px;
       overflow: hidden;
       width: 60px;
+    }
+
+    strong {
+      font-weight: 500;
     }
   }
 

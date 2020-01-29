@@ -15,6 +15,7 @@ const messageFields = `
   internal
   fromBot
   contentType
+  dailyStatus
   engageData {
     content
     kind

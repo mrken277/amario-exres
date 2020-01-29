@@ -166,15 +166,18 @@ const FormTable = styled.div`
   }
 `;
 
-const AppMessageBox = styled.div`
+const CallBox = styled.div`
   border: 1px solid ${colors.borderPrimary};
   border-radius: 5px;
   background: ${colors.colorWhite};
-  width: 350px;
-  margin-top: ${dimensions.coreSpacing}px;
-  text-align: center;
+  text-align: left;
   float: right;
   box-shadow: rgba(0, 0, 0, 0.06) 0px 0px 6px 1px;
+`;
+
+const AppMessageBox = styled(CallBox)`
+  width: 320px;
+  text-align: center;
 `;
 
 const CallButton = styled.div`
@@ -241,5 +244,6 @@ export {
   AppMessageBox,
   CallButton,
   UserInfo,
-  FlexItem
+  FlexItem,
+  CallBox
 };

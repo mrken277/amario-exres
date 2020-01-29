@@ -17,6 +17,7 @@ type Props = {
   user?: IUser;
   color?: string;
   contentType?: string;
+  dailyStatus?: string;
 };
 
 class Message extends React.Component<Props> {
@@ -48,7 +49,8 @@ class Message extends React.Component<Props> {
       color,
       user,
       content,
-      contentType
+      contentType,
+      dailyStatus
     } = this.props;
     const messageClasses = classNames("erxes-message", {
       attachment: attachments && attachments.length > 0,
@@ -59,8 +61,10 @@ class Message extends React.Component<Props> {
       backgroundColor: !user ? color : ""
     };
 
-    if (contentType === "video") {
-      return <VideoChatMessage content={content} />;
+    if (contentType === "videoCall") {
+      return (
+        <VideoChatMessage invitationUrl={content} status={dailyStatus || ""} />
+      );
     }
 
     if (messengerAppData) {

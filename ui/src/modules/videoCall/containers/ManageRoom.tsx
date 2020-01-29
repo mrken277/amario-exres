@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 
 type Props = {
   conversationId: string;
-  refetch: () => void;
+  refetch?: () => void;
 };
 
 function ManageRoom(props: Props) {
@@ -50,7 +50,9 @@ function ManageRoom(props: Props) {
         } = data.conversationsGetVideoRoom;
 
         if (created) {
-          refetch();
+          if(refetch) {
+            refetch();
+          }
         }
 
         openWindow(url, name, ownerToken);

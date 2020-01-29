@@ -3,22 +3,11 @@ import * as xss from "xss";
 import { __ } from "../../utils";
 
 type Props = {
-  content: string;
+  invitationUrl: string;
+  status: string;
 };
 
 class VideoChatMessage extends React.PureComponent<Props> {
-  getUrl = () => {
-    let url = "";
-
-    // exract url from invitation message
-    this.props.content.replace(/href=("|')(.*?)("|')/g, (a, b, match) => {
-      url = match;
-      return match;
-    });
-
-    return url;
-  };
-
   joinVideoCall = () => {
     const iframeId = "erxes-video-iframe";
 
@@ -29,7 +18,7 @@ class VideoChatMessage extends React.PureComponent<Props> {
     // add iframe
     const iframe = document.createElement("iframe");
     iframe.id = iframeId;
-    iframe.src = this.getUrl();
+    iframe.src = this.props.invitationUrl;
 
     videoChatContainer.appendChild(iframe);
     const widgetRoot = document.getElementById("page-root");
@@ -40,7 +29,22 @@ class VideoChatMessage extends React.PureComponent<Props> {
   };
 
   render() {
-    const { content } = this.props;
+    const { invitationUrl, status } = this.props;
+
+    if (status === "end") {
+      return (
+        <div className="app-message-box spaced flexible">
+          <div className="user-info">
+            <strong>
+              <span role="img" aria-label="Phone">
+                📞
+              </span>{" "}
+              {__("Video chat ended")}
+            </strong>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="app-message-box spaced">
@@ -55,9 +59,11 @@ class VideoChatMessage extends React.PureComponent<Props> {
         <div className="call-button">
           <button onClick={this.joinVideoCall}>{__("Join a call")}</button>
           <div className="join-call">
-            ({__("or click to")}
-            <span dangerouslySetInnerHTML={{ __html: xss(content) }} />{" "}
-            {__("in new tab")})
+            ({__("or click")}{" "}
+            <a target="_blank" rel="noopener noreferrer" href={invitationUrl}>
+              {__("this link")}{" "}
+            </a>
+            {__("to open a new tab")})
           </div>
         </div>
       </div>

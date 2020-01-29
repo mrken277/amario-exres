@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import dayjs from 'dayjs';
 import Attachment from 'modules/common/components/Attachment';
+import Icon from 'modules/common/components/Icon';
 import NameCard from 'modules/common/components/nameCard/NameCard';
 import TextDivider from 'modules/common/components/TextDivider';
 import Tip from 'modules/common/components/Tip';
@@ -10,6 +11,7 @@ import xss from 'xss';
 import { IMessage } from '../../../../../types';
 import {
   AppMessageBox,
+  CallBox,
   CallButton,
   MessageBody,
   MessageContent,
@@ -57,7 +59,15 @@ export default class SimpleMessage extends React.Component<Props, {}> {
     const { message } = this.props;
 
     if (message.dailyStatus === 'end') {
-      return <AppMessageBox>Call ended</AppMessageBox>;
+      return (
+        <CallBox>
+          <UserInfo>
+            <strong>
+              <Icon icon="phone-slash" color="#EA475D" size={15} /> {__('Video call ended')}
+            </strong>
+          </UserInfo>
+        </CallBox>
+      );
     }
 
     return (
@@ -65,14 +75,12 @@ export default class SimpleMessage extends React.Component<Props, {}> {
         <UserInfo>
           <h5>{__('Video call invitation sent')}</h5>
           <h3>
-            <span role="img" aria-label="Wave">
-              👏
-            </span>
+            <Icon icon="user-plus" color="#3B85F4" />
           </h3>
         </UserInfo>
         <CallButton>
           <a target="_blank" rel="noopener noreferrer" href={message.content}>
-            Join a call
+            {__('Join a call')}
           </a>
         </CallButton>
       </AppMessageBox>
@@ -108,6 +116,8 @@ export default class SimpleMessage extends React.Component<Props, {}> {
     const { message, isStaff, isSameUser } = this.props;
     const messageDate = message.createdAt;
     const hasAttachment = message.attachments && message.attachments.length > 0;
+
+    console.log(message);
 
     const classes = classNames({
       ...(this.props.classes || []),

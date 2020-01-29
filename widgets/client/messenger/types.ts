@@ -30,6 +30,8 @@ export interface IMessage {
   conversationId: string;
   user?: IUser;
   content: string;
+  contentType?: string;
+  dailyStatus?: string;
   createdAt: Date;
   internal?: boolean;
   engageData: IEngageData;
