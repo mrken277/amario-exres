@@ -251,6 +251,33 @@ export default class Editor extends React.Component<EditorProps, State> {
     return null;
   };
 
+  changeEditorContent = (content: string) => {
+    let editorState = createStateFromHTML(
+      EditorState.createEmpty(),
+      content
+    );
+
+    const selection = EditorState.moveSelectionToEnd(
+      editorState
+    ).getSelection();
+
+    // calling onChange, because draftjs's onChange is not trigerring after
+    // this setState
+    this.props.onChange(this.getContent(editorState));
+
+    const contentState = Modifier.insertText(
+      editorState.getCurrentContent(),
+      selection,
+      ' '
+    );
+
+    const es = EditorState.push(editorState, contentState, 'insert-characters');
+
+    editorState = EditorState.moveFocusToEnd(es);
+
+    return this.setState({ editorState, templatesState: null });
+  }
+
   onSelectTemplate = (index?: number) => {
     const { templatesState } = this.state;
     const { templates, selectedIndex } = templatesState;
@@ -260,25 +287,7 @@ export default class Editor extends React.Component<EditorProps, State> {
       return null;
     }
 
-    let editorState = createStateFromHTML(
-      EditorState.createEmpty(),
-      selectedTemplate.content
-    );
-
-    const selection = EditorState.moveSelectionToEnd(
-      editorState
-    ).getSelection();
-
-    const contentState = Modifier.insertText(
-      editorState.getCurrentContent(),
-      selection,
-      ' '
-    );
-    const es = EditorState.push(editorState, contentState, 'insert-characters');
-
-    editorState = EditorState.moveFocusToEnd(es);
-
-    return this.setState({ editorState, templatesState: null });
+    return this.changeEditorContent(selectedTemplate.content);
   };
 
   onArrow = (e: KeyboardEvent, nudgeAmount: number) => {
