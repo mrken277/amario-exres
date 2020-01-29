@@ -21,7 +21,8 @@ function ItemContainer(props: Props) {
   const { item } = props;
 
   const [
-    editItemMutation
+    editItemMutation,
+    { error: editItemError }
   ] = useMutation<EditItemMutationResponse, EditItemMutationVariables>(
     gql(mutations.checklistItemsEdit),
     {
@@ -38,7 +39,7 @@ function ItemContainer(props: Props) {
 
   const [
     removeItemMutation,
-    { error: removeItemMutationError }
+    { error: removeItemError }
   ] = useMutation<RemoveItemMutationResponse, { _id: string }>(
     gql(mutations.checklistItemsRemove),
     {
@@ -53,8 +54,8 @@ function ItemContainer(props: Props) {
     }
   );
 
-  if (removeItemMutationError) {
-    const error = checkError([removeItemMutationError]);
+  if (removeItemError || editItemError) {
+    const error = checkError([removeItemError, editItemError]);
 
     return <ErrorMsg>{error.message}</ErrorMsg>;
   }
