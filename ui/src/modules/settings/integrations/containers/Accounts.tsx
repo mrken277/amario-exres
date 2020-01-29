@@ -22,7 +22,7 @@ type Props = {
   renderForm?: () => JSX.Element;
 };
 
-const SegmentListContainer = (props: Props) => {
+const AccountsContainer = (props: Props) => {
   const { kind, renderForm, addLink, onSelect, formProps, onRemove } = props;
 
   const {
@@ -87,4 +87,4 @@ const SegmentListContainer = (props: Props) => {
   );
 }
 
-export default SegmentListContainer;
+export default AccountsContainer;

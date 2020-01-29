@@ -1,12 +1,11 @@
 import client from 'apolloClient';
 import gql from 'graphql-tag';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
-import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
+import { IButtonMutateProps } from 'modules/common/types';
 import { Alert } from 'modules/common/utils';
 import Facebook from 'modules/settings/integrations/components/facebook/Form';
 import { mutations, queries } from 'modules/settings/integrations/graphql';
 import React from 'react';
-import { withRouter } from 'react-router';
 import { IPages } from '../../types';
 import { getRefetchQueries } from '../utils';
 
@@ -16,15 +15,13 @@ type Props = {
   closeModal: () => void;
 };
 
-type FinalProps = {} & IRouterProps & Props;
-
 type State = {
   pages: IPages[];
   accountId?: string;
 };
 
-class FacebookContainer extends React.Component<FinalProps, State> {
-  constructor(props: FinalProps) {
+class FacebookContainer extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = { pages: [] };
@@ -98,4 +95,4 @@ class FacebookContainer extends React.Component<FinalProps, State> {
   }
 }
 
-export default withRouter<FinalProps>(FacebookContainer);
+export default FacebookContainer;
