@@ -4,6 +4,9 @@ import Email from 'modules/activityLogs/components/items/email/Email';
 import EngageEmail from 'modules/activityLogs/components/items/email/EngageEmail';
 import { EmailDeliveryDetailQueryResponse } from 'modules/activityLogs/types';
 import EmptyState from 'modules/common/components/EmptyState';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
+import checkError from 'modules/common/utils/checkError';
 import { queries as engageQueries } from 'modules/engage/graphql';
 import { EngageMessageDetailQueryResponse } from 'modules/engage/types';
 import React from 'react';
@@ -48,11 +51,13 @@ function EmailContainer(props: Props) {
   }
 
   if (engageMessageDetailQueryError || emailDeliveryDetailQueryError) {
-    return <p>Error!</p>;
+    const error = checkError([engageMessageDetailQueryError, emailDeliveryDetailQueryError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
   }
 
   if (engageMessageDetailQueryLoading || emailDeliveryDetailQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />;
   }
 
   if (emailType === 'engage') {

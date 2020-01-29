@@ -2,6 +2,9 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import Conversation from 'modules/activityLogs/components/items/Conversation';
 import { IActivityLog } from 'modules/activityLogs/types';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
+import checkError from 'modules/common/utils/checkError';
 import { queries } from 'modules/inbox/graphql';
 import {
   ConversationDetailQueryResponse,
@@ -63,11 +66,13 @@ function ConversationContainer(props: Props) {
   }
 
   if (conversationDetailQueryError || messagesQueryError || commentsQueryError) {
-    return <p>Error!</p>;
+    const error = checkError([conversationDetailQueryError, messagesQueryError || commentsQueryError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
   }
 
   if (conversationDetailQueryLoading || messagesQueryLoading || commentsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />;
   }
 
   const conversation = conversationDetailQueryData.conversationDetail;

@@ -3,9 +3,8 @@ import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
 import { IUser } from 'modules/auth/types';
 import ErrorMsg from 'modules/common/components/ErrorMsg';
-import checkError from 'modules/common/utils/checkError';
-import React, { useState } from 'react';
-import { ActivityLogQueryResponse } from '../../customers/types';
+import Spinner from 'modules/common/components/Spinner';
+import React, { useEffect, useState } from 'react';
 import ActivityLogs from '../components/ActivityLogs';
 import { queries, subscriptions } from '../graphql';
 
@@ -14,33 +13,30 @@ type Props = {
   contentType: string;
   target?: string;
   extraTabs: Array<{ name: string; label: string }>;
+};
+
+type WithDataProps = Props & {
+  onChangeActivityTab: (currentTab: string) => void;
   activityType: string;
 };
 
-type State = {
-  activityType: ''
-};
-
-export function ActivityContainer(props: Props, state: State, currentTab: string) {
-  const { contentId, contentType, target, extraTabs } = props;
-
-  const [activityType, setActivityType] = useState(currentTab);
-
-  const onChangeActivityTab = () => {
-    setActivityType(currentTab)
-  };
-
-  type WithDataProps = Props & {
-    onChangeActivityTab: (currentTab: string) => void;
-    activityType: string;
-  };
+export const ActivityLogContainer = (props: WithDataProps) => {
+  const {
+    target,
+    onChangeActivityTab,
+    extraTabs,
+    contentId,
+    contentType,
+    activityType
+  } = props;
 
   const {
-    data: ActivityLogQueryData,
-    error: ActivityLogQueryError,
-    loading: ActivityLogQueryLoading
-  } = useQuery<WithDataProps, ActivityLogQueryResponse>(
-    gql(queries.activityLogs), {
+    data: ActivityLogData,
+    error: ActivityLogError,
+    loading: ActivityLogLoading,
+    refetch: ActivityLogRefetch,
+    subscribeToMore
+  } = useQuery(gql(queries.activityLogs), {
     variables: {
       contentId,
       contentType,
@@ -49,24 +45,27 @@ export function ActivityContainer(props: Props, state: State, currentTab: string
   }
   );
 
-  if (ActivityLogQueryError) {
-    const error = checkError([ActivityLogQueryError]);
-    return <ErrorMsg>{error.message}</ErrorMsg>;
-  };
-
-  UNSAFE_componentWillMount() {
-    ActivityLogQueryData.subscribeToMore({
+  useEffect(() => {
+    subscribeToMore({
       document: gql(subscriptions.activityLogsChanged),
       updateQuery: () => {
-        ActivityLogQueryData.refetch();
+        ActivityLogRefetch();
       }
     });
+  });
+
+  if (ActivityLogError) {
+    return <ErrorMsg>{ActivityLogError.message}</ErrorMsg>;
   }
 
-  const updateprops = {
+  if (ActivityLogLoading) {
+    return <Spinner objective={true} />;
+  }
+
+  const updatedProps = {
     target,
-    loadingLogs: ActivityLogQueryLoading,
-    activityLogs: ActivityLogQueryData && ActivityLogQueryData.activityLogs || [],
+    loadingLogs: ActivityLogLoading,
+    activityLogs: ActivityLogData ? ActivityLogData.activityLogs : [],
     onTabClick: onChangeActivityTab,
     extraTabs
   };
@@ -74,23 +73,31 @@ export function ActivityContainer(props: Props, state: State, currentTab: string
   return (
     <AppConsumer>
       {({ currentUser }) => (
-        <ActivityLogs {...updateprops} currentUser={currentUser || ({} as IUser)} />
+        <ActivityLogs {...updatedProps} currentUser={currentUser || ({} as IUser)} />
       )}
     </AppConsumer>
   );
-};
+}
 
-return (
-  <ActivityContainer
-    target={target}
-    contentId={contentId}
-    contentType={contentType}
-    extraTabs={extraTabs}
-    activityType={activityType}
-    onChangeActivityTab={onChangeActivityTab}
-  />
-);
+const Wrapper = (props: Props) => {
+  const [activityType, setActivityType] = useState('');
 
+  const { contentId, contentType, target, extraTabs } = props;
 
+  const onChangeActivityTab = (currentTab: string) => {
+    setActivityType(currentTab)
+  };
 
+  return (
+    <ActivityLogContainer
+      target={target}
+      contentId={contentId}
+      contentType={contentType}
+      extraTabs={extraTabs}
+      activityType={activityType}
+      onChangeActivityTab={onChangeActivityTab}
+    />
+  );
+}
 
+export default Wrapper;
