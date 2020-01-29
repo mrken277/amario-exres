@@ -27,6 +27,7 @@ const logs = `
         oldData
         newData
         description
+        ipAddress
       }
     }
   }

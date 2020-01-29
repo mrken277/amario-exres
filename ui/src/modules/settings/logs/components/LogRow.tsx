@@ -42,6 +42,7 @@ class LogRow extends React.Component<Props> {
           <TextInfo textStyle={actionClass}>{log.action}</TextInfo>
         </td>
         <td>{log.description}</td>
+        <td>{log.ipAddress}</td>
         <td>
           <div>
             <ModalTrigger

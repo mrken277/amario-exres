@@ -134,6 +134,7 @@ class LogList extends React.Component<Props, State> {
             <th>{__('Module')}</th>
             <th>{__('Action')}</th>
             <th>{__('Description')}</th>
+            <th>{__('Ip address')}</th>
             <th>{__('Changes')}</th>
           </tr>
         </thead>

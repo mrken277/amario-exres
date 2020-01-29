@@ -9,6 +9,7 @@ export interface ILog {
   objectId: string;
   unicode: string;
   description: string;
+  ipAddress: string;
 }
 
 export interface ILogList {
