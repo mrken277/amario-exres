@@ -1,11 +1,9 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import Spinner from 'modules/common/components/Spinner';
 import Entry from 'modules/settings/integrations/components/store/Entry';
 import { queries } from 'modules/settings/integrations/graphql';
 import React from 'react';
-import { graphql } from 'react-apollo';
-import { withProps } from '../../../common/utils';
 import { MessengerAppsCountQueryResponse } from '../types';
 
 type Props = {
@@ -28,18 +26,28 @@ type Props = {
   };
 };
 
-type FinalProps = {
-  messengerAppsCountQuery: MessengerAppsCountQueryResponse;
-} & Props;
+const StoreEntry = (props: Props) => {
+  const {
+    loading: messengerAppsCountQueryLoading,
+    error: messengerAppsCountQueryError,
+    data: messengerAppsCountQueryData
+  } = useQuery<MessengerAppsCountQueryResponse>(
+    gql(queries.messengerAppsCount),
+    {
+      variables: { kind: props.kind },
+      fetchPolicy: 'network-only'
+    }
+  );
 
-const StoreEntry = (props: FinalProps) => {
-  const { messengerAppsCountQuery } = props;
-
-  if (messengerAppsCountQuery.loading) {
+  if (messengerAppsCountQueryLoading) {
     return <Spinner />;
   }
 
-  const messengerAppsCount = messengerAppsCountQuery.messengerAppsCount;
+  if (messengerAppsCountQueryError) {
+    return <p>Error!</p>;
+  }
+
+  const messengerAppsCount = messengerAppsCountQueryData ? messengerAppsCountQueryData.messengerAppsCount : 0;
 
   const updatedProps = {
     ...props,
@@ -49,16 +57,4 @@ const StoreEntry = (props: FinalProps) => {
   return <Entry {...updatedProps} />;
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props>(gql(queries.messengerAppsCount), {
-      name: 'messengerAppsCountQuery',
-      options: ({ kind }) => {
-        return {
-          variables: { kind },
-          fetchPolicy: 'network-only'
-        };
-      }
-    })
-  )(StoreEntry)
-);
+export default StoreEntry;
