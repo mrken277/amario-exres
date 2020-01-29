@@ -1,4 +1,5 @@
 import {
+  ActionButton,
   AddNew,
   Body,
   Container,
@@ -8,7 +9,8 @@ import {
   IndicatorItem,
   LoadingContent,
   StageFooter,
-  StageRoot
+  StageRoot,
+  StageTitle
 } from 'modules/boards/styles/stage';
 import EmptyState from 'modules/common/components/EmptyState';
 import Icon from 'modules/common/components/Icon';
@@ -16,10 +18,12 @@ import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { __ } from 'modules/common/utils';
 import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
+import { OverlayTrigger } from 'react-bootstrap';
 import { AddForm } from '../../containers/portable';
 import { IItem, IOptions, IStage } from '../../types';
 import { renderAmount } from '../../utils';
 import ItemList from '../stage/ItemList';
+import StagePopover from '../stage/Popover';
 
 type Props = {
   loadingItems: boolean;
@@ -33,6 +37,7 @@ type Props = {
 };
 export default class Stage extends React.Component<Props, {}> {
   private bodyRef;
+  private overlayTrigger;
 
   constructor(props: Props) {
     super(props);
@@ -129,6 +134,10 @@ export default class Stage extends React.Component<Props, {}> {
     return false;
   }
 
+  onClosePopover = () => {
+    this.overlayTrigger.hide();
+  };
+
   renderItemList() {
     const { stage, items, loadingItems, options } = this.props;
 
@@ -150,6 +159,29 @@ export default class Stage extends React.Component<Props, {}> {
     );
   }
 
+  renderCtrl() {
+    return (
+      <OverlayTrigger
+        ref={overlayTrigger => {
+          this.overlayTrigger = overlayTrigger;
+        }}
+        trigger="click"
+        placement="bottom-start"
+        rootClose={true}
+        overlay={
+          <StagePopover
+            id={this.props.stage._id}
+            closePopover={this.onClosePopover}
+          />
+        }
+      >
+        <ActionButton>
+          <Icon icon="ellipsis-h" />
+        </ActionButton>
+      </OverlayTrigger>
+    );
+  }
+
   render() {
     const { index, stage } = this.props;
 
@@ -163,10 +195,13 @@ export default class Stage extends React.Component<Props, {}> {
           <Container innerRef={provided.innerRef} {...provided.draggableProps}>
             <StageRoot isDragging={snapshot.isDragging}>
               <Header {...provided.dragHandleProps}>
-                <h4>
-                  {stage.name}
-                  <span>{stage.itemsTotalCount}</span>
-                </h4>
+                <StageTitle>
+                  <div>
+                    {stage.name}
+                    <span>{stage.itemsTotalCount}</span>
+                  </div>
+                  {this.renderCtrl()}
+                </StageTitle>
                 <HeaderAmount>{renderAmount(stage.amount)}</HeaderAmount>
                 <Indicator>{this.renderIndicator()}</Indicator>
               </Header>
