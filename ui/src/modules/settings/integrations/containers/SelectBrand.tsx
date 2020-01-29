@@ -11,11 +11,11 @@ import { AllBrandsQueryResponse } from '../../brands/types';
 import SelectBrand from '../components/SelectBrand';
 
 type Props = {
-  onChange: () => void;
-  defaultValue: string;
-  creatable: boolean;
+  onChange?: (e?: any) => void;
+  defaultValue?: string;
+  creatable?: boolean;
   isRequired?: boolean;
-  formProps: IFormProps;
+  formProps?: IFormProps;
 };
 
 const SelectBrandContainer = (props: ChildProps<Props>) => {

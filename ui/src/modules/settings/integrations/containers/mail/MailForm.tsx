@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import debounce from 'lodash/debounce';
-import withCurrentUser from 'modules/auth/containers/withCurrentUser';
-import { IUser } from 'modules/auth/types';
+// import withCurrentUser from 'modules/auth/containers/withCurrentUser';
+// import { IUser } from 'modules/auth/types';
 import Spinner from 'modules/common/components/Spinner';
 import { Alert } from 'modules/common/utils';
 import { queries as messageQueries } from 'modules/inbox/graphql';
@@ -33,18 +33,18 @@ type Props = {
   closeReply?: () => void;
 };
 
-type FinalProps = {
-  currentUser: IUser;
-} & Props;
+// type FinalProps = {
+//   currentUser: IUser;
+// } & Props;
 
-const MailFormContainer = (props: FinalProps) => {
+const MailFormContainer = (props: Props) => {
   const {
     mailData,
     conversationId,
     isReply,
     closeModal,
     closeReply,
-    currentUser
+    // currentUser
   } = props;
 
   const {
@@ -171,10 +171,11 @@ const MailFormContainer = (props: FinalProps) => {
     ...props,
     sendMail,
     integrations,
-    emailSignatures: currentUser.emailSignatures || []
+    // emailSignatures: currentUser.emailSignatures || [],
+    emailSignatures: []
   };
 
   return <MailForm {...updatedProps} />;
 };
 
-export default (withCurrentUser(MailFormContainer));
+export default MailFormContainer;

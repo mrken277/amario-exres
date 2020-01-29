@@ -1,10 +1,9 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import Bulk from 'modules/common/components/Bulk';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import { generatePaginationParams } from 'modules/common/utils/router';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import List from '../../components/product/ProductList';
 import { mutations, queries } from '../../graphql';
 import {
@@ -19,59 +18,86 @@ type Props = {
   history: any;
 };
 
-type FinalProps = {
-  productsQuery: ProductsQueryResponse;
-  productsCountQuery: ProductsCountQueryResponse;
-  productCategoryDetailQuery: CategoryDetailQueryResponse;
-} & Props &
-  ProductRemoveMutationResponse;
+const ProductListContainer = (props: Props) => {
+  const { queryParams } = props;
 
-class ProductListContainer extends React.Component<FinalProps> {
-  render() {
-    const {
-      productsQuery,
-      productsCountQuery,
-      productsRemove,
-      queryParams,
-      productCategoryDetailQuery
-    } = this.props;
+  const {
+    loading: productsQueryLoading,
+    error: productsQueryError,
+    data: productsQueryData,
+    refetch: productQueryRefetch
+  } = useQuery<ProductsQueryResponse>(
+    gql(queries.products),
+    {
+      variables: {
+        categoryId: queryParams.categoryId,
+        tag: queryParams.tag,
+        ...generatePaginationParams(queryParams)
+      }
+    }
+  );
 
-    const products = productsQuery.products || [];
+  const {
+    loading: productsCountQueryLoading,
+    error: productsCountQueryError,
+    data: productsCountQueryData
+  } = useQuery<ProductsCountQueryResponse>(gql(queries.productsCount));
 
-    // remove action
-    const remove = ({ productIds }, emptyBulk) => {
-      productsRemove({
-        variables: { productIds }
-      })
-        .then(() => {
-          emptyBulk();
-          Alert.success('You successfully deleted a product');
-        })
-        .catch(e => {
-          Alert.error(e.message);
-        });
-    };
+  const {
+    loading: productCategoryDetailQueryLoading,
+    error: productCategoryDetailQueryError,
+    data: productCategoryDetailQueryData
+  } = useQuery<CategoryDetailQueryResponse>(gql(queries.productCategoryDetail), {
+    variables: {
+      _id: queryParams.categoryId
+    }
+  });
 
-    const updatedProps = {
-      ...this.props,
-      queryParams,
-      products,
-      remove,
-      loading: productsQuery.loading,
-      productsCount: productsCountQuery.productsTotalCount || 0,
-      currentCategory: productCategoryDetailQuery.productCategoryDetail || {}
-    };
+  const [productsRemove, { error: productsRemoveMutationError }] =
+    useMutation<ProductRemoveMutationResponse, { productIds: string[] }>(
+      gql(mutations.productsRemove), {
+      refetchQueries: getRefetchQueries()
+    });
 
-    const productList = props => {
-      return <List {...updatedProps} {...props} />;
-    };
-
-    const refetch = () => {
-      this.props.productsQuery.refetch();
-    };
-
-    return <Bulk content={productList} refetch={refetch} />;
+  if (productsQueryLoading || productsCountQueryLoading || productCategoryDetailQueryLoading) {
+    return <p>Loading...</p>;
   }
+
+  if (productsRemoveMutationError || productCategoryDetailQueryError || productsCountQueryError || productsQueryError) {
+    return <p>Error!</p>;
+  }
+
+  const products = productsQueryData ? productsQueryData.products : [];
+
+  // remove action
+  const remove = ({ productIds }, emptyBulk) => {
+    productsRemove({
+      variables: { productIds }
+    })
+      .then(() => {
+        emptyBulk();
+        Alert.success('You successfully deleted a product');
+      })
+      .catch(e => {
+        Alert.error(e.message);
+      });
+  };
+
+  const updatedProps = {
+    ...props,
+    queryParams,
+    products,
+    remove,
+    loading: productsQueryLoading,
+    productsCount: productsCountQueryData ? productsCountQueryData.productsTotalCount : 0,
+    currentCategory: productCategoryDetailQueryData ? productCategoryDetailQueryData.productCategoryDetail : {}
+  };
+
+  const productList = listProps => {
+    return <List {...updatedProps} {...listProps} />;
+  };
+
+  return <Bulk content={productList} refetch={productQueryRefetch} />;
 }
 
 const getRefetchQueries = () => {
@@ -84,45 +110,4 @@ const getRefetchQueries = () => {
   ];
 };
 
-const options = () => ({
-  refetchQueries: getRefetchQueries()
-});
-
-export default withProps<Props>(
-  compose(
-    graphql<Props, ProductsQueryResponse, { page: number; perPage: number }>(
-      gql(queries.products),
-      {
-        name: 'productsQuery',
-        options: ({ queryParams }) => ({
-          variables: {
-            categoryId: queryParams.categoryId,
-            tag: queryParams.tag,
-            ...generatePaginationParams(queryParams)
-          }
-        })
-      }
-    ),
-    graphql<Props, ProductsCountQueryResponse>(gql(queries.productsCount), {
-      name: 'productsCountQuery'
-    }),
-    graphql<Props, ProductRemoveMutationResponse, { productIds: string[] }>(
-      gql(mutations.productsRemove),
-      {
-        name: 'productsRemove',
-        options
-      }
-    ),
-    graphql<Props, CategoryDetailQueryResponse>(
-      gql(queries.productCategoryDetail),
-      {
-        name: 'productCategoryDetailQuery',
-        options: ({ queryParams }) => ({
-          variables: {
-            _id: queryParams.categoryId
-          }
-        })
-      }
-    )
-  )(ProductListContainer)
-);
+export default ProductListContainer;
