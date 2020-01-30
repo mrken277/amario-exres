@@ -1,14 +1,15 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
-import { withProps } from 'modules/common/utils';
+import checkError from 'modules/common/utils/checkError';
 import { CountQueryResponse } from 'modules/customers/types';
 import TagStep from 'modules/engage/components/step/TagStep';
 import { mutations } from 'modules/tags/graphql';
 import { TagsQueryResponse } from 'modules/tags/types';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import { queries } from '../graphql';
 import { sumCounts } from '../utils';
 
@@ -29,15 +30,39 @@ type Props = {
   onChange: (name: string, value: string[]) => void;
 };
 
-type FinalProps = {
-  tagsQuery: TagsQueryResponse;
-  customerCountsQuery: CountQueryResponse;
-} & Props;
+function TagStepContianer(props: Props) {
 
-const TagStepContianer = (props: FinalProps) => {
-  const { tagsQuery, customerCountsQuery } = props;
+  const {
+    loading: tagsLoading,
+    error: tagsError,
+    data: tagsData
+  } = useQuery<TagsQueryResponse>(
+    gql(queries.tags), {
+    variables: { type: 'customer' }
+  });
 
-  const customerCounts = customerCountsQuery.customerCounts || {
+  const {
+    loading: customerCountsLoading,
+    error: customerCountsError,
+    data: customerCountsData
+  } = useQuery<CountQueryResponse, { only: string }>(
+    gql(queries.customerCounts), {
+    variables: {
+      only: 'byTag'
+    }
+  });
+
+  if (tagsError || customerCountsError) {
+    const error = checkError([tagsError, customerCountsError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  };
+
+  if (tagsLoading || customerCountsLoading) {
+    return <Spinner objective={true} />;
+  };
+
+  const customerCounts = customerCountsData ? customerCountsData.customerCounts : {
     byTag: {}
   };
 
@@ -64,14 +89,14 @@ const TagStepContianer = (props: FinalProps) => {
 
   const updatedProps = {
     ...props,
-    tags: tagsQuery.tags || [],
+    tags: tagsData ? tagsData.tags : [],
     targetCount: countValues,
     customersCount,
     renderButton
   };
 
   return <TagStep {...updatedProps} />;
-};
+}
 
 const getRefetchQueries = () => {
   return [
@@ -86,22 +111,4 @@ const getRefetchQueries = () => {
   ];
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, TagsQueryResponse>(gql(queries.tags), {
-      name: 'tagsQuery',
-      options: () => ({ variables: { type: 'customer' } })
-    }),
-    graphql<Props, CountQueryResponse, { only: string }>(
-      gql(queries.customerCounts),
-      {
-        name: 'customerCountsQuery',
-        options: {
-          variables: {
-            only: 'byTag'
-          }
-        }
-      }
-    )
-  )(TagStepContianer)
-);
+export default TagStepContianer;

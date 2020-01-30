@@ -1,82 +1,84 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import { IRouterProps } from 'modules/common/types';
+import checkError from 'modules/common/utils/checkError';
 import { queries as tagQueries } from 'modules/tags/graphql';
+import { ITag } from 'modules/tags/types';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
-import { withProps } from '../../common/utils';
-import { TagsQueryResponse } from '../../tags/types';
 import Sidebar from '../components/Sidebar';
 import { queries } from '../graphql';
-import { CountQueryResponse, TagCountQueryResponse } from '../types';
+import { CountQueryResponse } from '../types';
 
 type Props = {
   queryParams: any;
-};
-
-type FinalProps = {
-  kindCountsQuery: CountQueryResponse;
-  statusCountsQuery: CountQueryResponse;
-  tagsQuery: TagsQueryResponse;
-  tagCountsQuery: TagCountQueryResponse;
 } & IRouterProps;
 
-const SidebarContainer = (props: FinalProps) => {
+const SidebarContainer = (props: Props) => {
+
+  const { queryParams } = props;
+
   const {
-    kindCountsQuery,
-    statusCountsQuery,
-    tagsQuery,
-    tagCountsQuery
-  } = props;
+    loading: kindCountsLoading,
+    error: kindCountsError,
+    data: kindCountsData
+  } = useQuery<CountQueryResponse>(
+    gql(queries.kindCounts));
+
+  const {
+    loading: statusCountsLoading,
+    error: statusCountsError,
+    data: statusCountsData
+  } = useQuery<CountQueryResponse>(
+    gql(queries.statusCounts), {
+    variables: {
+      kind: queryParams.kind || ''
+    }
+  });
+
+  const {
+    loading: tagsLoading,
+    error: tagsError,
+    data: tagsData
+  } = useQuery(
+    gql(tagQueries.tags), {
+    variables: { type: 'engageMessage' }
+  });
+
+  const {
+    loading: tagCountsLoading,
+    error: tagCountsError,
+    data: tagCountsData
+  } = useQuery<CountQueryResponse>(
+    gql(queries.tagCounts), {
+    variables: {
+      kind: queryParams.kind || '',
+      status: queryParams.status || ''
+    }
+  });
+
+  if (kindCountsError || statusCountsError || tagsError || tagCountsError) {
+    const error = checkError([kindCountsError, statusCountsError, tagsError, tagCountsError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  };
+
+  if (kindCountsLoading || statusCountsLoading || tagsLoading || tagCountsLoading) {
+    return <Spinner objective={true} />;
+  };
+
 
   const updatedProps = {
     ...props,
-    kindCounts: kindCountsQuery.engageMessageCounts || {},
-    statusCounts: statusCountsQuery.engageMessageCounts || {},
-    tags: tagsQuery.tags || [],
-    tagCounts: tagCountsQuery.engageMessageCounts || {}
+    kindCounts: (kindCountsData && kindCountsData.engageMessageCounts) || {},
+    statusCounts: (statusCountsData && statusCountsData.engageMessageCounts) || {},
+    tags: [tagsData && tagsData.tags] || [] as ITag[],
+    tagCounts: (tagCountsData && tagCountsData.engageMessageCounts) || {}
   };
 
   return <Sidebar {...updatedProps} />;
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, CountQueryResponse>(gql(queries.kindCounts), {
-      name: 'kindCountsQuery'
-    }),
-    graphql<Props, CountQueryResponse, { kind: string }>(
-      gql(queries.statusCounts),
-      {
-        name: 'statusCountsQuery',
-        options: ({ queryParams }) => ({
-          variables: {
-            kind: queryParams.kind || ''
-          }
-        })
-      }
-    ),
-    graphql<Props, TagCountQueryResponse, { type: string }>(
-      gql(tagQueries.tags),
-      {
-        name: 'tagsQuery',
-        options: () => ({
-          variables: { type: 'engageMessage' }
-        })
-      }
-    ),
-    graphql<Props, CountQueryResponse, { kind: string; status: string }>(
-      gql(queries.tagCounts),
-      {
-        name: 'tagCountsQuery',
-        options: ({ queryParams }) => ({
-          variables: {
-            kind: queryParams.kind || '',
-            status: queryParams.status || ''
-          }
-        })
-      }
-    )
-  )(withRouter<FinalProps>(SidebarContainer))
-);
+export default withRouter<Props>(SidebarContainer)

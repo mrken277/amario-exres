@@ -1,9 +1,11 @@
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import { IRouterProps } from 'modules/common/types';
-import { Alert, confirm, withProps } from 'modules/common/utils';
+import { Alert, confirm } from 'modules/common/utils';
+import checkError from 'modules/common/utils/checkError';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import MessageListRow from '../components/MessageListRow';
 import { mutations, queries } from '../graphql';
@@ -15,33 +17,109 @@ import {
   SetLiveMutationResponse,
   SetPauseMutationResponse
 } from '../types';
-import { crudMutationsOptions } from '../utils';
 
 type Props = {
   isChecked: boolean;
   toggleBulk: (value: IEngageMessage, isChecked: boolean) => void;
   message: IEngageMessage;
   queryParams: any;
-};
+} & IRouterProps;
 
-type FinalProps = Props &
-  RemoveMutationResponse &
-  SetPauseMutationResponse &
-  SetLiveMutationResponse &
-  SetLiveManualMutationResponse &
-  IRouterProps;
-
-const MessageRowContainer = (props: FinalProps) => {
+function MessageRowContainer(props: Props) {
   const {
     history,
     message,
-    removeMutation,
-    setPauseMutation,
-    setLiveMutation,
-    setLiveManualMutation,
     isChecked,
-    toggleBulk
+    toggleBulk,
+    queryParams
   } = props;
+
+  const [removeMutation,
+    { loading: removeMutationLoading,
+      error: removeMutationError,
+      data: removeMutationData
+    }] = useMutation<RemoveMutationResponse, MutationVariables>(
+      gql(mutations.messageRemove), {
+      refetchQueries: [
+        'engageMessages',
+        'engageMessagesTotalCount',
+        'kindCounts',
+        'statusCounts'
+      ]
+    });
+
+  const [setPauseMutation,
+    { loading: setPauseLoading,
+      error: setPauseError
+    }] = useMutation<SetPauseMutationResponse, MutationVariables>(
+      gql(mutations.setPause), {
+      refetchQueries: [
+        {
+          query: gql(queries.statusCounts),
+          variables: {
+            kind: queryParams.kind || ''
+          }
+        },
+        {
+          query: gql(queries.engageMessageDetail),
+          variables: {
+            _id: message._id
+          }
+        }
+      ]
+    });
+
+  const [setLiveMutation,
+    { loading: setLiveLoading,
+      error: setLiveError
+    }] = useMutation<SetLiveMutationResponse, MutationVariables>(
+      gql(mutations.setLive), {
+      refetchQueries: [
+        {
+          query: gql(queries.statusCounts),
+          variables: {
+            kind: queryParams.kind || ''
+          }
+        },
+        {
+          query: gql(queries.engageMessageDetail),
+          variables: {
+            _id: message._id
+          }
+        }
+      ]
+    });
+
+  const [setLiveManualMutation,
+    { loading: setLiveManualLoading,
+      error: setLiveManualError
+    }] = useMutation<SetLiveManualMutationResponse, MutationVariables>(
+      gql(mutations.setLiveManual), {
+      refetchQueries: [
+        {
+          query: gql(queries.statusCounts),
+          variables: {
+            kind: queryParams.kind || ''
+          }
+        },
+        {
+          query: gql(queries.engageMessageDetail),
+          variables: {
+            _id: message._id
+          }
+        }
+      ]
+    });
+
+  if (removeMutationLoading || setPauseLoading || setLiveLoading || setLiveManualLoading) {
+    return <Spinner objective={true} />;
+  };
+
+  if (setPauseError || setLiveError || setLiveManualError) {
+    const error = checkError([setPauseError, setLiveError, setLiveManualError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  };
 
   const doMutation = (mutation, msg: string) =>
     mutation({
@@ -65,20 +143,17 @@ const MessageRowContainer = (props: FinalProps) => {
   const remove = () => {
     confirm().then(() => {
       doMutation(removeMutation, `You just deleted an engagement message.`)
-        .then(() => {
-          history.push('/engage');
-        })
-        .catch(e => {
-          Alert.error(e.message);
-        });
+      if (removeMutationData) {
+        history.push('/engage');
+      }
+      if (removeMutationError) {
+        Alert.error(removeMutationError.message);
+      };
     });
   };
 
   const setLiveManual = () =>
-    doMutation(
-      setLiveManualMutation,
-      'Yay! Your engagement message is now live.'
-    );
+    doMutation(setLiveManualMutation, 'Yay! Your engagement message is now live.');
   const setLive = () =>
     doMutation(setLiveMutation, 'Yay! Your engagement message is now live.');
   const setPause = () =>
@@ -99,54 +174,4 @@ const MessageRowContainer = (props: FinalProps) => {
   return <MessageListRow {...updatedProps} />;
 };
 
-const statusMutationsOptions = ({ queryParams, message }) => {
-  return {
-    refetchQueries: [
-      {
-        query: gql(queries.statusCounts),
-        variables: {
-          kind: queryParams.kind || ''
-        }
-      },
-      {
-        query: gql(queries.engageMessageDetail),
-        variables: {
-          _id: message._id
-        }
-      }
-    ]
-  };
-};
-
-export default withProps<Props>(
-  compose(
-    graphql<Props, RemoveMutationResponse, MutationVariables>(
-      gql(mutations.messageRemove),
-      {
-        name: 'removeMutation',
-        options: crudMutationsOptions
-      }
-    ),
-    graphql<Props, SetPauseMutationResponse, MutationVariables>(
-      gql(mutations.setPause),
-      {
-        name: 'setPauseMutation',
-        options: statusMutationsOptions
-      }
-    ),
-    graphql<Props, SetLiveMutationResponse, MutationVariables>(
-      gql(mutations.setLive),
-      {
-        name: 'setLiveMutation',
-        options: statusMutationsOptions
-      }
-    ),
-    graphql<Props, SetLiveManualMutationResponse, MutationVariables>(
-      gql(mutations.setLiveManual),
-      {
-        name: 'setLiveManualMutation',
-        options: statusMutationsOptions
-      }
-    )
-  )(withRouter<FinalProps>(MessageRowContainer))
-);
+export default withRouter<Props>(MessageRowContainer);

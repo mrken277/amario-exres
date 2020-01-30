@@ -1,8 +1,9 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
+import checkError from 'modules/common/utils/checkError';
 import React from 'react';
-import { graphql } from 'react-apollo';
-import { withProps } from '../../common/utils';
 import { BrandsQueryResponse } from '../../settings/brands/types';
 import MessageForm from '../components/MessageForm';
 import { queries } from '../graphql';
@@ -13,20 +14,39 @@ type Props = {
   messageId?: string;
 };
 
-type FinalProps = {
-  engageMessageDetailQuery: EngageMessageDetailQueryResponse;
-  brandsQuery: BrandsQueryResponse;
-} & Props;
+function EmailContainer(props: Props) {
+  const { kind, messageId } = props;
 
-const MessageFormContainer = (props: FinalProps) => {
-  const { engageMessageDetailQuery, brandsQuery, kind } = props;
+  const {
+    data: engageMessageDetailData,
+    error: engageMessageDetailError,
+    loading: engageMessageDetailLoading
+  } = useQuery<EngageMessageDetailQueryResponse, { _id?: string }>(
+    gql(queries.engageMessageDetail), {
+    variables: {
+      _id: messageId
+    }
+  });
 
-  if (engageMessageDetailQuery.loading || brandsQuery.loading) {
-    return null;
-  }
+  const {
+    data: brandsData,
+    error: brandsError,
+    loading: brandsLoading
+  } = useQuery<BrandsQueryResponse>(
+    gql(queries.brands));
 
-  const message = engageMessageDetailQuery.engageMessageDetail;
-  const brands = brandsQuery.brands || [];
+  if (engageMessageDetailLoading || brandsLoading) {
+    return <Spinner objective={true} />;
+  };
+
+  if (brandsError || engageMessageDetailError) {
+    const error = checkError([brandsError, engageMessageDetailError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  };
+
+  const message = engageMessageDetailData && engageMessageDetailData.engageMessageDetail;
+  const brands = (brandsData && brandsData.brands) || [];
 
   const updatedProps = {
     ...props,
@@ -36,23 +56,5 @@ const MessageFormContainer = (props: FinalProps) => {
   };
 
   return <MessageForm {...updatedProps} />;
-};
-
-export default withProps<Props>(
-  compose(
-    graphql<Props, EngageMessageDetailQueryResponse, { _id?: string }>(
-      gql(queries.engageMessageDetail),
-      {
-        name: 'engageMessageDetailQuery',
-        options: ({ messageId }) => ({
-          variables: {
-            _id: messageId
-          }
-        })
-      }
-    ),
-    graphql<Props, BrandsQueryResponse>(gql(queries.brands), {
-      name: 'brandsQuery'
-    })
-  )(MessageFormContainer)
-);
+}
+export default EmailContainer;

@@ -66,7 +66,7 @@ function ConversationContainer(props: Props) {
   }
 
   if (conversationDetailQueryError || messagesQueryError || commentsQueryError) {
-    const error = checkError([conversationDetailQueryError, messagesQueryError || commentsQueryError]);
+    const error = checkError([conversationDetailQueryError, messagesQueryError, commentsQueryError]);
 
     return <ErrorMsg>{error.message}</ErrorMsg>;
   }

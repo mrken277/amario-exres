@@ -1,8 +1,10 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
-import { withProps } from 'modules/common/utils';
+import checkError from 'modules/common/utils/checkError';
 import { CountQueryResponse } from 'modules/customers/types';
 import {
   AddMutationResponse,
@@ -12,7 +14,6 @@ import {
 } from 'modules/segments/types';
 import { FieldsCombinedByTypeQueryResponse } from 'modules/settings/properties/types';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import SegmentStep from '../components/step/SegmentStep';
 import { mutations, queries } from '../graphql';
 import { sumCounts } from '../utils';
@@ -34,41 +35,77 @@ type Props = {
   ) => React.ReactNode;
 };
 
-type FinalProps = {
-  segmentsQuery: SegmentsQueryResponse;
-  customerCountsQuery: CountQueryResponse;
-  headSegmentsQuery: HeadSegmentsQueryResponse;
-  combinedFieldsQuery: FieldsCombinedByTypeQueryResponse;
-} & AddMutationResponse &
-  Props;
+function SegmentStepContainer(props: Props) {
 
-const SegmentStepContainer = (props: FinalProps) => {
   const {
-    segmentsQuery,
-    headSegmentsQuery,
-    customerCountsQuery,
-    combinedFieldsQuery
-  } = props;
+    loading: segmentsLoading,
+    error: segmentsError,
+    data: segmentsData,
+    refetch: segmentsRefetch
+  } = useQuery<SegmentsQueryResponse>(
+    gql(queries.segments));
 
-  const customerCounts = customerCountsQuery.customerCounts || {
+  const {
+    loading: customerCountsLoading,
+    error: customerCountsError,
+    data: customerCountsData,
+    refetch: customerCountsRefetch
+  } = useQuery<CountQueryResponse>(
+    gql(queries.customerCounts), {
+    variables: {
+      only: 'bySegment'
+    }
+  });
+
+  const {
+    loading: headSegmentsLoading,
+    error: headSegmentsError,
+    data: headSegmentsData
+  } = useQuery<HeadSegmentsQueryResponse>(
+    gql(queries.headSegments));
+
+  const [,
+    { loading: segmentsAddLoading,
+      error: segmentsAddError
+    }] = useMutation<AddMutationResponse, AddMutationVariables>(
+      gql(mutations.segmentsAdd));
+
+  const {
+    loading: combinedFieldsLoading,
+    error: combinedFieldsError,
+    data: combinedFieldsData
+  } = useQuery<FieldsCombinedByTypeQueryResponse>(
+    gql(queries.combinedFields));
+
+  if (segmentsError || customerCountsError || headSegmentsError || segmentsAddError || combinedFieldsError) {
+    const error = checkError([segmentsError, customerCountsError, headSegmentsError, segmentsAddError, combinedFieldsError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  };
+
+  if (segmentsLoading || customerCountsLoading || headSegmentsLoading || segmentsAddLoading || combinedFieldsLoading) {
+    return <Spinner objective={true} />;
+  };
+
+  const customerCounts = (customerCountsData && customerCountsData.customerCounts) || {
     bySegment: {}
   };
 
   const countValues = customerCounts.bySegment || {};
   const customersCount = (ids: string[]) => sumCounts(ids, countValues);
 
-  const segmentFields = combinedFieldsQuery.fieldsCombinedByContentType
-    ? combinedFieldsQuery.fieldsCombinedByContentType.map(
-        ({ name, label }) => ({
-          _id: name,
-          title: label,
-          selectedBy: 'none'
-        })
-      )
+  const segmentFields = combinedFieldsData && combinedFieldsData.fieldsCombinedByContentType
+    ? combinedFieldsData.fieldsCombinedByContentType.map(
+      ({ name, label }) => ({
+        _id: name,
+        title: label,
+        selectedBy: 'none'
+      })
+    )
     : [];
 
   const count = segment => {
-    customerCountsQuery.refetch({
+    customerCountsRefetch({
       byFakeSegment: segment
     });
   };
@@ -79,8 +116,8 @@ const SegmentStepContainer = (props: FinalProps) => {
     callback
   }: IButtonMutateProps) => {
     const callBackResponse = () => {
-      segmentsQuery.refetch();
-      customerCountsQuery.refetch();
+      segmentsRefetch();
+      customerCountsRefetch();
 
       if (callback) {
         callback();
@@ -102,44 +139,16 @@ const SegmentStepContainer = (props: FinalProps) => {
 
   const updatedProps = {
     ...props,
-    headSegments: headSegmentsQuery.segmentsGetHeads || [],
+    headSegments: (headSegmentsData && headSegmentsData.segmentsGetHeads) || [],
     segmentFields,
     renderButton,
-    segments: segmentsQuery.segments || [],
+    segments: (segmentsData && segmentsData.segments) || [],
     targetCount: countValues,
     customersCount,
     count
   };
 
   return <SegmentStep {...updatedProps} />;
-};
+}
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, SegmentsQueryResponse>(gql(queries.segments), {
-      name: 'segmentsQuery'
-    }),
-    graphql<Props, CountQueryResponse, { only: string }>(
-      gql(queries.customerCounts),
-      {
-        name: 'customerCountsQuery',
-        options: {
-          variables: {
-            only: 'bySegment'
-          }
-        }
-      }
-    ),
-    graphql<Props, HeadSegmentsQueryResponse>(gql(queries.headSegments), {
-      name: 'headSegmentsQuery'
-    }),
-    graphql<Props, AddMutationResponse, AddMutationVariables>(
-      gql(mutations.segmentsAdd),
-      { name: 'segmentsAdd' }
-    ),
-    graphql<Props, FieldsCombinedByTypeQueryResponse>(
-      gql(queries.combinedFields),
-      { name: 'combinedFieldsQuery' }
-    )
-  )(SegmentStepContainer)
-);
+export default SegmentStepContainer;

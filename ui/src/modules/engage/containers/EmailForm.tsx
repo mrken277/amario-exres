@@ -1,21 +1,28 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
+import Spinner from 'modules/common/components/Spinner';
 import React from 'react';
-import { graphql } from 'react-apollo';
-import { withProps } from '../../common/utils';
 import EmailForm from '../components/EmailForm';
 import { queries } from '../graphql';
 import { EngageVerifiedEmailsQueryResponse, IEmailFormProps } from '../types';
 
-type FinalProps = {
-  engageVerifiedEmailsQuery: EngageVerifiedEmailsQueryResponse;
-} & IEmailFormProps;
+type Props = IEmailFormProps;
 
-const EmailFormContainer = (props: FinalProps) => {
-  const { engageVerifiedEmailsQuery } = props;
+function ConversationContainer(props: Props) {
 
-  const verifiedEmails = engageVerifiedEmailsQuery.engageVerifiedEmails || [];
-  const error = engageVerifiedEmailsQuery.error;
+  const {
+    loading: engageVerifiedEmailsLoading,
+    error: engageVerifiedEmailsError,
+    data: engageVerifiedEmailsData
+  } = useQuery<EngageVerifiedEmailsQueryResponse>(
+    gql(queries.verifiedEmails));
+
+  const verifiedEmails = (engageVerifiedEmailsData && engageVerifiedEmailsData.engageVerifiedEmails) || [];
+  const error = engageVerifiedEmailsError;
+
+  if (engageVerifiedEmailsLoading) {
+    return <Spinner objective={true} />;
+  };
 
   const updatedProps = {
     ...props,
@@ -24,13 +31,6 @@ const EmailFormContainer = (props: FinalProps) => {
   };
 
   return <EmailForm {...updatedProps} />;
-};
+}
 
-export default withProps<IEmailFormProps>(
-  compose(
-    graphql<IEmailFormProps, EngageVerifiedEmailsQueryResponse>(
-      gql(queries.verifiedEmails),
-      { name: 'engageVerifiedEmailsQuery' }
-    )
-  )(EmailFormContainer)
-);
+export default ConversationContainer;

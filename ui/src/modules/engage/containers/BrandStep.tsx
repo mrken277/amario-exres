@@ -1,13 +1,14 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
-import { withProps } from 'modules/common/utils';
+import checkError from 'modules/common/utils/checkError';
 import { CountQueryResponse } from 'modules/customers/types';
 import { mutations } from 'modules/settings/brands/graphql';
 import { BrandsQueryResponse } from 'modules/settings/brands/types';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import BrandStep from '../components/step/BrandStep';
 import { queries } from '../graphql';
 import { sumCounts } from '../utils';
@@ -29,16 +30,38 @@ type Props = {
   ) => React.ReactNode;
 };
 
-type FinalProps = {
-  brandsQuery: BrandsQueryResponse;
-  customerCountsQuery: CountQueryResponse;
-} & Props;
+function ConversationContainer(props: Props) {
 
-const BrandStepContianer = (props: FinalProps) => {
-  const { brandsQuery, customerCountsQuery } = props;
+  const {
+    loading: brandsLoading,
+    error: brandsError,
+    data: brandsData
+  } = useQuery<BrandsQueryResponse>(
+    gql(queries.brands));
 
-  const customerCounts = customerCountsQuery.customerCounts || {
+  const {
+    loading: customerCountsLoading,
+    error: customerCountsError,
+    data: customerCountsData
+  } = useQuery<CountQueryResponse, { only: string }>(
+    gql(queries.customerCounts), {
+    variables: {
+      only: 'byBrand'
+    }
+  });
+
+  const customerCounts = (customerCountsData && customerCountsData.customerCounts) || {
     byBrand: {}
+  };
+
+  if (brandsError || customerCountsError) {
+    const error = checkError([brandsError, customerCountsError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  };
+
+  if (brandsLoading || customerCountsLoading) {
+    return <Spinner objective={true} />;
   };
 
   const countValues = customerCounts.byBrand || {};
@@ -61,21 +84,21 @@ const BrandStepContianer = (props: FinalProps) => {
         type="submit"
         successMessage={`You successfully ${
           object ? 'updated' : 'added'
-        } a ${name}`}
+          } a ${name}`}
       />
     );
   };
 
   const updatedProps = {
     ...props,
-    brands: brandsQuery.brands || [],
+    brands: (brandsData && brandsData.brands) || [],
     targetCount: countValues,
     customersCount,
     renderButton
   };
 
   return <BrandStep {...updatedProps} />;
-};
+}
 
 const getRefetchQueries = () => {
   return [
@@ -87,21 +110,4 @@ const getRefetchQueries = () => {
   ];
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, BrandsQueryResponse>(gql(queries.brands), {
-      name: 'brandsQuery'
-    }),
-    graphql<Props, CountQueryResponse, { only: string }>(
-      gql(queries.customerCounts),
-      {
-        name: 'customerCountsQuery',
-        options: {
-          variables: {
-            only: 'byBrand'
-          }
-        }
-      }
-    )
-  )(BrandStepContianer)
-);
+export default ConversationContainer;

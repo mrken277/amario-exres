@@ -1,56 +1,47 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import EmptyState from 'modules/common/components/EmptyState';
 import Spinner from 'modules/common/components/Spinner';
 import React from 'react';
-import { graphql } from 'react-apollo';
-import { withProps } from '../../common/utils';
 import EmailStatistics from '../components/EmailStatistics';
 import { queries } from '../graphql';
-import { EngageMessageDetailQueryResponse } from '../types';
+import { EngageMessageDetailQueryResponse, IEngageMessage } from '../types';
 
 type Props = {
   messageId: string;
 };
 
-type FinalProps = {
-  engageMessageDetailQuery: EngageMessageDetailQueryResponse;
-};
+function EmailStatisticsContainer(props: Props) {
+  const { messageId } = props;
 
-const EmailStatisticsContainer = (props: FinalProps) => {
-  const { engageMessageDetailQuery } = props;
+  const {
+    data: engageMessageDetailData,
+    error: engageMessageDetailError,
+    loading: engageMessageDetailLoading
+  } = useQuery<EngageMessageDetailQueryResponse, { _id: string }>(
+    gql(queries.engageMessageStats), {
+    variables: {
+      _id: messageId
+    }
+  });
 
-  if (engageMessageDetailQuery.error) {
+  if (engageMessageDetailError) {
     return <EmptyState size="full" text="Error" icon="ban" />;
-  }
+  };
 
-  if (engageMessageDetailQuery.loading) {
-    return <Spinner />;
-  }
+  if (engageMessageDetailLoading) {
+    return <Spinner objective={true} />;
+  };
 
-  if (!engageMessageDetailQuery.engageMessageDetail) {
+  if (!engageMessageDetailData) {
     return (
       <EmptyState size="full" text="Message not found" icon="web-section-alt" />
     );
   }
 
-  const message = engageMessageDetailQuery.engageMessageDetail;
+  const message = engageMessageDetailData ? engageMessageDetailData.engageMessageDetail : {} as IEngageMessage;
 
   return <EmailStatistics message={message} {...props} />;
-};
+}
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, EngageMessageDetailQueryResponse, { _id: string }>(
-      gql(queries.engageMessageStats),
-      {
-        name: 'engageMessageDetailQuery',
-        options: ({ messageId }) => ({
-          variables: {
-            _id: messageId
-          }
-        })
-      }
-    )
-  )(EmailStatisticsContainer)
-);
+export default EmailStatisticsContainer;
