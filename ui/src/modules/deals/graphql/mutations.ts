@@ -67,11 +67,18 @@ const dealsWatch = `
   }
 `;
 
+const dealsArchive = `
+  mutation dealsArchive($stageId: String!) {
+    dealsArchive(stageId: $stageId)
+  }
+`;
+
 export default {
   dealsAdd,
   dealsEdit,
   dealsRemove,
   dealsChange,
   dealsUpdateOrder,
-  dealsWatch
+  dealsWatch,
+  dealsArchive
 };

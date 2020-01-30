@@ -56,11 +56,18 @@ const tasksWatch = `
   }
 `;
 
+const tasksArchive = `
+  mutation tasksArchive($stageId: String!) {
+    tasksArchive(stageId: $stageId)
+  }
+`;
+
 export default {
   tasksAdd,
   tasksEdit,
   tasksRemove,
   tasksChange,
   tasksUpdateOrder,
-  tasksWatch
+  tasksWatch,
+  tasksArchive
 };

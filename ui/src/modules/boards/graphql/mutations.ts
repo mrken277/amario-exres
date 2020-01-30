@@ -126,11 +126,20 @@ const pipelineLabelsLabel = `
   }
 `;
 
+const stagesEdit = `
+  mutation stagesEdit($_id: String!, $type: String, $name: String, $status: String) {
+    stagesEdit(_id: $_id, type: $type, name: $name, status: $status) {
+      _id
+    }
+  }
+`;
+
 export default {
   stagesUpdateOrder,
   pipelinesWatch,
   pipelineLabelsLabel,
   pipelineLabelsAdd,
   pipelineLabelsEdit,
-  pipelineLabelsRemove
+  pipelineLabelsRemove,
+  stagesEdit
 };

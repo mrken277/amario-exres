@@ -67,11 +67,18 @@ const ticketsWatch = `
   }
 `;
 
+const ticketsArchive = `
+  mutation ticketsArchive($stageId: String!) {
+    ticketsArchive(stageId: $stageId)
+  }
+`;
+
 export default {
   ticketsAdd,
   ticketsEdit,
   ticketsRemove,
   ticketsChange,
   ticketsUpdateOrder,
-  ticketsWatch
+  ticketsWatch,
+  ticketsArchive
 };

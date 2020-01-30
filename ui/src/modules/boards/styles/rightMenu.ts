@@ -5,9 +5,6 @@ import styledTS from 'styled-components-ts';
 const FilterBox = styled.div`
   padding: 0 20px 0 20px;
   width: 300px;
-  max-height: 400px;
-  overflow-y: auto;
-  overflow-x: hidden;
 
   h4 {
     text-align: center;
@@ -30,6 +27,10 @@ const FilterBox = styled.div`
     box-shadow: none;
     border-radius: 0;
     font-size: 12px;
+  }
+
+  input {
+    margin-bottom: 10px;
   }
 `;
 
@@ -112,6 +113,22 @@ const RemoveFilter = styled.span`
       color: ${colors.borderPrimary};
     }
   }
+`;
+
+export const RightMenuContainer = styledTS<{ show?: boolean }>(styled.div)`
+  display: ${props => (props.show ? 'block' : 'none')};
+  position: fixed;
+  top: 105px;
+  right: 20px;
+  height: 800px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: ${colors.colorWhite};
+`;
+
+export const Header = styled.div`
+  font-size: 12px;
+  padding: 10px 20px;
 `;
 
 export {

@@ -1,5 +1,6 @@
 import {
   ActionButton,
+  ActionList,
   AddNew,
   Body,
   Container,
@@ -18,12 +19,11 @@ import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { __ } from 'modules/common/utils';
 import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { OverlayTrigger } from 'react-bootstrap';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { AddForm } from '../../containers/portable';
 import { IItem, IOptions, IStage } from '../../types';
 import { renderAmount } from '../../utils';
 import ItemList from '../stage/ItemList';
-import StagePopover from '../stage/Popover';
 
 type Props = {
   loadingItems: boolean;
@@ -34,6 +34,8 @@ type Props = {
   onAddItem: (stageId: string, item: IItem) => void;
   loadMore: () => void;
   options: IOptions;
+  archiveItems: () => void;
+  archiveList: () => void;
 };
 export default class Stage extends React.Component<Props, {}> {
   private bodyRef;
@@ -159,6 +161,31 @@ export default class Stage extends React.Component<Props, {}> {
     );
   }
 
+  renderPopover() {
+    const archiveList = () => {
+      this.props.archiveList();
+      this.onClosePopover();
+    };
+
+    const archiveItems = () => {
+      this.props.archiveItems();
+      this.onClosePopover();
+    };
+
+    return (
+      <Popover id="stage-popover">
+        <ActionList>
+          <li onClick={archiveItems} key="archive-items">
+            Archive All Cards in This List
+          </li>
+          <li onClick={archiveList} key="archive-list">
+            Archive This List
+          </li>
+        </ActionList>
+      </Popover>
+    );
+  }
+
   renderCtrl() {
     return (
       <OverlayTrigger
@@ -168,12 +195,8 @@ export default class Stage extends React.Component<Props, {}> {
         trigger="click"
         placement="bottom-start"
         rootClose={true}
-        overlay={
-          <StagePopover
-            id={this.props.stage._id}
-            closePopover={this.onClosePopover}
-          />
-        }
+        container={this}
+        overlay={this.renderPopover()}
       >
         <ActionButton>
           <Icon icon="ellipsis-h" />

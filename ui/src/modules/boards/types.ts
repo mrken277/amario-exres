@@ -17,6 +17,7 @@ export interface IOptions {
     changeMutation: string;
     updateOrderMutation: string;
     watchMutation: string;
+    archiveMutation: string;
   };
   queries: { itemsQuery: string; detailQuery: string };
   mutations: {
@@ -26,6 +27,7 @@ export interface IOptions {
     changeMutation: string;
     updateOrderMutation: string;
     watchMutation: string;
+    archiveMutation: string;
   };
   texts: {
     addText: string;

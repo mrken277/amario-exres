@@ -87,6 +87,12 @@ const growthHacksVote = `
   }
 `;
 
+const growthHacksArchive = `
+  mutation growthHacksArchive($stageId: String!) {
+    growthHacksArchive(stageId: $stageId)
+  }
+`;
+
 export default {
   growthHacksAdd,
   growthHacksEdit,
@@ -94,5 +100,6 @@ export default {
   growthHacksChange,
   growthHacksUpdateOrder,
   growthHacksWatch,
-  growthHacksVote
+  growthHacksVote,
+  growthHacksArchive
 };

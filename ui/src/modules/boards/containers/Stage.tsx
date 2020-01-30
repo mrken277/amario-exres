@@ -2,10 +2,12 @@ import client from 'apolloClient';
 import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import { PipelineConsumer } from 'modules/boards/containers/PipelineContext';
+import { queries } from 'modules/boards/graphql';
 import { Alert, withProps } from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import Stage from '../components/stage/Stage';
+import { mutations } from '../graphql';
 import {
   IFilterParams,
   IItem,
@@ -23,6 +25,7 @@ type WrapperProps = {
   length: number;
   queryParams: IFilterParams;
   options: IOptions;
+  refetchStages: ({ pipelineId }: { pipelineId?: string }) => Promise<any>;
 };
 
 type StageProps = {
@@ -82,6 +85,50 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
       });
   };
 
+  archiveItems = () => {
+    const { options, stage, onLoad } = this.props;
+
+    const stageId = stage._id;
+
+    client
+      .mutate({
+        mutation: gql(options.mutations.archiveMutation),
+        variables: { stageId },
+        refetchQueries: [
+          {
+            query: gql(queries.stageDetail),
+            variables: { _id: stageId }
+          }
+        ]
+      })
+      .then(() => {
+        onLoad(stageId, []);
+      })
+      .catch(e => {
+        Alert.error(e.message);
+      });
+  };
+
+  archiveList = () => {
+    const { stage, refetchStages, options } = this.props;
+
+    client
+      .mutate({
+        mutation: gql(mutations.stagesEdit),
+        variables: {
+          _id: stage._id,
+          type: options.type,
+          status: 'archived'
+        }
+      })
+      .then(() => {
+        refetchStages({ pipelineId: stage.pipelineId });
+      })
+      .catch(e => {
+        Alert.error(e.message);
+      });
+  };
+
   render() {
     const {
       index,
@@ -102,6 +149,8 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
         index={index}
         length={length}
         items={items}
+        archiveItems={this.archiveItems}
+        archiveList={this.archiveList}
         loadingItems={loadingItems}
         loadMore={this.loadMore}
         onAddItem={onAddItem}

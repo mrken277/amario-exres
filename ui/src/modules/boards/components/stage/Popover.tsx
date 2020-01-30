@@ -4,12 +4,11 @@ import { Popover } from 'react-bootstrap';
 
 type Props = {
   closePopover: () => void;
-  id: string;
 };
 
 class StagePopover extends Component<Props> {
   render() {
-    const { closePopover, id } = this.props;
+    const { closePopover } = this.props;
 
     const archiveList = () => {
       console.log('archive list');
@@ -22,7 +21,7 @@ class StagePopover extends Component<Props> {
     };
 
     return (
-      <Popover id={`stage-popover-${id}`}>
+      <Popover id="stage-popover">
         <ActionList>
           <li onClick={archiveList} key="archive-items">
             Archive All Cards in This List
