@@ -1,13 +1,10 @@
 import * as Factory from 'factory.ts';
-import {
-  ICustomer,
-  ICustomerLinks,
-  IVisitorContact
-} from 'modules/customers/types';
-import { companyFactory } from './companies';
-import { integrationFacroty } from './integration';
-import { tagFactory } from './tags';
-import { userFactory } from './user';
+import { ICustomer, ICustomerLinks, IVisitorContact } from 'modules/customers/types';
+import { companyFactory } from '../companies';
+import { integrationFacroty } from '../settings/integration';
+import { tagFactory } from '../tags';
+import { userFactory } from '../user';
+import { messengerDataFactory } from './messengerdata';
 
 export const customerLinksFactory = Factory.Sync.makeFactory<ICustomerLinks>({
   website: 'website',
@@ -15,13 +12,20 @@ export const customerLinksFactory = Factory.Sync.makeFactory<ICustomerLinks>({
   twitter: 'twitter',
   linkedIn: 'linkedIn',
   youtube: 'youtube',
-  github: 'github'
+  github: 'github',
 });
 
 export const visitorContactFactory = Factory.Sync.makeFactory<IVisitorContact>({
   email: 'dulamaa@yahoo.com',
   phone: '99889988'
 });
+
+export interface IMessengerData {
+  lastSeenAt?: number;
+  sessionCount?: number;
+  isActive?: boolean;
+  customData?: any;
+}
 
 export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   _id: '1',
@@ -34,6 +38,7 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   // ICustomerDocs
   firstName: 'string',
   lastName: 'string',
+  sex: 1,
   phones: ['88888888'],
   primaryPhone: 'string',
   primaryEmail: 'string',
@@ -48,7 +53,7 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
     countryCode: 'string',
     remoteAddress: 'string',
     hostname: 'string',
-    language: 'string'
+    language: 'string',
   },
   department: 'string',
   leadStatus: 'string',
@@ -57,10 +62,11 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   description: 'string',
   doNotDisturb: 'string',
   links: customerLinksFactory.build({ facebook: 'facebook' }),
+  messengerData: messengerDataFactory.build({ isActive: true }),
   customFieldsData: { customFieldIds: 'any' },
   visitorContactInfo: visitorContactFactory.build({
     email: 'dulamaa@yahoo.com',
     phone: '99889988'
   }),
-  code: 'string'
+  code: 'string',
 });

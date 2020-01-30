@@ -45,7 +45,7 @@ class ImportIndicatorContainer extends React.Component<
     localStorage.setItem('erxes_import_data_type', '');
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { importHistoryDetailQuery, id } = this.props;
     importHistoryDetailQuery.subscribeToMore({
       document: subscription,

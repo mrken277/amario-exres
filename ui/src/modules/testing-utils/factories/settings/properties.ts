@@ -1,6 +1,14 @@
 import * as Factory from 'factory.ts';
-import { IField, IFieldGroup } from 'modules/settings/properties/types';
+import { FieldsCombinedByType, IField, IFieldGroup } from 'modules/settings/properties/types';
 import { userFactory } from '../auth';
+
+export const combinedFieldsFactory = Factory.Sync.makeFactory<FieldsCombinedByType>({
+  _id: '1',
+  name: 'string',
+  label: 'string',
+  brandName: 'string',
+  brandId: 'string'
+});
 
 const fieldFactory = Factory.Sync.makeFactory<IField>({
   _id: 'string',

@@ -64,7 +64,7 @@ class ManageIntegrations extends React.Component<Props, State> {
     }
   };
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     const { allIntegrations, perPage } = newProps;
 
     this.setState({ hasMore: allIntegrations.length === perPage });
