@@ -58,7 +58,28 @@ const taskDetail = `
   }
 `;
 
+const archivedTasks = `
+  query archivedTasks(
+    $pipelineId: String!,
+    $search: String,
+    $page: Int,
+    $perPage: Int,
+  ) {
+    archivedTasks(
+      pipelineId: $pipelineId,
+      search: $search,
+      page: $page,
+      perPage: $perPage,
+    ) {
+      _id
+      name
+      stageId
+    }
+  }
+`;
+
 export default {
   tasks,
-  taskDetail
+  taskDetail,
+  archivedTasks
 };

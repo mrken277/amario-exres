@@ -17,7 +17,7 @@ import {
   HeaderLink,
   PageHeader
 } from '../styles/header';
-import { IBoard, IPipeline } from '../types';
+import { IBoard, IOptions, IPipeline } from '../types';
 import RightMenu from './RightMenu';
 
 type Props = {
@@ -32,12 +32,12 @@ type Props = {
   middleContent?: () => React.ReactNode;
   history: any;
   queryParams: any;
-  type: string;
   extraFilter?: React.ReactNode;
   link: string;
   rightContent?: () => React.ReactNode;
   boardText?: string;
   pipelineText?: string;
+  options: IOptions;
 };
 
 type State = {
@@ -143,7 +143,8 @@ class MainActionBar extends React.Component<Props, State> {
       onClear,
       queryParams,
       link,
-      extraFilter
+      extraFilter,
+      options
     } = this.props;
 
     const rightMenuProps = {
@@ -154,7 +155,8 @@ class MainActionBar extends React.Component<Props, State> {
       onClear,
       queryParams,
       link,
-      extraFilter
+      extraFilter,
+      options
     };
 
     return (
@@ -217,11 +219,13 @@ class MainActionBar extends React.Component<Props, State> {
       currentBoard,
       currentPipeline,
       middleContent,
-      type,
+      options,
       rightContent,
       boardText,
       pipelineText
     } = this.props;
+
+    const type = options.type;
 
     const actionBarLeft = (
       <HeaderItems>

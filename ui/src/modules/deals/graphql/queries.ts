@@ -82,6 +82,26 @@ const deals = `
   }
 `;
 
+const archivedDeals = `
+  query archivedDeals(
+    $pipelineId: String!,
+    $search: String,
+    $page: Int,
+    $perPage: Int,
+  ) {
+    archivedDeals(
+      pipelineId: $pipelineId,
+      search: $search,
+      page: $page,
+      perPage: $perPage,
+    ) {
+      _id
+      name
+      stageId
+    }
+  }
+`;
+
 const dealDetail = `
   query dealDetail($_id: String!) {
     dealDetail(_id: $_id) {
@@ -104,5 +124,6 @@ export default {
   deals,
   dealDetail,
   productDetail,
-  dealsTotalAmounts
+  dealsTotalAmounts,
+  archivedDeals
 };

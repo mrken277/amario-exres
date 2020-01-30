@@ -10,7 +10,8 @@ const options = {
   title: 'Deal',
   queriesName: {
     itemsQuery: 'deals',
-    detailQuery: 'dealDetail'
+    detailQuery: 'dealDetail',
+    archivedItemsQuery: 'archivedDeals'
   },
   mutationsName: {
     addMutation: 'dealsAdd',
@@ -23,7 +24,8 @@ const options = {
   },
   queries: {
     itemsQuery: queries.deals,
-    detailQuery: queries.dealDetail
+    detailQuery: queries.dealDetail,
+    archivedItemsQuery: queries.archivedDeals
   },
   mutations: {
     addMutation: mutations.dealsAdd,

@@ -10,7 +10,8 @@ const options = {
   title: 'Task',
   queriesName: {
     itemsQuery: 'tasks',
-    detailQuery: 'taskDetail'
+    detailQuery: 'taskDetail',
+    archivedItemsQuery: 'archivedTasks'
   },
   mutationsName: {
     addMutation: 'tasksAdd',
@@ -23,7 +24,8 @@ const options = {
   },
   queries: {
     itemsQuery: queries.tasks,
-    detailQuery: queries.taskDetail
+    detailQuery: queries.taskDetail,
+    archivedItemsQuery: queries.archivedTasks
   },
   mutations: {
     addMutation: mutations.tasksAdd,

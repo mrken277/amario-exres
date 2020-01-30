@@ -134,6 +134,12 @@ const stagesEdit = `
   }
 `;
 
+const stagesRemove = `
+  mutation stagesRemove($_id: String!) {
+    stagesRemove(_id: $_id)
+  }
+`;
+
 export default {
   stagesUpdateOrder,
   pipelinesWatch,
@@ -141,5 +147,6 @@ export default {
   pipelineLabelsAdd,
   pipelineLabelsEdit,
   pipelineLabelsRemove,
-  stagesEdit
+  stagesEdit,
+  stagesRemove
 };

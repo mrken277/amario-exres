@@ -3,6 +3,7 @@ import { IBoard, IPipeline } from 'modules/boards/types';
 import SelectCompanies from 'modules/companies/containers/SelectCompanies';
 import SelectCustomers from 'modules/customers/containers/common/SelectCustomers';
 import React from 'react';
+import options from '../options';
 
 type Props = {
   onSearch: (search: string) => void;
@@ -43,6 +44,7 @@ const TaskMainActionBar = (props: Props) => {
 
   const extendedProps = {
     ...props,
+    options,
     extraFilter,
     link: '/task/board'
   };

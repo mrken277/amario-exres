@@ -9,7 +9,8 @@ const options = {
   title: 'Growth hacking',
   queriesName: {
     itemsQuery: 'growthHacks',
-    detailQuery: 'growthHackDetail'
+    detailQuery: 'growthHackDetail',
+    archivedItemsQuery: 'archivedGrowthHacks'
   },
   mutationsName: {
     addMutation: 'growthHacksAdd',
@@ -22,7 +23,8 @@ const options = {
   },
   queries: {
     itemsQuery: queries.growthHacks,
-    detailQuery: queries.growthHackDetail
+    detailQuery: queries.growthHackDetail,
+    archivedItemsQuery: queries.archivedGrowthHacks
   },
   mutations: {
     addMutation: mutations.growthHacksAdd,

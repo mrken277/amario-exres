@@ -184,10 +184,29 @@ const pipelineDetail = `
   }
 `;
 
-
 const pipelineStateCount = `
   query pipelineStateCount($boardId: String, $type: String) {
     pipelineStateCount(boardId: $boardId, type: $type) 
+  }
+`;
+
+const archivedGrowthHacks = `
+  query archivedGrowthHacks(
+    $pipelineId: String!,
+    $search: String,
+    $page: Int,
+    $perPage: Int,
+  ) {
+    archivedGrowthHacks(
+      pipelineId: $pipelineId,
+      search: $search,
+      page: $page,
+      perPage: $perPage,
+    ) {
+      _id
+      name
+      stageId
+    }
   }
 `;
 
@@ -197,5 +216,6 @@ export default {
   growthHackDetail,
   growthHacksTotalCount,
   pipelineDetail,
-  pipelineStateCount
+  pipelineStateCount,
+  archivedGrowthHacks
 };

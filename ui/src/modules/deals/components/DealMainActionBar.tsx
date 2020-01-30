@@ -9,6 +9,7 @@ import SelectCustomers from 'modules/customers/containers/common/SelectCustomers
 import SelectProducts from 'modules/settings/productService/containers/product/SelectProducts';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import options from '../options';
 
 type Props = {
   onSearch: (search: string) => void;
@@ -106,6 +107,7 @@ const DealMainActionBar = (props: Props) => {
 
   const extendedProps = {
     ...props,
+    options,
     extraFilter,
     link: `/deal/${viewType}`,
     rightContent: viewChooser

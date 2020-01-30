@@ -2,10 +2,8 @@ import { colors } from 'modules/common/styles';
 import { lighten } from 'modules/common/styles/color';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
-const FilterBox = styled.div`
-  padding: 0 20px 0 20px;
-  width: 300px;
 
+const FilterBox = styled.div`
   h4 {
     text-align: center;
     font-size: 16px;
@@ -118,8 +116,10 @@ const RemoveFilter = styled.span`
 export const RightMenuContainer = styledTS<{ show?: boolean }>(styled.div)`
   display: ${props => (props.show ? 'block' : 'none')};
   position: fixed;
+  z-index: 10;
   top: 105px;
   right: 20px;
+  width: 300px;
   height: 800px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -129,6 +129,10 @@ export const RightMenuContainer = styledTS<{ show?: boolean }>(styled.div)`
 export const Header = styled.div`
   font-size: 12px;
   padding: 10px 20px;
+`;
+
+export const TabContent = styled.div`
+  padding: 10px 20px 0 20px;
 `;
 
 export {
