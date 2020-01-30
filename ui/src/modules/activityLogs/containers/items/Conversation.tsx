@@ -9,6 +9,7 @@ import { queries } from 'modules/inbox/graphql';
 import {
   ConversationDetailQueryResponse,
   FacebookCommentsQueryResponse,
+  IConversation,
   MessagesQueryResponse
 } from 'modules/inbox/types';
 import React from 'react';
@@ -19,7 +20,6 @@ type Props = {
 };
 
 function ConversationContainer(props: Props) {
-
   const { conversationId, activity } = props;
 
   const {
@@ -31,8 +31,7 @@ function ConversationContainer(props: Props) {
     variables: {
       _id: conversationId
     }
-  }
-  );
+  });
 
   const {
     loading: messagesQueryLoading,
@@ -45,8 +44,7 @@ function ConversationContainer(props: Props) {
       limit: 10,
       getFirst: true
     }
-  }
-  );
+  });
 
   const {
     loading: commentsQueryLoading,
@@ -58,12 +56,7 @@ function ConversationContainer(props: Props) {
       postId: conversationId,
       senderId: activity.contentId
     }
-  }
-  );
-
-  if (!conversationDetailQueryData) {
-    return null;
-  }
+  });
 
   if (conversationDetailQueryError || messagesQueryError || commentsQueryError) {
     const error = checkError([conversationDetailQueryError, messagesQueryError || commentsQueryError]);
@@ -75,10 +68,10 @@ function ConversationContainer(props: Props) {
     return <Spinner objective={true} />;
   }
 
-  const conversation = conversationDetailQueryData.conversationDetail;
-  const messages = messagesQueryData ? messagesQueryData.conversationMessages : [];
+  const conversation = conversationDetailQueryData ? conversationDetailQueryData.conversationDetail : {} as IConversation;
+  const messages = (messagesQueryData && messagesQueryData.conversationMessages) || [];
   const comments =
-    commentsQueryData ? commentsQueryData.converstationFacebookComments : [];
+    (commentsQueryData && commentsQueryData.converstationFacebookComments) || [];
 
   const updatedProps = {
     ...props,

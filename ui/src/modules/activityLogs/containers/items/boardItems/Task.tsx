@@ -28,8 +28,7 @@ function FormContainer(props: Props) {
     variables: {
       _id: taskId
     }
-  }
-  );
+  });
 
   const [
     editMutation,
@@ -46,15 +45,10 @@ function FormContainer(props: Props) {
   ] = useMutation<RemoveMutationResponse>(
     gql(mutations.tasksRemove), {
     refetchQueries: ['activityLogs']
-  }
-  );
-
-  if (!taskDetailsQueryData) {
-    return null;
-  }
+  });
 
   if (taskDetailsQueryLoading) {
-    return <Spinner />;
+    return <Spinner objective={true} />;
   }
 
   if (taskDetailsQueryError) {
@@ -62,7 +56,7 @@ function FormContainer(props: Props) {
     return <ErrorMsg>{error.message}</ErrorMsg>;
   };
 
-  const task = taskDetailsQueryData.taskDetail;
+  const task = taskDetailsQueryData && taskDetailsQueryData.taskDetail;
 
   if (!task) {
     return <strong>You do not have permission to view this task</strong>;
