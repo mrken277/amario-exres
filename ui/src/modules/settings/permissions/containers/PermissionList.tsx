@@ -15,6 +15,11 @@ import {
   UsersGroupsQueryResponse
 } from '../types';
 
+type Props = {
+  history: any;
+  queryParams: any;
+};
+
 type FinalProps = {
   can: (action: string) => boolean;
 } & Props;
@@ -130,11 +135,6 @@ const List = (props: FinalProps) => {
   };
 
   return <PermissionList {...updatedProps} />;
-};
-
-type Props = {
-  history: any;
-  queryParams: any;
 };
 
 const commonOptions = queryParams => {
