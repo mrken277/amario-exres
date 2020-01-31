@@ -93,6 +93,14 @@ const growthHacksArchive = `
   }
 `;
 
+const growthHacksCopy = `
+  mutation growthHacksCopy($_id: String!) {
+    growthHacksCopy(_id: $_id) {
+      ${growthHackFields}
+    }
+  }
+`;
+
 export default {
   growthHacksAdd,
   growthHacksEdit,
@@ -101,5 +109,6 @@ export default {
   growthHacksUpdateOrder,
   growthHacksWatch,
   growthHacksVote,
-  growthHacksArchive
+  growthHacksArchive,
+  growthHacksCopy
 };

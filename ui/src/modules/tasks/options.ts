@@ -20,7 +20,8 @@ const options = {
     changeMutation: 'tasksChange',
     updateOrderMutation: 'tasksUpdateOrder',
     watchMutation: 'tasksWatch',
-    archiveMutation: 'tasksArchive'
+    archiveMutation: 'tasksArchive',
+    copyMutation: 'tasksCopy'
   },
   queries: {
     itemsQuery: queries.tasks,
@@ -34,7 +35,8 @@ const options = {
     changeMutation: mutations.tasksChange,
     updateOrderMutation: mutations.tasksUpdateOrder,
     watchMutation: mutations.tasksWatch,
-    archiveMutation: mutations.tasksArchive
+    archiveMutation: mutations.tasksArchive,
+    copyMutation: mutations.tasksCopy
   },
   texts: {
     addText: 'Add a task',

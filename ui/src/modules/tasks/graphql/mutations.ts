@@ -62,6 +62,14 @@ const tasksArchive = `
   }
 `;
 
+const tasksCopy = `
+  mutation tasksCopy($_id: String!) {
+    tasksCopy(_id: $_id) {
+      ${commonFields}
+    }
+  }
+`;
+
 export default {
   tasksAdd,
   tasksEdit,
@@ -69,5 +77,6 @@ export default {
   tasksChange,
   tasksUpdateOrder,
   tasksWatch,
-  tasksArchive
+  tasksArchive,
+  tasksCopy
 };
