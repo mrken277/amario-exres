@@ -42,7 +42,7 @@ const ProductListContainer = (props: Props) => {
   }
 
   if (productCategoriesQueryLoading || countQueryLoading) {
-    return <p>Loading...</p>;
+    return null;
   }
 
   const remove = productId => {

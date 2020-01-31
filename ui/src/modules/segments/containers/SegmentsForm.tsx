@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/react-hooks';
 import client from 'apolloClient';
 import gql from 'graphql-tag';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
+import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
 import { Alert } from 'modules/common/utils';
 import { queries as companyQueries } from 'modules/companies/graphql';
@@ -66,7 +67,7 @@ const SegmentsFormContainer = (props: Props, state: State) => {
   }
 
   if (segmentDetailQueryLoading || headSegmentsQueryLoading || combinedFieldsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner />;
   }
 
   const fields = (combinedFieldsQueryData ? combinedFieldsQueryData.fieldsCombinedByContentType : []).map(

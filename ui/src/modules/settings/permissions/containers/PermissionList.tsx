@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import Spinner from 'modules/common/components/Spinner';
 import { Alert, confirm } from 'modules/common/utils';
 import { generatePaginationParams } from 'modules/common/utils/router';
 import React from 'react';
@@ -113,7 +114,7 @@ const List = (props: FinalProps) => {
   }
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Spinner />;
   }
 
   const groups = usersGroupsQueryData ? usersGroupsQueryData.usersGroups : [];

@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import Bulk from 'modules/common/components/Bulk';
+import Spinner from 'modules/common/components/Spinner';
 import { Alert } from 'modules/common/utils';
 import { generatePaginationParams } from 'modules/common/utils/router';
 import React from 'react';
@@ -61,7 +62,7 @@ const ProductListContainer = (props: Props) => {
     });
 
   if (productsQueryLoading || productsCountQueryLoading || productCategoryDetailQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner />;
   }
 
   if (productsRemoveMutationError || productCategoryDetailQueryError || productsCountQueryError || productsQueryError) {

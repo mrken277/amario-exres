@@ -20,8 +20,7 @@ const TagFilterContainer = () => {
     loading: tagsQueryLoading,
     error: tagsQueryError,
     data: tagsQueryData
-  } = useQuery<TagsQueryResponse, { type: string }>(
-    gql(tagQueries.tags), {
+  } = useQuery<TagsQueryResponse, { type: string }>(gql(tagQueries.tags), {
     variables: {
       type: TAG_TYPES.PRODUCT
     }
@@ -32,7 +31,7 @@ const TagFilterContainer = () => {
   }
 
   if (tagsQueryLoading) {
-    return <p>Loading...</p>;
+    return null;
   }
 
   const counts = countByTagsQueryData ? countByTagsQueryData.productCountByTags : {};

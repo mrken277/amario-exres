@@ -46,7 +46,7 @@ const TaggerContainer = (props: Props) => {
   }
 
   if (tagsQueryLoading) {
-    return <p>Loading...</p>;
+    return null;
   }
 
   const tag = selectedTagIds => {

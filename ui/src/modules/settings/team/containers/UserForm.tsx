@@ -20,8 +20,6 @@ type Props = {
 };
 
 const UserFormContainer = (props: Props & ICommonFormProps) => {
-  const { renderButton } = props;
-
   const {
     loading: getEnvQueryLoading,
     error: getEnvQueryError,
@@ -77,8 +75,7 @@ const UserFormContainer = (props: Props & ICommonFormProps) => {
     selectedChannels,
     selectedGroups,
     channels,
-    groups,
-    renderButton
+    groups
   };
 
   return <UserForm {...updatedProps} />;

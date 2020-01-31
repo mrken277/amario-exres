@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
 import { IButtonMutateProps } from 'modules/common/types';
 import React from 'react';
-import From from '../../components/product/ProductForm';
+import Form from '../../components/product/ProductForm';
 import { mutations, queries } from '../../graphql';
 import { IProduct, ProductCategoriesQueryResponse } from '../../types';
 
@@ -25,7 +25,7 @@ const ProductFormContainer = (props: Props) => {
   }
 
   if (productCategoriesQueryLoading) {
-    return <p>Loading...</p>;
+    return null;
   }
 
   const renderButton = ({
@@ -60,7 +60,7 @@ const ProductFormContainer = (props: Props) => {
     productCategories
   };
 
-  return <From {...updatedProps} />;
+  return <Form {...updatedProps} />;
 }
 
 const getRefetchQueries = () => {

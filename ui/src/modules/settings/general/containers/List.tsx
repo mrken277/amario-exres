@@ -1,6 +1,8 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
+import Spinner from 'modules/common/components/Spinner';
+import { Alert } from 'modules/common/utils';
 import React from 'react';
 import List from '../components/List';
 import { mutations, queries } from '../graphql';
@@ -14,7 +16,8 @@ const ListContainer = () => {
   const {
     loading: currencyConfigQueryLoading,
     error: currencyConfigQueryError,
-    data: currencyConfigQueryData
+    data: currencyConfigQueryData,
+    refetch: currencyConfigQueryRefetch
   } = useQuery<ConfigDetailQueryResponse, { code: string }>(
     gql(queries.configsDetail),
     {
@@ -28,7 +31,8 @@ const ListContainer = () => {
   const {
     loading: uomConfigQueryLoading,
     error: uomConfigQueryError,
-    data: uomConfigQueryData
+    data: uomConfigQueryData,
+    refetch: uomConfigQueryRefetch
   } = useQuery<ConfigDetailQueryResponse, { code: string }>(
     gql(queries.configsDetail),
     {
@@ -39,22 +43,33 @@ const ListContainer = () => {
     }
   );
 
-  const [mutate, { error: insertConfigError }] =
+  const [insertConfig, { error: insertConfigError }] =
     useMutation<ConfigsInsertMutationResponse, ConfigsInsertMutationVariables>(
       gql(mutations.insertConfig), { refetchQueries: ['configsDetail'] }
     );
-
-  const save = (code, value) => {
-    mutate({ variables: { code, value } })
-  };
 
   if (currencyConfigQueryError || uomConfigQueryError || insertConfigError) {
     return <p>Error!</p>;
   }
 
   if (currencyConfigQueryLoading || uomConfigQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />;
   }
+
+  const save = (code, value) => {
+    insertConfig({
+      variables: { code, value }
+    })
+      .then(() => {
+        currencyConfigQueryRefetch();
+        uomConfigQueryRefetch();
+
+        Alert.success('You successfully updated general settings');
+      })
+      .catch(error => {
+        Alert.error(error.message);
+      });
+  };
 
   const currencies = currencyConfigQueryData && currencyConfigQueryData.configsDetail;
   const uom = uomConfigQueryData && uomConfigQueryData.configsDetail;
