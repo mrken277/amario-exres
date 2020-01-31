@@ -21,7 +21,7 @@ type Props = {
   remove: (pipelineId: string) => void;
   boardId: string;
   options?: IOption;
-  refetch: ({ boardId }: { boardId?: string }) => Promise<any>;
+  refetch: () => Promise<any>;
   currentBoard: IBoard;
 } & IRouterProps;
 
