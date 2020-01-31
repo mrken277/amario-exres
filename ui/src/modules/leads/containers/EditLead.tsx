@@ -1,6 +1,8 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
+import { IRouterProps } from 'modules/common/types';
 import { Alert } from 'modules/common/utils';
 import {
   EditIntegrationMutationResponse,
@@ -8,16 +10,16 @@ import {
   LeadIntegrationDetailQueryResponse
 } from 'modules/settings/integrations/types';
 import React, { useState } from 'react';
+import { withRouter } from 'react-router';
 import Lead from '../components/Lead';
 import { mutations, queries } from '../graphql';
-import { ILeadData } from '../types';
+import { ILeadData, ILeadIntegration } from '../types';
 
 type Props = {
   contentTypeId: string;
   formId: string;
   queryParams: any;
-  history?: any;
-};
+} & IRouterProps;
 
 type State = {
   isloadingLeads: boolean;
@@ -58,19 +60,15 @@ function EditLeadContainer(props: Props, state: State) {
       ]
     });
 
-  if (!integrationDetailQueryData) {
-    return null;
-  };
-
   if (integrationDetailQueryLoading) {
-    return false;
+    return <Spinner objective={true} />;
   }
 
   if (integrationDetailQueryError) {
     return <ErrorMsg>{integrationDetailQueryError.message}</ErrorMsg>;
   }
 
-  const integration = integrationDetailQueryData.integrationDetail || {};
+  const integration = integrationDetailQueryData ? integrationDetailQueryData.integrationDetail : {} as ILeadIntegration;
 
   const afterFormDbSave = () => {
     if (leadDoc) {
@@ -121,4 +119,4 @@ function EditLeadContainer(props: Props, state: State) {
 
   return <Lead {...updatedProps} />;
 }
-export default EditLeadContainer;
+export default withRouter<Props>(EditLeadContainer);;

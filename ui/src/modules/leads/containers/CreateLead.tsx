@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import Spinner from 'modules/common/components/Spinner';
 import { Alert } from 'modules/common/utils';
 import {
   AddIntegrationMutationResponse,
@@ -7,6 +8,7 @@ import {
 } from 'modules/settings/integrations/types';
 import { AddFieldsMutationResponse } from 'modules/settings/properties/types';
 import React, { useState } from 'react';
+import { withRouter } from 'react-router';
 import { IRouterProps } from '../../common/types';
 import Lead from '../components/Lead';
 import { mutations } from '../graphql';
@@ -38,10 +40,15 @@ function CreateLeadContainer(props: Props, state: State) {
 
   const [addIntegrationMutation,
     { data: leadsQueryData,
+      loading: leadsLoading,
       error: leadsQueryError
     }] = useMutation<AddIntegrationMutationResponse, AddIntegrationMutationVariables>(gql(mutations.integrationsCreateLeadIntegration), {
       refetchQueries: ['leadIntegrations', 'leadIntegrationCounts']
     });
+
+  if (leadsLoading) {
+    return <Spinner objective={true} />;
+  };
 
   const afterFormDbSave = id => {
     setReadyToSaveForm(false);
@@ -92,4 +99,4 @@ function CreateLeadContainer(props: Props, state: State) {
   return <Lead {...updatedProps} />;
 }
 
-export default CreateLeadContainer;
+export default withRouter<Props>(CreateLeadContainer);
