@@ -1,12 +1,13 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import Bulk from 'modules/common/components/Bulk';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import { IRouterProps } from 'modules/common/types';
+import checkError from 'modules/common/utils/checkError';
 import queryString from 'query-string';
-import React from 'react';
-import { graphql } from 'react-apollo';
+import React, { useState } from 'react';
 import { withRouter } from 'react-router';
-import { withProps } from '../../common/utils';
 import MessageList from '../components/MessageList';
 import { queries } from '../graphql';
 import {
@@ -22,80 +23,70 @@ type Props = {
   loading: boolean;
 };
 
-type FinalProps = {
-  engageMessagesQuery: EngageMessagesQueryResponse;
-  engageMessagesTotalCountQuery: EngageMessagesTotalCountQueryResponse;
-} & Props;
-
 type State = {
   bulk: any[];
   isAllSelected: boolean;
 };
 
-class MessageListContainer extends React.Component<FinalProps, State> {
-  constructor(props: FinalProps) {
-    super(props);
+export const MessageListContainer = (props: Props, state: State) => {
+  const [isAllSelected] = useState(false);
+  const [bulk] = useState([]);
 
-    this.state = {
-      bulk: [],
-      isAllSelected: false
-    };
-  }
+  const {
+    queryParams
+  } = props;
 
-  render() {
-    const {
-      queryParams,
-      engageMessagesQuery,
-      engageMessagesTotalCountQuery
-    } = this.props;
+  const {
+    loading: engageMessagesLoading,
+    error: engageMessagesError,
+    data: engageMessagesData
+  } = useQuery<EngageMessagesQueryResponse, ListQueryVariables>(
+    gql(queries.engageMessages), {
+    variables: generateListQueryVariables(props)
+  });
 
-    const updatedProps = {
-      kind: queryParams.kind,
-      messages: engageMessagesQuery.engageMessages || [],
-      totalCount: engageMessagesTotalCountQuery.engageMessagesTotalCount || 0,
-      bulk: this.state.bulk,
-      isAllSelected: this.state.isAllSelected,
-      queryParams,
-      loading: engageMessagesQuery.loading
-    };
+  const {
+    loading: engageMessagesTotalCountLoading,
+    error: engageMessagesTotalCountError,
+    data: engageMessagesTotalCountData
+  } = useQuery<EngageMessagesTotalCountQueryResponse, ListQueryVariables>(
+    gql(queries.engageMessagesTotalCount), {
+    variables: generateListQueryVariables(props)
+  });
 
-    const content = props => {
-      return <MessageList {...updatedProps} {...props} />;
-    };
+  if (engageMessagesTotalCountLoading) {
+    return <Spinner objective={true} />;
+  };
 
-    return <Bulk content={content} />;
-  }
-}
+  if (engageMessagesError || engageMessagesTotalCountError) {
+    const error = checkError([engageMessagesError, engageMessagesTotalCountError]);
 
-const MessageListContainerWithData = withProps<Props>(
-  compose(
-    graphql<Props, EngageMessagesQueryResponse, ListQueryVariables>(
-      gql(queries.engageMessages),
-      {
-        name: 'engageMessagesQuery',
-        options: props => ({
-          variables: generateListQueryVariables(props)
-        })
-      }
-    ),
-    graphql<Props, EngageMessagesTotalCountQueryResponse, ListQueryVariables>(
-      gql(queries.engageMessagesTotalCount),
-      {
-        name: 'engageMessagesTotalCountQuery',
-        options: props => ({
-          variables: generateListQueryVariables(props)
-        })
-      }
-    )
-  )(MessageListContainer)
-);
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  };
+
+  const updatedProps = {
+    kind: queryParams.kind,
+    messages: engageMessagesData ? engageMessagesData.engageMessages : [],
+    totalCount: engageMessagesTotalCountData ? engageMessagesTotalCountData.engageMessagesTotalCount : 0,
+    bulk,
+    isAllSelected,
+    queryParams,
+    loading: engageMessagesLoading
+  };
+
+  const content = lastprops => {
+    return <MessageList {...updatedProps} {...lastprops} />;
+  };
+
+  return <Bulk content={content} />;
+};
 
 const EngageListContainer = (props: IRouterProps & Props) => {
   const queryParams = queryString.parse(props.location.search);
 
   const extendedProps = { ...props, queryParams };
 
-  return <MessageListContainerWithData {...extendedProps} />;
+  return <MessageListContainer {...extendedProps} />;
 };
 
 export default withRouter<IRouterProps & Props>(EngageListContainer);

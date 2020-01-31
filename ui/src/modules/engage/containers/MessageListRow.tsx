@@ -23,9 +23,11 @@ type Props = {
   toggleBulk: (value: IEngageMessage, isChecked: boolean) => void;
   message: IEngageMessage;
   queryParams: any;
-} & IRouterProps;
+};
+type FinalProps = {
+} & IRouterProps & Props;
 
-function MessageRowContainer(props: Props) {
+function MessageRowContainer(props: FinalProps) {
   const {
     history,
     message,
@@ -174,4 +176,4 @@ function MessageRowContainer(props: Props) {
   return <MessageListRow {...updatedProps} />;
 };
 
-export default withRouter<Props>(MessageRowContainer);
+export default withRouter<FinalProps>(MessageRowContainer);

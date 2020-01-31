@@ -1,11 +1,10 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import { IUser } from 'modules/auth/types';
-import { withProps } from 'modules/common/utils';
-import { AddMutationResponse } from 'modules/segments/types';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import { IBrand } from 'modules/settings/brands/types';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import { EmailTemplatesQueryResponse } from '../../settings/emailTemplates/containers/List';
 import AutoAndManualForm from '../components/AutoAndManualForm';
 import FormBase from '../components/FormBase';
@@ -24,19 +23,28 @@ type FinalProps = {
   users: IUser[];
   isActionLoading: boolean;
   save: (doc: IEngageMessageDoc) => Promise<any>;
-} & Props &
-  AddMutationResponse;
+} & Props;
 
-const AutoAndManualFormContainer = (props: FinalProps) => {
-  const { emailTemplatesQuery } = props;
+function AutoAndManualFormContainer(props: FinalProps) {
 
-  if (emailTemplatesQuery.loading) {
-    return null;
-  }
+  const {
+    loading: emailTemplatesLoading,
+    error: emailTemplatesError,
+    data: emailTemplatesData
+  } = useQuery<EmailTemplatesQueryResponse>(
+    gql(queries.emailTemplates));
+
+  if (emailTemplatesLoading) {
+    return <Spinner objective={true} />;
+  };
+
+  if (emailTemplatesError) {
+    return <ErrorMsg>{emailTemplatesError.message}</ErrorMsg>;
+  };
 
   const updatedProps = {
     ...props,
-    templates: emailTemplatesQuery.emailTemplates || []
+    templates: emailTemplatesData ? emailTemplatesData.emailTemplates : []
   };
 
   const content = formProps => (
@@ -46,12 +54,4 @@ const AutoAndManualFormContainer = (props: FinalProps) => {
   return <FormBase kind={props.kind || ''} content={content} />;
 };
 
-export default withFormMutations<Props>(
-  withProps<Props>(
-    compose(
-      graphql<Props, EmailTemplatesQueryResponse>(gql(queries.emailTemplates), {
-        name: 'emailTemplatesQuery'
-      })
-    )(AutoAndManualFormContainer)
-  )
-);
+export default withFormMutations<Props>(AutoAndManualFormContainer);
