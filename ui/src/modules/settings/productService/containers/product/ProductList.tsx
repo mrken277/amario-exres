@@ -8,6 +8,7 @@ import List from '../../components/product/ProductList';
 import { mutations, queries } from '../../graphql';
 import {
   CategoryDetailQueryResponse,
+  IProductCategory,
   ProductRemoveMutationResponse,
   ProductsCountQueryResponse,
   ProductsQueryResponse
@@ -49,7 +50,7 @@ const ProductListContainer = (props: Props) => {
     data: productCategoryDetailQueryData
   } = useQuery<CategoryDetailQueryResponse>(gql(queries.productCategoryDetail), {
     variables: {
-      _id: queryParams.categoryId
+      _id: queryParams.categoryId || ''
     }
   });
 
@@ -90,7 +91,7 @@ const ProductListContainer = (props: Props) => {
     remove,
     loading: productsQueryLoading,
     productsCount: productsCountQueryData ? productsCountQueryData.productsTotalCount : 0,
-    currentCategory: productCategoryDetailQueryData ? productCategoryDetailQueryData.productCategoryDetail : {}
+    currentCategory: (productCategoryDetailQueryData && productCategoryDetailQueryData.productCategoryDetail) ? productCategoryDetailQueryData.productCategoryDetail : {} as IProductCategory
   };
 
   const productList = listProps => {

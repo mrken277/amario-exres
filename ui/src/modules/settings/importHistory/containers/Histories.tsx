@@ -1,133 +1,106 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import { IRouterProps } from 'modules/common/types';
-import { Alert, router, withProps } from 'modules/common/utils';
+import { Alert, router } from 'modules/common/utils';
 import { generatePaginationParams } from 'modules/common/utils/router';
-import React from 'react';
-import { graphql } from 'react-apollo';
+import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import Histories from '../components/Histories';
 import { mutations, queries } from '../graphql';
-import { ImportHistoriesQueryResponse, RemoveMutationResponse } from '../types';
+import { IImportHistoryItem, ImportHistoriesQueryResponse, RemoveMutationResponse } from '../types';
 
 type Props = {
   queryParams: any;
   showLoadingBar: (isRemovingImport: boolean) => void;
   closeLoadingBar: () => void;
   isDoneIndicatorAction: boolean;
-};
+} & IRouterProps;
 
-type FinalProps = {
-  historiesQuery: ImportHistoriesQueryResponse;
-} & Props &
-  IRouterProps &
-  RemoveMutationResponse;
+const HistoriesContainer = (props: Props) => {
+  const [loading] = useState(false);
+  const { isDoneIndicatorAction, queryParams, closeLoadingBar, showLoadingBar, history } = props;
 
-type State = {
-  loading: boolean;
-};
+  const {
+    loading: historiesQueryLoading,
+    error: historiesQueryError,
+    data: historiesQueryData,
+    refetch: historiesQueryRefetch
+  } = useQuery<ImportHistoriesQueryResponse, { type: string }>(
+    gql(queries.histories),
+    {
+      variables: {
+        ...generatePaginationParams(queryParams),
+        type: queryParams.type || 'customer'
+      },
+      fetchPolicy: 'network-only'
+    }
+  );
 
-class HistoriesContainer extends React.Component<FinalProps, State> {
-  constructor(props: FinalProps) {
-    super(props);
+  const [importHistoriesRemove, { error: importHistoriesRemoveError }] =
+    useMutation<RemoveMutationResponse, { _id: string }>(
+      gql(mutations.importHistoriesRemove), {
+      refetchQueries: ['importHistories']
+    });
 
-    this.state = {
-      loading: false
-    };
+  useEffect(() => {
+    historiesQueryRefetch()
+  }, [isDoneIndicatorAction]);
+
+  if (historiesQueryError || importHistoriesRemoveError) {
+    return <p>Error!</p>;
   }
 
-  componentDidUpdate(prevProps: FinalProps) {
-    if (this.props.isDoneIndicatorAction !== prevProps.isDoneIndicatorAction) {
-      this.props.historiesQuery.refetch();
-    }
+  if (historiesQueryLoading) {
+    return <p>Loading...</p>;
   }
 
-  render() {
-    const {
-      historiesQuery,
-      history,
-      importHistoriesRemove,
-      showLoadingBar,
-      closeLoadingBar
-    } = this.props;
+  if (!router.getParam(history, 'type')) {
+    router.setParams(history, { type: 'customer' }, true);
+  }
 
-    if (!router.getParam(history, 'type')) {
-      router.setParams(history, { type: 'customer' }, true);
-    }
+  const currentType = router.getParam(history, 'type');
 
-    const currentType = router.getParam(history, 'type');
+  const removeHistory = historyId => {
+    // reset top indicator
+    closeLoadingBar();
 
-    const removeHistory = historyId => {
-      // reset top indicator
-      closeLoadingBar();
+    localStorage.setItem('erxes_import_data', historyId);
+    localStorage.setItem('erxes_import_data_type', 'remove');
 
-      localStorage.setItem('erxes_import_data', historyId);
-      localStorage.setItem('erxes_import_data_type', 'remove');
+    showLoadingBar(true);
 
-      showLoadingBar(true);
-
-      importHistoriesRemove({
-        variables: { _id: historyId }
+    importHistoriesRemove({
+      variables: { _id: historyId }
+    })
+      .then(() => {
+        historiesQueryRefetch();
       })
-        .then(() => {
-          historiesQuery.refetch();
-        })
-        .catch(e => {
-          Alert.error(e.message);
-          closeLoadingBar();
-        });
-    };
+      .catch(e => {
+        Alert.error(e.message);
+        closeLoadingBar();
+      });
+  };
 
-    const histories = historiesQuery.importHistories || {};
+  const histories = historiesQueryData ? historiesQueryData.importHistories : {} as IImportHistoryItem;
 
-    const updatedProps = {
-      ...this.props,
-      histories: histories.list || [],
-      loading: historiesQuery.loading || this.state.loading,
-      removeHistory,
-      currentType,
-      totalCount: histories.count || 0
-    };
+  const updatedProps = {
+    ...props,
+    histories: histories.list || [],
+    loading: historiesQueryLoading || loading,
+    removeHistory,
+    currentType,
+    totalCount: histories.count || 0
+  };
 
-    return <Histories {...updatedProps} />;
-  }
+  return <Histories {...updatedProps} />;
 }
-
-const historiesListParams = queryParams => ({
-  ...generatePaginationParams(queryParams),
-  type: queryParams.type || 'customer'
-});
-
-const HistoriesWithProps = withProps<Props>(
-  compose(
-    graphql<Props, ImportHistoriesQueryResponse, { type: string }>(
-      gql(queries.histories),
-      {
-        name: 'historiesQuery',
-        options: ({ queryParams }) => ({
-          fetchPolicy: 'network-only',
-          variables: historiesListParams(queryParams)
-        })
-      }
-    ),
-    graphql<Props, RemoveMutationResponse, { _id: string }>(
-      gql(mutations.importHistoriesRemove),
-      {
-        name: 'importHistoriesRemove',
-        options: {
-          refetchQueries: ['importHistories']
-        }
-      }
-    )
-  )(withRouter<FinalProps>(HistoriesContainer))
-);
 
 const WithConsumer = props => {
   return (
     <AppConsumer>
       {({ showLoadingBar, closeLoadingBar, isDoneIndicatorAction }) => (
-        <HistoriesWithProps
+        <HistoriesContainer
           {...props}
           showLoadingBar={showLoadingBar}
           closeLoadingBar={closeLoadingBar}
@@ -138,4 +111,4 @@ const WithConsumer = props => {
   );
 };
 
-export default WithConsumer;
+export default withRouter<IRouterProps>(WithConsumer);
