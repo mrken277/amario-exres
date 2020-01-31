@@ -6,6 +6,7 @@ import React from 'react';
 import PermissionList from '../components/PermissionList';
 import { mutations, queries } from '../graphql';
 import {
+  IUserGroup,
   PermissionActionsQueryResponse,
   PermissionModulesQueryResponse,
   PermissionRemoveMutationResponse,
@@ -110,6 +111,9 @@ const List = (props: FinalProps) => {
     return <p>Loading...</p>;
   }
 
+  const groups = usersGroupsQueryData ? usersGroupsQueryData.usersGroups : [];
+  const currentGroup = groups.find(group => queryParams.groupId === group._id) || {} as IUserGroup;
+
   const updatedProps = {
     ...props,
     queryParams,
@@ -119,8 +123,9 @@ const List = (props: FinalProps) => {
     modules: modulesQueryData ? modulesQueryData.permissionModules : [],
     actions: actionsQueryData ? actionsQueryData.permissionActions : [],
     permissions: permissionsQueryData ? permissionsQueryData.permissions : [],
-    groups: usersGroupsQueryData ? usersGroupsQueryData.usersGroups : [],
+    groups,
     isLoading,
+    currentGroupName: currentGroup.name,
     refetchQueries: commonOptions(queryParams)
   };
 
