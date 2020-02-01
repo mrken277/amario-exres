@@ -135,14 +135,16 @@ export default (props: IProps) => {
         name: 'archivedStagesQuery',
         skip: ({ type }) => type === 'item',
         options: ({ pipelineId, search }) => ({
-          variables: { pipelineId, search }
+          variables: { pipelineId, search },
+          fetchPolicy: 'network-only'
         })
       }),
       graphql<IProps>(gql(options.queries.archivedItemsQuery), {
         name: 'archivedItemsQuery',
         skip: ({ type }) => type === 'list',
         options: ({ pipelineId, search }) => ({
-          variables: { pipelineId, search }
+          variables: { pipelineId, search },
+          fetchPolicy: 'network-only'
         })
       }),
       graphql<IProps, SaveMutation, IItemParams>(
