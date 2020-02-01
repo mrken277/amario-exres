@@ -4,6 +4,7 @@ import {
   ICustomerLinks,
   IVisitorContact
 } from 'modules/customers/types';
+
 import { companyFactory } from './companies';
 import { integrationFacroty } from './integration';
 import { tagFactory } from './tags';
@@ -35,6 +36,7 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   firstName: 'string',
   lastName: 'string',
   phones: ['88888888'],
+  sex: 1,
   primaryPhone: 'string',
   primaryEmail: 'string',
   emails: ['erxes@gmail.com'],
@@ -62,5 +64,5 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
     email: 'dulamaa@yahoo.com',
     phone: '99889988'
   }),
-  code: 'string'
+  code: 'string',
 });
