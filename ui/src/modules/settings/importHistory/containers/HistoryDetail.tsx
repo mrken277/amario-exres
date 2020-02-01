@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import Spinner from 'modules/common/components/Spinner';
 import React, { useEffect, useState } from 'react';
 import HistoryDetail from '../components/HistoryDetail';
 import { queries, subscriptions } from '../graphql';
@@ -52,7 +53,7 @@ const HistoryDetailContainer = (props: { id: string }) => {
   }
 
   if (importHistoryDetailLoading) {
-    return <p>Loading...</p>;
+    return <Spinner />;
   }
 
   const importHistory = importHistoryDetailData ? importHistoryDetailData.importHistoryDetail : {} as IImportHistory;

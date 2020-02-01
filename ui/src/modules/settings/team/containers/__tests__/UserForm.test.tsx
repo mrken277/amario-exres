@@ -1,14 +1,60 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { configsDetailFactory } from 'modules/testing-utils/factories/settings/configs';
+import { queries as generalQueries } from 'modules/settings/general/graphql';
+import { channelFactory } from 'modules/testing-utils/factories/settings/channel';
+import { userGroupFactory } from 'modules/testing-utils/factories/settings/permissions';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
-import { mutations, queries } from '../../graphql';
-import ListContainer from '../List';
+import { queries as channelQueries } from '../../channels/graphql';
+import { queries as usersGroupsQueries } from '../../permissions/
+import UserFormContainer from '../UserForm';
 
 const configVariables = { code: '' };
+
+const getEnvQueryMock = {
+  request: {
+    query: gql(generalQueries.configsGetEnv)
+  },
+  result: {
+    data: {},
+  },
+};
+
+const channelsQueryMock = {
+  request: {
+    query: gql(channelQueries.channels)
+  },
+  result: {
+    data: {
+      channels: [
+        channelFactory.build(),
+        channelFactory.build({
+          _id: '1',
+          name: 'channel'
+        })
+      ]
+    },
+  },
+};
+
+const usersGroupsQueryMock = {
+  request: {
+    query: gql(usersGroupsQueries.usersGroups)
+  },
+  result: {
+    data: {
+      usersGroups: [
+        userGroupFactory.build(),
+        userGroupFactory.build({
+          _id: '1',
+          name: 'usergroup'
+        })
+      ]
+    },
+  },
+};
 
 const configErrorMock = {
   request: {
@@ -18,23 +64,6 @@ const configErrorMock = {
   result: {
     errors: [new GraphQLError('forced error')],
   }
-};
-
-const configQueryMock = {
-  request: {
-    query: gql(queries.configsDetail),
-    variables: configVariables,
-  },
-  result: {
-    data: {
-      configsDetail: [
-        configsDetailFactory.build(),
-        configsDetailFactory.build({
-          _id: 'id'
-        })
-      ]
-    },
-  },
 };
 
 const insertConfigMutationMocks = {
@@ -53,7 +82,7 @@ describe('Account default', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <ListContainer />
+        <UserFormContainer />
       </MockedProvider>
     );
 
@@ -71,7 +100,7 @@ describe('Account default', () => {
         mocks={[configErrorMock]}
         addTypename={false}
       >
-        <ListContainer />
+        <UserFormContainer />
       </MockedProvider>
     );
 
@@ -87,7 +116,7 @@ describe('Account default', () => {
         mocks={[configQueryMock, insertConfigMutationMocks]}
         addTypename={false}
       >
-        <ListContainer />
+        <UserFormContainer />
       </MockedProvider>
     );
 

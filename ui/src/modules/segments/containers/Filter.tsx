@@ -32,7 +32,7 @@ const FilterContainer = (props: Props) => {
   }
 
   if (segmentsQueryLoading) {
-    return <p>Loading...</p>;
+    return null;
   }
 
   const currentSegment = router.getParam(history, 'segment');

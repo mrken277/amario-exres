@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
+import Spinner from 'modules/common/components/Spinner';
 import { Alert, confirm } from 'modules/common/utils';
 import React, { useEffect, useState } from 'react';
 import ImportIndicator from '../components/ImportIndicator';
@@ -91,7 +92,7 @@ const ImportIndicatorContainer = (props: Props) => {
   }
 
   if (importHistoryDetailQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner />;
   }
 
   const importHistory = importHistoryDetailQueryData ? importHistoryDetailQueryData.importHistoryDetail : {} as IImportHistory;
