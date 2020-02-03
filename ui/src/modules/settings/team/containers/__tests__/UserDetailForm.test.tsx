@@ -2,90 +2,112 @@ import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { queries as channelQueries } from 'modules/settings/channels/graphql';
-import { queries as generalQueries } from 'modules/settings/general/graphql';
-import { queries as usersGroupsQueries } from 'modules/settings/permissions/graphql';
+import { userFactory } from 'modules/testing-utils/factories/auth';
+import { conversationFactory } from 'modules/testing-utils/factories/conversation';
 import { channelFactory } from 'modules/testing-utils/factories/settings/channel';
-import { userGroupFactory } from 'modules/testing-utils/factories/settings/permissions';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
-import UserFormContainer from '../UserForm';
+import { queries } from '../../graphql';
+import UserDetailFormContainer from '../UserDetailForm';
 
-const getEnvQueryMock = {
+const userDetailQueryMock = {
   request: {
-    query: gql(generalQueries.configsGetEnv)
+    query: gql(queries.userDetail),
+    variables: { _id: '1' },
   },
   result: {
-    data: {},
+    data: {
+      userDetail: [
+        userFactory.build(),
+        userFactory.build({
+          _id: '2'
+        })
+      ]
+    },
+  },
+};
+
+const userConversationsQueryMock = {
+  request: {
+    query: gql(queries.userConversations),
+    variables: {
+      _id: '1',
+      perPage: 20
+    },
+  },
+  result: {
+    data: {
+      userConversations: {
+        list: [
+          conversationFactory.build(),
+          conversationFactory.build({
+            _id: '2'
+          })
+        ],
+        totalCount: 0
+      }
+    },
   },
 };
 
 const channelsQueryMock = {
   request: {
-    query: gql(channelQueries.channels)
+    query: gql(channelQueries.channels),
+    variables: { _id: '1' },
   },
   result: {
     data: {
       channels: [
         channelFactory.build(),
         channelFactory.build({
-          _id: '1',
-          name: 'channel'
+          _id: '2'
         })
       ]
     },
   },
 };
 
-const usersGroupsQueryMock = {
+const userDetailErrorMock = {
   request: {
-    query: gql(usersGroupsQueries.usersGroups)
-  },
-  result: {
-    data: {
-      usersGroups: [
-        userGroupFactory.build(),
-        userGroupFactory.build({
-          _id: '1',
-          name: 'usergroup'
-        })
-      ]
-    },
-  },
-};
-
-const getEnvQueryErrorMock = {
-  request: {
-    query: gql(generalQueries.configsGetEnv)
+    query: gql(queries.userDetail),
+    variables: { _id: '1' }
   },
   result: {
     errors: [new GraphQLError('forced error')],
   }
 };
 
-const channelsQueryErrorMock = {
+const userConversationsErrorMock = {
   request: {
-    query: gql(channelQueries.channels)
+    query: gql(queries.userConversations),
+    variables: { _id: '1', perPage: 20 }
   },
   result: {
     errors: [new GraphQLError('forced error')],
   }
 };
 
-const usersGroupsQueryErrorMock = {
+const channelsErrorMock = {
   request: {
-    query: gql(usersGroupsQueries.usersGroups)
+    query: gql(channelQueries.channels),
+    variables: { _id: '1' }
   },
   result: {
     errors: [new GraphQLError('forced error')],
   }
 };
 
-describe('UserForm', () => {
+const props = {
+  _id: '1',
+  queryParams: {}
+}
+
+describe('UserDetailForm', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <UserFormContainer />
+        <UserDetailFormContainer {...props} />
       </MockedProvider>
     );
 
@@ -100,10 +122,10 @@ describe('UserForm', () => {
   it('error', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[getEnvQueryErrorMock, channelsQueryErrorMock, usersGroupsQueryErrorMock]}
+        mocks={[userDetailErrorMock, userConversationsErrorMock, channelsErrorMock]}
         addTypename={false}
       >
-        <UserFormContainer />
+        <UserDetailFormContainer {...props} />
       </MockedProvider>
     );
 
@@ -116,10 +138,10 @@ describe('UserForm', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[getEnvQueryMock, channelsQueryMock, usersGroupsQueryMock]}
+        mocks={[userDetailQueryMock, userConversationsQueryMock, channelsQueryMock]}
         addTypename={false}
       >
-        <UserFormContainer />
+        <UserDetailFormContainer {...props} />
       </MockedProvider>
     );
 

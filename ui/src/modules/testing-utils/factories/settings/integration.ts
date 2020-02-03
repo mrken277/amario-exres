@@ -13,7 +13,7 @@ export const uiOptionsFactory = Factory.Sync.makeFactory<IUiOptions>({
   logoPreviewUrl: '/erxes'
 });
 
-export const integrationFacroty = Factory.Sync.makeFactory<IIntegration>({
+export const integrationFactory = Factory.Sync.makeFactory<IIntegration>({
   _id: '3',
   kind: 'messenger',
   name: 'name',
