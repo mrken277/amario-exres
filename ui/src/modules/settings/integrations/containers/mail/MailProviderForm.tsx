@@ -1,8 +1,7 @@
 import ButtonMutate from 'modules/common/components/ButtonMutate';
-import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
+import { IButtonMutateProps } from 'modules/common/types';
 import { mutations } from 'modules/settings/integrations/graphql';
 import React from 'react';
-import { withRouter } from 'react-router';
 import ImapForm from '../../components/mail/ImapForm';
 import MailAuthForm from '../../components/mail/MailAuthForm';
 
@@ -13,9 +12,7 @@ type Props = {
   closeModal: () => void;
 };
 
-type FinalProps = {} & IRouterProps & Props;
-
-class MailProviderFormContainer extends React.Component<FinalProps> {
+class MailProviderFormContainer extends React.Component<Props> {
   renderButton = ({
     name,
     values,
@@ -56,4 +53,4 @@ class MailProviderFormContainer extends React.Component<FinalProps> {
   }
 }
 
-export default withRouter<FinalProps>(MailProviderFormContainer);
+export default MailProviderFormContainer;

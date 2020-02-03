@@ -1,9 +1,8 @@
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import { IUser } from 'modules/auth/types';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import UserResetPasswordForm from '../components/UserResetPasswordForm';
 import { mutations } from '../graphql';
 import { ResetMemberPasswordResponse } from '../types';
@@ -13,10 +12,16 @@ type Props = {
   closeModal: () => void;
 };
 
-const UserResetPasswordContainer = (
-  props: Props & ResetMemberPasswordResponse
-) => {
-  const { usersResetMemberPassword } = props;
+const UserResetPasswordContainer = (props: Props) => {
+  const [usersResetMemberPassword, { error: usersResetMemberPasswordError }] =
+    useMutation<ResetMemberPasswordResponse>(
+      gql(mutations.usersResetMemberPassword),
+      { refetchQueries: ['users'] }
+    );
+
+  if (usersResetMemberPasswordError) {
+    return <p>Error!</p>;
+  }
 
   const save = ({ _id, newPassword, repeatPassword }) => {
     if ((newPassword && !repeatPassword) || repeatPassword === 0) {
@@ -49,13 +54,4 @@ const UserResetPasswordContainer = (
   return <UserResetPasswordForm {...updatedProps} />;
 };
 
-export default withProps<Props>(
-  compose(
-    graphql(gql(mutations.usersResetMemberPassword), {
-      name: 'usersResetMemberPassword',
-      options: {
-        refetchQueries: ['users']
-      }
-    })
-  )(UserResetPasswordContainer)
-);
+export default UserResetPasswordContainer;

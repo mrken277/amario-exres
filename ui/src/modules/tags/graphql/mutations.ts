@@ -25,8 +25,15 @@ const remove = `
   }
 `;
 
+const tagger = `
+  mutation tagsTag($type: String!, $targetIds: [String!]!, $tagIds: [String!]!) {
+    tagsTag(type: $type, targetIds: $targetIds, tagIds: $tagIds)
+  }
+`;
+
 export default {
   add,
   edit,
-  remove
+  remove,
+  tagger
 };

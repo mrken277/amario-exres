@@ -1,10 +1,9 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { queries } from 'modules/auth/graphql';
+import { queries as authQueries } from 'modules/auth/graphql';
 import { IUser } from 'modules/auth/types';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import {
   GetNotificationByEmailMutationResponse,
   GetNotificationByEmailMutationVariables,
@@ -14,28 +13,55 @@ import {
   SaveNotificationConfigMutationVariables
 } from '../../../notifications/types';
 import NotificationSettings from '../components/NotificationSettings';
+import { mutations, queries } from '../graphql';
 
 type Props = {
-  notificationModulesQuery: NotificationModulesQueryResponse;
-  notificationConfigurationsQuery: NotificationConfigsQueryResponse;
   currentUser: IUser;
-} & GetNotificationByEmailMutationResponse &
-  SaveNotificationConfigMutationResponse;
+};
 
 const NotificationSettingsContainer = (props: Props) => {
+  const { currentUser } = props;
+
   const {
-    notificationModulesQuery,
-    notificationConfigurationsQuery,
-    configGetNotificationByEmailMutation,
-    saveNotificationConfigurationsMutation,
-    currentUser
-  } = props;
+    loading: notificationsModulesQueryLoading,
+    error: notificationsModulesQueryError,
+    data: notificationsModulesQueryData
+  } = useQuery<NotificationModulesQueryResponse>(gql(queries.notificationsModules));
+
+  const {
+    loading: getConfigurationsQueryLoading,
+    error: getConfigurationsQueryError,
+    data: getConfigurationsQueryData,
+    refetch: notificationConfigurationsQueryRefetch
+  } = useQuery<NotificationConfigsQueryResponse>(gql(queries.notificationsGetConfigurations));
+
+  const [configGetNotificationByEmailMutation, { error: configGetNotificationByEmailMutationError }] =
+    useMutation<GetNotificationByEmailMutationResponse, GetNotificationByEmailMutationVariables>(
+      gql(mutations.usersConfigGetNotificationByEmail), {
+      refetchQueries: [
+        {
+          query: gql(authQueries.currentUser)
+        }
+      ]
+    });
+
+  const [saveNotificationConfigurationsMutation, { error: notificationsSaveConfigMutationError }] =
+    useMutation<SaveNotificationConfigMutationResponse, SaveNotificationConfigMutationVariables>(
+      gql(mutations.notificationsSaveConfig));
+
+  if (notificationsModulesQueryError || getConfigurationsQueryError || configGetNotificationByEmailMutationError || notificationsSaveConfigMutationError) {
+    return <p>Error!</p>;
+  }
+
+  if (notificationsModulesQueryLoading || getConfigurationsQueryLoading) {
+    return <p>Loading...</p>;
+  }
 
   // save get notification by email
   const configGetNotificationByEmail = variables => {
     configGetNotificationByEmailMutation({ variables })
       .then(() => {
-        Alert.success('You successfully changed a notification setting');
+        Alert.success('You successfully changed a notification settings');
       })
       .catch(error => {
         Alert.success(error.message);
@@ -46,8 +72,8 @@ const NotificationSettingsContainer = (props: Props) => {
   const saveNotificationConfigurations = variables => {
     saveNotificationConfigurationsMutation({ variables })
       .then(() => {
-        Alert.success('You successfully changed a notification setting');
-        notificationConfigurationsQuery.refetch();
+        Alert.success('You successfully changed a notification settings');
+        notificationConfigurationsQueryRefetch();
       })
       .catch(error => {
         Alert.success(error.message);
@@ -55,7 +81,7 @@ const NotificationSettingsContainer = (props: Props) => {
   };
 
   const configs =
-    notificationConfigurationsQuery.notificationsGetConfigurations || [];
+    getConfigurationsQueryData ? getConfigurationsQueryData.notificationsGetConfigurations : [];
 
   // default value is checked
   let getNotificationByEmail = currentUser.getNotificationByEmail;
@@ -66,7 +92,7 @@ const NotificationSettingsContainer = (props: Props) => {
 
   const updatedProps = {
     ...props,
-    modules: notificationModulesQuery.notificationsModules || [],
+    modules: notificationsModulesQueryData ? notificationsModulesQueryData.notificationsModules : [],
     configs,
     saveNotificationConfigurations,
 
@@ -77,76 +103,4 @@ const NotificationSettingsContainer = (props: Props) => {
   return <NotificationSettings {...updatedProps} />;
 };
 
-export default withProps<{}>(
-  compose(
-    graphql<{}, NotificationModulesQueryResponse>(
-      gql`
-        query notificationsModules {
-          notificationsModules
-        }
-      `,
-      {
-        name: 'notificationModulesQuery'
-      }
-    ),
-    graphql<{}, NotificationConfigsQueryResponse>(
-      gql`
-        query notificationsGetConfigurations {
-          notificationsGetConfigurations {
-            _id
-            notifType
-            isAllowed
-          }
-        }
-      `,
-      {
-        name: 'notificationConfigurationsQuery'
-      }
-    ),
-    graphql<
-      {},
-      GetNotificationByEmailMutationResponse,
-      GetNotificationByEmailMutationVariables
-    >(
-      gql`
-        mutation usersConfigGetNotificationByEmail($isAllowed: Boolean) {
-          usersConfigGetNotificationByEmail(isAllowed: $isAllowed) {
-            _id
-          }
-        }
-      `,
-      {
-        name: 'configGetNotificationByEmailMutation',
-        options: () => ({
-          refetchQueries: [
-            {
-              query: gql(queries.currentUser)
-            }
-          ]
-        })
-      }
-    ),
-    graphql<
-      {},
-      SaveNotificationConfigMutationResponse,
-      SaveNotificationConfigMutationVariables
-    >(
-      gql`
-        mutation notificationsSaveConfig(
-          $notifType: String!
-          $isAllowed: Boolean
-        ) {
-          notificationsSaveConfig(
-            notifType: $notifType
-            isAllowed: $isAllowed
-          ) {
-            _id
-          }
-        }
-      `,
-      {
-        name: 'saveNotificationConfigurationsMutation'
-      }
-    )
-  )(NotificationSettingsContainer)
-);
+export default NotificationSettingsContainer;

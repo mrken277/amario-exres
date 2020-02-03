@@ -37,7 +37,7 @@ class Sidebar extends React.Component<FinalProps, State> {
     this.getCustomerDetail(this.props.conversation.customerId);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const currentDetail = this.props.customerDetailQuery;
     const nextDetail = nextProps.customerDetailQuery;
 

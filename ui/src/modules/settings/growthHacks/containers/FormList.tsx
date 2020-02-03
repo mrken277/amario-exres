@@ -1,9 +1,8 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import { queries } from 'modules/forms/graphql';
 import { FormsQueryResponse } from 'modules/forms/types';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import FormList from '../components/FormList';
 
 type Props = {
@@ -11,26 +10,29 @@ type Props = {
   stage: any;
 };
 
-type FinalProps = {
-  formsQuery: any;
-} & Props;
+const FormListContainer = (props: Props) => {
+  const {
+    loading: formsQueryLoading,
+    error: formsQueryError,
+    data: formsQueryData
+  } = useQuery<FormsQueryResponse>(gql(queries.forms));
 
-class FormListContainer extends React.Component<FinalProps> {
-  render() {
-    const { formsQuery } = this.props;
-    const forms = formsQuery.forms || [];
+  const forms = formsQueryData ? formsQueryData.forms : [];
 
-    const extendProps = {
-      ...this.props,
-      forms
-    };
+  const extendProps = {
+    ...props,
+    forms
+  };
 
-    return <FormList {...extendProps} />;
+  if (formsQueryError) {
+    return <p>Error!</p>;
   }
+
+  if (formsQueryLoading) {
+    return <p>Loading...</p>;
+  }
+
+  return <FormList {...extendProps} />;
 }
 
-export default compose(
-  graphql<Props, FormsQueryResponse>(gql(queries.forms), {
-    name: 'formsQuery'
-  })
-)(FormListContainer);
+export default FormListContainer;

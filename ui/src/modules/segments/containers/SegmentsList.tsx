@@ -1,9 +1,9 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { Alert, withProps } from 'modules/common/utils';
+import Spinner from 'modules/common/components/Spinner';
+import { Alert } from 'modules/common/utils';
 import { confirm } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import SegmentsList from '../components/SegmentsList';
 import { mutations, queries } from '../graphql';
 import { RemoveMutationResponse, SegmentsQueryResponse } from '../types';
@@ -12,13 +12,29 @@ type Props = {
   contentType: string;
 };
 
-type FinalProps = {
-  segmentsQuery: SegmentsQueryResponse;
-} & Props &
-  RemoveMutationResponse;
+const SegmentListContainer = (props: Props) => {
+  const { contentType } = props;
 
-const SegmentListContainer = (props: FinalProps) => {
-  const { segmentsQuery, removeMutation } = props;
+  const {
+    loading: segmentsQueryLoading,
+    error: segmentsQueryError,
+    data: segmentsQueryData
+  } = useQuery<SegmentsQueryResponse, { contentType: string }>(
+    gql(queries.segments),
+    {
+      variables: { contentType },
+      fetchPolicy: 'network-only'
+    }
+  );
+
+  const [removeMutation, { error: segmentsRemoveMutationError }] =
+    useMutation<RemoveMutationResponse, { _id: string }>(
+      gql(mutations.segmentsRemove), {
+      refetchQueries: [{
+        query: gql(queries.segments),
+        variables: { contentType }
+      }]
+    });
 
   const removeSegment = segmentId => {
     confirm().then(() => {
@@ -26,8 +42,6 @@ const SegmentListContainer = (props: FinalProps) => {
         variables: { _id: segmentId }
       })
         .then(() => {
-          segmentsQuery.refetch();
-
           Alert.success('You successfully deleted a segment');
         })
         .catch(error => {
@@ -36,33 +50,21 @@ const SegmentListContainer = (props: FinalProps) => {
     });
   };
 
+  if (segmentsQueryError || segmentsRemoveMutationError) {
+    return <p>Error!</p>;
+  }
+
+  if (segmentsQueryLoading) {
+    return <Spinner />;
+  }
+
   const updatedProps = {
     ...props,
-    segments: segmentsQuery.segments || [],
+    segments: segmentsQueryData ? segmentsQueryData.segments : [],
     removeSegment
   };
 
   return <SegmentsList {...updatedProps} />;
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, SegmentsQueryResponse, { contentType: string }>(
-      gql(queries.segments),
-      {
-        name: 'segmentsQuery',
-        options: ({ contentType }) => ({
-          fetchPolicy: 'network-only',
-          variables: { contentType }
-        })
-      }
-    ),
-
-    graphql<Props, RemoveMutationResponse, { _id: string }>(
-      gql(mutations.segmentsRemove),
-      {
-        name: 'removeMutation'
-      }
-    )
-  )(SegmentListContainer)
-);
+export default SegmentListContainer;

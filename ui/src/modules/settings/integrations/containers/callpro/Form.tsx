@@ -1,18 +1,15 @@
 import ButtonMutate from 'modules/common/components/ButtonMutate';
-import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
+import { IButtonMutateProps } from 'modules/common/types';
 import CallPro from 'modules/settings/integrations/components/callpro/Form';
 import { mutations } from 'modules/settings/integrations/graphql';
 import React from 'react';
-import { withRouter } from 'react-router';
 
 type Props = {
   type?: string;
   closeModal: () => void;
 };
 
-type FinalProps = {} & IRouterProps & Props;
-
-class CallProContainer extends React.Component<FinalProps> {
+class CallProContainer extends React.Component<Props> {
   renderButton = ({
     name,
     values,
@@ -43,4 +40,4 @@ class CallProContainer extends React.Component<FinalProps> {
   }
 }
 
-export default withRouter<FinalProps>(CallProContainer);
+export default CallProContainer;

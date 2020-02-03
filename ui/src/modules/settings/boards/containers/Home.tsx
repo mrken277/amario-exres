@@ -1,11 +1,10 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { BoardsGetLastQueryResponse } from 'modules/boards/types';
+import { BoardsGetLastQueryResponse, IBoard } from 'modules/boards/types';
 import Spinner from 'modules/common/components/Spinner';
 import { IRouterProps } from 'modules/common/types';
-import { router as routerUtils, withProps } from 'modules/common/utils';
-import React from 'react';
-import { graphql } from 'react-apollo';
+import { router as routerUtils } from 'modules/common/utils';
+import React, { useEffect } from 'react';
 import { withRouter } from 'react-router';
 import Home from '../components/Home';
 import { queries } from '../graphql';
@@ -22,33 +21,39 @@ type Props = {
   options?: IOption;
 };
 
-class HomeContainer extends React.Component<HomeContainerProps & Props> {
-  componentWillReceiveProps(nextProps) {
-    const { history, boardId } = nextProps;
+const HomeContainer = (props: HomeContainerProps & Props) => {
+  useEffect(() => {
+    const { history, boardId } = props;
 
     if (!routerUtils.getParam(history, 'boardId') && boardId) {
       routerUtils.setParams(history, { boardId });
     }
-  }
+  })
 
-  render() {
-    return <Home {...this.props} />;
-  }
+  return <Home {...props} />;
 }
 
-type LastBoardProps = {
-  boardGetLastQuery: BoardsGetLastQueryResponse;
-};
+type MainProps = IRouterProps & Props;
 
 // Getting lastBoard id to currentBoard
-const LastBoard = (props: LastBoardProps & Props) => {
-  const { boardGetLastQuery } = props;
+const LastBoardContainer = (props: MainProps) => {
+  const {
+    loading: boardGetLastQueryLoading,
+    error: boardGetLastQueryError,
+    data: boardGetLastQueryData
+  } = useQuery<BoardsGetLastQueryResponse>(gql(queries.boardGetLast),
+    { variables: { type: props.type } }
+  );
 
-  if (boardGetLastQuery.loading) {
+  if (boardGetLastQueryLoading) {
     return <Spinner objective={true} />;
   }
 
-  const lastBoard = boardGetLastQuery.boardGetLast || {};
+  if (boardGetLastQueryError) {
+    return <p>Error!</p>;
+  }
+
+  const lastBoard = boardGetLastQueryData ? boardGetLastQueryData.boardGetLast : {} as IBoard;
 
   const extendedProps = {
     ...props,
@@ -57,22 +62,6 @@ const LastBoard = (props: LastBoardProps & Props) => {
 
   return <HomeContainer {...extendedProps} />;
 };
-
-type MainProps = IRouterProps & Props;
-
-const LastBoardContainer = withProps<MainProps>(
-  compose(
-    graphql<MainProps, BoardsGetLastQueryResponse, {}>(
-      gql(queries.boardGetLast),
-      {
-        name: 'boardGetLastQuery',
-        options: ({ type }) => ({
-          variables: { type }
-        })
-      }
-    )
-  )(LastBoard)
-);
 
 // Main home component
 const MainContainer = (props: MainProps) => {

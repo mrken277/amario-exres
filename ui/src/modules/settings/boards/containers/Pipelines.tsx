@@ -1,12 +1,11 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { BoardDetailQueryResponse, PipelinesQueryResponse } from 'modules/boards/types';
+import { BoardDetailQueryResponse, IBoard, PipelinesQueryResponse } from 'modules/boards/types';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
 import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
-import { __, Alert, confirm, withProps } from 'modules/common/utils';
+import { __, Alert, confirm } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import Pipelines from '../components/Pipelines';
 import { mutations, queries } from '../graphql';
 import {
@@ -23,93 +22,114 @@ type Props = {
   options?: IOption;
 };
 
-type FinalProps = {
-  pipelinesQuery: PipelinesQueryResponse;
-  boardDetailQuery: BoardDetailQueryResponse;
-} & Props &
-  RemovePipelineMutationResponse &
-  UpdateOrderPipelineMutationResponse;
+const PipelinesContainer = (props: Props) => {
+  const { boardId } = props;
 
-class PipelinesContainer extends React.Component<FinalProps> {
-  render() {
-    const {
-      boardId,
-      pipelinesQuery,
-      removePipelineMutation,
-      pipelinesUpdateOrderMutation,
-      boardDetailQuery
-    } = this.props;
-
-    if (pipelinesQuery.loading) {
-      return <Spinner />;
+  const {
+    loading: pipelinesQueryLoading,
+    error: pipelinesQueryError,
+    data: pipelinesQueryData,
+    refetch: pipelinesQueryRefetch
+  } = useQuery<PipelinesQueryResponse, { boardId: string }>(
+    gql(queries.pipelines),
+    {
+      variables: { boardId },
+      fetchPolicy: 'network-only'
     }
+  );
 
-    const pipelines = pipelinesQuery.pipelines;
+  const {
+    loading: boardDetailQueryLoading,
+    error: boardDetailQueryError,
+    data: boardDetailQueryData
+  } = useQuery<BoardDetailQueryResponse>(gql(queries.boardDetail),
+    {
+      variables: { _id: boardId },
+      fetchPolicy: 'network-only'
+    }
+  );
 
-    // remove action
-    const remove = pipelineId => {
-      confirm().then(() => {
-        removePipelineMutation({
-          variables: { _id: pipelineId }
-        })
-          .then(() => {
-            pipelinesQuery.refetch({ boardId });
+  const [removePipelineMutation, { error: removePipelineMutationError }] =
+    useMutation<RemovePipelineMutationResponse, RemovePipelineMutationVariables>(
+      gql(mutations.pipelineRemove));
 
-            const msg = `${__(`You successfully deleted a`)} ${__(
-              'pipeline'
-            )}.`;
+  const [pipelinesUpdateOrderMutation, { error: pipelinesUpdateOrderError }] =
+    useMutation<UpdateOrderPipelineMutationResponse, UpdateOrderPipelineMutationVariables>(
+      gql(mutations.pipelinesUpdateOrder));
 
-            Alert.success(msg);
-          })
-          .catch(error => {
-            Alert.error(error.message);
-          });
-      });
-    };
-
-    const renderButton = ({
-      name,
-      values,
-      isSubmitted,
-      callback,
-      object
-    }: IButtonMutateProps) => {
-      return (
-        <ButtonMutate
-          mutation={object ? mutations.pipelineEdit : mutations.pipelineAdd}
-          variables={values}
-          callback={callback}
-          refetchQueries={getRefetchQueries(boardId)}
-          isSubmitted={isSubmitted}
-          type="submit"
-          successMessage={`You successfully ${
-            object ? 'updated' : 'added'
-          } a ${name}`}
-        />
-      );
-    };
-
-    const updateOrder = orders => {
-      pipelinesUpdateOrderMutation({
-        variables: { orders }
-      }).catch(error => {
-        Alert.error(error.message);
-      });
-    };
-
-    const extendedProps = {
-      ...this.props,
-      pipelines,
-      refetch: pipelinesQuery.refetch,
-      loading: pipelinesQuery.loading,
-      remove,
-      renderButton,
-      updateOrder,
-      currentBoard: boardDetailQuery.boardDetail || {},
-    };
-
-    return <Pipelines {...extendedProps} />;
+  if (pipelinesQueryLoading || boardDetailQueryLoading) {
+    return <Spinner />;
   }
+
+  if (pipelinesQueryError || boardDetailQueryError || removePipelineMutationError || pipelinesUpdateOrderError) {
+    return <p>Error!</p>;
+  }
+
+  const pipelines = pipelinesQueryData ? pipelinesQueryData.pipelines : [];
+
+  // remove action
+  const remove = pipelineId => {
+    confirm().then(() => {
+      removePipelineMutation({
+        variables: { _id: pipelineId }
+      })
+        .then(() => {
+          pipelinesQueryRefetch({ boardId })
+
+          const msg = `${__(`You successfully deleted a`)} ${__(
+            'pipeline'
+          )}.`;
+
+          Alert.success(msg);
+        })
+        .catch(error => {
+          Alert.error(error.message);
+        });
+    });
+  };
+
+  const renderButton = ({
+    name,
+    values,
+    isSubmitted,
+    callback,
+    object
+  }: IButtonMutateProps) => {
+    return (
+      <ButtonMutate
+        mutation={object ? mutations.pipelineEdit : mutations.pipelineAdd}
+        variables={values}
+        callback={callback}
+        refetchQueries={getRefetchQueries(boardId)}
+        isSubmitted={isSubmitted}
+        type="submit"
+        successMessage={`You successfully ${
+          object ? 'updated' : 'added'
+          } a ${name}`}
+      />
+    );
+  };
+
+  const updateOrder = orders => {
+    pipelinesUpdateOrderMutation({
+      variables: { orders }
+    }).catch(error => {
+      Alert.error(error.message);
+    });
+  };
+
+  const extendedProps = {
+    ...props,
+    pipelines,
+    refetch: pipelinesQueryRefetch,
+    loading: pipelinesQueryLoading,
+    remove,
+    renderButton,
+    updateOrder,
+    currentBoard: boardDetailQueryData ? boardDetailQueryData.boardDetail : {} as IBoard,
+  };
+
+  return <Pipelines {...extendedProps} />;
 }
 
 const getRefetchQueries = (boardId: string) => {
@@ -118,41 +138,4 @@ const getRefetchQueries = (boardId: string) => {
   ];
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, PipelinesQueryResponse, { boardId: string }>(
-      gql(queries.pipelines),
-      {
-        name: 'pipelinesQuery',
-        options: ({ boardId = '' }: { boardId: string }) => ({
-          variables: { boardId },
-          fetchPolicy: 'network-only'
-        })
-      }
-    ),
-    graphql<Props, BoardDetailQueryResponse>(
-      gql(queries.boardDetail),
-      {
-        name: 'boardDetailQuery',
-        options: ({ boardId }: { boardId?: string }) => ({
-          variables: { _id: boardId },
-          fetchPolicy: 'network-only'
-        })
-      }
-    ),
-    graphql<
-      Props,
-      RemovePipelineMutationResponse,
-      RemovePipelineMutationVariables
-    >(gql(mutations.pipelineRemove), {
-      name: 'removePipelineMutation'
-    }),
-    graphql<
-      Props,
-      UpdateOrderPipelineMutationResponse,
-      UpdateOrderPipelineMutationVariables
-    >(gql(mutations.pipelinesUpdateOrder), {
-      name: 'pipelinesUpdateOrderMutation'
-    })
-  )(PipelinesContainer)
-);
+export default PipelinesContainer;
