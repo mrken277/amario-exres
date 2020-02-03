@@ -58,12 +58,17 @@ export default class SimpleMessage extends React.Component<Props, {}> {
   renderVideoCall() {
     const { message } = this.props;
 
-    if (message.dailyStatus === 'end') {
+    const videoCallData = message.videoCallData || { status: 'end', url: '' };
+
+    console.log('videocall: ', videoCallData);
+
+    if (videoCallData.status === 'end') {
       return (
         <CallBox>
           <UserInfo>
             <strong>
-              <Icon icon="phone-slash" color="#EA475D" size={15} /> {__('Video call ended')}
+              <Icon icon="phone-slash" color="#EA475D" size={15} />{' '}
+              {__('Video call ended')}
             </strong>
           </UserInfo>
         </CallBox>
@@ -79,7 +84,7 @@ export default class SimpleMessage extends React.Component<Props, {}> {
           </h3>
         </UserInfo>
         <CallButton>
-          <a target="_blank" rel="noopener noreferrer" href={message.content}>
+          <a target="_blank" rel="noopener noreferrer" href={videoCallData.url}>
             {__('Join a call')}
           </a>
         </CallButton>
@@ -116,8 +121,6 @@ export default class SimpleMessage extends React.Component<Props, {}> {
     const { message, isStaff, isSameUser } = this.props;
     const messageDate = message.createdAt;
     const hasAttachment = message.attachments && message.attachments.length > 0;
-
-    console.log(message);
 
     const classes = classNames({
       ...(this.props.classes || []),

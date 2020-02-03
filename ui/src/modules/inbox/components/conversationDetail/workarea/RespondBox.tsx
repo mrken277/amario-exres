@@ -419,6 +419,7 @@ class RespondBox extends React.Component<Props, State> {
       <ManageVideoRoom
         refetch={refetchMessages}
         conversationId={conversation._id}
+        activeVideo={conversation.videoCallData}
       />
     );
   }

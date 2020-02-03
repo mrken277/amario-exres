@@ -9,7 +9,10 @@ export default `
   }
   mentionedUserIds
   conversationId
-  dailyStatus
+  videoCallData {
+    url
+    status
+  }
   internal
   fromBot
   contentType

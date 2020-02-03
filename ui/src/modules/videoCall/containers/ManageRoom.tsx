@@ -4,18 +4,20 @@ import { SmallLoader } from 'modules/common/components/ButtonMutate';
 import Icon from 'modules/common/components/Icon';
 import Tip from 'modules/common/components/Tip';
 import { __, Alert } from 'modules/common/utils';
-import { queries } from 'modules/inbox/graphql';
+import { IVideoCallData } from 'modules/inbox/types';
 import React, { useState } from 'react';
+import { mutations } from '../graphql';
 
 type Props = {
+  activeVideo?: IVideoCallData;
   conversationId: string;
-  refetch?: () => void;
+  refetch: () => void;
 };
 
 function ManageRoom(props: Props) {
   const [loading, setLoading] = useState(false);
 
-  const openWindow = (url, name: string, token: string) => {
+  const openWindow = (url: string, name: string) => {
     const height = 600;
     const width = 480;
 
@@ -23,46 +25,42 @@ function ManageRoom(props: Props) {
     const x = window.top.outerWidth / 2 + window.top.screenX - width / 2;
 
     window.open(
-      `/videoCall?url=${url}&name=${name}&t=${token}`,
+      `/videoCall?url=${url}&name=${name}`,
       '_blank',
       `toolbar=no,titlebar=no,directories=no,menubar=no,location=no,scrollbars=yes,status=no,height=${height},width=${width},top=${y},left=${x}`
     );
   };
 
   const createVideoRoom = () => {
-    const { conversationId, refetch } = props;
+    const { conversationId, refetch, activeVideo } = props;
 
-    setLoading(true);
-    client
-      .query({
-        query: gql(queries.getVideoRoom),
-        variables: {
-          _id: conversationId
-        },
-        fetchPolicy: 'network-only'
-      })
-      .then(({ data }: any) => {
-        const {
-          url,
-          name,
-          created,
-          ownerToken
-        } = data.conversationsGetVideoRoom;
+    if (activeVideo && activeVideo.url) {
+      openWindow(activeVideo.url, activeVideo.name || '');
+    } else {
+      setLoading(true);
 
-        if (created) {
-          if(refetch) {
-            refetch();
+      client
+        .mutate({
+          mutation: gql(mutations.createVideoChatRoom),
+          variables: {
+            _id: conversationId
           }
-        }
+        })
+        .then(({ data }: any) => {
+          refetch();
 
-        openWindow(url, name, ownerToken);
-        setLoading(false);
-      })
-      .catch(error => {
-        setLoading(false);
+          setLoading(false);
 
-        Alert.error(error.message);
-      });
+          const { url, name } = data.conversationCreateVideoChatRoom;
+
+          openWindow(url, name);
+        })
+        .catch(error => {
+          setLoading(false);
+
+          Alert.error(error.message);
+        });
+    }
   };
 
   return (

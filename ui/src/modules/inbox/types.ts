@@ -3,6 +3,12 @@ import { ICustomer } from '../customers/types';
 import { IIntegration } from '../settings/integrations/types';
 import { ITag } from '../tags/types';
 
+export interface IVideoCallData {
+  url: string;
+  name?: string;
+  status?: string;
+}
+
 export interface IConversation {
   _id: string;
   content?: string;
@@ -33,6 +39,7 @@ export interface IConversation {
   idleTime: number;
   facebookPost?: IFacebookPost;
   callProAudio?: string;
+  videoCallData?: IVideoCallData;
 }
 
 interface IEngageDataRules {
@@ -110,7 +117,7 @@ export interface IEngageData {
 
 export interface IMessage {
   content: string;
-  dailyStatus?: string;
+  videoCallData?: IVideoCallData;
   attachments?: any;
   mentionedUserIds?: string[];
   conversationId: string;

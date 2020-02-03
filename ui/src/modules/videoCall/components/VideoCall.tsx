@@ -49,9 +49,9 @@ class VideoCall extends React.Component<
   }
 
   componentDidMount() {
-    const { url, t } = this.props.queryParams;
+    const { url } = this.props.queryParams;
 
-    const owner = { url: `${url}?t=${t}` };
+    const owner = { url };
 
     this.callFrame = DailyIframe.createFrame(
       document.getElementById('call-frame-container'),
@@ -66,16 +66,16 @@ class VideoCall extends React.Component<
   }
 
   onDelete = () => {
+    const { name } = this.props.queryParams;
+
     this.setState({ loading: true });
     client
       .mutate({
         mutation: gql(mutations.deleteVideoChatRoom),
-        variables: {
-          name: this.props.queryParams.name
-        }
+        variables: { name }
       })
-      .then(({ data: { conversationDeleteVideoChatRoom: { deleted } } }) => {
-        if (deleted) {
+      .then(({ data: { conversationDeleteVideoChatRoom } }) => {
+        if (conversationDeleteVideoChatRoom) {
           window.close();
           this.setState({ loading: false });
         }
@@ -94,9 +94,9 @@ class VideoCall extends React.Component<
   }
 
   render() {
-    const { url, name, t } = this.props.queryParams;
+    const { url } = this.props.queryParams;
 
-    if (!url || !name || !t) {
+    if (!url) {
       return;
     }
 
