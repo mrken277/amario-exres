@@ -1,7 +1,9 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { IRouterProps } from 'modules/common/types';
 import { router } from 'modules/common/utils';
 import React from 'react';
+import { withRouter } from 'react-router';
 import Filter from '../components/Filter';
 import { queries } from '../graphql';
 import { Counts, SegmentsQueryResponse } from '../types';
@@ -12,7 +14,9 @@ type Props = {
   history?: any;
 };
 
-const FilterContainer = (props: Props) => {
+type FinalProps = {} & Props & IRouterProps;
+
+const FilterContainer = (props: FinalProps) => {
   const { history, contentType } = props;
 
   const {
@@ -57,4 +61,4 @@ const FilterContainer = (props: Props) => {
   return <Filter {...extendedProps} />;
 };
 
-export default FilterContainer;
+export default withRouter<FinalProps>(FilterContainer);

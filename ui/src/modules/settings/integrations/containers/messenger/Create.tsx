@@ -8,14 +8,6 @@ import { queries as brandQueries } from 'modules/settings/brands/graphql';
 import Form from 'modules/settings/integrations/components/messenger/Form';
 import { integrationsListParams } from 'modules/settings/integrations/containers/utils';
 import { mutations, queries } from 'modules/settings/integrations/graphql';
-import {
-  IMessengerData,
-  IUiOptions,
-  SaveMessengerAppearanceMutationResponse,
-  SaveMessengerConfigsMutationResponse,
-  SaveMessengerMutationResponse,
-  SaveMessengerMutationVariables
-} from 'modules/settings/integrations/types';
 import React from 'react';
 import { withRouter } from 'react-router';
 import { TopicsQueryResponse } from '../../../../knowledgeBase/types';
@@ -61,8 +53,7 @@ const CreateMessenger = (props: FinalProps) => {
   } = useQuery<TopicsQueryResponse>(gql(kbQueries.knowledgeBaseTopics));
 
   const [saveMessengerMutation, { error: saveMessengerMutationError }] =
-    useMutation<SaveMessengerMutationResponse, SaveMessengerMutationVariables>(
-      gql(mutations.integrationsCreateMessenger), {
+    useMutation(gql(mutations.integrationsCreateMessenger), {
       refetchQueries: [
         {
           query: gql(queries.integrations),
@@ -75,14 +66,12 @@ const CreateMessenger = (props: FinalProps) => {
     });
 
   const [saveConfigsMutation, { error: saveConfigsMutationError }] =
-    useMutation<SaveMessengerConfigsMutationResponse, { _id: string; messengerData: IMessengerData }>(
-      gql(mutations.integrationsSaveMessengerConfigs), {
+    useMutation(gql(mutations.integrationsSaveMessengerConfigs), {
       refetchQueries: commonRefetch
     });
 
   const [saveAppearanceMutation, { error: saveAppearanceMutationError }] =
-    useMutation<SaveMessengerAppearanceMutationResponse, { _id: string; uiOptions: IUiOptions }>(
-      gql(mutations.integrationsSaveMessengerAppearance), {
+    useMutation(gql(mutations.integrationsSaveMessengerAppearance), {
       refetchQueries: commonRefetch
     });
 
@@ -104,24 +93,24 @@ const CreateMessenger = (props: FinalProps) => {
       variables: { name, brandId, languageCode }
     })
       .then(({ data }) => {
-        // const id = data.integrationsCreateMessengerIntegration._id;
+        const id = data.integrationsCreateMessengerIntegration._id;
 
         return saveConfigsMutation({
-          variables: { _id: '', messengerData }
+          variables: { _id: id, messengerData }
         });
       })
       .then(({ data }) => {
-        // const id = data.integrationsSaveMessengerConfigs._id;
+        const id = data.integrationsSaveMessengerConfigs._id;
 
         return saveAppearanceMutation({
-          variables: { _id: '', uiOptions }
+          variables: { _id: id, uiOptions }
         });
       })
       .then(
         ({
-          // data: {
-          //   integrationsSaveMessengerAppearanceData: { _id }
-          // }
+          data: {
+            integrationsSaveMessengerAppearanceData: { _id }
+          }
         }) => {
           Alert.success('You successfully added an integration');
           history.push(
