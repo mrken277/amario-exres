@@ -1,22 +1,34 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import { IUser } from 'modules/auth/types';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import { queries, subscriptions } from 'modules/inbox/graphql';
-import { UnreadConversationsTotalCountQueryResponse } from 'modules/inbox/types';
-import React from 'react';
-import { graphql } from 'react-apollo';
+import React, { useEffect } from 'react';
 import strip from 'strip';
-import { sendDesktopNotification, withProps } from '../../common/utils';
+import { sendDesktopNotification } from '../../common/utils';
 import Navigation from '../components/Navigation';
 
-class NavigationContainer extends React.Component<{
-  unreadConversationsCountQuery: UnreadConversationsTotalCountQueryResponse;
+type FinalProps = {
   currentUser: IUser;
-}> {
-  componentWillMount() {
-    const { unreadConversationsCountQuery, currentUser } = this.props;
+};
 
-    unreadConversationsCountQuery.subscribeToMore({
+function NavigationContainer(props: FinalProps) {
+  const { currentUser } = props;
+  const {
+    data: unreadConversationsCountData,
+    error: unreadConversationsCountError,
+    loading: unreadConversationsCountLoading,
+    refetch: unreadConversationsCountRefetch,
+    subscribeToMore
+  } = useQuery(gql(queries.unreadConversationsCount), {
+    fetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true
+  }
+  );
+
+  useEffect(() => {
+    subscribeToMore({
       // listen for all conversation changes
       document: gql(subscriptions.conversationClientMessageInserted),
       variables: { userId: currentUser._id },
@@ -24,7 +36,7 @@ class NavigationContainer extends React.Component<{
         const { conversationClientMessageInserted } = data;
         const { content } = conversationClientMessageInserted;
 
-        this.props.unreadConversationsCountQuery.refetch();
+        unreadConversationsCountRefetch();
 
         sendDesktopNotification({
           title: 'You have a new message',
@@ -32,32 +44,25 @@ class NavigationContainer extends React.Component<{
         });
       }
     });
+  });
+
+  if (unreadConversationsCountError) {
+    return <ErrorMsg>{unreadConversationsCountError.message}</ErrorMsg>;
   }
 
-  render() {
-    const { unreadConversationsCountQuery } = this.props;
-    const unreadConversationsCount =
-      unreadConversationsCountQuery.conversationsTotalUnreadCount || 0;
+  if (unreadConversationsCountLoading) {
+    return <Spinner objective={true} />;
+  };
 
-    const props = {
-      unreadConversationsCount
-    };
+  const unreadConversationsCount =
+    unreadConversationsCountData ? unreadConversationsCountData.conversationsTotalUnreadCount : 0;
 
-    return <Navigation {...props} />;
-  }
+  const updateprops = {
+    unreadConversationsCount
+  };
+
+  return <Navigation {...updateprops} />;
+
 }
 
-export default withProps<{ currentUser: IUser }>(
-  compose(
-    graphql<{}, UnreadConversationsTotalCountQueryResponse>(
-      gql(queries.unreadConversationsCount),
-      {
-        name: 'unreadConversationsCountQuery',
-        options: () => ({
-          fetchPolicy: 'network-only',
-          notifyOnNetworkStatusChange: true
-        })
-      }
-    )
-  )(NavigationContainer)
-);
+export default NavigationContainer;
