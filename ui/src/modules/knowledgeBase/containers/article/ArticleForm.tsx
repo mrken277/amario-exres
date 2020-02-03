@@ -43,7 +43,7 @@ const ArticleContainer = (props: Props) => {
         isSubmitted={isSubmitted}
         successMessage={`You successfully ${
           object ? 'updated' : 'added'
-        } an ${name}`}
+          } an ${name}`}
       />
     );
   };
