@@ -27,7 +27,7 @@ function ListContainer(props: Props) {
 
   const [
     removeMutation,
-    { error: removeError, data: removeData }
+    { loading: removeLoading, error: removeError, data: removeData }
   ] = useMutation<RemoveMutationResponse, { _id: string }>(
     gql(mutations.checklistsRemove),
     {
@@ -37,7 +37,7 @@ function ListContainer(props: Props) {
 
   const [
     addItemMutation,
-    { error: addItemError }
+    { loading: addItemLoading, error: addItemError }
   ] = useMutation<AddItemMutationResponse, IChecklistItemDoc>(
     gql(mutations.checklistItemsAdd),
     {
@@ -62,7 +62,7 @@ function ListContainer(props: Props) {
     }
   });
 
-  if (checklistDetailLoading) {
+  if (checklistDetailLoading || removeLoading || addItemLoading) {
     return <Spinner objective={true} />;
   }
 
@@ -116,17 +116,17 @@ function ListContainer(props: Props) {
     isSubmitted,
     callback
   }: IButtonMutateProps) => {
-    const callBackResponse = () => {
-      if (callback) {
-        callback();
-      }
-    };
+    // const callBackResponse = () => {
+    //   if (callback) {
+    //     callback();
+    //   }
+    // };
 
     return (
       <ButtonMutate
         mutation={mutations.checklistsEdit}
         variables={values}
-        callback={callBackResponse}
+        callback={callback}
         refetchQueries={['checklistDetail']}
         isSubmitted={isSubmitted}
         btnSize="small"

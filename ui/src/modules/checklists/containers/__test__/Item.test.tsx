@@ -1,53 +1,69 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import ChecklistsContainer from 'modules/checklists/containers/Checklists';
-import { checkListFactory } from 'modules/testing-utils/factories/checkLists';
-import { withRouter } from 'modules/testing-utils/withRouter';
 import * as React from 'react';
 import { act, create } from 'react-test-renderer';
 import wait from 'waait';
-import { queries } from '../../graphql';
+import { mutations } from '../../graphql';
+import ItemContainer from '../Item';
 
+const item = {
+  _id: '1',
+  checklistId: 'string',
+  isChecked: true,
+  content: 'string',
+};
 
-const contentType = 'type';
-const contentTypeId = 'string';
-const stageId = 'string';
-const addItem = '';
+const convertToCard = {
+  name: 'string',
+  callback: () => 'void',
+};
 
-
-const checklistMock = {
+const checklistItemsEditMock = {
   request: {
-    query: gql(queries.checklists),
-    variables: { contentType: 'string', contentTypeId: 'string' }
+    query: gql(mutations.checklistItemsEdit),
+    variables: { _id: '' }
   },
   result: {
-    data: {
-      checklist: [
-        checkListFactory.build(),
-        checkListFactory.build({
-          _id: '2'
-        })
-      ]
-    }
+    data: { _id: '' }
   }
 };
 
-const checklistErrorMock = {
+const checklistItemsRemoveMock = {
   request: {
-    query: gql(queries.checklists),
-    variables: { contentType: 'string', contentTypeId: 'string' }
+    query: gql(mutations.checklistItemsRemove),
+    variables: { _id: '' }
+  },
+  result: {
+    data: { _id: '' }
+  }
+};
+
+const checklistItemsEditErrorMock = {
+  request: {
+    query: gql(mutations.checklistItemsEdit),
+    variables: { _id: '' }
   },
   result: {
     errors: [new GraphQLError('forced error')]
   }
 };
 
-describe('Checklist test', () => {
+const checklistItemsRemoveErrorMock = {
+  request: {
+    query: gql(mutations.checklistItemsRemove),
+    variables: { _id: '' }
+  },
+  result: {
+    errors: [new GraphQLError('forced error')]
+  }
+};
+
+describe('Checklist item', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <ChecklistsContainer contentType={contentType} contentTypeId={contentTypeId} stageId={stageId} addItem={addItem} />
+        <ItemContainer item={item} convertToCard={convertToCard} />
       </MockedProvider>
     );
 
@@ -62,12 +78,10 @@ describe('Checklist test', () => {
   it('should show error checklist', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[checklistErrorMock]}
+        mocks={[checklistItemsEditErrorMock, checklistItemsRemoveErrorMock]}
         addTypename={false}
       >
-        {withRouter(
-          <ChecklistsContainer contentType={contentType} contentTypeId={contentTypeId} stageId={stageId} addItem={addItem} />
-        )}
+        <ItemContainer item={item} convertToCard={convertToCard} />
       </MockedProvider>
     );
 
@@ -83,12 +97,10 @@ describe('Checklist test', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[checklistMock]}
+        mocks={[checklistItemsEditMock, checklistItemsRemoveMock]}
         addTypename={false}
       >
-        {withRouter(
-          <ChecklistsContainer contentType={contentType} contentTypeId={contentTypeId} stageId={stageId} addItem={addItem} />
-        )}
+        <ItemContainer item={item} convertToCard={convertToCard} />
       </MockedProvider>
     );
 

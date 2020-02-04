@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import checkError from 'modules/common/utils/checkError';
 import React from 'react';
 import Item from '../components/Item';
@@ -22,7 +23,7 @@ function ItemContainer(props: Props) {
 
   const [
     editItemMutation,
-    { error: editItemError }
+    { error: editItemError, loading: editItemLoading, }
   ] = useMutation<EditItemMutationResponse, EditItemMutationVariables>(
     gql(mutations.checklistItemsEdit),
     {
@@ -39,7 +40,7 @@ function ItemContainer(props: Props) {
 
   const [
     removeItemMutation,
-    { error: removeItemError }
+    { error: removeItemError, loading: removeItemLoading, }
   ] = useMutation<RemoveItemMutationResponse, { _id: string }>(
     gql(mutations.checklistItemsRemove),
     {
@@ -58,6 +59,10 @@ function ItemContainer(props: Props) {
     const error = checkError([removeItemError, editItemError]);
 
     return <ErrorMsg>{error.message}</ErrorMsg>;
+  }
+
+  if (removeItemLoading || editItemLoading) {
+    return <Spinner objective={true} />;
   }
 
   const editItem = (
