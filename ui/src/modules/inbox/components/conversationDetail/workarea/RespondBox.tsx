@@ -264,14 +264,14 @@ class RespondBox extends React.Component<Props, State> {
     return text.replace(/&nbsp;/g, ' ');
   }
 
-  addMessage = (contentType?: string) => {
+  addMessage = () => {
     const { conversation, sendMessage } = this.props;
     const { isInternal, attachments, content, mentionedUserIds } = this.state;
 
     const message = {
       conversationId: conversation._id,
       content: this.cleanText(content) || ' ',
-      contentType: contentType || 'text',
+      contentType: 'text',
       internal: isInternal,
       attachments,
       mentionedUserIds
