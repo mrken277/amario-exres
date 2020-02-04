@@ -1,4 +1,4 @@
-import { connection } from "./connection";
+import { connection } from './connection';
 
 const messageFields = `
   _id
@@ -15,7 +15,10 @@ const messageFields = `
   internal
   fromBot
   contentType
-  dailyStatus
+  videoCallData {
+    url
+    name
+  }
   engageData {
     content
     kind

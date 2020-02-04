@@ -60,8 +60,6 @@ export default class SimpleMessage extends React.Component<Props, {}> {
 
     const videoCallData = message.videoCallData || { status: 'end', url: '' };
 
-    console.log('videocall: ', videoCallData);
-
     if (videoCallData.status === 'end') {
       return (
         <CallBox>

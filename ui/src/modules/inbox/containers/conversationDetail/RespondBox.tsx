@@ -27,6 +27,7 @@ type Props = {
     }
   ) => void;
   refetchMessages: () => void;
+  refetchDetail: () => void;
 };
 
 type FinalProps = {

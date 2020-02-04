@@ -51,6 +51,7 @@ type Props = {
   responseTemplates: IResponseTemplate[];
   teamMembers: IUser[];
   refetchMessages: () => void;
+  refetchDetail: () => void;
 };
 
 type State = {
@@ -408,7 +409,7 @@ class RespondBox extends React.Component<Props, State> {
   }
 
   renderVideoRoom() {
-    const { conversation, refetchMessages } = this.props;
+    const { conversation, refetchMessages, refetchDetail } = this.props;
     const integration = conversation.integration || ({} as IIntegration);
 
     if (this.state.isInternal || integration.kind !== 'messenger') {
@@ -417,7 +418,8 @@ class RespondBox extends React.Component<Props, State> {
 
     return (
       <ManageVideoRoom
-        refetch={refetchMessages}
+        refetchMessages={refetchMessages}
+        refetchDetail={refetchDetail}
         conversationId={conversation._id}
         activeVideo={conversation.videoCallData}
       />

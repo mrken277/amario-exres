@@ -11,7 +11,8 @@ import { mutations } from '../graphql';
 type Props = {
   activeVideo?: IVideoCallData;
   conversationId: string;
-  refetch: () => void;
+  refetchDetail: () => void;
+  refetchMessages: () => void;
 };
 
 function ManageRoom(props: Props) {
@@ -32,7 +33,12 @@ function ManageRoom(props: Props) {
   };
 
   const createVideoRoom = () => {
-    const { conversationId, refetch, activeVideo } = props;
+    const {
+      conversationId,
+      activeVideo,
+      refetchDetail,
+      refetchMessages
+    } = props;
 
     if (activeVideo && activeVideo.url) {
       openWindow(activeVideo.url, activeVideo.name || '');
@@ -42,14 +48,13 @@ function ManageRoom(props: Props) {
       client
         .mutate({
           mutation: gql(mutations.createVideoChatRoom),
-          variables: {
-            _id: conversationId
-          }
+          variables: { _id: conversationId }
         })
         .then(({ data }: any) => {
-          refetch();
-
           setLoading(false);
+
+          refetchDetail();
+          refetchMessages();
 
           const { url, name } = data.conversationCreateVideoChatRoom;
 

@@ -1,13 +1,13 @@
-import * as classNames from "classnames";
-import * as moment from "moment";
-import * as React from "react";
-import * as xss from "xss";
-import { defaultAvatar } from "../../icons/Icons";
-import { IUser } from "../../types";
-import { readFile } from "../../utils";
-import { Attachment, User } from "../components/common";
-import { IAttachment, IMessengerAppData } from "../types";
-import VideoChatMessage from "./VideoChatMessage";
+import * as classNames from 'classnames';
+import * as moment from 'moment';
+import * as React from 'react';
+import * as xss from 'xss';
+import { defaultAvatar } from '../../icons/Icons';
+import { IUser } from '../../types';
+import { readFile } from '../../utils';
+import { Attachment, User } from '../components/common';
+import { IAttachment, IMessengerAppData, IVideoCallData } from '../types';
+import VideoChatMessage from './VideoChatMessage';
 
 type Props = {
   content: string;
@@ -17,14 +17,14 @@ type Props = {
   user?: IUser;
   color?: string;
   contentType?: string;
-  dailyStatus?: string;
+  videoCallData?: IVideoCallData;
 };
 
 class Message extends React.Component<Props> {
   renderMessengerAppMessage() {
     const { messengerAppData } = this.props;
     const image = messengerAppData.customer.avatar || defaultAvatar;
-    const name = messengerAppData.customer.firstName || "N/A";
+    const name = messengerAppData.customer.firstName || 'N/A';
 
     return (
       <div className="app-message-box">
@@ -50,20 +50,22 @@ class Message extends React.Component<Props> {
       user,
       content,
       contentType,
-      dailyStatus
+      videoCallData
     } = this.props;
-    const messageClasses = classNames("erxes-message", {
+    const messageClasses = classNames('erxes-message', {
       attachment: attachments && attachments.length > 0,
-      "from-customer": !user
+      'from-customer': !user
     });
     const hasAttachment = attachments && attachments.length > 0;
     const messageBackground = {
-      backgroundColor: !user ? color : ""
+      backgroundColor: !user ? color : ''
     };
 
-    if (contentType === "videoCall") {
+    if (contentType === 'videoCall') {
       return (
-        <VideoChatMessage invitationUrl={content} status={dailyStatus || ""} />
+        <VideoChatMessage
+          videoCallData={videoCallData || { status: 'end', url: '' }}
+        />
       );
     }
 
@@ -81,7 +83,7 @@ class Message extends React.Component<Props> {
 
   render() {
     const { user, createdAt } = this.props;
-    const itemClasses = classNames({ "from-customer": !user });
+    const itemClasses = classNames({ 'from-customer': !user });
 
     return (
       <li className={itemClasses}>
@@ -90,9 +92,9 @@ class Message extends React.Component<Props> {
         <div className="date">
           <span
             className="erxes-tooltip"
-            data-tooltip={moment(createdAt).format("YYYY-MM-DD, HH:mm:ss")}
+            data-tooltip={moment(createdAt).format('YYYY-MM-DD, HH:mm:ss')}
           >
-            {moment(createdAt).format("LT")}
+            {moment(createdAt).format('LT')}
           </span>
         </div>
       </li>

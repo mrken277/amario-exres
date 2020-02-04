@@ -25,6 +25,7 @@ let initialLimit = 10;
 type Props = {
   currentConversation: IConversation;
   currentId?: string;
+  refetchDetail: () => void;
 };
 
 type FinalProps = {

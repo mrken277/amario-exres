@@ -4,7 +4,7 @@ import {
   IIntegrationUiOptions,
   IParticipator,
   IUser
-} from "../types";
+} from '../types';
 
 export interface IEngageData {
   content: string;
@@ -23,6 +23,12 @@ export interface IAttachment {
 export interface IMessengerAppData {
   customer: ICustomer;
   hangoutLink: string;
+}
+
+export interface IVideoCallData {
+  url: string;
+  name?: string;
+  status?: string;
 }
 
 export interface IMessage {
