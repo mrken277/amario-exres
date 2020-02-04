@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import Spinner from 'modules/common/components/Spinner';
 import { Alert } from 'modules/common/utils';
 import { IIntegration } from 'modules/settings/integrations/types';
 import React from 'react';
@@ -73,7 +74,7 @@ const ChooseBrandContainer = (props: Props) => {
   }
 
   if (brandsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />;
   }
 
   const updatedProps = {

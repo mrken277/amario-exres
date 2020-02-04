@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
+import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
 import { Alert, confirm } from 'modules/common/utils';
 import React from 'react';
@@ -99,7 +100,7 @@ const SidebarContainer = (props: ChildProps<Props>) => {
   }
 
   if (brandsCountQueryLoading || brandsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />;
   }
 
   const updatedProps = {
