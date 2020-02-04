@@ -44,7 +44,8 @@ function EmailContainer(props: Props) {
     variables: {
       _id: emailId
     }
-  });
+  }
+  );
 
   if (engageMessageDetailQueryError || emailDeliveryDetailQueryError) {
     const error = checkError([engageMessageDetailQueryError, emailDeliveryDetailQueryError]);
@@ -54,6 +55,11 @@ function EmailContainer(props: Props) {
 
   if (engageMessageDetailQueryLoading || emailDeliveryDetailQueryLoading) {
     return <Spinner objective={true} />;
+  }
+
+
+  if (!emailDeliveryDetailQueryData) {
+    return null;
   }
 
   if (emailType === 'engage') {
@@ -69,12 +75,14 @@ function EmailContainer(props: Props) {
     );
   }
 
-  const updatedProps = {
-    ...props,
-    email: emailDeliveryDetailQueryData ? emailDeliveryDetailQueryData.emailDeliveryDetail : {} as IEmailDelivery
-  }
-
-  return <Email {...updatedProps} />;
+  return (
+    <Email
+      {...props}
+      email={emailDeliveryDetailQueryData ? emailDeliveryDetailQueryData.emailDeliveryDetail : {} as IEmailDelivery}
+    />
+  );
 }
 
 export default EmailContainer;
+
+

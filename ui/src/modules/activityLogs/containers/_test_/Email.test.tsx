@@ -4,14 +4,12 @@ import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { queries } from 'modules/activityLogs/graphql';
 import { queries as engageQueries } from 'modules/engage/graphql';
-import { emailDeliveryFactory, engageMessageFactory, segmentFactory } from 'modules/testing-utils/factories/engage';
-import { brandFactory } from 'modules/testing-utils/factories/settings/brands'
-import { tagFactory } from 'modules/testing-utils/factories/tags';
-import { userFactory } from 'modules/testing-utils/factories/user';
+import { emailDeliveryFactory } from 'modules/testing-utils/factories/email';
+import { engageMessageFactory } from 'modules/testing-utils/factories/engage';
 import { withRouter } from 'modules/testing-utils/withRouter';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
-import Email from '../items/Email';
+import EmailContainer from '../items/Email';
 
 const emailVariables = { _id: '11' };
 const activity = 'any';
@@ -48,20 +46,7 @@ const emailDeliveryMock = {
       emailDeliveryDetail: [
         emailDeliveryFactory.build(),
         emailDeliveryFactory.build({
-          _id: '33',
-          subject: 'test',
-          body: 'Body',
-          to: 'Dulam@yahoo.com',
-          cc: 'erxes@gmail.com',
-          bcc: 'erxes@nmma.co',
-          attachments: [JSON],
-          from: 'erxes',
-          kind: 'auto',
-          userId: '12',
-          customerId: '22',
-
-          fromUser: userFactory.build({ _id: '12' }),
-          fromEmail: 'erxes@nmma.co'
+          _id: '3'
         })
       ]
     },
@@ -78,19 +63,7 @@ const engageMessageMock = {
       engageMessageDetail: [
         engageMessageFactory.build(),
         engageMessageFactory.build({
-          _id: '4',
-          stopDate: new Date(),
-          createdDate: new Date(),
-          messengerReceivedCustomerIds: ['test', '4'],
-          brand: brandFactory.build({ _id: '3', name: 'Erxes' }),
-          segment: segmentFactory.build({ _id: '5' }),
-          fromUser: userFactory.build({ _id: '12' }),
-          tagIds: ['12', '13'],
-          getTags: [
-            tagFactory.build(),
-            tagFactory.build({ _id: '23' })
-          ],
-          title: 'test'
+          _id: '3'
         })
       ]
     },
@@ -100,9 +73,9 @@ const engageMessageMock = {
 
 describe('email', () => {
   it('should render loading state initially', () => {
-    const component = create(
+    const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <Email
+        <EmailContainer
           activity={activity}
           emailId={emailId}
           emailType={emailType}
@@ -110,20 +83,22 @@ describe('email', () => {
       </MockedProvider>
     );
 
-    const tree = component.toJSON();
-    expect(tree.children).toContain('Loading...');
+    const testInstance = testRenderer.root;
+    const loader = testInstance.findByProps({ objective: true }).type;
+
+    const spinner = loader({});
+
+    expect(spinner.props.objective).toEqual(false);
   });
 
   it('error', async () => {
-    const component = create(
-      <MockedProvider mocks={[engageMessageErrorMock, emailDeliveryErrorMock]} addTypename={false}>
-        {withRouter(
-          <Email
-            activity={activity}
-            emailId={emailId}
-            emailType={emailType}
-          />
-        )}
+    const testRenderer = create(
+      <MockedProvider mocks={[emailDeliveryErrorMock, engageMessageErrorMock]} addTypename={false}>
+        <EmailContainer
+          activity={activity}
+          emailId={emailId}
+          emailType={emailType}
+        />
       </MockedProvider>
     );
 
@@ -131,15 +106,16 @@ describe('email', () => {
       await wait(0);
     });
 
-    const tree = component.toJSON();
-    expect(tree.children).toContain('Error!');
+    const testInstance = testRenderer.root;
+    const span = testInstance.findByType('span');
+    expect(span.children).toContain('forced error');
   });
 
   it('should render content', async () => {
-    const component = create(
+    const testRenderer = create(
       <MockedProvider mocks={[emailDeliveryMock, engageMessageMock]} addTypename={false}>
         {withRouter(
-          <Email
+          <EmailContainer
             activity={activity}
             emailId={emailId}
             emailType={emailType}
@@ -149,7 +125,9 @@ describe('email', () => {
     );
     await wait(0);
 
-    const tree = component.toJSON();
+    const tree = testRenderer.toJSON();
     expect(tree).toBe(null);
   });
 });
+
+
