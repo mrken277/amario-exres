@@ -8,15 +8,7 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import ErrorMsg from '../../../common/components/ErrorMsg';
 import { queries } from '../../graphql';
-import {
-  CopyMutation,
-  DetailQueryResponse,
-  IItem,
-  IItemParams,
-  IOptions,
-  RemoveMutation,
-  SaveMutation
-} from '../../types';
+import { CopyMutation, DetailQueryResponse, IItem, IItemParams, IOptions, RemoveMutation, SaveMutation } from '../../types';
 import { invalidateCache } from '../../utils';
 import { PipelineConsumer } from '../PipelineContext';
 

@@ -1,147 +1,117 @@
+import { TabCaption, TabContainer } from 'modules/common/components/tabs/styles';
 import { colors } from 'modules/common/styles';
-import { lighten } from 'modules/common/styles/color';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 
 const FilterBox = styled.div`
-  h4 {
-    text-align: center;
-    font-size: 16px;
-    font-weight: 600;
-  }
-
   .Select {
-    margin-bottom: 10px;
-  }
-
-  .date-form input {
-    display: block;
-    border: none;
-    width: 100%;
-    height: 34px;
-    padding: 10px;
-    border-bottom: 1px solid ${colors.colorShadowGray};
-    background: none;
-    box-shadow: none;
-    border-radius: 0;
-    font-size: 12px;
+    margin-bottom: 15px;
   }
 
   input {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 `;
 
-const FilterDetail = styledTS<{ selected: boolean }>(styled.div)`
-  text-transform: none;
-  outline: 0;
-  padding: 5px 15px;
+const FilterButton = styledTS<{ selected?: boolean }>(styled.div)`
+  padding: 5px 20px;
   background: ${props =>
-    props.selected ? colors.colorSecondary : 'rgba(0, 0, 0, 0.04)'};
+    props.selected ? colors.colorSecondary : colors.bgActive};
   color: ${props =>
-    props.selected ? colors.colorWhite : colors.colorCoreGray};
-  font-size: 12px;
+    props.selected ? colors.colorWhite : colors.textSecondary};
+  line-height: 20px;
   width: 100%;
-  margin-left: 0;
-  margin-top: 10px;
-  text-align: left;
-  cursor: pointer;
+  margin-bottom: 10px;
   position: relative;
-  list-style: none;
   border-radius: 30px;
-`;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
 
-const DateFilter = styled.div`
-  margin-top: 20px;
-`;
-
-const FilterItem = styled.div`
-  position: relative;
-`;
-
-const ClearDate = styledTS<{ selected: boolean }>(styled.div)`
-  button {
-    position: absolute;
-    color: ${props =>
-      props.selected ? colors.colorWhite : colors.colorCoreGray};
-    right: 0;
-    bottom: 0px;
-    width: 32px;
-    padding: 5px 10px;
-    background: none;
-
-    &:hover {
-      color: ${props =>
-        props.selected ? colors.colorWhite : colors.colorCoreGray};
-    }
+  &:hover {
+    background: ${props => props.selected ? colors.colorPrimaryDark : colors.bgGray};
+    cursor: pointer;
   }
 `;
 
-const FilterBtn = styledTS<{ active?: boolean }>(styled.div)`
-  box-shadow: ${props =>
-    props.active
-      ? `0 2px 16px 0 ${lighten(colors.colorCoreGreen, 25)}`
-      : 'none'}; 
-  background: ${props =>
-    props.active ? colors.colorCoreGreen : 'transparent'};
-  border-radius: 30px;
-  transition: background-color 0.3s ease;
-  
-  button {
-    color: ${colors.colorWhite};
-    transition: background-color 0.3s ease;
-  }
-
-  span {
-    margin-left: 0;
-  }
-`;
-
-const ClearFilter = styled.div`
-  padding: 20px;
-`;
-
-const RemoveFilter = styled.span`
-  button {
-    padding: 0;
-    color: ${colors.colorWhite};
-    margin-right: 12px;
-    margin-left: -5px;
-    &:hover {
-      color: ${colors.borderPrimary};
-    }
-  }
-`;
-
-export const RightMenuContainer = styledTS<{ show?: boolean }>(styled.div)`
-  display: ${props => (props.show ? 'block' : 'none')};
+export const RightMenuContainer = styled.div`
   position: fixed;
-  z-index: 10;
-  top: 105px;
-  right: 20px;
+  z-index: 2;
+  top: 100px;
+  right: 0;
+  bottom: 0;
   width: 300px;
-  height: 800px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: ${colors.colorWhite};
-`;
+  background: ${colors.bgLight};
+  white-space: normal;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 24px -6px rgba(9,30,66,.25), 0 0 0 1px rgba(9,30,66,.08);
 
-export const Header = styled.div`
-  font-size: 12px;
-  padding: 10px 20px;
+  ${TabContainer} {
+    height: 40px;
+  }
+
+  ${TabCaption} {
+    padding: 10px 20px;
+  }
 `;
 
 export const TabContent = styled.div`
-  padding: 10px 20px 0 20px;
+  padding: 15px 20px 0px 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
 `;
 
-export {
-  FilterBox,
-  DateFilter,
-  ClearDate,
-  FilterBtn,
-  ClearFilter,
-  FilterItem,
-  FilterDetail,
-  RemoveFilter
-};
+const MenuFooter = styled.footer`
+  padding: 10px 20px;
+`;
+
+const ArchiveWrapper = styled.div`
+  height: 100%;
+  height: calc(100% - 60px);
+`;
+
+const TopBar = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-end;
+
+  > span {
+    flex: 1;
+    margin-right: 10px;
+    
+    input[type='text'] {
+      width: 100%;
+    }
+  }
+`;
+
+const ItemContainer = styled.div`
+  margin-bottom: 20px;
+  
+  > span {
+    text-decoration: underline;
+    color: ${colors.colorCoreGray};
+
+    &:hover {
+      cursor: pointer;
+      color: ${colors.textSecondary};
+    }
+  }
+`;
+
+const BoardItem = styled.div`
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
+  padding: 8px 10px;
+  outline: 0px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  background: ${colors.colorWhite};
+  font-weight: 500;
+`;
+
+export { FilterBox, FilterButton, MenuFooter, TopBar, ItemContainer, BoardItem, ArchiveWrapper };
+

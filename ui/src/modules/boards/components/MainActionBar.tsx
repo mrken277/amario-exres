@@ -1,5 +1,3 @@
-import { FilterBtn, RemoveFilter } from 'modules/boards/styles/rightMenu';
-import Button from 'modules/common/components/Button';
 import DropdownToggle from 'modules/common/components/DropdownToggle';
 import EmptyState from 'modules/common/components/EmptyState';
 import Icon from 'modules/common/components/Icon';
@@ -10,20 +8,13 @@ import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Link } from 'react-router-dom';
 import PipelineWatch from '../containers/PipelineWatch';
-import {
-  HeaderButton,
-  HeaderItems,
-  HeaderLabel,
-  HeaderLink,
-  PageHeader
-} from '../styles/header';
+import { HeaderButton, HeaderItems, HeaderLabel, HeaderLink, PageHeader } from '../styles/header';
 import { IBoard, IOptions, IPipeline } from '../types';
 import RightMenu from './RightMenu';
 
 type Props = {
   onSearch: (search: string) => void;
   onSelect: (values: string[] | string, name: string) => void;
-  onClear: (name: string, values) => void;
   isFiltered: () => boolean;
   clearFilter: () => void;
   currentBoard?: IBoard;
@@ -40,33 +31,11 @@ type Props = {
   options: IOptions;
 };
 
-type State = {
-  show: boolean;
-  target: any;
-};
-
-class MainActionBar extends React.Component<Props, State> {
+class MainActionBar extends React.Component<Props> {
   static defaultProps = {
     viewType: 'board',
     boardText: 'Board',
     pipelineText: 'Pipeline'
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      show: false,
-      target: null
-    };
-  }
-
-  showFilter = ({ target }) => {
-    this.setState(s => ({ target, show: !s.show }));
-  };
-
-  hideFilter = () => {
-    this.setState({ show: false });
   };
 
   renderBoards() {
@@ -136,55 +105,29 @@ class MainActionBar extends React.Component<Props, State> {
   }
 
   renderFilter() {
-    const hasFilter = this.props.isFiltered();
+    const isFiltered = this.props.isFiltered();
     const {
       onSearch,
       onSelect,
-      onClear,
       queryParams,
       link,
       extraFilter,
-      options
+      options,
+      clearFilter
     } = this.props;
 
     const rightMenuProps = {
-      onHide: this.hideFilter,
-      show: this.state.show,
       onSearch,
       onSelect,
-      onClear,
       queryParams,
       link,
       extraFilter,
-      options
+      options,
+      isFiltered,
+      clearFilter
     };
 
-    return (
-      <HeaderLink>
-        <Tip text={__('Menu')} placement="bottom">
-          <FilterBtn active={hasFilter}>
-            <Button
-              btnStyle={hasFilter ? 'success' : 'link'}
-              className={hasFilter ? 'filter-success' : 'filter-link'}
-              icon="menu-2"
-              onClick={this.showFilter}
-            >
-              {hasFilter && __('Filtering is on')}
-            </Button>
-            {hasFilter && (
-              <RemoveFilter>
-                <Button
-                  btnStyle="link"
-                  icon="cancel-1"
-                  onClick={this.props.clearFilter}
-                />
-              </RemoveFilter>
-            )}
-          </FilterBtn>
-        </Tip>
-        <RightMenu {...rightMenuProps} />
-      </HeaderLink>
-    );
+    return <RightMenu {...rightMenuProps} />;
   }
 
   renderVisibility() {

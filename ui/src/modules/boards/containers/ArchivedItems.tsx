@@ -1,11 +1,7 @@
 import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import { IRouterProps } from 'modules/common/types';
-import {
-  Alert,
-  renderWithProps,
-  router as routerUtils
-} from 'modules/common/utils';
+import { Alert, confirm, renderWithProps, router as routerUtils } from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
@@ -76,36 +72,40 @@ class ArchivedItemsContainer extends React.Component<IFinalProps> {
     if (this.props.type === 'item') {
       const { removeMutation, archivedItemsQuery, options } = this.props;
 
-      removeMutation({
-        variables: { _id: item._id }
-      })
-        .then(() => {
-          Alert.success(`You successfully deleted a ${options.type}`);
-
-          archivedItemsQuery.refetch();
+      confirm().then(() => 
+        removeMutation({
+          variables: { _id: item._id }
         })
-        .catch(error => {
-          Alert.error(error.message);
-        });
+          .then(() => {
+            Alert.success(`You successfully deleted a ${options.type}`);
+
+            archivedItemsQuery.refetch();
+          })
+          .catch(error => {
+            Alert.error(error.message);
+          })
+      );
     } else {
       const { removeStageMutation, archivedStagesQuery } = this.props;
 
-      removeStageMutation({
-        variables: { _id: item._id }
-      })
-        .then(() => {
-          Alert.success('You successfully deleted a stage');
-
-          archivedStagesQuery.refetch();
+      confirm().then(() => 
+        removeStageMutation({
+          variables: { _id: item._id }
         })
-        .catch(error => {
-          Alert.error(error.message);
-        });
+          .then(() => {
+            Alert.success('You successfully deleted a stage');
+
+            archivedStagesQuery.refetch();
+          })
+          .catch(error => {
+            Alert.error(error.message);
+          })
+      );
     }
   };
 
   render() {
-    const { archivedItemsQuery, archivedStagesQuery, options } = this.props;
+    const { archivedItemsQuery, archivedStagesQuery, options, type } = this.props;
 
     let items;
 
@@ -114,11 +114,13 @@ class ArchivedItemsContainer extends React.Component<IFinalProps> {
     } else {
       items = archivedStagesQuery.archivedStages || [];
     }
-
+    
     const props = {
       items,
       sendToBoard: this.sendToBoard,
-      remove: this.remove
+      remove: this.remove,
+      type,
+      options
     };
 
     return <ArchivedItems {...props} />;

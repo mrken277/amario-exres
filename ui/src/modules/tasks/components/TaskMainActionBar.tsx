@@ -28,13 +28,13 @@ const TaskMainActionBar = (props: Props) => {
   const extraFilter = (
     <>
       <SelectCompanies
-        label="Choose companies"
+        label="Filter by companies"
         name="companyIds"
         queryParams={queryParams}
         onSelect={onSelect}
       />
       <SelectCustomers
-        label="Choose customers"
+        label="Filter by customers"
         name="customerIds"
         queryParams={queryParams}
         onSelect={onSelect}

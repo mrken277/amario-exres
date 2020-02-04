@@ -85,19 +85,19 @@ const DealMainActionBar = (props: Props) => {
   const extraFilter = (
     <>
       <SelectProducts
-        label="Choose products"
+        label="Filter by products"
         name="productIds"
         queryParams={queryParams}
         onSelect={onSelect}
       />
       <SelectCompanies
-        label="Choose companies"
+        label="Filter by companies"
         name="companyIds"
         queryParams={queryParams}
         onSelect={onSelect}
       />
       <SelectCustomers
-        label="Choose customers"
+        label="Filter by customers"
         name="customerIds"
         queryParams={queryParams}
         onSelect={onSelect}

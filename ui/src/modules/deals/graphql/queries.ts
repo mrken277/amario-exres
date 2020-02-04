@@ -1,8 +1,5 @@
 import { commonFields } from 'modules/boards/graphql/mutations';
-import {
-  conformityQueryFieldDefs,
-  conformityQueryFields
-} from 'modules/conformity/graphql/queries';
+import { conformityQueryFieldDefs, conformityQueryFields } from 'modules/conformity/graphql/queries';
 
 const commonParams = `
   $companyIds: [String],
@@ -95,9 +92,8 @@ const archivedDeals = `
       page: $page,
       perPage: $perPage,
     ) {
-      _id
-      name
-      stageId
+      ${dealFields}
+      ${commonFields}
     }
   }
 `;

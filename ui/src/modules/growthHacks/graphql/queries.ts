@@ -203,9 +203,7 @@ const archivedGrowthHacks = `
       page: $page,
       perPage: $perPage,
     ) {
-      _id
-      name
-      stageId
+      ${growthHackFields}
     }
   }
 `;

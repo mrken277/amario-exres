@@ -1,64 +1,84 @@
 import Button from 'modules/common/components/Button';
 import { FormControl } from 'modules/common/components/form';
+import Icon from 'modules/common/components/Icon';
 import { Tabs, TabTitle } from 'modules/common/components/tabs';
-import Tip from 'modules/common/components/Tip';
 import { IOption } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
 import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMembers';
 import React from 'react';
 import Select from 'react-select-plus';
+import RTG from 'react-transition-group';
 import { PRIORITIES } from '../constants';
-import ArchivedItems from '../containers/ArchivedItems';
-import {
-  ClearDate,
-  DateFilter,
-  FilterBox,
-  FilterDetail,
-  FilterItem,
-  RightMenuContainer,
-  TabContent
-} from '../styles/rightMenu';
+import { FilterBox, FilterButton, MenuFooter, RightMenuContainer, TabContent } from '../styles/rightMenu';
 import { IOptions } from '../types';
+import Archive from './Archive';
 import SelectLabel from './label/SelectLabel';
 
 type Props = {
   onSearch: (search: string) => void;
   onSelect: (values: string[] | string, name: string) => void;
-  onClear: (name: string, values) => void;
   queryParams: any;
   link: string;
-  show: boolean;
   extraFilter?: React.ReactNode;
   options: IOptions;
+  isFiltered: boolean;
+  clearFilter: () => void;
 };
 
-const teamMemberCustomOption = {
-  value: '',
-  label: 'Assigned to no one'
+type StringState = {
+  currentTab: string;
 };
 
 type State = {
-  currentTab: string;
-  search: string;
-  type: string;
-};
+  showMenu: boolean;
+} & StringState;
 
 export default class RightMenu extends React.Component<Props, State> {
+  private wrapperRef;
+
   constructor(props) {
     super(props);
 
     this.state = {
       currentTab: 'Filter',
-      search: '',
-      type: 'item'
+      showMenu: false
     };
+
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
   }
+
+  setWrapperRef(node) {
+    this.wrapperRef = node;
+  }
+
+  componentDidMount() {
+    document.addEventListener('click', this.handleClickOutside, true);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClickOutside, true);
+  }
+
+  handleClickOutside = event => {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target) && this.state.currentTab === 'Filter') {
+      this.setState({ showMenu: false });
+    }
+  } 
+
+  toggleMenu = () => {
+    this.setState({ showMenu: !this.state.showMenu });
+  };
 
   onSearch = (e: React.KeyboardEvent<Element>) => {
     if (e.key === 'Enter') {
       const target = e.currentTarget as HTMLInputElement;
       this.props.onSearch(target.value || '');
     }
+  };
+
+  onChange = (name: string, value: string) => {
+    this.setState({ [name]: value } as Pick<StringState, keyof StringState>);
   };
 
   renderDates() {
@@ -68,46 +88,32 @@ export default class RightMenu extends React.Component<Props, State> {
       return null;
     }
 
-    const { onSelect, onClear } = this.props;
+    const { onSelect } = this.props;
 
     const renderLink = (label: string, name: string) => {
       const selected = queryParams.closeDateType === name;
 
       return (
-        <FilterItem>
-          <FilterDetail
-            selected={selected}
-            onClick={onSelect.bind(this, name, 'closeDateType')}
-          >
-            {__(label)}
-          </FilterDetail>
-          <ClearDate selected={selected}>
-            <Tip text={__('Remove this filter')}>
-              <Button
-                btnStyle="link"
-                icon="cancel-1"
-                onClick={onClear.bind(this, 'closeDateType')}
-              />
-            </Tip>
-          </ClearDate>
-        </FilterItem>
+        <FilterButton
+          selected={selected}
+          onClick={onSelect.bind(this, name, 'closeDateType')}
+        >
+          {__(label)}
+          {selected && <Icon icon="check-1" size={14} />}
+        </FilterButton>
       );
     };
 
     return (
-      <DateFilter>
+      <>
         {renderLink('Due to the next day', 'nextDay')}
         {renderLink('Due in the next week', 'nextWeek')}
         {renderLink('Due in the next month', 'nextMonth')}
         {renderLink('Has no close date', 'noCloseDate')}
         {renderLink('Overdue', 'overdue')}
-      </DateFilter>
+      </>
     );
   }
-
-  onChange = (name: string, value: string) => {
-    this.setState({ [name]: value } as Pick<State, keyof State>);
-  };
 
   renderFilter() {
     const { queryParams, onSelect, extraFilter } = this.props;
@@ -126,9 +132,8 @@ export default class RightMenu extends React.Component<Props, State> {
           onKeyPress={this.onSearch}
           autoFocus={true}
         />
-        {extraFilter}
         <Select
-          placeholder="Choose a priority"
+          placeholder="Filter by priority"
           value={priorities}
           options={priorityValues}
           name="priority"
@@ -137,11 +142,14 @@ export default class RightMenu extends React.Component<Props, State> {
           loadingPlaceholder={__('Loading...')}
         />
         <SelectTeamMembers
-          label="Choose team members"
+          label="Filter by team members"
           name="assignedUserIds"
           queryParams={queryParams}
           onSelect={onSelect}
-          customOption={teamMemberCustomOption}
+          customOption={{
+            value: '',
+            label: 'Assigned to no one'
+          }}
         />
         <SelectLabel
           queryParams={queryParams}
@@ -152,76 +160,99 @@ export default class RightMenu extends React.Component<Props, State> {
           customOption={{ value: '', label: 'No label chosen' }}
         />
 
-        {this.renderDates()}
+        {extraFilter}
+        {this.renderDates()}       
       </FilterBox>
-    );
-  }
-
-  renderArchivedItems() {
-    const { type, search } = this.state;
-    const { options, queryParams } = this.props;
-
-    const onChangeSearch = e => this.onChange('search', e.target.value);
-
-    return (
-      <div>
-        <input type="text" value={search} onChange={onChangeSearch} />
-        {type === 'list' ? (
-          <span onClick={this.onChange.bind(this, 'type', 'item')}>
-            Switch To Items
-          </span>
-        ) : (
-          <span onClick={this.onChange.bind(this, 'type', 'list')}>
-            Switch To Lists
-          </span>
-        )}
-        <ArchivedItems
-          options={options}
-          pipelineId={queryParams.pipelineId}
-          search={search}
-          type={type}
-        />
-      </div>
     );
   }
 
   renderTabContent() {
     if (this.state.currentTab === 'Filter') {
-      return this.renderFilter();
+      const { isFiltered, clearFilter } = this.props;
+      
+      return (
+        <>
+          <TabContent>{this.renderFilter()}</TabContent>
+          {isFiltered && (
+            <MenuFooter>
+              <Button 
+                block={true} 
+                btnStyle="warning" 
+                uppercase={false} 
+                onClick={clearFilter} 
+                icon="times-circle"
+              >
+                {__('Clear Filter')}
+              </Button>
+            </MenuFooter>
+          )}
+        </>
+      );
     }
 
-    return this.renderArchivedItems();
+    const { queryParams, options } = this.props;
+
+    return  (
+      <TabContent>
+        <Archive queryParams={queryParams} options={options} />
+      </TabContent>
+    );
   }
 
   render() {
-    const recentOnClick = () => {
-      this.onChange('currentTab', 'Filter');
+    const tabOnClick = (name: string) => {
+      this.onChange('currentTab', name);
     };
 
-    const unreadOnClick = () => {
-      this.onChange('currentTab', 'Archived items');
-    };
-
-    const { currentTab } = this.state;
+    const { currentTab, showMenu } = this.state;
+    const { isFiltered } = this.props;
 
     return (
-      <RightMenuContainer show={this.props.show}>
-        <Tabs full={true}>
-          <TabTitle
-            className={currentTab === 'Filter' ? 'active' : ''}
-            onClick={recentOnClick}
+      <div ref={this.setWrapperRef}>
+        {isFiltered && (
+          <Button
+            btnStyle="warning"
+            icon="times-circle"
+            uppercase={false}
+            onClick={this.props.clearFilter}
           >
-            {__('Filter')}
-          </TabTitle>
-          <TabTitle
-            className={currentTab === 'Archived items' ? 'active' : ''}
-            onClick={unreadOnClick}
-          >
-            {__('Archived items')}
-          </TabTitle>
-        </Tabs>
-        <TabContent>{this.renderTabContent()}</TabContent>
-      </RightMenuContainer>
+            {__('Clear Filter')}
+          </Button>
+        )}
+        <Button
+          btnStyle="simple"
+          uppercase={false}
+          icon="bars"
+          onClick={this.toggleMenu}
+        >
+          {showMenu ? __('Hide Menu') : __('Show Menu')}
+        </Button>
+        
+        <RTG.CSSTransition
+          in={this.state.showMenu}
+          timeout={300}
+          classNames="slide-in-right"
+          unmountOnExit={true}
+        >
+          <RightMenuContainer>
+            <Tabs full={true}>
+              <TabTitle
+                className={currentTab === 'Filter' ? 'active' : ''}
+                onClick={tabOnClick.bind(this, 'Filter')}
+              >
+                {__('Filter')}
+              </TabTitle>
+              <TabTitle
+                className={currentTab === 'Archived items' ? 'active' : ''}
+                onClick={tabOnClick.bind(this, 'Archived items')}
+              >
+                {__('Archived items')}
+              </TabTitle>
+            </Tabs>
+            {this.renderTabContent()}
+          </RightMenuContainer>
+        </RTG.CSSTransition>
+      </div>
     );
   }
 }

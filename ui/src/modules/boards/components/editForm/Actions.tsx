@@ -50,7 +50,7 @@ class Actions extends React.Component<Props> {
             {__('Delete')}
           </ColorButton>
           <ColorButton onClick={onSendToBoard}>
-            <Icon icon="refresh" />
+            <Icon icon="redo" />
             {__('Send to board')}
           </ColorButton>
         </>
