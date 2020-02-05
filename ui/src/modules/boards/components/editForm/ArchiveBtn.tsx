@@ -18,8 +18,6 @@ export const ArchiveBtn = (props: IProps) => {
   if (item.status === 'archived') {
     const onRemove = () => removeItem(item._id);
 
-    console.log('sendToBoard: ', sendToBoard);
-
     const onSendToBoard = () => {
       if (sendToBoard) {
         sendToBoard(item);
