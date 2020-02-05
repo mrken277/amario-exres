@@ -5,10 +5,10 @@ import {
   IVisitorContact
 } from 'modules/customers/types';
 
-import { companyFactory } from './companies';
-import { integrationFacroty } from './integration';
-import { tagFactory } from './tags';
-import { userFactory } from './user';
+import { companyFactory } from '../companies';
+import { integrationFacroty } from '../integration';
+import { tagFactory } from '../tags';
+import { userFactory } from '../user';
 
 export const customerLinksFactory = Factory.Sync.makeFactory<ICustomerLinks>({
   website: 'website',
