@@ -93,16 +93,18 @@ class ArchivedItems extends React.Component<Props, State> {
   };
 
   render() {
+    const { type } = this.props;
+
     if (!this.props.items || this.props.items.length === 0) {
       return (
         <EmptyState
-          text="There aren’t any archived items."
+          text={`There aren’t any archived ${type}.`}
           icon="archive-alt"
         />
       );
     }
 
-    const { options, remove, sendToBoard, type, items } = this.props;
+    const { options, remove, sendToBoard, items } = this.props;
     return (
       <>
         {items.map(item => (

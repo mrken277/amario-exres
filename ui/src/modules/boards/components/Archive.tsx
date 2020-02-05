@@ -12,7 +12,7 @@ type Props = {
 };
 
 function Archive(props: Props) {
-	const [ type, changeType ] = useState('list');
+	const [ type, changeType ] = useState('item');
 	const [ searchValue, onSearch ] = useState('');
 	const { options, queryParams } = props;
 
@@ -34,7 +34,7 @@ function Archive(props: Props) {
 					type="text" 
 					onKeyPress={onEnterSearch}
 					autoFocus={true}
-					placeholder="Search..."
+					placeholder={`Search ${type}...`}
 				/>
 				<HeaderButton hasBackground={true} onClick={toggleType}>
 					{__('Switch To')} {switchType()}{'s'}
