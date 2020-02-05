@@ -7,9 +7,9 @@ import { ActionContainer } from 'modules/boards/styles/item';
 import { IItem, IOptions } from 'modules/boards/types';
 import ChecklistAdd from 'modules/checklists/components/AddButton';
 import Icon from 'modules/common/components/Icon';
-import { colors } from 'modules/common/styles';
 import { __ } from 'modules/common/utils';
 import React from 'react';
+import { ArchiveBtn } from './ArchiveBtn';
 import PriorityIndicator from './PriorityIndicator';
 
 type Props = {
@@ -19,6 +19,7 @@ type Props = {
   removeItem: (itemId: string) => void;
   saveItem: (doc: { [key: string]: any }, callback?: (item) => void) => void;
   onUpdate: (item: IItem, prevStageId?: string) => void;
+  sendToBoard?: (item: any) => void;
 };
 
 class Actions extends React.Component<Props> {
@@ -32,47 +33,15 @@ class Actions extends React.Component<Props> {
     }
   };
 
-  renderArchiveBtn() {
-    const { removeItem, item, saveItem, onUpdate } = this.props;
-
-    if (item.status === 'archived') {
-      const onRemove = () => removeItem(item._id);
-      const onSendToBoard = () => {
-        saveItem({ status: 'active' }, updatedItem => {
-          onUpdate(updatedItem);
-        });
-      };
-
-      return (
-        <>
-          <ColorButton color={colors.colorCoreRed} onClick={onRemove}>
-            <Icon icon="times-circle" />
-            {__('Delete')}
-          </ColorButton>
-          <ColorButton onClick={onSendToBoard}>
-            <Icon icon="redo" />
-            {__('Send to board')}
-          </ColorButton>
-        </>
-      );
-    }
-
-    const onArchive = () => {
-      saveItem({ status: 'archived' }, updatedItem => {
-        onUpdate(updatedItem);
-      });
-    };
-
-    return (
-      <ColorButton onClick={onArchive}>
-        <Icon icon="archive-alt" />
-        {__('Archive')}
-      </ColorButton>
-    );
-  }
-
   render() {
-    const { item, saveItem, options, copyItem } = this.props;
+    const {
+      item,
+      saveItem,
+      options,
+      copyItem,
+      removeItem,
+      sendToBoard
+    } = this.props;
 
     const onLabelChange = labels => saveItem({ labels });
 
@@ -107,7 +76,12 @@ class Actions extends React.Component<Props> {
           {__('Copy')}
         </ColorButton>
 
-        {this.renderArchiveBtn()}
+        <ArchiveBtn
+          item={item}
+          removeItem={removeItem}
+          saveItem={saveItem}
+          sendToBoard={sendToBoard}
+        />
       </ActionContainer>
     );
   }

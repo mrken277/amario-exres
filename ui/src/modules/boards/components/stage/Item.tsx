@@ -61,7 +61,7 @@ class Item extends React.PureComponent<Props, { isFormVisible: boolean }> {
         routerUtils.removeParams(history, 'itemId');
       }
 
-      if(beforePopupClose) {
+      if (beforePopupClose) {
         beforePopupClose();
       }
     });

@@ -15,42 +15,44 @@ type ItemProps = {
 };
 
 function ArchivedItem(props: ItemProps) {
-  const [ showPopup, setVisibility ] = useState(false);
+  const [showPopup, setVisibility] = useState(false);
   const { options, item, type } = props;
-  
+
   const toggleVisibility = () => {
-    setVisibility(!showPopup)
-  }
+    setVisibility(!showPopup);
+  };
 
   const remove = () => {
     props.remove(item);
-  }
+  };
 
-  const sendBack = () => {
+  const sendToBoard = () => {
     props.sendToBoard(item);
-  }
+  };
 
   const renderActions = () => {
     return (
       <>
-        <span onClick={sendBack}>{__('Send to Board')}</span>
+        <span onClick={sendToBoard}>{__('Send to Board')}</span>
         {' - '}
         <span onClick={remove}>{__('Delete')}</span>
       </>
-    )
-  }
+    );
+  };
 
-  if(type === 'item') {
+  if (type === 'item') {
     const Component = options.Item;
+
     return (
       <ItemContainer>
-        <Component 
-          onClick={toggleVisibility} 
-          isFormVisible={showPopup} 
-          item={item} 
+        <Component
+          onClick={toggleVisibility}
+          isFormVisible={showPopup}
+          item={item}
           options={options}
           portable={true}
           beforePopupClose={toggleVisibility}
+          sendToBoard={sendToBoard}
         />
         {renderActions()}
       </ItemContainer>
@@ -87,8 +89,8 @@ class ArchivedItems extends React.Component<Props, State> {
   }
 
   openForm = () => {
-    this.setState({ showForm: true});
-  }
+    this.setState({ showForm: true });
+  };
 
   render() {
     if (!this.props.items || this.props.items.length === 0) {
@@ -106,8 +108,8 @@ class ArchivedItems extends React.Component<Props, State> {
         {items.map(item => (
           <ArchivedItem
             options={options}
-            key={item._id}  
-            item={item} 
+            key={item._id}
+            item={item}
             remove={remove}
             sendToBoard={sendToBoard}
             type={type}

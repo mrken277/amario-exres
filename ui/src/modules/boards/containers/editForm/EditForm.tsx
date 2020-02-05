@@ -8,7 +8,15 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import ErrorMsg from '../../../common/components/ErrorMsg';
 import { queries } from '../../graphql';
-import { CopyMutation, DetailQueryResponse, IItem, IItemParams, IOptions, RemoveMutation, SaveMutation } from '../../types';
+import {
+  CopyMutation,
+  DetailQueryResponse,
+  IItem,
+  IItemParams,
+  IOptions,
+  RemoveMutation,
+  SaveMutation
+} from '../../types';
 import { invalidateCache } from '../../utils';
 import { PipelineConsumer } from '../PipelineContext';
 
@@ -70,15 +78,17 @@ class EditFormContainer extends React.Component<FinalProps> {
   copyItem(itemId: string, callback: () => void) {
     const { copyMutation, onAdd, options, stageId } = this.props;
 
-    copyMutation({ variables: { _id: itemId } }).then(({ data }) => {
-      callback();
-      
-      if (onAdd) {
-        onAdd(stageId, data[options.mutationsName.copyMutation]);
-      }
-    }).catch(error => {
-      Alert.error(error.message);
-    });
+    copyMutation({ variables: { _id: itemId } })
+      .then(({ data }) => {
+        callback();
+
+        if (onAdd) {
+          onAdd(stageId, data[options.mutationsName.copyMutation]);
+        }
+      })
+      .catch(error => {
+        Alert.error(error.message);
+      });
   }
 
   saveItem = (doc: IItemParams, callback: (item) => void) => {

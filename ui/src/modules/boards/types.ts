@@ -331,7 +331,7 @@ export interface IFilterParams extends ISavedConformity {
 
 export interface IEditFormContent {
   state: any;
-  saveItem: (doc: { [key: string]: any }) => void;
+  saveItem: (doc: { [key: string]: any }, callback?: (item) => void) => void;
   onChangeStage: (stageId: string) => void;
   copy: () => void;
   remove: (id: string) => void;

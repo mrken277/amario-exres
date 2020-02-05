@@ -17,10 +17,11 @@ type Props = {
   item: IDeal;
   addItem: (doc: IDealParams, callback: () => void) => void;
   saveItem: (doc: IDealParams, callback?: (item) => void) => void;
-  copyItem:(itemId: string, callback: () => void) => void;
+  copyItem: (itemId: string, callback: () => void) => void;
   onUpdate: (item, prevStageId?: string) => void;
   removeItem: (itemId: string, callback: () => void) => void;
   beforePopupClose: () => void;
+  sendToBoard?: (item: any) => void;
 };
 
 type State = {
@@ -137,7 +138,7 @@ export default class DealEditForm extends React.Component<Props, State> {
     copy,
     remove
   }: IEditFormContent) => {
-    const { item, options, onUpdate, addItem } = this.props;
+    const { item, options, onUpdate, addItem, sendToBoard } = this.props;
 
     return (
       <>
@@ -157,6 +158,7 @@ export default class DealEditForm extends React.Component<Props, State> {
             copyItem={copy}
             removeItem={remove}
             onUpdate={onUpdate}
+            sendToBoard={sendToBoard}
             item={item}
             addItem={addItem}
           />

@@ -8,6 +8,7 @@ export const commonMutationVariables = `
   $reminderMinute: Int,
   $isComplete: Boolean,
   $status: String,
+  $priority: String,
   $sourceConversationId: String,
 `;
 
@@ -21,6 +22,7 @@ export const commonMutationParams = `
   reminderMinute: $reminderMinute,
   isComplete: $isComplete,
   status: $status,
+  priority: $priority,
   sourceConversationId: $sourceConversationId,
 `;
 

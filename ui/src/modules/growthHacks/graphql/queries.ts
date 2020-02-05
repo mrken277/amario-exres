@@ -42,6 +42,7 @@ export const growthHackFields = `
     name
     colorCode
   }
+  status
   labelIds
 `;
 
@@ -108,6 +109,7 @@ const growthHackDetailFields = `
       fullName
     }
   }
+  status
   isVoted
   modifiedAt
   modifiedBy
