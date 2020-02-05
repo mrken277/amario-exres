@@ -5,7 +5,6 @@ import { IUser } from 'modules/auth/types';
 import ErrorMsg from 'modules/common/components/ErrorMsg';
 import Spinner from 'modules/common/components/Spinner';
 import { Alert, confirm } from 'modules/common/utils';
-import checkError from 'modules/common/utils/checkError';
 import { mutations, queries } from 'modules/internalNotes/graphql';
 import {
   InternalNoteDetailQueryResponse,
@@ -58,17 +57,16 @@ function InternalNoteContainer(props: Props, state: State) {
   );
 
   if (internalNoteDetailsLoading) {
-    return <Spinner />;
-  };
+    return <Spinner objective={true} />;
+  }
 
   if (internalNoteDetailsError) {
-    const error = checkError([internalNoteDetailsError]);
-    return <ErrorMsg>{error.message}</ErrorMsg>;
-  };
+    return <ErrorMsg>{internalNoteDetailsError.message}</ErrorMsg>;
+  }
 
   if (!internalNoteDetailsData) {
     return null;
-  };
+  }
 
   const internalNote = internalNoteDetailsData.internalNoteDetail;
 
