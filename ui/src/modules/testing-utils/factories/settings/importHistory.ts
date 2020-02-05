@@ -1,5 +1,5 @@
 import * as Factory from 'factory.ts';
-import { IImportHistory } from 'modules/settings/importHistory/types';
+import { IImportHistory, IImportHistoryItem } from 'modules/settings/importHistory/types';
 import { userFactory } from '../user';
 
 export const importHistoryFactory = Factory.Sync.makeFactory<IImportHistory>({
@@ -15,4 +15,7 @@ export const importHistoryFactory = Factory.Sync.makeFactory<IImportHistory>({
   errorMsgs: ['']
 });
 
-
+export const importHistoryItemFactory = Factory.Sync.makeFactory<IImportHistoryItem>({
+  list: [importHistoryFactory.build()],
+  count: 0
+});

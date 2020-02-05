@@ -8,8 +8,7 @@ import ImportIndicator from '../components/ImportIndicator';
 import { mutations, queries, subscriptions } from '../graphql';
 import {
   CancelMutationResponse,
-  IImportHistory,
-  ImportHistoryDetailQueryResponse
+  IImportHistory
 } from '../types';
 
 const subscription = gql(subscriptions.importSubscription);
@@ -17,7 +16,6 @@ const subscription = gql(subscriptions.importSubscription);
 type Props = {
   id: string;
   close: () => void;
-  importHistoryDetailQuery: ImportHistoryDetailQueryResponse;
   closeLoadingBar: () => void;
   doneIndicatorAction: () => void;
   isRemovingImport: boolean;

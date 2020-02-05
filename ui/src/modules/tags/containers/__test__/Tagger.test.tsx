@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { tagsFactory } from 'modules/testing-utils/factories/tags';
+import { tagFactory } from 'modules/testing-utils/factories/tags';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
@@ -28,8 +28,8 @@ const configQueryMock = {
   result: {
     data: {
       tags: [
-        tagsFactory.build(),
-        tagsFactory.build({
+        tagFactory.build(),
+        tagFactory.build({
           _id: 'id'
         })
       ]

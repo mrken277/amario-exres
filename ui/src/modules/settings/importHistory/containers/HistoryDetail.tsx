@@ -53,7 +53,7 @@ const HistoryDetailContainer = (props: { id: string }) => {
   }
 
   if (importHistoryDetailLoading) {
-    return <Spinner />;
+    return <Spinner objective={true} />;
   }
 
   const importHistory = importHistoryDetailData ? importHistoryDetailData.importHistoryDetail : {} as IImportHistory;
