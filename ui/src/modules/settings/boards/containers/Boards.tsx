@@ -4,6 +4,7 @@ import { STORAGE_BOARD_KEY } from 'modules/boards/constants';
 import { BoardsQueryResponse } from 'modules/boards/types';
 import { getDefaultBoardAndPipelines } from 'modules/boards/utils';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
+import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
 import { Alert, confirm } from 'modules/common/utils';
 import routerUtils from 'modules/common/utils/router';
@@ -44,7 +45,7 @@ const BoardsContainer = (props: FinalProps) => {
   }
 
   if (boardsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />;
   }
 
   const boards = boardsQueryData ? boardsQueryData.boards : [];
