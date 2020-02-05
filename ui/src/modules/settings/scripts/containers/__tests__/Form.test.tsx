@@ -3,6 +3,7 @@ import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { queries as kbQueries } from 'modules/knowledgeBase/graphql';
 import { queries as integrationQueries } from 'modules/settings/integrations/graphql';
+import { topicFactory } from 'modules/testing-utils/factories/knowledgebase';
 import { integrationFactory } from 'modules/testing-utils/factories/settings/integration';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
