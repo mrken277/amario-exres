@@ -1,5 +1,4 @@
 import { MockedProvider } from '@apollo/react-testing';
-import { act } from '@testing-library/react';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import * as React from 'react';
@@ -14,6 +13,7 @@ const LogsVariables = {
   activityType: 'activity',
   limit: 1
 };
+
 const contentId = 'any';
 const contentType = 'engage';
 const target = '11';
@@ -43,7 +43,7 @@ const ActivityLogMock = {
   },
 };
 
-describe('email', () => {
+describe('ActivityLogs', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
@@ -64,7 +64,7 @@ describe('email', () => {
     expect(spinner.props.objective).toEqual(false);
   });
 
-  it('error', async () => {
+  it('Should show error', async () => {
     const testRenderer = create(
       <MockedProvider mocks={[ActivityLogErrorMock]} addTypename={false}>
         <ActivityLogs
@@ -76,9 +76,7 @@ describe('email', () => {
       </MockedProvider>
     );
 
-    await act(async () => {
-      await wait(0);
-    });
+    await wait(0);
 
     const testInstance = testRenderer.root;
     const span = testInstance.findByType('span');

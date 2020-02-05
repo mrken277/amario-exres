@@ -1,5 +1,4 @@
 import { MockedProvider, wait } from '@apollo/react-testing';
-import { act } from '@testing-library/react';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { queries } from 'modules/activityLogs/graphql';
@@ -102,9 +101,7 @@ describe('email', () => {
       </MockedProvider>
     );
 
-    await act(async () => {
-      await wait(0);
-    });
+    await wait(0);
 
     const testInstance = testRenderer.root;
     const span = testInstance.findByType('span');
