@@ -21,7 +21,7 @@ type Props = {
   saveFormSubmission: (doc: IFormSubmission) => void;
   saveItem: (doc: IGrowthHackParams, callback?: (item) => void) => void;
   onUpdate: (item, prevStageId?: string) => void;
-  removeItem: (itemId: string) => void;
+  removeItem: (itemId: string, callback: () => void) => void;
   beforePopupClose: () => void;
   sendToBoard?: (item: any) => void;
 };
