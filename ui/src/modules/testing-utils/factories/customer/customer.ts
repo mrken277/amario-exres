@@ -33,7 +33,6 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   lastName: 'string',
   sex: 1,
   phones: ['88888888'],
-  sex: 0,
   primaryPhone: 'string',
   primaryEmail: 'string',
   emails: ['erxes@gmail.com'],
