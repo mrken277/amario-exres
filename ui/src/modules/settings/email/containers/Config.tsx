@@ -98,7 +98,7 @@ const ConfigContainer = (props: Props) => {
   }
 
   if (brandDetailQueryLoading) {
-    return <p>Loading...</p>;
+    return null;
   }
 
   const updatedProps = {

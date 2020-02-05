@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import Spinner from 'modules/common/components/Spinner';
 import { queries as brandQueries } from 'modules/settings/brands/graphql';
 import React from 'react';
 import { BrandsQueryResponse } from '../../brands/types';
@@ -17,7 +18,7 @@ const ListContainer = () => {
   }
 
   if (brandsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />;
   }
 
   const brands = brandsQueryData ? brandsQueryData.brands : [];

@@ -24,7 +24,6 @@ export interface IBrandsCount {
 }
 
 // queries
-
 export type BrandsQueryResponse = {
   brands: IBrand[];
   loading: boolean;
