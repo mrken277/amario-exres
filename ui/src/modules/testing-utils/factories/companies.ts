@@ -18,7 +18,6 @@ export const companyFactory = Factory.Sync.makeFactory<ICompany>({
   parentCompany: {} as ICompany,
   getTags: [],
   customers: [
-    customerFactory.build(),
     customerFactory.build({ _id: '22' })
   ],
 

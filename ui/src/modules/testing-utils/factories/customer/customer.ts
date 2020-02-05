@@ -20,20 +20,13 @@ export const visitorContactFactory = Factory.Sync.makeFactory<IVisitorContact>({
   phone: '99889988'
 });
 
-export interface IMessengerData {
-  lastSeenAt?: number;
-  sessionCount?: number;
-  isActive?: boolean;
-  customData?: any;
-}
-
 export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   _id: '1',
   owner: userFactory.build({ _id: '12' }),
   integration: integrationFacroty.build({ _id: '21' }),
   getMessengerCustomData: 'any',
-  getTags: [tagFactory.build(), tagFactory.build({ _id: '6' })],
-  companies: [companyFactory.build(), companyFactory.build({ _id: '22' })],
+  getTags: [tagFactory.build({ _id: '6' })],
+  companies: [companyFactory.build({ _id: '' })],
 
   // ICustomerDocs
   firstName: 'string',
