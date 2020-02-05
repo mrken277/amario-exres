@@ -2,7 +2,6 @@ import { ICompany } from 'modules/companies/types';
 import { ITag } from 'modules/tags/types';
 import { IActivityLog } from '../activityLogs/types';
 import { IUser } from '../auth/types';
-import { ISegmentDoc } from '../segments/types';
 import { IIntegration } from '../settings/integrations/types';
 
 export interface IMessengerData {
@@ -135,7 +134,6 @@ type CountResponse = {
 
 type CustomerCounts = {
   byBrand: CountResponse;
-  byFakeSegment: number;
   byForm: CountResponse;
   byIntegrationType: CountResponse;
   byLeadStatus: CountResponse;
@@ -153,7 +151,7 @@ export type CustomersQueryResponse = {
 export type CountQueryResponse = {
   customerCounts: CustomerCounts;
   loading: boolean;
-  refetch: (variables?: { byFakeSegment?: ISegmentDoc }) => void;
+  refetch: () => void;
 };
 
 export type CustomerDetailQueryResponse = {

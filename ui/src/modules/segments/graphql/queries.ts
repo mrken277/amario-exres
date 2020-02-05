@@ -49,8 +49,8 @@ const combinedFields = `
 `;
 
 const events = `
-  query events {
-    segmentsEvents
+  query events($contentType: String!) {
+    segmentsEvents(contentType: $contentType)
   }
 `;
 

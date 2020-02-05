@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
 import { IButtonMutateProps } from 'modules/common/types';
-import { Alert, withProps } from 'modules/common/utils';
+import { withProps } from 'modules/common/utils';
 import { queries as companyQueries } from 'modules/companies/graphql';
 import { queries as customerQueries } from 'modules/customers/graphql';
 import React from 'react';
@@ -37,15 +37,12 @@ type FinalProps = {
 
 class SegmentsFormContainer extends React.Component<
   FinalProps,
-  { total: { byFakeSegment?: number }; loading: boolean }
+  { loading: boolean }
 > {
   constructor(props) {
     super(props);
 
     this.state = {
-      total: {
-        byFakeSegment: 0
-      },
       loading: false
     };
   }
@@ -99,17 +96,8 @@ class SegmentsFormContainer extends React.Component<
         query: gql(query),
         variables: {
           contentType,
-          byFakeSegment: segment
         }
       })
-      .then(({ data }: any) => {
-        this.setState({
-          total: data[`${contentType}Counts`]
-        });
-      })
-      .catch(e => {
-        Alert.error(e.message);
-      });
 
     this.setState({ loading: false });
   };
@@ -142,7 +130,6 @@ class SegmentsFormContainer extends React.Component<
       renderButton: this.renderButton,
       count: this.count,
       counterLoading: this.state.loading,
-      total: this.state.total
     };
 
     return <SegmentsForm {...updatedProps} />;
@@ -186,7 +173,10 @@ export default withProps<Props>(
     graphql<Props>(
       gql(queries.events),
       {
-        name: 'eventsQuery'
+        name: 'eventsQuery',
+        options: ({ contentType }) => ({
+          variables: { contentType }
+        })
       }
     ),
     graphql<Props>(gql(queries.combinedFields), {
