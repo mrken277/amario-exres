@@ -40,6 +40,19 @@ class ProductItemForm extends React.Component<Props, { categoryId: string }> {
     };
   }
 
+  componentDidMount = () => {
+    // default select first item
+    const { uom, currencies, productData } = this.props;
+
+    if (uom.length > 0) {
+      this.onChangeField('uom', uom[0], productData._id);
+    }
+
+    if (currencies.length > 0) {
+      this.onChangeField('currency', currencies[0], productData._id);
+    }
+  };
+
   calculateAmount = (type: string, productData: IProductData) => {
     const amount = productData.unitPrice * productData.quantity;
 
