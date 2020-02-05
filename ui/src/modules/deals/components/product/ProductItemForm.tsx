@@ -10,14 +10,7 @@ import { IProduct } from 'modules/settings/productService/types';
 import React from 'react';
 import Select from 'react-select-plus';
 import ProductChooser from '../../containers/product/ProductChooser';
-import {
-  ContentColumn,
-  ContentRow,
-  ItemText,
-  ProductButton,
-  ProductItem,
-  TotalAmount
-} from '../../styles';
+import { ContentColumn, ContentRow, ItemText, ProductButton, ProductItem, TotalAmount } from '../../styles';
 import { IProductData } from '../../types';
 import { selectConfigOptions } from '../../utils';
 
@@ -39,6 +32,19 @@ class ProductItemForm extends React.Component<Props, { categoryId: string }> {
       categoryId: ''
     };
   }
+
+  componentDidMount = () => {
+    // default select first item
+    const { uom, currencies, productData } = this.props;
+
+    if (uom.length > 0) {
+      this.onChangeField('uom', uom[0], productData._id);
+    }
+
+    if (currencies.length > 0) {
+      this.onChangeField('currency', currencies[0], productData._id);
+    }
+  };
 
   calculateAmount = (type: string, productData: IProductData) => {
     const amount = productData.unitPrice * productData.quantity;
@@ -114,7 +120,7 @@ class ProductItemForm extends React.Component<Props, { categoryId: string }> {
   renderProductServiceTrigger(product?: IProduct) {
     let content = (
       <div>
-        {__('Choose Product & Service')} <Icon icon="add" />
+        {__('Choose Product & Service')} <Icon icon="plus-circle" />
       </div>
     );
 
@@ -122,7 +128,7 @@ class ProductItemForm extends React.Component<Props, { categoryId: string }> {
     if (product) {
       content = (
         <div>
-          {product.name} <Icon icon="edit" />
+          {product.name} <Icon icon="pen-1" />
         </div>
       );
     }
@@ -338,7 +344,6 @@ class ProductItemForm extends React.Component<Props, { categoryId: string }> {
         <Button
           btnStyle="link"
           icon="times"
-          size="small"
           onClick={this.onClick}
         />
       </ProductItem>
