@@ -57,7 +57,7 @@ class ModifiableList extends React.Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { options } = nextProps;
 
     if (nextProps.options !== this.state.options) {

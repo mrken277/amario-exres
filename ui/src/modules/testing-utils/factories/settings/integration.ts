@@ -1,10 +1,10 @@
 import * as Factory from 'factory.ts';
 import { IIntegration, IUiOptions } from 'modules/settings/integrations/types';
+import { formFactory } from '../forms';
+import { leadDataFactory } from '../leads';
+import { messengerDataFactory } from '../messengerdata';
+import { brandFactory } from './brands';
 import { channelFactory } from './channel';
-import { formFactory } from './forms';
-import { leadDataFactory } from './leads';
-import { messengerDataFactory } from './messengerdata';
-import { brandFactory } from './settings/brands';
 
 export const uiOptionsFactory = Factory.Sync.makeFactory<IUiOptions>({
   color: '#fcfcfc',
@@ -13,7 +13,7 @@ export const uiOptionsFactory = Factory.Sync.makeFactory<IUiOptions>({
   logoPreviewUrl: '/erxes'
 });
 
-export const integrationFacroty = Factory.Sync.makeFactory<IIntegration>({
+export const integrationFactory = Factory.Sync.makeFactory<IIntegration>({
   _id: '3',
   kind: 'messenger',
   name: 'name',

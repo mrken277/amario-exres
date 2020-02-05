@@ -1,7 +1,7 @@
 import * as Factory from 'factory.ts';
 import { IMessage } from 'modules/inbox/types';
 import { userFactory } from './auth';
-import { customerFactory } from './customer';
+import { customerFactory } from './customer/customer';
 import { mailFactory } from './email';
 import { engageDataFactory } from './engage';
 

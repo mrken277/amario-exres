@@ -1,9 +1,8 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import Spinner from 'modules/common/components/Spinner';
-import { Alert, confirm, withProps } from 'modules/common/utils';
+import { Alert, confirm } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import MessengerAppList from '../components/MessengerAppList';
 import { mutations, queries } from '../graphql';
 import {
@@ -16,19 +15,41 @@ type Props = {
   kind?: string | null;
 };
 
-type FinalProps = {
-  messengerAppsQuery: MessengerAppsQueryResponse;
-} & Props &
-  MessengerAppsRemoveMutationResponse;
+const MessengerAppContainer = (props: Props) => {
+  const { kind } = props;
 
-const MessengerAppContainer = (props: FinalProps) => {
-  const { messengerAppsQuery, removeMutation } = props;
+  const {
+    loading: messengerAppsQueryLoading,
+    error: messengerAppsQueryError,
+    data: messengerAppsQueryData
+  } = useQuery<MessengerAppsQueryResponse>(gql(queries.messengerApps),
+    {
+      variables: { kind },
+      fetchPolicy: 'network-only'
+    }
+  );
 
-  if (messengerAppsQuery.loading) {
+  const [removeMutation, { error: messengerAppsRemoveMutationError }] =
+    useMutation<MessengerAppsRemoveMutationResponse, { _id: string }>(
+      gql(mutations.messengerAppsRemove), {
+      refetchQueries: [{
+        query: gql(queries.messengerApps),
+        variables: { kind }
+      }, {
+        query: gql(queries.messengerAppsCount),
+        variables: { kind }
+      }]
+    });
+
+  if (messengerAppsQueryLoading) {
     return <Spinner objective={true} />;
   }
 
-  const messengerApps = messengerAppsQuery.messengerApps || [];
+  if (messengerAppsQueryError || messengerAppsRemoveMutationError) {
+    return <p>Error!</p>;
+  }
+
+  const messengerApps = messengerAppsQueryData ? messengerAppsQueryData.messengerApps : [];
 
   const remove = app => {
     confirm().then(() => {
@@ -54,36 +75,4 @@ const MessengerAppContainer = (props: FinalProps) => {
   return <MessengerAppList {...updatedProps} />;
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, MessengerAppsQueryResponse>(gql(queries.messengerApps), {
-      name: 'messengerAppsQuery',
-      options: ({ kind }) => {
-        return {
-          variables: { kind },
-          fetchPolicy: 'network-only'
-        };
-      }
-    }),
-    graphql<Props, MessengerAppsRemoveMutationResponse>(
-      gql(mutations.messengerAppsRemove),
-      {
-        name: 'removeMutation',
-        options: ({ kind }) => {
-          return {
-            refetchQueries: [
-              {
-                query: gql(queries.messengerApps),
-                variables: { kind }
-              },
-              {
-                query: gql(queries.messengerAppsCount),
-                variables: { kind }
-              }
-            ]
-          };
-        }
-      }
-    )
-  )(MessengerAppContainer)
-);
+export default MessengerAppContainer;

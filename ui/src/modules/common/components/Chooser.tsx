@@ -58,7 +58,7 @@ class CommonChooser extends React.Component<Props, State> {
     this.props.clearState();
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     const { datas, perPage, newItemId } = newProps;
 
     this.setState({ loadmore: datas.length === perPage && datas.length > 0 });

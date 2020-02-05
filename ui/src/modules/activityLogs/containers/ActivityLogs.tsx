@@ -21,7 +21,7 @@ type FinalProps = {
 } & WithDataProps;
 
 class Container extends React.Component<FinalProps, {}> {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { activityLogQuery } = this.props;
 
     activityLogQuery.subscribeToMore({

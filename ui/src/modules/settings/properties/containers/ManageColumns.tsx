@@ -1,9 +1,11 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { Alert, withProps } from 'modules/common/utils';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
+import { Alert } from 'modules/common/utils';
+import checkError from 'modules/common/utils/checkError';
 import { queries } from 'modules/forms/graphql';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import ManageColumns from '../components/ManageColumns';
 import {
   DefaultColumnsConfigQueryResponse,
@@ -17,22 +19,43 @@ type Props = {
   closeModal: () => void;
 };
 
-type FinalProps = {
-  fieldsDefaultColumnsConfigQuery: DefaultColumnsConfigQueryResponse;
-  fieldsQuery: FieldsCombinedByTypeQueryResponse;
-} & Props;
-
-const ManageColumnsContainer = (props: FinalProps) => {
+const ManageColumnsContainer = (props: Props) => {
   const {
-    fieldsDefaultColumnsConfigQuery,
-    fieldsQuery,
     contentType,
     location,
     history
   } = props;
 
-  if (fieldsQuery.loading || fieldsDefaultColumnsConfigQuery.loading) {
-    return false;
+  const {
+    loading: fieldsQueryLoading,
+    error: fieldsQueryError,
+    data: fieldsQueryData
+  } = useQuery<FieldsCombinedByTypeQueryResponse>(
+    gql(queries.fieldsCombinedByContentType), {
+    variables: {
+      contentType
+    }
+  });
+
+  const {
+    loading: fieldsDefaultColumnsConfigQueryLoading,
+    error: fieldsDefaultColumnsConfigQueryError,
+    data: fieldsDefaultColumnsConfigQueryData
+  } = useQuery<DefaultColumnsConfigQueryResponse>(
+    gql(queries.fieldsDefaultColumnsConfig), {
+    variables: {
+      contentType
+    }
+  });
+
+  if (fieldsQueryError || fieldsDefaultColumnsConfigQueryError) {
+    const error = checkError([fieldsQueryError, fieldsDefaultColumnsConfigQueryError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  }
+
+  if (fieldsQueryLoading || fieldsDefaultColumnsConfigQueryLoading) {
+    return <Spinner objective={true} />;
   }
 
   const storageKey = `erxes_${contentType}_columns_config`;
@@ -49,7 +72,7 @@ const ManageColumnsContainer = (props: FinalProps) => {
   };
 
   let columnsConfig =
-    fieldsDefaultColumnsConfigQuery.fieldsDefaultColumnsConfig;
+    fieldsDefaultColumnsConfigQueryData ? fieldsDefaultColumnsConfigQueryData.fieldsDefaultColumnsConfig : [];
 
   if (storageItem) {
     columnsConfig = JSON.parse(storageItem);
@@ -59,39 +82,10 @@ const ManageColumnsContainer = (props: FinalProps) => {
     ...props,
     config: columnsConfig,
     save,
-    fields: fieldsQuery.fieldsCombinedByContentType
+    fields: fieldsQueryData ? fieldsQueryData.fieldsCombinedByContentType : []
   };
 
   return <ManageColumns {...updatedProps} />;
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, FieldsCombinedByTypeQueryResponse, { contentType: string }>(
-      gql(queries.fieldsCombinedByContentType),
-      {
-        name: 'fieldsQuery',
-        options: ({ contentType }) => {
-          return {
-            variables: {
-              contentType
-            }
-          };
-        }
-      }
-    ),
-    graphql<Props, DefaultColumnsConfigQueryResponse, { contentType: string }>(
-      gql(queries.fieldsDefaultColumnsConfig),
-      {
-        name: 'fieldsDefaultColumnsConfigQuery',
-        options: ({ contentType }) => {
-          return {
-            variables: {
-              contentType
-            }
-          };
-        }
-      }
-    )
-  )(ManageColumnsContainer)
-);
+export default ManageColumnsContainer;

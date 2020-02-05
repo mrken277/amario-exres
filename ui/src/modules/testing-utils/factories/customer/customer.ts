@@ -1,13 +1,10 @@
 import * as Factory from 'factory.ts';
-import {
-  ICustomer,
-  ICustomerLinks,
-  IVisitorContact
-} from 'modules/customers/types';
-import { companyFactory } from './companies';
-import { integrationFacroty } from './integration';
-import { tagFactory } from './tags';
-import { userFactory } from './user';
+import { ICustomer, ICustomerLinks, IVisitorContact } from 'modules/customers/types';
+import { companyFactory } from '../companies';
+import { integrationFactory } from '../settings/integration';
+import { tagFactory } from '../tags';
+import { userFactory } from '../user';
+import { messengerDataFactory } from './messengerdata';
 
 export const customerLinksFactory = Factory.Sync.makeFactory<ICustomerLinks>({
   website: 'website',
@@ -15,7 +12,7 @@ export const customerLinksFactory = Factory.Sync.makeFactory<ICustomerLinks>({
   twitter: 'twitter',
   linkedIn: 'linkedIn',
   youtube: 'youtube',
-  github: 'github'
+  github: 'github',
 });
 
 export const visitorContactFactory = Factory.Sync.makeFactory<IVisitorContact>({
@@ -23,10 +20,17 @@ export const visitorContactFactory = Factory.Sync.makeFactory<IVisitorContact>({
   phone: '99889988'
 });
 
+export interface IMessengerData {
+  lastSeenAt?: number;
+  sessionCount?: number;
+  isActive?: boolean;
+  customData?: any;
+}
+
 export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   _id: '1',
   owner: userFactory.build({ _id: '12' }),
-  integration: integrationFacroty.build({ _id: '21' }),
+  integration: integrationFactory.build({ _id: '21' }),
   getMessengerCustomData: 'any',
   getTags: [tagFactory.build(), tagFactory.build({ _id: '6' })],
   companies: [companyFactory.build(), companyFactory.build({ _id: '22' })],
@@ -35,6 +39,7 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   firstName: 'string',
   lastName: 'string',
   phones: ['88888888'],
+  sex: 0,
   primaryPhone: 'string',
   primaryEmail: 'string',
   emails: ['erxes@gmail.com'],
@@ -48,7 +53,7 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
     countryCode: 'string',
     remoteAddress: 'string',
     hostname: 'string',
-    language: 'string'
+    language: 'string',
   },
   department: 'string',
   leadStatus: 'string',
@@ -57,10 +62,11 @@ export const customerFactory = Factory.Sync.makeFactory<ICustomer>({
   description: 'string',
   doNotDisturb: 'string',
   links: customerLinksFactory.build({ facebook: 'facebook' }),
+  messengerData: messengerDataFactory.build({ isActive: true }),
   customFieldsData: { customFieldIds: 'any' },
   visitorContactInfo: visitorContactFactory.build({
     email: 'dulamaa@yahoo.com',
     phone: '99889988'
   }),
-  code: 'string'
+  code: 'string',
 });

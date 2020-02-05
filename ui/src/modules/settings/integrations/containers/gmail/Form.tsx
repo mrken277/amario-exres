@@ -1,12 +1,11 @@
 import client from 'apolloClient';
 import gql from 'graphql-tag';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
-import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
+import { IButtonMutateProps } from 'modules/common/types';
 import { Alert } from 'modules/common/utils';
 import Gmail from 'modules/settings/integrations/components/gmail/Form';
 import { mutations, queries } from 'modules/settings/integrations/graphql';
 import * as React from 'react';
-import { withRouter } from 'react-router';
 import { getRefetchQueries } from '../utils';
 
 type Props = {
@@ -14,15 +13,13 @@ type Props = {
   closeModal: () => void;
 };
 
-type FinalProps = {} & IRouterProps & Props;
-
 type State = {
   email: string;
   accountId: string;
 };
 
-class GmailContainer extends React.Component<FinalProps, State> {
-  constructor(props: FinalProps) {
+class GmailContainer extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = { email: '', accountId: '' };
@@ -94,4 +91,4 @@ class GmailContainer extends React.Component<FinalProps, State> {
   }
 }
 
-export default withRouter<FinalProps>(GmailContainer);
+export default GmailContainer;

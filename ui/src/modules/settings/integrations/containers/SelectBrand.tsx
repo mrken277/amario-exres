@@ -1,34 +1,41 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
 import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps, IFormProps } from 'modules/common/types';
 import { mutations as brandMutations } from 'modules/settings/brands/graphql';
 import { queries as brandQueries } from 'modules/settings/brands/graphql';
 import React from 'react';
-import { ChildProps, graphql } from 'react-apollo';
+import { ChildProps } from 'react-apollo';
 import { AllBrandsQueryResponse } from '../../brands/types';
 import SelectBrand from '../components/SelectBrand';
 
 type Props = {
-  onChange: () => void;
-  defaultValue: string;
-  creatable: boolean;
+  onChange?: (e?: any) => void;
+  defaultValue?: string;
+  creatable?: boolean;
   isRequired?: boolean;
-  formProps: IFormProps;
+  formProps?: IFormProps;
 };
 
-type FinalProps = {
-  brandsQuery: AllBrandsQueryResponse;
-} & Props;
+const SelectBrandContainer = (props: ChildProps<Props>) => {
+  const { formProps } = props;
 
-const SelectBrandContainer = (props: ChildProps<FinalProps>) => {
-  const { brandsQuery, formProps } = props;
+  const {
+    loading: brandsQueryLoading,
+    error: brandsQueryError,
+    data: brandsQueryData
+  } = useQuery<AllBrandsQueryResponse>(gql(brandQueries.brands)
+  );
 
-  const brands = brandsQuery.brands || [];
+  const brands = brandsQueryData ? brandsQueryData.brands : [];
 
-  if (brandsQuery.loading) {
+  if (brandsQueryLoading) {
     return <Spinner objective={true} />;
+  }
+
+  if (brandsQueryError) {
+    return <p>Error!</p>;
   }
 
   const renderButton = ({
@@ -38,7 +45,7 @@ const SelectBrandContainer = (props: ChildProps<FinalProps>) => {
     callback
   }: IButtonMutateProps) => {
     const callBackResponse = () => {
-      brandsQuery.refetch();
+      // brandsQuery.refetch();
 
       if (callback) {
         callback();
@@ -67,20 +74,4 @@ const SelectBrandContainer = (props: ChildProps<FinalProps>) => {
   return <SelectBrand {...updatedProps} />;
 };
 
-const getRefetchQueries = () => {
-  return [
-    {
-      query: gql(brandQueries.brands),
-      variables: {}
-    }
-  ];
-};
-
-export default compose(
-  graphql<AllBrandsQueryResponse>(gql(brandQueries.brands), {
-    name: 'brandsQuery',
-    options: () => ({
-      refetchQueries: getRefetchQueries
-    })
-  })
-)(SelectBrandContainer);
+export default SelectBrandContainer;

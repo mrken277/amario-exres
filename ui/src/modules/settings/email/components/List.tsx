@@ -14,12 +14,10 @@ import Config from '../containers/Config';
 
 type Props = {
   brands: IBrand[];
-  refetch: () => void;
 };
 
 class List extends React.Component<Props, {}> {
   renderRow(brand) {
-    const { refetch } = this.props;
     const { name, _id } = brand;
     const emailConfig = brand.emailConfig || { type: 'simple' };
 
@@ -34,7 +32,7 @@ class List extends React.Component<Props, {}> {
     const title = `${name}'s email template`;
 
     const content = props => (
-      <Config {...props} brandId={_id} refetch={refetch} />
+      <Config {...props} brandId={_id} />
     );
 
     return (

@@ -1,6 +1,5 @@
 import ActivityInputs from 'modules/activityLogs/components/ActivityInputs';
 import ActivityLogs from 'modules/activityLogs/containers/ActivityLogs';
-import { IUser } from 'modules/auth/types';
 import { __ } from 'modules/common/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
 import { IProduct } from 'modules/settings/productService/types';
@@ -9,7 +8,6 @@ import LeftSidebar from './LeftSidebar';
 
 type Props = {
   product: IProduct;
-  currentUser: IUser;
 };
 
 class CompanyDetails extends React.Component<Props> {
