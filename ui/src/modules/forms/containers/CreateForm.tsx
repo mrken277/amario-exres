@@ -1,5 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import { Alert } from 'modules/common/utils';
 import {
   AddFieldsMutationResponse,
@@ -35,7 +37,9 @@ function CreateFormContainer(props: Props) {
 
   const [
     addFormMutation,
-    { error: addFormError, data: addFormData }
+    { error: addFormError,
+      loading: addFormLoading,
+      data: addFormData }
   ] = useMutation<AddFormMutationResponse, AddFormMutationVariables>(
     gql(mutations.addForm),
     {
@@ -45,13 +49,19 @@ function CreateFormContainer(props: Props) {
 
   const [
     addFieldsMutation,
-    { error: addFieldsError }
+    { error: addFieldsError,
+      loading: addFieldsLoading }
   ] = useMutation<AddFieldsMutationResponse, AddFieldsMutationVariables>(
     gql(mutations.fieldsAdd));
 
+
+  if (addFormLoading || addFieldsLoading) {
+    return <Spinner objective={true} />;
+  }
+
   if (addFieldsError) {
-    Alert.error(addFieldsError.message);
-  };
+    return <ErrorMsg>{addFieldsError.message}</ErrorMsg>
+  }
 
   const saveForm = doc => {
     // let formId;
