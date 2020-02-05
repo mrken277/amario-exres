@@ -34,11 +34,13 @@ const SegmentContainer = styled.div`
 `;
 
 const ConditionItem = styled.div`
-  padding: ${dimensions.coreSpacing}px;
+  padding: 10px ${dimensions.coreSpacing}px;
   background-color: ${colors.bgLight};
   margin-bottom: ${dimensions.coreSpacing}px;
   border: 1px solid ${colors.borderPrimary};
-  border-radius: 2px;
+  border-radius: 4px;
+  display: flex;
+  aliong-items: center;
 `;
 
 const SegmentResult = styled(FlexItem)`

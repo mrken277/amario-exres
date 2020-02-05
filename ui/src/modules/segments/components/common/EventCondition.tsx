@@ -130,7 +130,7 @@ class Condition extends React.Component<Props, State> {
             </div>
 
             <div>
-              <Button onClick={this.addAttributeFilter}>
+              <Button btnStyle="primary" uppercase={false} onClick={this.addAttributeFilter}>
                 Add attribute
               </Button>
             </div>

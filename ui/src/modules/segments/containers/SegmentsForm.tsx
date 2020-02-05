@@ -74,7 +74,8 @@ class SegmentsFormContainer extends React.Component<
         callback={callBackResponse}
         refetchQueries={getRefetchQueries(contentType)}
         isSubmitted={isSubmitted}
-        btnSize="small"
+        uppercase={false}
+        icon="check-1"
         type="submit"
         successMessage={`You successfully ${
           object ? 'updated' : 'added'

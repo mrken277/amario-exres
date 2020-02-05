@@ -151,17 +151,14 @@ class Form extends React.Component<Props, State> {
     }
 
     return (
-      <React.Fragment>
-        <Link
-          to={`/segments/edit/${contentType}/${subOf}`}
-          target="_blank"
-        >
-          <Button icon="eye" ignoreTrans={true}>
-            {__('Parent segment conditions')}
-          </Button>
-        </Link>
-        <hr />
-      </React.Fragment>
+      <Link
+        to={`/segments/edit/${contentType}/${subOf}`}
+        target="_blank"
+      >
+        <Button icon="arrows-up-right" ignoreTrans={true} uppercase={false}>
+          {__('Parent segment conditions')}
+        </Button>
+      </Link>
     );
   }
 
@@ -200,13 +197,13 @@ class Form extends React.Component<Props, State> {
     const { conditions } = this.state;
 
     return (
-      <React.Fragment>
+      <>
         <ConditionWrapper>
           {this.renderParent()}
           {conditions.map(condition => this.renderCondition(condition))}
-          </ConditionWrapper>
+        </ConditionWrapper>
         <AddConditionButton addCondition={this.addCondition} />
-      </React.Fragment>
+      </>
     );
   }
 
@@ -262,7 +259,7 @@ class Form extends React.Component<Props, State> {
     return (
       <>
         <FormGroup>
-          <ControlLabel required={true}>Name</ControlLabel>
+          <ControlLabel required={true}>Segment Name</ControlLabel>
           <FormControl
             {...formProps}
             name="name"
@@ -276,26 +273,36 @@ class Form extends React.Component<Props, State> {
           <ControlLabel>Description</ControlLabel>
           <FormControl
             {...formProps}
+            componentClass="textarea"
             name="description"
             value={description}
             onChange={descOnChange}
           />
         </FormGroup>
-        {this.renderSubOf({ ...formProps })}
-        <FormGroup>
-          <ControlLabel>Color</ControlLabel>
-          <FormControl
-            {...formProps}
-            name="color"
-            type="color"
-            value={color}
-            onChange={colorOnChange}
-          />
-        </FormGroup>
+        <FlexContent>
+          <FlexItem>
+            {this.renderSubOf({ ...formProps })}
+          </FlexItem>
+          <FlexItem>
+            <FormGroup>
+              <ControlLabel>Color</ControlLabel>
+              <FormControl
+                {...formProps}
+                name="color"
+                type="color"
+                value={color}
+                onChange={colorOnChange}
+              />
+            </FormGroup>
+          </FlexItem>
+        </FlexContent>
+
+        <SegmentTitle>{__('Filters')}</SegmentTitle>
+        {this.renderConditions()}
         <Button.Group>
           {isForm && (
             <Link to={`/segments/${contentType}`}>
-              <Button size="small" btnStyle="simple" icon="cancel-1">
+              <Button uppercase={false} btnStyle="simple" icon="times-circle">
                 Cancel
               </Button>
             </Link>
@@ -316,9 +323,6 @@ class Form extends React.Component<Props, State> {
   render() {
     return (
       <SegmentWrapper>
-        <SegmentTitle>{__('Filters')}</SegmentTitle>
-        {this.renderConditions()}
-        <hr />
         <FlexContent>
           <FlexItem count={4}>
             <CommonForm renderContent={this.renderForm} />

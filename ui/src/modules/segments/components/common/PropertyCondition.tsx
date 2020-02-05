@@ -1,5 +1,3 @@
-import Button from 'modules/common/components/Button';
-import { FlexContent, FlexItem, FlexRightItem } from 'modules/layout/styles';
 import React from 'react';
 import { IConditionFilter } from '../../types';
 import { ConditionItem } from '../styles';
@@ -44,19 +42,7 @@ class Condition extends React.Component<Props, {}> {
 
     return (
       <ConditionItem>
-        <FlexContent>
-          <FlexItem>
-            <Filter names={names} filter={filter} onChange={this.onChangeFilter} />
-          </FlexItem>
-          <FlexRightItem>
-            <Button
-              btnStyle="danger"
-              size="small"
-              icon="cancel-1"
-              onClick={this.removeCondition}
-            />
-          </FlexRightItem>
-        </FlexContent>
+        <Filter names={names} filter={filter} onChange={this.onChangeFilter} onRemove={this.removeCondition} />
       </ConditionItem>
     );
   }

@@ -1,5 +1,6 @@
 import Icon from 'modules/common/components/Icon';
 import Spinner from 'modules/common/components/Spinner';
+import { Title } from 'modules/common/styles/main';
 import { IButtonMutateProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
 import Sidebar from 'modules/layout/components/Sidebar';
@@ -59,6 +60,7 @@ const SegmentsForm = (props: Props) => {
 
   const title = props.segment ? __('Edit segment') : __('New segment');
 
+  const pageTitle = <Title>{title}</Title>
   const breadcrumb = [
     { title: __('Segments'), link: `/segments/${contentType}` },
     { title }
@@ -67,6 +69,7 @@ const SegmentsForm = (props: Props) => {
   return (
     <Wrapper
       header={<Wrapper.Header title={title} breadcrumb={breadcrumb} />}
+      actionBar={<Wrapper.ActionBar left={pageTitle} />}
       content={
         <Form
           contentType={contentType}

@@ -104,7 +104,7 @@ class Filter extends React.Component<Props, State> {
       return;
     }
 
-    return <Button btnStyle="danger" size="small" icon="cancel-1" onClick={this.onRemove} />;
+    return <Button btnStyle="danger" size="small" icon="times" onClick={this.onRemove} />;
   }
 
   render() {
@@ -115,7 +115,7 @@ class Filter extends React.Component<Props, State> {
         <FlexItem>
           {this.renderNames()}
           {this.renderOperators()}
-          <input value={currentValue} onChange={this.onChangeValue} />
+          <FormControl value={currentValue} onChange={this.onChangeValue} />
         </FlexItem>
         <FlexRightItem>
           {this.renderRemoveButton()}
