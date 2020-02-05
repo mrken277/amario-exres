@@ -20,14 +20,11 @@ type Props = {
   headSegments: ISegment[];
   count: (segment: ISegmentDoc) => void;
   counterLoading: boolean;
-  total: {
-    byFakeSegment?: number;
-  };
 };
 
 const SegmentsForm = (props: Props) => {
   const renderSidebar = () => {
-    const { total, counterLoading } = props;
+    const { counterLoading } = props;
 
     return (
       <Sidebar full={true} wide={true}>
@@ -38,7 +35,7 @@ const SegmentsForm = (props: Props) => {
               {counterLoading ? (
                 <Spinner objective={true} />
               ) : (
-                total.byFakeSegment || 0
+                0
               )}
             </ResultCount>
             {__('User(s) will recieve this message')}
