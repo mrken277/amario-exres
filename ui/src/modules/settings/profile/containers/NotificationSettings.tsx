@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { queries as authQueries } from 'modules/auth/graphql';
 import { IUser } from 'modules/auth/types';
+import Spinner from 'modules/common/components/Spinner';
 import { Alert } from 'modules/common/utils';
 import React from 'react';
 import {
@@ -54,7 +55,7 @@ const NotificationSettingsContainer = (props: Props) => {
   }
 
   if (notificationsModulesQueryLoading || getConfigurationsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />;
   }
 
   // save get notification by email
