@@ -3,11 +3,11 @@ import gql from 'graphql-tag';
 import ErrorMsg from 'modules/common/components/ErrorMsg';
 import Spinner from 'modules/common/components/Spinner';
 import checkError from 'modules/common/utils/checkError';
+import ProductForm from 'modules/deals/components/product/ProductForm';
 import { queries as generalQueries } from 'modules/settings/general/graphql';
 import { IProduct } from 'modules/settings/productService/types';
 import React from 'react';
 import { ConfigDetailQueryResponse } from '../../../settings/general/types';
-import ProductItemForm from '../../components/product/ProductItemForm';
 import { IPaymentsData, IProductData } from '../../types';
 
 type Props = {
