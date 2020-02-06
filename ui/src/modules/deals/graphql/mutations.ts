@@ -7,10 +7,12 @@ import { dealFields } from './queries';
 
 const dealMutationVariables = `
   $productsData: JSON,
+  $paymentsData: JSON,
 `;
 
 const dealMutationParams = `
   productsData: $productsData,
+  paymentsData: $paymentsData,
 `;
 
 const copyVariables = `$companyIds: [String], $customerIds: [String], $labelIds: [String]`;

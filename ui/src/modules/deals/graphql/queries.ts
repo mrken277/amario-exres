@@ -36,6 +36,7 @@ const commonParamDefs = `
 export const dealFields = `
   products
   productsData
+  paymentsData
   amount
 `;
 
