@@ -1,54 +1,40 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { configsDetailFactory } from 'modules/testing-utils/factories/settings/general';
+import { productFactory } from 'modules/testing-utils/factories/settings/productService';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
-import { mutations, queries } from '../../graphql';
-import ListContainer from '../List';
+import { queries } from '../../graphql';
+import ProductDetails from '../product/detail/ProductDetails';
 
-const configVariables = { code: '' };
-
-const configErrorMock = {
+const productDetailQueryMock = {
   request: {
-    query: gql(queries.configsDetail),
-    variables: configVariables,
+    query: gql(queries.productDetail),
+    variables: { _id: '1' }
+  },
+  result: {
+    data: {
+      productDetail: productFactory.build()
+    },
+  },
+};
+
+const productDetailErrorMock = {
+  request: {
+    query: gql(queries.productDetail),
+    variables: { _id: '1' }
   },
   result: {
     errors: [new GraphQLError('forced error')],
   }
 };
 
-const configQueryMock = {
-  request: {
-    query: gql(queries.configsDetail),
-    variables: configVariables,
-  },
-  result: {
-    data: {
-      configsDetail: [configsDetailFactory.build()]
-    },
-  },
-};
-
-const insertConfigMutationMocks = {
-  request: {
-    query: gql(mutations.insertConfig),
-    variables: { code: '', value: [''] },
-  },
-  result: {
-    data: {
-      code: '', value: ['']
-    }
-  },
-};
-
-describe('Account default', () => {
+describe('ProductDetails', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <ListContainer />
+        <ProductDetails id="" />
       </MockedProvider>
     );
 
@@ -63,10 +49,10 @@ describe('Account default', () => {
   it('error', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[configErrorMock]}
+        mocks={[productDetailErrorMock]}
         addTypename={false}
       >
-        <ListContainer />
+        <ProductDetails id="" />
       </MockedProvider>
     );
 
@@ -79,10 +65,10 @@ describe('Account default', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[configQueryMock, insertConfigMutationMocks]}
+        mocks={[productDetailQueryMock]}
         addTypename={false}
       >
-        <ListContainer />
+        <ProductDetails id="" />
       </MockedProvider>
     );
 

@@ -1,54 +1,61 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { configsDetailFactory } from 'modules/testing-utils/factories/settings/general';
+import { queries as tagQueries } from 'modules/tags/graphql';
+import { tagFactory } from 'modules/testing-utils/factories/tags';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
-import { mutations, queries } from '../../graphql';
-import ListContainer from '../List';
+import { queries } from '../../graphql';
+import TagFilter from '../TagFilter';
 
-const configVariables = { code: '' };
-
-const configErrorMock = {
+const countByTagsQueryMock = {
   request: {
-    query: gql(queries.configsDetail),
-    variables: configVariables,
+    query: gql(queries.productCountByTags)
+  },
+  result: {
+    data: {
+      productCountByTags: { 'key': 0 }
+    },
+  },
+};
+
+const countByTagsQueryErrorMock = {
+  request: {
+    query: gql(queries.productCountByTags)
   },
   result: {
     errors: [new GraphQLError('forced error')],
   }
 };
 
-const configQueryMock = {
+const tagsQueryMock = {
   request: {
-    query: gql(queries.configsDetail),
-    variables: configVariables,
+    query: gql(tagQueries.tags),
+    variables: { type: 'lead' },
   },
   result: {
     data: {
-      configsDetail: [configsDetailFactory.build()]
+      tags: [tagFactory.build()]
     },
   },
 };
 
-const insertConfigMutationMocks = {
+const tagsQueryErrorMock = {
   request: {
-    query: gql(mutations.insertConfig),
-    variables: { code: '', value: [''] },
+    query: gql(tagQueries.tags),
+    variables: { type: 'lead' },
   },
   result: {
-    data: {
-      code: '', value: ['']
-    }
-  },
+    errors: [new GraphQLError('forced error')],
+  }
 };
 
-describe('Account default', () => {
+describe('Tag Filter', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <ListContainer />
+        <TagFilter />
       </MockedProvider>
     );
 
@@ -63,10 +70,10 @@ describe('Account default', () => {
   it('error', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[configErrorMock]}
+        mocks={[countByTagsQueryErrorMock, tagsQueryErrorMock]}
         addTypename={false}
       >
-        <ListContainer />
+        <TagFilter />
       </MockedProvider>
     );
 
@@ -79,10 +86,10 @@ describe('Account default', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[configQueryMock, insertConfigMutationMocks]}
+        mocks={[countByTagsQueryMock, tagsQueryMock]}
         addTypename={false}
       >
-        <ListContainer />
+        <TagFilter />
       </MockedProvider>
     );
 

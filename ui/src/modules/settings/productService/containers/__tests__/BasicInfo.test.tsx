@@ -1,54 +1,38 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { configsDetailFactory } from 'modules/testing-utils/factories/settings/general';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
-import { mutations, queries } from '../../graphql';
-import ListContainer from '../List';
+import { mutations } from '../../graphql';
+import BasicInfo from '../product/detail/BasicInfo';
 
-const configVariables = { code: '' };
-
-const configErrorMock = {
+const productsRemoveMutationMock = {
   request: {
-    query: gql(queries.configsDetail),
-    variables: configVariables,
+    query: gql(mutations.productsRemove),
+    variables: { productIds: [''] },
+  },
+  result: {
+    data: {
+      productIds: ['']
+    }
+  },
+};
+
+const productsRemoveMutationErrorMock = {
+  request: {
+    query: gql(mutations.productsRemove)
   },
   result: {
     errors: [new GraphQLError('forced error')],
   }
 };
 
-const configQueryMock = {
-  request: {
-    query: gql(queries.configsDetail),
-    variables: configVariables,
-  },
-  result: {
-    data: {
-      configsDetail: [configsDetailFactory.build()]
-    },
-  },
-};
-
-const insertConfigMutationMocks = {
-  request: {
-    query: gql(mutations.insertConfig),
-    variables: { code: '', value: [''] },
-  },
-  result: {
-    data: {
-      code: '', value: ['']
-    }
-  },
-};
-
-describe('Account default', () => {
+describe('BasicInfo', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <ListContainer />
+        <BasicInfo />
       </MockedProvider>
     );
 
@@ -63,10 +47,10 @@ describe('Account default', () => {
   it('error', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[configErrorMock]}
+        mocks={[productsRemoveMutationErrorMock]}
         addTypename={false}
       >
-        <ListContainer />
+        <BasicInfo />
       </MockedProvider>
     );
 
@@ -79,10 +63,10 @@ describe('Account default', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[configQueryMock, insertConfigMutationMocks]}
+        mocks={[productsRemoveMutationMock]}
         addTypename={false}
       >
-        <ListContainer />
+        <BasicInfo />
       </MockedProvider>
     );
 

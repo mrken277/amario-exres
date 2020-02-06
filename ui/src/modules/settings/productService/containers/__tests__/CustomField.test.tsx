@@ -1,54 +1,60 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { configsDetailFactory } from 'modules/testing-utils/factories/settings/general';
+import { queries as fieldQueries } from 'modules/settings/properties/graphql';
+import { propertiesFactory } from 'modules/testing-utils/factories/settings/properties';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
-import { mutations, queries } from '../../graphql';
-import ListContainer from '../List';
+import { mutations } from '../../graphql';
+import CustomField from '../product/detail/CustomFieldsSection';
 
-const configVariables = { code: '' };
-
-const configErrorMock = {
+const fieldsGroupsQueryMock = {
   request: {
-    query: gql(queries.configsDetail),
-    variables: configVariables,
+    query: gql(fieldQueries.fieldsGroups),
+    variables: { contentType: '1' }
+  },
+  result: {
+    data: {
+      fieldsGroups: [propertiesFactory.build()]
+    },
+  },
+};
+
+const productsQueryErrorMock = {
+  request: {
+    query: gql(fieldQueries.fieldsGroups),
+    variables: { contentType: '1' }
   },
   result: {
     errors: [new GraphQLError('forced error')],
   }
 };
 
-const configQueryMock = {
+const productEditMutationMock = {
   request: {
-    query: gql(queries.configsDetail),
-    variables: configVariables,
+    query: gql(mutations.productEdit),
+    variables: { _id: '1' },
   },
   result: {
-    data: {
-      configsDetail: [configsDetailFactory.build()]
-    },
+    data: { _id: '1' }
   },
 };
 
-const insertConfigMutationMocks = {
+const productEditMutationErrorMock = {
   request: {
-    query: gql(mutations.insertConfig),
-    variables: { code: '', value: [''] },
+    query: gql(mutations.productEdit)
   },
   result: {
-    data: {
-      code: '', value: ['']
-    }
-  },
+    errors: [new GraphQLError('forced error')],
+  }
 };
 
-describe('Account default', () => {
+describe('CustomField', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <ListContainer />
+        <CustomField />
       </MockedProvider>
     );
 
@@ -63,10 +69,10 @@ describe('Account default', () => {
   it('error', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[configErrorMock]}
+        mocks={[productsQueryErrorMock, productEditMutationErrorMock]}
         addTypename={false}
       >
-        <ListContainer />
+        <CustomField />
       </MockedProvider>
     );
 
@@ -79,10 +85,10 @@ describe('Account default', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[configQueryMock, insertConfigMutationMocks]}
+        mocks={[fieldsGroupsQueryMock, productEditMutationMock]}
         addTypename={false}
       >
-        <ListContainer />
+        <CustomField />
       </MockedProvider>
     );
 
