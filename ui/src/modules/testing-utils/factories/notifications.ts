@@ -1,6 +1,24 @@
 import * as Factory from 'factory.ts';
-import { INotification } from 'modules/notifications/types';
+import { INotification, NotificationConfig, NotificationModule, NotificationModuleType } from 'modules/notifications/types';
 import { userFactory } from './auth';
+
+export const notificationConfigFactory = Factory.Sync.makeFactory<NotificationConfig>({
+  _id: '1',
+  user: 'usr',
+  notifType: '0',
+  isAllowed: false
+});
+
+export const notificationModuleTypeFactory = Factory.Sync.makeFactory<NotificationModuleType>({
+  name: 'erxes',
+  text: 'txt'
+});
+
+export const notificationModuleFactory = Factory.Sync.makeFactory<NotificationModule>({
+  name: 'nmma',
+  description: 'desc',
+  types: [notificationModuleTypeFactory.build()]
+});
 
 export const notificationFactory = Factory.Sync.makeFactory<INotification>({
   _id: '3',

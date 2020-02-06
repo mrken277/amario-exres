@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import Spinner from 'modules/common/components/Spinner';
 import React from 'react';
 import Status from '../components/Status';
 import { queries } from '../graphql';
@@ -19,7 +20,7 @@ const StatusContainer = () => {
   }
 
   if (versionsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />
   }
 
   const updatedProps = {

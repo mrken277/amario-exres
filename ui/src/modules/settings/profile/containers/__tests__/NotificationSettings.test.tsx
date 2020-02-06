@@ -1,6 +1,7 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
+import { notificationConfigFactory, notificationModuleFactory } from 'modules/testing-utils/factories/notifications';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
