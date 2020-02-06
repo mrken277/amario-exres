@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
+import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
 import { Alert, confirm } from 'modules/common/utils';
 import { queries as engageQueries } from 'modules/engage/graphql';
@@ -55,7 +56,7 @@ const SettingsContainer = (props: Props) => {
   }
 
   if (verifiedEmailsQueryLoading || engagesConfigQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />;
   }
 
   const renderButton = ({

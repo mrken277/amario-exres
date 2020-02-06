@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import Spinner from 'modules/common/components/Spinner';
 import { IBrandDoc } from 'modules/settings/brands/types';
 import { IChannelDoc } from 'modules/settings/channels/types';
 import ManageIntegrations from 'modules/settings/integrations/components/common/ManageIntegrations';
@@ -13,7 +14,7 @@ type Props = {
   closeModal?: () => void;
 };
 
-const SegmentListContainer = (props: Props, state: { perPage: number }) => {
+const SegmentListContainer = (props: Props) => {
   const [perPage, setPerPage] = useState(20);
 
   const { save } = props;
@@ -37,6 +38,13 @@ const SegmentListContainer = (props: Props, state: { perPage: number }) => {
 
     setPerPage(perPage + 20);
 
+    // setPerPage(perPage + 20), () => {
+    //   integrationsQueryRefetch({
+    //     searchValue: value,
+    //     perPage
+    //   })
+    // }
+
     // this.setState({ perPage: this.state.perPage + 20 }, () => {
     //   allIntegrationsQuery.refetch({
     //     searchValue: value,
@@ -50,7 +58,7 @@ const SegmentListContainer = (props: Props, state: { perPage: number }) => {
   }
 
   if (integrationsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner objective={true} />;
   }
 
   const updatedProps = {
