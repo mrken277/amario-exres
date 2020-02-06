@@ -51,6 +51,7 @@ function EditLeadContainer(props: Props, state: State) {
 
   const [editIntegrationMutation,
     { data: editIntegrationMutationData,
+      loading: editIntegrationMutationLoading,
       error: editIntegrationMutationError
     }] = useMutation<EditIntegrationMutationResponse, EditIntegrationMutationVariables>(gql(mutations.integrationsEditLeadIntegration), {
       refetchQueries: [
@@ -60,7 +61,7 @@ function EditLeadContainer(props: Props, state: State) {
       ]
     });
 
-  if (integrationDetailQueryLoading) {
+  if (integrationDetailQueryLoading || editIntegrationMutationLoading) {
     return <Spinner objective={true} />;
   }
 

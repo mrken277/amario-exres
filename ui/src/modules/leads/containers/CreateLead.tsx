@@ -6,7 +6,7 @@ import {
   AddIntegrationMutationResponse,
   AddIntegrationMutationVariables
 } from 'modules/settings/integrations/types';
-import { AddFieldsMutationResponse } from 'modules/settings/properties/types';
+// import { AddFieldsMutationResponse } from 'modules/settings/properties/types';
 import React, { useState } from 'react';
 import { withRouter } from 'react-router';
 import { IRouterProps } from '../../common/types';
@@ -14,9 +14,7 @@ import Lead from '../components/Lead';
 import { mutations } from '../graphql';
 import { ILeadData } from '../types';
 
-type Props = {} & IRouterProps &
-  AddIntegrationMutationResponse &
-  AddFieldsMutationResponse;
+type Props = {} & IRouterProps
 
 type State = {
   isLoading: boolean;

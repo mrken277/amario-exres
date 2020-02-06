@@ -60,11 +60,13 @@ function ListContainer(props: Props) {
 
   const [removeMutation,
     { error: removeError,
+      loading: removeLoading,
       data: removeData
     }] = useMutation<RemoveMutationResponse, RemoveMutationVariables>(gql(mutations.integrationRemove));
 
   const [archiveIntegration,
     { error: archiveIntegrationError,
+      loading: archiveIntegrationLoading,
       data: archiveIntegrationData
     }] = useMutation<ArchiveIntegrationResponse>(gql(integrationMutations.integrationsArchive));
 
@@ -78,7 +80,7 @@ function ListContainer(props: Props) {
     return <ErrorMsg>{error.message}</ErrorMsg>;
   };
 
-  if (tagsLoading || integrationsTotalCountLoading) {
+  if (tagsLoading || integrationsTotalCountLoading || archiveIntegrationLoading || removeLoading) {
     return <Spinner objective={true} />;
   }
 
