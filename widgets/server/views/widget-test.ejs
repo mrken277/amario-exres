@@ -22,6 +22,8 @@
         height: 500px !important;
       }
     </style>
+
+    <script src="http://localhost:3200/build/eventsWidget.bundle.js"></script>
   </head>
 
   <body class="uk-margin">
@@ -40,19 +42,6 @@
     </div>
 
 <script>
-(function() {
-  var script = document.createElement('script');
-  script.src = "http://localhost:3200/build/eventsWidget.bundle.js";
-  script.async = true;
-
-  var entry = document.getElementsByTagName('script')[0];
-  entry.parentNode.insertBefore(script, entry);
-})();
-
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('document ready')
-})
-
 document.getElementById('ad').addEventListener('click', () => {
   window.Erxes.sendEvent({ name: 'pageView', customerId: 'mmmmmm', attributes: { duration: 1 } })
   window.Erxes.sendEvent({ name: 'purchase', customerId: 'mmmmmm', attributes: { productName: 'laptop', price: 1000 } })

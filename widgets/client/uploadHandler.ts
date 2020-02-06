@@ -1,4 +1,4 @@
-import { getEnv } from "./simpleUtils";
+import { getEnv } from "./utils";
 
 type FileInfo = {
   name: string;

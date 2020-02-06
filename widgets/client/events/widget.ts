@@ -1,42 +1,63 @@
-import { generateIntegrationUrl } from "../simpleUtils";
+import { getLocalStorageItem, setLocalStorageItem } from "../common";
 
-/*
- * Events embeddable script
- */
+(() => {
+  const document = window.document;
 
-declare const window: any;
+  const Erxes = {
+    init() {
+      document.addEventListener("DOMContentLoaded", () => {
+        const customerId = getLocalStorageItem("customerId");
 
-const iframeId = "erxes-events-iframe";
+        this.sendEvent({
+          name: "pageView",
+          customerId,
+          attributes: { url: window.location.href }
+        });
+      });
+    },
 
-// add iframe
-const iframe = document.createElement("iframe");
+    identifyCustomer(args: { email?: string; phone?: string; code?: string }) {
+      this.sendRequest("events-identify-customer", { args });
+    },
 
-iframe.id = iframeId;
-iframe.src = generateIntegrationUrl("events");
-iframe.style.display = "none";
+    updateCustomerProperty(name: string, value: any) {
+      const customerId = getLocalStorageItem("customerId");
 
-// after iframe load send connection info
-iframe.onload = async () => {
-  iframe.style.display = "block";
+      this.sendRequest("events-update-customer-property", {
+        customerId,
+        name,
+        value
+      });
+    },
 
-  const contentWindow = iframe.contentWindow;
+    sendRequest(path: string, data: any) {
+      const { API_URL } = process.env;
 
-  if (!contentWindow) {
-    return;
-  }
-
-  window.Erxes = {
-    sendEvent: (event: any) => {
-      contentWindow.postMessage(
-        {
-          fromPublisher: true,
-          action: "sendEvent",
-          event
+      fetch(`${API_URL}/${path}`, {
+        method: "post",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
         },
-        "*"
-      );
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(response => {
+          if (response.customerId) {
+            setLocalStorageItem("customerId", response.customerId);
+          }
+        })
+        .catch(errorResponse => {
+          console.log(errorResponse);
+        });
+    },
+
+    sendEvent(data: any) {
+      this.sendRequest("events-receive", data);
     }
   };
-};
 
-document.body.appendChild(iframe);
+  Erxes.init();
+
+  (window as any).Erxes = Erxes;
+})();

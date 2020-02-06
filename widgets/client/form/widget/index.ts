@@ -7,8 +7,7 @@ declare const window: any;
 // css
 import "./index.css";
 
-import { generateIntegrationUrl } from "../../simpleUtils";
-import { getBrowserInfo } from "../../utils";
+import { generateIntegrationUrl, getBrowserInfo } from "../../utils";
 
 // add meta to head
 const meta = document.createElement("meta");

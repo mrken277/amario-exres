@@ -5,7 +5,7 @@ declare const window: any;
  */
 
 // css
-import { generateIntegrationUrl } from "../../simpleUtils";
+import { generateIntegrationUrl } from "../../utils";
 import "./index.css";
 
 // meta

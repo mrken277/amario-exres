@@ -4,7 +4,7 @@ import { split } from "apollo-link";
 import { createHttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
-import { getEnv } from "./simpleUtils";
+import { getEnv } from "./utils";
 
 const { API_URL, API_SUBSCRIPTIONS_URL } = getEnv();
 
