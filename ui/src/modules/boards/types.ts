@@ -9,7 +9,11 @@ export interface IOptions {
   Item: any;
   type: string;
   title: string;
-  queriesName: { itemsQuery: string; detailQuery: string };
+  queriesName: {
+    itemsQuery: string;
+    detailQuery: string;
+    archivedItemsQuery: string;
+  };
   mutationsName: {
     addMutation: string;
     editMutation: string;
@@ -17,8 +21,14 @@ export interface IOptions {
     changeMutation: string;
     updateOrderMutation: string;
     watchMutation: string;
+    copyMutation: string;
+    archiveMutation: string;
   };
-  queries: { itemsQuery: string; detailQuery: string };
+  queries: {
+    itemsQuery: string;
+    detailQuery: string;
+    archivedItemsQuery: string;
+  };
   mutations: {
     addMutation: string;
     editMutation: string;
@@ -26,6 +36,8 @@ export interface IOptions {
     changeMutation: string;
     updateOrderMutation: string;
     watchMutation: string;
+    archiveMutation: string;
+    copyMutation: string;
   };
   texts: {
     addText: string;
@@ -145,6 +157,7 @@ export interface IItem {
   isComplete: boolean;
   reminderMinute: number;
   labelIds: string[];
+  status?: string;
   createdAt: Date;
 }
 
@@ -238,6 +251,8 @@ export type RemoveVariables = {
 
 export type RemoveMutation = ({ variables: RemoveVariables }) => Promise<any>;
 
+export type CopyMutation = ({ variables: RemoveVariables }) => Promise<any>;
+
 export type ItemsQueryResponse = {
   loading: boolean;
   refetch: () => void;
@@ -316,7 +331,7 @@ export interface IFilterParams extends ISavedConformity {
 
 export interface IEditFormContent {
   state: any;
-  saveItem: (doc: { [key: string]: any }) => void;
+  saveItem: (doc: { [key: string]: any }, callback?: (item) => void) => void;
   onChangeStage: (stageId: string) => void;
   copy: () => void;
   remove: (id: string) => void;
