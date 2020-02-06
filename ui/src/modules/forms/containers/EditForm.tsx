@@ -21,7 +21,9 @@ import {
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import ErrorMsg from 'modules/common/components/ErrorMsg';
 import Spinner from 'modules/common/components/Spinner';
+import { IRouterProps } from 'modules/common/types';
 import checkError from 'modules/common/utils/checkError';
+import { withRouter } from 'react-router';
 import { defaultProps } from 'recompose';
 
 type Props = {
@@ -34,10 +36,12 @@ type Props = {
   formId: string;
   integration?: IIntegration;
   showMessage?: boolean;
-  history: any;
 };
 
-function EditFormContainer(props: Props) {
+type FinalProps = {
+} & IRouterProps & Props
+
+function EditFormContainer(props: FinalProps) {
   const withDefaultProps = defaultProps({
     showMessage: true
   });
@@ -81,43 +85,37 @@ function EditFormContainer(props: Props) {
 
   const [
     addFieldMutation,
-    { error: addFieldError }
+    { error: addFieldError, loading: addFieldLoading }
   ] = useMutation<AddFieldMutationResponse, AddFieldMutationVariables>(
     gql(mutations.fieldsAdd));
 
   const [
     editFormMutation,
-    { error: editFormError, data: editFormData }
+    { error: editFormError, loading: editFormLoading, data: editFormData }
   ] = useMutation<EditFormMutationResponse, EditFormMutationVariables>(
     gql(mutations.editForm));
 
   const [
     editFieldMutation,
-    { error: editFieldError }
+    { error: editFieldError, loading: editFieldLoading }
   ] = useMutation<EditFieldMutationResponse, EditFieldMutationVariables>(
     gql(mutations.fieldsEdit));
 
   const [
     removeFieldMutation,
-    { error: removeFieldError }
+    { error: removeFieldError, loading: removeFieldLoading }
   ] = useMutation<RemoveFieldMutationResponse, RemoveFieldMutationVariables>(
     gql(mutations.fieldsRemove));
 
-  if (fieldsLoading || formDetailLoading) {
+  if (fieldsLoading || formDetailLoading || removeFieldLoading || editFieldLoading || editFormLoading || addFieldLoading) {
     return <Spinner objective={true} />;
   }
 
   const dbFields = (fieldsData && fieldsData.fields) || [];
   const form = formDetailData && formDetailData.formDetail;
 
-  if (fieldsError || formDetailError) {
-    const error = checkError([fieldsError, formDetailError]);
-
-    return <ErrorMsg>{error.message}</ErrorMsg>;
-  }
-
-  if (addFieldError || editFieldError || removeFieldError) {
-    const error = checkError([addFieldError, editFieldError, removeFieldError]);
+  if (fieldsError || formDetailError || addFieldError || editFieldError || removeFieldError) {
+    const error = checkError([fieldsError, formDetailError, addFieldError, editFieldError, removeFieldError]);
 
     return <ErrorMsg>{error.message}</ErrorMsg>;
   }
@@ -211,4 +209,4 @@ function EditFormContainer(props: Props) {
   return <Form {...updatedProps} />;
 }
 
-export default EditFormContainer;
+export default withRouter<FinalProps>(EditFormContainer);

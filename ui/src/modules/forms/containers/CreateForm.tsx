@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import ErrorMsg from 'modules/common/components/ErrorMsg';
 import Spinner from 'modules/common/components/Spinner';
+import { IRouterProps } from 'modules/common/types';
 import { Alert } from 'modules/common/utils';
 import {
   AddFieldsMutationResponse,
@@ -17,6 +18,7 @@ import {
   AddFormMutationVariables,
   IFormData
 } from '../types';
+import { withRouter } from 'react-router';
 
 type Props = {
   renderPreviewWrapper: (previewRenderer, fields: IField[]) => void;
@@ -25,10 +27,12 @@ type Props = {
   type: string;
   isReadyToSave: boolean;
   showMessage?: boolean;
-  history: any;
 };
 
-function CreateFormContainer(props: Props) {
+type FinalProps = {
+} & IRouterProps & Props
+
+function CreateFormContainer(props: FinalProps) {
   const withDefaultProps = defaultProps({
     showMessage: true
   });
@@ -119,4 +123,4 @@ function CreateFormContainer(props: Props) {
 
   return <Form {...updatedProps} />;
 }
-export default CreateFormContainer;
+export default withRouter<FinalProps>(CreateFormContainer);
