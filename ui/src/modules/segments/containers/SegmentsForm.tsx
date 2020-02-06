@@ -72,7 +72,7 @@ class SegmentsFormContainer extends React.Component<
         refetchQueries={getRefetchQueries(contentType)}
         isSubmitted={isSubmitted}
         uppercase={false}
-        icon="check-1"
+        icon="check-circle"
         type="submit"
         successMessage={`You successfully ${
           object ? 'updated' : 'added'

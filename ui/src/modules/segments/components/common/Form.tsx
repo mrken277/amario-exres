@@ -1,28 +1,36 @@
 import Button from 'modules/common/components/Button';
+import EmptyState from 'modules/common/components/EmptyState';
 import FormControl from 'modules/common/components/form/Control';
 import CommonForm from 'modules/common/components/form/Form';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
+import Icon from 'modules/common/components/Icon';
+import { ModalFooter } from 'modules/common/styles/main';
 import { IButtonMutateProps, IFormProps } from 'modules/common/types';
 import { __, generateRandomColorCode } from 'modules/common/utils';
 import { FlexContent, FlexItem } from 'modules/layout/styles';
 import {
   IConditionFilter,
   IEvent,
+  IField,
   ISegment,
   ISegmentCondition,
   ISegmentWithConditionDoc
 } from 'modules/segments/types';
+import { ColorPick, ColorPicker, ExpandWrapper } from 'modules/settings/styles';
 import React from 'react';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+import ChromePicker from 'react-color/lib/Chrome';
 import { Link } from 'react-router-dom';
-import { ConditionWrapper, SegmentTitle, SegmentWrapper } from '../styles';
+import { FilterBox, SegmentTitle, SegmentWrapper } from '../styles';
 import AddConditionButton from './AddConditionButton';
 import EventCondition from './EventCondition';
 import PropertyCondition from './PropertyCondition';
 
 type Props = {
   contentType?: string;
-  fields: any[];
+  fields: IField[];
   events: IEvent[];
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   edit?: (params: { _id: string; doc: ISegmentWithConditionDoc }) => void;
@@ -155,9 +163,8 @@ class Form extends React.Component<Props, State> {
         to={`/segments/edit/${contentType}/${subOf}`}
         target="_blank"
       >
-        <Button icon="arrows-up-right" ignoreTrans={true} uppercase={false}>
-          {__('Parent segment conditions')}
-        </Button>
+        <Icon icon="arrows-up-right" />
+        {__('See parent segment conditions')}
       </Link>
     );
   }
@@ -196,13 +203,20 @@ class Form extends React.Component<Props, State> {
   renderConditions() {
     const { conditions } = this.state;
 
+    if(conditions.length === 0) {
+      return (
+        <EmptyState
+          text="There aren’t any filters at the moment."
+          icon="list-ul"
+          size="full"
+        />
+      )
+    }
+
     return (
       <>
-        <ConditionWrapper>
-          {this.renderParent()}
-          {conditions.map(condition => this.renderCondition(condition))}
-        </ConditionWrapper>
-        <AddConditionButton addCondition={this.addCondition} />
+        <SegmentTitle>{__('Filters')} {this.renderParent()}</SegmentTitle>
+        {conditions.map(condition => this.renderCondition(condition))}
       </>
     );
   }
@@ -221,7 +235,7 @@ class Form extends React.Component<Props, State> {
           value={this.state.subOf || ''}
           onChange={onChange}
         >
-          <option value="">[not selected]</option>
+          <option value="">{__('Not selected')}</option>
           {this.props.headSegments.map(segment => (
             <option value={segment._id} key={segment._id}>
               {segment.name}
@@ -229,6 +243,15 @@ class Form extends React.Component<Props, State> {
           ))}
         </FormControl>
       </FormGroup>
+    );
+  }
+
+  renderFilters = () => {
+    return (
+      <FilterBox>
+        {this.renderConditions()}
+        <AddConditionButton addCondition={this.addCondition} />
+      </FilterBox>     
     );
   }
 
@@ -253,69 +276,86 @@ class Form extends React.Component<Props, State> {
         (e.currentTarget as HTMLInputElement).value
       );
 
-    const colorOnChange = (e: React.FormEvent) =>
-      this.handleChange('color', (e.currentTarget as HTMLInputElement).value);
+    const colorOnChange = (e) =>
+      this.handleChange('color', e.hex);
+
+    const popoverTop = (
+      <Popover id="color-picker">
+        <ChromePicker color={color} onChange={colorOnChange} />
+      </Popover>
+    );
 
     return (
       <>
-        <FormGroup>
-          <ControlLabel required={true}>Segment Name</ControlLabel>
-          <FormControl
-            {...formProps}
-            name="name"
-            value={name}
-            onChange={nameOnChange}
-            required={true}
-            autoFocus={true}
-          />
-        </FormGroup>
-        <FormGroup>
-          <ControlLabel>Description</ControlLabel>
-          <FormControl
-            {...formProps}
-            componentClass="textarea"
-            name="description"
-            value={description}
-            onChange={descOnChange}
-          />
-        </FormGroup>
         <FlexContent>
-          <FlexItem>
-            {this.renderSubOf({ ...formProps })}
-          </FlexItem>
-          <FlexItem>
+          <FlexItem count={5}>
             <FormGroup>
-              <ControlLabel>Color</ControlLabel>
+              <ControlLabel required={true}>Segment Name</ControlLabel>
               <FormControl
                 {...formProps}
-                name="color"
-                type="color"
-                value={color}
-                onChange={colorOnChange}
+                name="name"
+                value={name}
+                onChange={nameOnChange}
+                required={true}
+                autoFocus={true}
               />
             </FormGroup>
           </FlexItem>
+          <FlexItem count={3} hasSpace={true}>
+            {this.renderSubOf({ ...formProps })}
+          </FlexItem>
         </FlexContent>
 
-        <SegmentTitle>{__('Filters')}</SegmentTitle>
-        {this.renderConditions()}
-        <Button.Group>
-          {isForm && (
-            <Link to={`/segments/${contentType}`}>
-              <Button uppercase={false} btnStyle="simple" icon="times-circle">
-                Cancel
-              </Button>
-            </Link>
-          )}
+        <FlexContent>
+          <ExpandWrapper>
+            <FormGroup>
+              <ControlLabel>Description</ControlLabel>
+              <FormControl
+                {...formProps}
+                name="description"
+                value={description}
+                onChange={descOnChange}
+              />
+            </FormGroup>
+          </ExpandWrapper>
 
-          {renderButton({
-            name: 'segment',
-            values: this.generateDoc(values),
-            callback: afterSave,
-            isSubmitted,
-            object: segment
-          })}
-        </Button.Group>
+          <FormGroup>
+            <ControlLabel>Color</ControlLabel>
+            <div>
+              <OverlayTrigger
+                trigger="click"
+                rootClose={true}
+                placement="bottom"
+                overlay={popoverTop}
+              >
+                <ColorPick>
+                  <ColorPicker style={{ backgroundColor: color }} />
+                </ColorPick>
+              </OverlayTrigger>
+            </div>
+          </FormGroup>
+        </FlexContent>
+
+        {this.renderFilters()}
+        <ModalFooter>
+          <Button.Group>
+            {isForm && (
+              <Link to={`/segments/${contentType}`}>
+                <Button uppercase={false} btnStyle="simple" icon="times-circle">
+                  Cancel
+                </Button>
+              </Link>
+            )}
+
+            {renderButton({
+              name: 'segment',
+              values: this.generateDoc(values),
+              callback: afterSave,
+              isSubmitted,
+              object: segment
+            })}
+            </Button.Group>
+        </ModalFooter>
       </>
     );
   };
@@ -323,12 +363,7 @@ class Form extends React.Component<Props, State> {
   render() {
     return (
       <SegmentWrapper>
-        <FlexContent>
-          <FlexItem count={4}>
-            <CommonForm renderContent={this.renderForm} />
-          </FlexItem>
-          <FlexItem count={2} />
-        </FlexContent>
+        <CommonForm renderContent={this.renderForm} />
       </SegmentWrapper>
     );
   }

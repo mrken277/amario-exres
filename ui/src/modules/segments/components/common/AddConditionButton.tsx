@@ -1,4 +1,5 @@
 import Button from 'modules/common/components/Button';
+import { CenterContent } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';
 import React from 'react';
 import { ISegmentCondition } from '../../types';
@@ -27,25 +28,27 @@ function AddConditionButton (props: Props) {
   };
 
   return (
-    <Button.Group hasGap={false}>
-      <Button 
-        btnStyle="primary" 
-        icon="subject" 
-        uppercase={false} 
-        onClick={addPropertyCondition}
-      >
-        {__("Add Properties")}
-      </Button>
-      
-      <Button 
-        btnStyle="primary" 
-        icon="computer-mouse" 
-        uppercase={false} 
-        onClick={addEventCondition}
-      >
-        {__("Add Events")}
-      </Button>
-    </Button.Group>
+    <CenterContent>
+      <Button.Group hasGap={false}>
+        <Button 
+          btnStyle="primary" 
+          icon="subject" 
+          uppercase={false} 
+          onClick={addPropertyCondition}
+        >
+          {__("Add Properties")}
+        </Button>
+        
+        <Button 
+          btnStyle="primary" 
+          icon="computer-mouse" 
+          uppercase={false} 
+          onClick={addEventCondition}
+        >
+          {__("Add Events")}
+        </Button>
+      </Button.Group>
+    </CenterContent>
   );
 }
 

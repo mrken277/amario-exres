@@ -1,6 +1,5 @@
 import React from 'react';
 import { IConditionFilter } from '../../types';
-import { ConditionItem } from '../styles';
 import Filter from './Filter';
 
 type Props = {
@@ -31,7 +30,7 @@ class Condition extends React.Component<Props, {}> {
 
   render() {
     const { fields, conditionKey, name, operator, value } = this.props;
-    const names = fields.map(field => field.name);
+    const cleanFields = fields.map(item => ({ value: item.name, label: item.label }));
 
     const filter = {
       key: conditionKey,
@@ -41,9 +40,13 @@ class Condition extends React.Component<Props, {}> {
     }
 
     return (
-      <ConditionItem>
-        <Filter names={names} filter={filter} onChange={this.onChangeFilter} onRemove={this.removeCondition} />
-      </ConditionItem>
+      <Filter 
+        fields={cleanFields} 
+        filter={filter} 
+        groupData={true}
+        onChange={this.onChangeFilter} 
+        onRemove={this.removeCondition} 
+      />
     );
   }
 }

@@ -2,15 +2,18 @@ import Button from "modules/common/components/Button";
 import { FormControl } from "modules/common/components/form";
 import { __ } from "modules/common/utils";
 import { operators } from "modules/customers/constants";
-import { FlexContent, FlexItem, FlexRightItem } from "modules/layout/styles";
+import { FlexRightItem } from "modules/layout/styles";
 import React from "react";
-import { IConditionFilter } from "../../types";
+import Select from 'react-select-plus';
+import { IConditionFilter, IField } from "../../types";
+import { ConditionItem, FilterProperty, FilterRow } from "../styles";
 
 type Props = {
-  names: string[];
+  fields: IField[];
   filter: IConditionFilter;
   onChange: (filter: IConditionFilter) => void;
   onRemove?: (id: string) => void;
+  groupData?: boolean;
 };
 
 type State = {
@@ -58,19 +61,52 @@ class Filter extends React.Component<Props, State> {
     this.setState({ currentOperator: (e.currentTarget as HTMLInputElement).value }, this.onChange);
   }
 
+  onChangeField = ({ value }: { value: string }) => {
+    this.setState({ currentName: value }, this.onChange);
+  }
+
+  groupByType = () => {
+    const { fields = [] } = this.props;
+    
+    return fields.reduce((acc, field) => {
+      const value = field.value;
+      const key = value.includes('.') ? value.substr(0, value.indexOf('.')) : 'general';
+
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+
+      acc[key].push(field);
+
+      return acc;
+    }, {});
+  };
+
+  generateValues = () => {
+    const objects = this.groupByType();
+    const array = [] as any;
+
+    Object.keys(objects).map(key => {
+      const obj = { label: key, options: objects[key] };
+      return array.push(obj);
+    });
+
+    return array;
+  }
+
   renderNames() {
-    const { names } = this.props;
+    const { fields, groupData } = this.props;
     const { currentName } = this.state;
 
     return (
-      <FormControl componentClass="select" placeholder={__("select")} onChange={this.onChangeNames} value={currentName}>
-        <option />
-        {names.map((name, index) => (
-          <option value={name} key={index}>
-            {name}
-          </option>
-        ))}
-      </FormControl>
+      <Select
+        isRequired={true}
+        options={groupData ? this.generateValues() : fields}
+        clearable={false}
+        value={currentName}
+        onChange={this.onChangeField}
+        placeholder={__("Select property")}
+      />
     );
   }
 
@@ -78,8 +114,8 @@ class Filter extends React.Component<Props, State> {
     const { currentOperator } = this.state;
 
     return (
-      <FormControl componentClass="select" placeholder={__("select")} onChange={this.onChangeOperators} value={currentOperator}>
-        <option />
+      <FormControl componentClass="select" onChange={this.onChangeOperators} value={currentOperator}>
+        <option value="">{__("Select operator")}...</option>
         {operators.map(c => (
           <option value={c.value} key={c.value}>
             {c.name}
@@ -104,23 +140,37 @@ class Filter extends React.Component<Props, State> {
       return;
     }
 
-    return <Button btnStyle="danger" size="small" icon="times" onClick={this.onRemove} />;
+    return <Button className="round" btnStyle="danger" uppercase={false} icon="times" onClick={this.onRemove} />;
+  }
+
+  renderValueInput = () => {
+    const { currentValue, currentOperator } = this.state;
+
+    if (['is', 'ins', 'it', 'if'].indexOf(currentOperator) >= 0) {
+      return null;
+    }
+
+    return (
+      <FormControl value={currentValue} onChange={this.onChangeValue} />
+    );
   }
 
   render() {
-    const { currentValue } = this.state;
-
     return (
-      <FlexContent>
-        <FlexItem>
-          {this.renderNames()}
-          {this.renderOperators()}
-          <FormControl value={currentValue} onChange={this.onChangeValue} />
-        </FlexItem>
+      <ConditionItem>
+        <FilterRow>
+          <FilterProperty>
+            {this.renderNames()}
+          </FilterProperty>
+          <FilterProperty>
+            {this.renderOperators()}
+          </FilterProperty>
+          {this.renderValueInput()}
+        </FilterRow>
         <FlexRightItem>
           {this.renderRemoveButton()}
         </FlexRightItem>
-      </FlexContent>
+      </ConditionItem>
     );
   }
 }

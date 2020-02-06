@@ -134,8 +134,6 @@ const ButtonLink = styledTS<{ disabled?: boolean }>(
 
 const ButtonGroup = styledTS<{ hasGap: boolean }>(styled.div)`
   position: relative;
-  display: inline-block;
-  vertical-align: middle;
 
   button + a,
   a + button {
