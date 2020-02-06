@@ -36,9 +36,9 @@ type Props = {
   edit?: (params: { _id: string; doc: ISegmentWithConditionDoc }) => void;
   segment?: ISegment;
   headSegments: ISegment[];
-  count: (segment: ISegment) => void;
   isForm?: boolean;
   afterSave?: () => void;
+  previewCount?: (conditions: ISegmentCondition[]) => void;
 };
 
 type State = {
@@ -261,11 +261,12 @@ class Form extends React.Component<Props, State> {
       segment,
       contentType,
       renderButton,
-      afterSave
+      afterSave,
+      previewCount,
     } = this.props;
 
     const { values, isSubmitted } = formProps;
-    const { name, description, color } = this.state;
+    const { name, description, color, conditions } = this.state;
 
     const nameOnChange = (e: React.FormEvent) =>
       this.handleChange('name', (e.currentTarget as HTMLInputElement).value);
@@ -278,6 +279,13 @@ class Form extends React.Component<Props, State> {
 
     const colorOnChange = (e) =>
       this.handleChange('color', e.hex);
+
+
+    const onPreviewCount = () => {
+      if (previewCount) {
+        previewCount(conditions);
+      }
+    }
 
     const popoverTop = (
       <Popover id="color-picker">
@@ -337,6 +345,7 @@ class Form extends React.Component<Props, State> {
         </FlexContent>
 
         {this.renderFilters()}
+
         <ModalFooter>
           <Button.Group>
             {isForm && (
@@ -346,6 +355,14 @@ class Form extends React.Component<Props, State> {
                 </Button>
               </Link>
             )}
+
+            {
+              previewCount && (
+                <Button uppercase={false} btnStyle="default" icon="times-circle" onClick={onPreviewCount}>
+                  show count
+                </Button>
+              )
+            }
 
             {renderButton({
               name: 'segment',

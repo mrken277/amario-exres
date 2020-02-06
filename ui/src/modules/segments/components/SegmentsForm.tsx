@@ -7,7 +7,7 @@ import Sidebar from 'modules/layout/components/Sidebar';
 import Wrapper from 'modules/layout/components/Wrapper';
 import { FlexContent } from 'modules/layout/styles';
 import React from 'react';
-import { IEvent, ISegment, ISegmentDoc } from '../types';
+import { IEvent, ISegment, ISegmentCondition } from '../types';
 import Form from './common/Form';
 import { ResultCount, SegmentResult } from './styles';
 
@@ -18,13 +18,14 @@ type Props = {
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   segment: ISegment;
   headSegments: ISegment[];
-  count: (segment: ISegmentDoc) => void;
+  count: number;
+  previewCount: (conditions: ISegmentCondition[]) => void;
   counterLoading: boolean;
 };
 
 const SegmentsForm = (props: Props) => {
   const renderSidebar = () => {
-    const { counterLoading } = props;
+    const { count, counterLoading } = props;
 
     return (
       <Sidebar full={true} wide={true}>
@@ -34,9 +35,9 @@ const SegmentsForm = (props: Props) => {
               <Icon icon="users" />{' '}
               {counterLoading ? (
                 <Spinner objective={true} />
-              ) : (
-                0
-              )}
+              ) : 
+                <span>{count}</span>
+              }
             </ResultCount>
             {__('User(s) will recieve this message')}
           </SegmentResult>
@@ -52,7 +53,7 @@ const SegmentsForm = (props: Props) => {
     segment,
     events,
     headSegments,
-    count
+    previewCount,
   } = props;
 
   const title = props.segment ? __('Edit segment') : __('New segment');
@@ -75,7 +76,7 @@ const SegmentsForm = (props: Props) => {
           renderButton={renderButton}
           segment={segment}
           headSegments={headSegments}
-          count={count}
+          previewCount={previewCount}
           isForm={true}
         />
       }

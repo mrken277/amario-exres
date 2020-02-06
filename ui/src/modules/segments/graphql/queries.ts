@@ -30,6 +30,11 @@ const segmentDetail = `
     }
   }
 `;
+const segmentsPreviewCount = `
+  query segmentsPreviewCount($contentType: String!, $conditions: JSON) {
+    segmentsPreviewCount(contentType: $contentType, conditions: $conditions)
+  }
+`;
 
 const headSegments = `
   query headSegments {
@@ -59,5 +64,6 @@ export default {
   segmentDetail,
   headSegments,
   events,
-  combinedFields
+  combinedFields,
+  segmentsPreviewCount
 };

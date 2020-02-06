@@ -4,8 +4,6 @@ import * as compose from 'lodash.flowright';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
 import { IButtonMutateProps } from 'modules/common/types';
 import { withProps } from 'modules/common/utils';
-import { queries as companyQueries } from 'modules/companies/graphql';
-import { queries as customerQueries } from 'modules/customers/graphql';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { FieldsCombinedByTypeQueryResponse } from '../../settings/properties/types';
@@ -16,7 +14,7 @@ import {
   EditMutationResponse,
   EventsQueryResponse,
   HeadSegmentsQueryResponse,
-  ISegmentDoc,
+  ISegmentCondition,
   SegmentDetailQueryResponse
 } from '../types';
 
@@ -37,13 +35,14 @@ type FinalProps = {
 
 class SegmentsFormContainer extends React.Component<
   FinalProps,
-  { loading: boolean }
+  { loading: boolean, count: number }
 > {
   constructor(props) {
     super(props);
 
     this.state = {
-      loading: false
+      loading: false,
+      count: 0,
     };
   }
 
@@ -69,7 +68,6 @@ class SegmentsFormContainer extends React.Component<
         mutation={object ? mutations.segmentsEdit : mutations.segmentsAdd}
         variables={values}
         callback={callBackResponse}
-        refetchQueries={getRefetchQueries(contentType)}
         isSubmitted={isSubmitted}
         uppercase={false}
         icon="check-circle"
@@ -81,26 +79,25 @@ class SegmentsFormContainer extends React.Component<
     );
   };
 
-  count = (segment: ISegmentDoc) => {
+  previewCount = (conditions: ISegmentCondition[]) => {
     const { contentType } = this.props;
 
     this.setState({ loading: true });
 
-    let query = companyQueries.companyCounts;
-
-    if (contentType === 'customer') {
-      query = customerQueries.customerCounts;
-    }
-
     client
       .query({
-        query: gql(query),
+        query: gql(queries.segmentsPreviewCount),
         variables: {
           contentType,
+          conditions,
         }
       })
-
-    this.setState({ loading: false });
+      .then(({ data }) => {
+        this.setState({
+          count: data.segmentsPreviewCount,
+          loading: false
+        });
+      })
   };
 
   render() {
@@ -129,30 +126,14 @@ class SegmentsFormContainer extends React.Component<
       headSegments: headSegments.filter(s => s.contentType === contentType),
       events,
       renderButton: this.renderButton,
-      count: this.count,
+      previewCount: this.previewCount,
+      count: this.state.count,
       counterLoading: this.state.loading,
     };
 
     return <SegmentsForm {...updatedProps} />;
   }
 }
-
-const getRefetchQueries = (contentType: string) => {
-  return [
-    {
-      query: gql(generateRefetchQuery({ contentType })),
-      variables: { only: 'bySegment' }
-    }
-  ];
-};
-
-const generateRefetchQuery = ({ contentType }) => {
-  if (contentType === 'customer') {
-    return customerQueries.customerCounts;
-  }
-
-  return companyQueries.companyCounts;
-};
 
 export default withProps<Props>(
   compose(
