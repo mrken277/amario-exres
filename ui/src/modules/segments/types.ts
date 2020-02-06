@@ -83,6 +83,11 @@ export type AddMutationVariables = {
   conditions: ISegmentCondition[];
 };
 
+export type IField = {
+  value: string;
+  label: string;
+};
+
 export type AddMutationResponse = {
   segmentsAdd: (
     params: {

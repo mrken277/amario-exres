@@ -1,10 +1,10 @@
 import Button from 'modules/common/components/Button';
 import { FormControl } from 'modules/common/components/form';
 import { __ } from 'modules/common/utils';
-import { FlexContent, FlexItem, FlexRightItem } from 'modules/layout/styles';
+import { FlexRightItem } from 'modules/layout/styles';
 import React from 'react';
 import { IConditionFilter, IEvent } from '../../types';
-import { ConditionItem } from '../styles';
+import { ConditionItem, FilterProperty, FilterRow, SubProperties } from '../styles';
 import Filter from './Filter';
 
 type Props = {
@@ -83,16 +83,18 @@ class Condition extends React.Component<Props, State> {
     const { attributeFilters, currentEventName } = this.state;
     const { events } = this.props;
     const currentEvent = events.find(e => e.name === currentEventName);
-
+    
     if (!currentEvent) {
       return;
     }
-
+    
+    const nameFields = currentEvent.attributeNames.map(name => ({ value: name, label: name }));
+    
     return attributeFilters.map((filter, index) => {
       return (
         <Filter
           key={index}
-          names={currentEvent.attributeNames}
+          fields={nameFields}
           filter={filter}
           onChange={this.onChangeAttributeFilter}
           onRemove={this.onRemoveAttributeFilter}
@@ -107,7 +109,7 @@ class Condition extends React.Component<Props, State> {
 
     return (
       <FormControl componentClass="select" placeholder={__("select")} onChange={this.onChangeEvents} value={currentEventName}>
-        <option />
+        <option value="">{__('Select event')}...</option>
 
         {events.map((event, index) => (
           <option value={event.name} key={index}>
@@ -120,32 +122,40 @@ class Condition extends React.Component<Props, State> {
 
   render() {
     return (
-      <ConditionItem>
-        <FlexContent>
-          <FlexItem>
-            {this.renderNames()}
-
-            <div>
-              {this.renderAttributeFilters()}
-            </div>
-
-            <div>
-              <Button onClick={this.addAttributeFilter}>
-                Add attribute
-              </Button>
-            </div>
-          </FlexItem>
-
-          <FlexRightItem>
-            <Button
-              btnStyle="danger"
-              size="small"
-              icon="cancel-1"
-              onClick={this.removeCondition}
-            />
-          </FlexRightItem>
-        </FlexContent>
-      </ConditionItem>
+      <>
+        <ConditionItem>
+          <FilterRow>
+            <FilterProperty>
+              {this.renderNames()}
+            </FilterProperty>
+            <FilterProperty>
+              {
+                this.state.currentEventName && 
+                <Button 
+                  btnStyle="simple"
+                  icon="plus-circle" 
+                  uppercase={false} 
+                  onClick={this.addAttributeFilter}
+                >
+                  Add event attribute
+                </Button>
+              }
+            </FilterProperty>
+            <FlexRightItem>
+              <Button
+                className="round"
+                btnStyle="danger"
+                uppercase={false}
+                icon="times"
+                onClick={this.removeCondition}
+              />
+            </FlexRightItem>
+          </FilterRow>
+        </ConditionItem>
+        <SubProperties>
+          {this.renderAttributeFilters()}
+        </SubProperties>
+      </>
     );
   }
 }
