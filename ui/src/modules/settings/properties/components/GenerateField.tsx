@@ -37,7 +37,7 @@ export default class GenerateField extends React.Component<Props, State> {
     return state;
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.defaultValue !== this.props.defaultValue) {
       this.setState(this.generateState(nextProps));
     }

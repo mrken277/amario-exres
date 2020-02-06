@@ -1,8 +1,7 @@
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
 import { IRouterProps } from '../../../common/types';
 import UserConfirmation from '../components/UserConfirmation';
@@ -13,59 +12,55 @@ type Props = {
   queryParams: any;
 };
 
-type FinalProps = Props & IRouterProps & ConfirmMutationResponse;
+type FinalProps = Props & IRouterProps;
 
-class UserConfirmationContainer extends React.Component<FinalProps> {
-  render() {
-    const { usersConfirmInvitation, queryParams, history } = this.props;
+const UserConfirmationContainer = (props: FinalProps) => {
+  const { queryParams, history } = props;
 
-    const confirmUser = ({
-      password,
-      passwordConfirmation,
-      username,
-      fullName
-    }: {
-      password: string;
-      passwordConfirmation: string;
-      username: string;
-      fullName: string;
-    }) => {
-      usersConfirmInvitation({
-        variables: {
-          token: queryParams.token,
-          password,
-          passwordConfirmation,
-          username,
-          fullName
-        }
-      })
-        .then(() => {
-          Alert.success('You successfully verified');
-          history.push('/');
-        })
-        .catch(e => {
-          Alert.error(e.message);
-        });
-    };
+  const [usersConfirmInvitation, { error: usersConfirmInvitationError, }] =
+    useMutation<ConfirmMutationResponse, ConfirmMutationVariables>(
+      gql(mutations.usersConfirmInvitation),
+      { refetchQueries: ['users'] }
+    );
 
-    const updatedProps = {
-      confirmUser
-    };
-
-    return <UserConfirmation {...updatedProps} />;
+  if (usersConfirmInvitationError) {
+    return <p>Error!</p>;
   }
+
+  const confirmUser = ({
+    password,
+    passwordConfirmation,
+    username,
+    fullName
+  }: {
+    password: string;
+    passwordConfirmation: string;
+    username: string;
+    fullName: string;
+  }) => {
+    usersConfirmInvitation({
+      variables: {
+        token: queryParams.token,
+        password,
+        passwordConfirmation,
+        username,
+        fullName
+      }
+    })
+      .then(() => {
+        Alert.success('You successfully verified');
+        history.push('/');
+      })
+      .catch(e => {
+        Alert.error(e.message);
+      });
+  };
+
+  const updatedProps = {
+    confirmUser
+  };
+
+  return <UserConfirmation {...updatedProps} />;
 }
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, ConfirmMutationResponse, ConfirmMutationVariables>(
-      gql(mutations.usersConfirmInvitation),
-      {
-        name: 'usersConfirmInvitation',
-        options: {
-          refetchQueries: ['users']
-        }
-      }
-    )
-  )(withRouter<FinalProps>(UserConfirmationContainer))
-);
+export default withRouter<FinalProps>(UserConfirmationContainer);

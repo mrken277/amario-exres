@@ -1,9 +1,8 @@
 import ButtonMutate from 'modules/common/components/ButtonMutate';
-import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
+import { IButtonMutateProps } from 'modules/common/types';
 import Form from 'modules/settings/integrations/components/mail/Form';
 import { mutations } from 'modules/settings/integrations/graphql';
 import * as React from 'react';
-import { withRouter } from 'react-router';
 import { IntegrationTypes } from '../../types';
 import { getRefetchQueries } from '../utils';
 
@@ -13,14 +12,12 @@ type Props = {
   closeModal: () => void;
 };
 
-type FinalProps = {} & IRouterProps & Props;
-
 type State = {
   accountId: string;
 };
 
-class FormContainer extends React.Component<FinalProps, State> {
-  constructor(props: FinalProps) {
+class FormContainer extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = { accountId: '' };
@@ -74,4 +71,4 @@ class FormContainer extends React.Component<FinalProps, State> {
   }
 }
 
-export default withRouter<FinalProps>(FormContainer);
+export default FormContainer;

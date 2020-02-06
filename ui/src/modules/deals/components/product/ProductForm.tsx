@@ -45,7 +45,7 @@ class ProductForm extends React.Component<Props, State> {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.updateTotal();
 
     // initial product item

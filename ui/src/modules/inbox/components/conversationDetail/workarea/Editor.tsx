@@ -177,7 +177,7 @@ export default class Editor extends React.Component<EditorProps, State> {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.responseTemplate !== this.props.responseTemplate) {  
+    if (nextProps.responseTemplate !== this.props.responseTemplate) {
       this.changeEditorContent(nextProps.responseTemplate);
     }
 
@@ -260,7 +260,7 @@ export default class Editor extends React.Component<EditorProps, State> {
       selection,
       ' '
     );
-    
+
     const es = EditorState.push(editorState, contentState, 'insert-characters');
 
     editorState = EditorState.moveFocusToEnd(es);

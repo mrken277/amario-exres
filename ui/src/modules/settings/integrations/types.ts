@@ -84,8 +84,8 @@ export interface IIntegration {
   code: string;
   formId: string;
   languageCode?: string;
-  createUrl: string;
-  createModal: string;
+  createUrl?: string;
+  createModal?: string;
   messengerData?: IMessengerData;
   form: IForm;
   uiOptions?: IUiOptions;

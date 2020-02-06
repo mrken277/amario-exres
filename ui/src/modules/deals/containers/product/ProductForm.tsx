@@ -7,7 +7,7 @@ import { queries as generalQueries } from 'modules/settings/general/graphql';
 import { IProduct } from 'modules/settings/productService/types';
 import React from 'react';
 import { ConfigDetailQueryResponse } from '../../../settings/general/types';
-import ProductForm from '../../components/product/ProductForm';
+import ProductItemForm from '../../components/product/ProductItemForm';
 import { IPaymentsData, IProductData } from '../../types';
 
 type Props = {
@@ -72,7 +72,8 @@ function ProductItemFormContainer(props: Props) {
   const extendedProps = {
     ...props,
     uom,
-    currencies
+    currencies,
+    productData: {} as IProductData
   };
 
   return <ProductForm {...extendedProps} />;

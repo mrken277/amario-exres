@@ -46,7 +46,7 @@ class SelectWithSearch extends React.Component<
     };
   }
 
-  componentWillUpdate(nextProps: Props) {
+  UNSAFE_componentWillUpdate(nextProps: Props) {
     const { queryName, customQuery, generateOptions, values = [] } = nextProps;
 
     const datas = customQuery[queryName] || [];
