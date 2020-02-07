@@ -1,12 +1,11 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
+import Spinner from 'modules/common/components/Spinner';
 import { IBrandDoc } from 'modules/settings/brands/types';
 import { IChannelDoc } from 'modules/settings/channels/types';
 import ManageIntegrations from 'modules/settings/integrations/components/common/ManageIntegrations';
 import { queries } from 'modules/settings/integrations/graphql';
-import React from 'react';
-import { graphql } from 'react-apollo';
-import { withProps } from '../../../../common/utils';
+import React, { useState } from 'react';
 import { IntegrationsQueryResponse } from '../../types';
 
 type Props = {
@@ -15,64 +14,62 @@ type Props = {
   closeModal?: () => void;
 };
 
-type FinalProps = {
-  allIntegrationsQuery: IntegrationsQueryResponse;
-} & Props;
+const SegmentListContainer = (props: Props) => {
+  const [perPage, setPerPage] = useState(20);
 
-type State = {
-  perPage: number;
-};
+  const { save } = props;
 
-class ManageIntegrationsContainer extends React.Component<FinalProps, State> {
-  constructor(props: FinalProps) {
-    super(props);
+  const {
+    loading: integrationsQueryLoading,
+    error: integrationsQueryError,
+    data: integrationsQueryData
+  } = useQuery<IntegrationsQueryResponse, { perPage: number }>(
+    gql(queries.integrations),
+    {
+      variables: { perPage: 20 },
+      fetchPolicy: 'network-only'
+    }
+  );
 
-    this.state = { perPage: 20 };
-  }
-
-  search = (value, loadmore) => {
-    const { allIntegrationsQuery } = this.props;
-
+  const search = (value, loadmore) => {
     if (!loadmore) {
-      this.setState({ perPage: 0 });
+      setPerPage(0)
     }
 
-    this.setState({ perPage: this.state.perPage + 20 }, () => {
-      allIntegrationsQuery.refetch({
-        searchValue: value,
-        perPage: this.state.perPage
-      });
-    });
+    setPerPage(perPage + 20);
+
+    // setPerPage(perPage + 20), () => {
+    //   integrationsQueryRefetch({
+    //     searchValue: value,
+    //     perPage
+    //   })
+    // }
+
+    // this.setState({ perPage: this.state.perPage + 20 }, () => {
+    //   allIntegrationsQuery.refetch({
+    //     searchValue: value,
+    //     perPage: this.state.perPage
+    //   });
+    // });
   };
 
-  render() {
-    const { allIntegrationsQuery, save } = this.props;
-
-    const updatedProps = {
-      ...this.props,
-      search: this.search,
-      save,
-      perPage: this.state.perPage,
-      allIntegrations: allIntegrationsQuery.integrations || []
-    };
-
-    return <ManageIntegrations {...updatedProps} />;
+  if (integrationsQueryError) {
+    return <p>Error!</p>;
   }
+
+  if (integrationsQueryLoading) {
+    return <Spinner objective={true} />;
+  }
+
+  const updatedProps = {
+    ...props,
+    search,
+    save,
+    perPage,
+    allIntegrations: integrationsQueryData ? integrationsQueryData.integrations : []
+  };
+
+  return <ManageIntegrations {...updatedProps} />;
 }
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, IntegrationsQueryResponse, { perPage: number }>(
-      gql(queries.integrations),
-      {
-        name: 'allIntegrationsQuery',
-        options: {
-          variables: {
-            perPage: 20
-          },
-          fetchPolicy: 'network-only'
-        }
-      }
-    )
-  )(ManageIntegrationsContainer)
-);
+export default SegmentListContainer;

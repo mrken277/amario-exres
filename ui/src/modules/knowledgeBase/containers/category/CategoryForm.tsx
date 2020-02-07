@@ -37,7 +37,7 @@ const KnowledgeBaseContainer = (props: Props) => {
         type="submit"
         successMessage={`You successfully ${
           object ? 'updated' : 'added'
-        } a ${name}`}
+          } a ${name}`}
       />
     );
   };

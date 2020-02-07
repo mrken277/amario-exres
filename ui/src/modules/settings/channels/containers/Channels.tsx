@@ -1,10 +1,10 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
+import Spinner from 'modules/common/components/Spinner';
 import { IRouterProps } from 'modules/common/types';
-import { router as routerUtils, withProps } from 'modules/common/utils';
+import { router as routerUtils } from 'modules/common/utils';
 import queryString from 'query-string';
-import React from 'react';
-import { graphql } from 'react-apollo';
+import React, { useEffect } from 'react';
 import { withRouter } from 'react-router';
 import { IntegrationsCountQueryResponse } from '../../integrations/types';
 import DumbChannels from '../components/Channels';
@@ -18,124 +18,111 @@ import {
 
 type Props = {
   currentChannelId: string;
+  location: any;
+  history: any;
+  queryParams: any;
 };
 
-type FinalProps = {
-  integrationsCountQuery: IntegrationsCountQueryResponse;
-  channelDetailQuery: ChannelDetailQueryResponse;
-} & Props &
-  IRouterProps;
+const ChannelsContainer = (props: Props) => {
+  const { location, currentChannelId } = props;
 
-class Channels extends React.Component<FinalProps> {
-  render() {
-    const {
-      channelDetailQuery,
-      location,
-      integrationsCountQuery,
-      currentChannelId
-    } = this.props;
-
-    let integrationsCount = 0;
-
-    if (!integrationsCountQuery.loading) {
-      const byChannel = integrationsCountQuery.integrationsTotalCount.byChannel;
-      integrationsCount = byChannel[currentChannelId];
+  const {
+    loading: channelDetailQueryLoading,
+    error: channelDetailQueryError,
+    data: channelDetailQueryData
+  } = useQuery<ChannelDetailQueryResponse, { _id: string }>(
+    gql(queries.channelDetail),
+    {
+      variables: { _id: currentChannelId },
+      fetchPolicy: 'network-only'
     }
+  );
 
-    const extendedProps = {
-      ...this.props,
-      queryParams: queryString.parse(location.search),
-      currentChannel: channelDetailQuery.channelDetail || {},
-      loading: channelDetailQuery.loading,
-      integrationsCount
-    };
+  const {
+    loading: integrationsCountQueryLoading,
+    error: integrationsCountQueryError,
+    data: integrationsCountQueryData
+  } = useQuery<IntegrationsCountQueryResponse, { channelId: string }>(
+    gql(queries.integrationsCount),
+    { variables: { channelId: currentChannelId } }
+  );
 
-    return <DumbChannels {...extendedProps} />;
+  if (channelDetailQueryError || integrationsCountQueryError) {
+    return <p>Error!</p>;
   }
-}
 
-const ChannelsContainer = withProps<Props>(
-  compose(
-    graphql<Props, ChannelDetailQueryResponse, { _id: string }>(
-      gql(queries.channelDetail),
-      {
-        name: 'channelDetailQuery',
-        options: ({ currentChannelId }: { currentChannelId: string }) => ({
-          variables: { _id: currentChannelId },
-          fetchPolicy: 'network-only'
-        })
-      }
-    ),
-    graphql<Props, IntegrationsCountQueryResponse, { channelId: string }>(
-      gql(queries.integrationsCount),
-      {
-        name: 'integrationsCountQuery',
-        options: ({ currentChannelId }: { currentChannelId: string }) => ({
-          variables: { channelId: currentChannelId }
-        })
-      }
-    )
-  )(Channels)
-);
+  if (channelDetailQueryLoading || integrationsCountQueryLoading) {
+    return <p>Loading...</p>;
+  }
+
+  let integrationsCount = 0;
+
+  if (!integrationsCountQueryLoading) {
+    const byChannel = integrationsCountQueryData ? integrationsCountQueryData.integrationsTotalCount.byChannel : {};
+    integrationsCount = byChannel[currentChannelId];
+  }
+
+  const extendedProps = {
+    ...props,
+    queryParams: queryString.parse(location.search),
+    currentChannel: channelDetailQueryData ? channelDetailQueryData.channelDetail : {} as IChannel,
+    loading: channelDetailQueryLoading,
+    integrationsCount
+  };
+
+  return <DumbChannels {...extendedProps} />;
+}
 
 type withCurrentIdProps = {
-  queryParams?: any;
+  queryParams: any;
+  history: any;
+  location: any;
 };
 
-type withCurrentIdFinalProps = {
-  lastChannelQuery: IChannel;
-} & IRouterProps &
-  withCurrentIdProps;
+const WithCurrentId = (props: withCurrentIdProps) => {
+  const { queryParams, history } = props;
 
-// tslint:disable-next-line:max-classes-per-file
-class WithCurrentId extends React.Component<withCurrentIdFinalProps> {
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const {
-      lastChannelQuery = {},
-      history,
-      queryParams: { _id }
-    } = nextProps;
+  const {
+    loading: lastChannelQueryLoading,
+    error: lastChannelQueryError,
+    data: lastChannelQueryData
+  } = useQuery<ChannelsGetLastQueryResponse, { _id: string }>(
+    gql(queries.channelsGetLast),
+    {
+      variables: { _id: queryParams._id },
+      skip: queryParams._id,
+      fetchPolicy: 'network-only'
+    });
 
-    const { channelsGetLast, loading } = lastChannelQuery;
-
-    if (!_id && channelsGetLast && !loading && !history.location.hash) {
-      routerUtils.setParams(history, { _id: channelsGetLast._id }, true);
+  useEffect(() => {
+    if (!queryParams._id && lastChannelQueryData && lastChannelQueryData.channelsGetLast && !lastChannelQueryLoading && !history.location.hash) {
+      routerUtils.setParams(
+        history,
+        { _id: lastChannelQueryData.channelsGetLast._id },
+        true
+      );
     }
+  });
+
+  if (lastChannelQueryError) {
+    return <p>Error!</p>;
   }
 
-  render() {
-    const {
-      queryParams: { _id }
-    } = this.props;
-
-    if (!_id) {
-      return <Empty {...this.props} />;
-    }
-
-    const updatedProps = {
-      ...this.props,
-      currentChannelId: _id
-    };
-
-    return <ChannelsContainer {...updatedProps} />;
+  if (lastChannelQueryLoading) {
+    return <Spinner objective={true} />;
   }
+
+  if (!queryParams._id) {
+    return <Empty {...props} />;
+  }
+
+  const updatedProps = {
+    ...props,
+    currentChannelId: queryParams._id
+  };
+
+  return <ChannelsContainer {...updatedProps} />;
 }
-
-const WithLastChannel = withProps<withCurrentIdProps>(
-  compose(
-    graphql<withCurrentIdProps, ChannelsGetLastQueryResponse, { _id: string }>(
-      gql(queries.channelsGetLast),
-      {
-        name: 'lastChannelQuery',
-        skip: ({ queryParams }) => queryParams._id,
-        options: ({ queryParams }: withCurrentIdProps) => ({
-          variables: { _id: queryParams._id },
-          fetchPolicy: 'network-only'
-        })
-      }
-    )
-  )(WithCurrentId)
-);
 
 const WithQueryParams = (props: IRouterProps) => {
   const { location } = props;
@@ -143,7 +130,7 @@ const WithQueryParams = (props: IRouterProps) => {
 
   const extendedProps = { ...props, queryParams };
 
-  return <WithLastChannel {...extendedProps} />;
+  return <WithCurrentId {...extendedProps} />;
 };
 
 export default withRouter<IRouterProps>(WithQueryParams);

@@ -1,12 +1,12 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
+import { segmentFactory } from 'modules/testing-utils/factories/segments';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
 import { mutations, queries } from '../../graphql';
 import SegmentListContainer from '../SegmentsList';
-import { segmentFactory } from 'modules/testing-utils/factories/segments';
 
 const segmentVariables = { contentType: '' };
 
@@ -49,7 +49,7 @@ const removeSegmentMutationMocks = {
   },
 };
 
-describe('Account default', () => {
+describe('SegmentsList', () => {
   it('should render loading state initially', () => {
     const component = create(
       <MockedProvider mocks={[]}>

@@ -1,32 +1,33 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { withProps } from 'modules/common/utils';
-import React from 'react';
-import { graphql } from 'react-apollo';
+import Spinner from 'modules/common/components/Spinner';
+import React, { useEffect, useState } from 'react';
 import HistoryDetail from '../components/HistoryDetail';
 import { queries, subscriptions } from '../graphql';
-import { ImportHistoryDetailQueryResponse } from '../types';
+import { IImportHistory } from '../types';
 
 const subscription = gql(subscriptions.importSubscription);
 
-class HistoryDetailContainer extends React.Component<
-  { id: string } & {
-    importHistoryDetailQuery: ImportHistoryDetailQueryResponse;
-  },
-  { percentage: number }
-> {
-  constructor(props) {
-    super(props);
+const HistoryDetailContainer = (props: { id: string }) => {
+  const [percentageState, setPercentage] = useState(0);
+  const { id } = props;
 
-    this.state = {
-      percentage: 0
-    };
-  }
+  const {
+    loading: importHistoryDetailLoading,
+    error: importHistoryDetailError,
+    data: importHistoryDetailData,
+    refetch: importHistoryDetailRefetch,
+    subscribeToMore
+  } = useQuery(gql(queries.historyDetail),
+    {
+      fetchPolicy: 'network-only',
+      variables: { _id: id },
+      pollInterval: 20000
+    }
+  );
 
-  UNSAFE_componentWillMount() {
-    const { importHistoryDetailQuery, id } = this.props;
-
-    importHistoryDetailQuery.subscribeToMore({
+  useEffect(() => {
+    subscribeToMore({
       document: subscription,
       variables: { _id: id },
 
@@ -35,46 +36,38 @@ class HistoryDetailContainer extends React.Component<
         const { percentage, status } = importHistoryChanged;
 
         if (status === 'Done') {
-          return importHistoryDetailQuery.refetch();
+          return importHistoryDetailRefetch()
         }
 
-        if (percentage.toFixed(0) !== this.state.percentage) {
-          this.setState({ percentage: percentage.toFixed(0) });
+        if (percentage.toFixed(0) !== percentageState) {
+          setPercentage(percentage.toFixed(0));
         }
+
+        return null;
       }
-    });
+    })
+  })
+
+  if (importHistoryDetailError) {
+    return <p>Error!</p>;
   }
 
-  render() {
-    const { importHistoryDetailQuery } = this.props;
-    const importHistory = importHistoryDetailQuery.importHistoryDetail || {};
-    const percentage =
-      Math.trunc(importHistory.percentage) || this.state.percentage;
-
-    return (
-      <HistoryDetail
-        importHistory={importHistory}
-        loading={importHistoryDetailQuery.loading}
-        percentage={percentage}
-      />
-    );
+  if (importHistoryDetailLoading) {
+    return <Spinner objective={true} />;
   }
+
+  const importHistory = importHistoryDetailData ? importHistoryDetailData.importHistoryDetail : {} as IImportHistory;
+
+  const percentageNum =
+    Math.trunc(importHistory.percentage) || percentageState;
+
+  return (
+    <HistoryDetail
+      importHistory={importHistory}
+      loading={importHistoryDetailLoading}
+      percentage={percentageNum}
+    />
+  );
 }
 
-export default withProps<{ id: string }>(
-  compose(
-    graphql<{ id: string }, ImportHistoryDetailQueryResponse, { _id: string }>(
-      gql(queries.historyDetail),
-      {
-        name: 'importHistoryDetailQuery',
-        options: ({ id }) => ({
-          fetchPolicy: 'network-only',
-          variables: {
-            _id: id
-          },
-          pollInterval: 20000
-        })
-      }
-    )
-  )(HistoryDetailContainer)
-);
+export default HistoryDetailContainer;

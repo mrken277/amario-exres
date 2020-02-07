@@ -1,8 +1,10 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { IRouterProps } from 'modules/common/types';
 import { Alert } from 'modules/common/utils';
 import { router } from 'modules/common/utils';
 import React from 'react';
+import { withRouter } from 'react-router';
 import Properties from '../components/Properties';
 import { FIELDS_GROUPS_CONTENT_TYPES } from '../constants';
 import { mutations, queries } from '../graphql';
@@ -24,10 +26,11 @@ type Props = {
   history: any;
 };
 
-const PropertiesContainer = (props: Props) => {
+type FinalProps = {} & Props & IRouterProps;
+
+const PropertiesContainer = (props: FinalProps) => {
   const { queryParams, history } = props;
-  // tslint:disable-next-line:no-console
-  console.log(history);
+
   if (!router.getParam(history, 'type')) {
     router.setParams(
       history,
@@ -166,4 +169,4 @@ const PropertiesContainer = (props: Props) => {
   return <Properties {...updatedProps} />;
 };
 
-export default PropertiesContainer;
+export default withRouter<FinalProps>(PropertiesContainer);

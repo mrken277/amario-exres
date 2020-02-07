@@ -1,6 +1,12 @@
 import * as Factory from 'factory.ts';
-import { FieldsCombinedByType, IField, IFieldGroup } from 'modules/settings/properties/types';
+import { FieldsCombinedByType, IConfigColumn, IField, IFieldGroup } from 'modules/settings/properties/types';
 import { userFactory } from '../auth';
+
+export const configColumnFactory = Factory.Sync.makeFactory<IConfigColumn>({
+  name: 'nmma',
+  label: 'lbl',
+  order: 0
+});
 
 export const combinedFieldsFactory = Factory.Sync.makeFactory<FieldsCombinedByType>({
   _id: '1',

@@ -1,37 +1,61 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import { generatePaginationParams } from 'modules/common/utils/router';
 import * as React from 'react';
-import { graphql } from 'react-apollo';
 import LogList from '../components/LogList';
 import queries from '../queries';
 import { LogsQueryResponse } from '../types';
+
+type Props = {
+  history: any;
+  queryParams: any;
+};
 
 type FinalProps = {
   can: (action: string) => boolean;
 } & Props;
 
 const List = (props: FinalProps) => {
-  const { queryParams, logsQuery } = props;
-  const errorMessage = logsQuery.error ? logsQuery.error.message : '';
-  const isLoading = logsQuery.loading;
+  const { queryParams } = props;
+
+  const {
+    loading: logsQueryLoading,
+    error: logsQueryError,
+    data: logsQueryData
+  } = useQuery<LogsQueryResponse>(gql(queries.logs),
+    {
+      notifyOnNetworkStatusChange: true,
+      variables: {
+        start: queryParams.start,
+        end: queryParams.end,
+        userId: queryParams.userId,
+        action: queryParams.action,
+        ...generatePaginationParams(queryParams)
+      }
+    }
+  );
+
+  const errorMessage = logsQueryData && logsQueryData.error ? logsQueryData.error.message : '';
+  const isLoading = logsQueryLoading;
+
+  if (logsQueryError) {
+    return <p>Error!</p>;
+  }
+
+  if (logsQueryLoading) {
+    return <p>Loading...</p>;
+  }
 
   const updatedProps = {
     ...props,
-    isLoading: logsQuery.loading,
+    isLoading: logsQueryLoading,
     refetchQueries: commonOptions(queryParams),
-    logs: isLoading || errorMessage ? [] : logsQuery.logs.logs,
-    count: isLoading || errorMessage ? 0 : logsQuery.logs.totalCount,
+    logs: isLoading || errorMessage ? [] : logsQueryData ? logsQueryData.logs.logs : [],
+    count: isLoading || errorMessage ? 0 : logsQueryData ? logsQueryData.logs.totalCount : 0,
     errorMessage
   };
 
   return <LogList {...updatedProps} />;
-};
-
-type Props = {
-  history: any;
-  queryParams: any;
-  logsQuery: LogsQueryResponse;
 };
 
 const commonOptions = queryParams => {
@@ -46,18 +70,4 @@ const commonOptions = queryParams => {
   return [{ query: gql(queries.logs), variables }];
 };
 
-export default compose(
-  graphql<Props, LogsQueryResponse>(gql(queries.logs), {
-    name: 'logsQuery',
-    options: ({ queryParams }) => ({
-      notifyOnNetworkStatusChange: true,
-      variables: {
-        start: queryParams.start,
-        end: queryParams.end,
-        userId: queryParams.userId,
-        action: queryParams.action,
-        ...generatePaginationParams(queryParams)
-      }
-    })
-  })
-)(List);
+export default List;

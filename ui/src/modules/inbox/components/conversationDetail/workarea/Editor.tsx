@@ -176,19 +176,9 @@ export default class Editor extends React.Component<EditorProps, State> {
     });
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.responseTemplate !== this.props.responseTemplate) {
-      const editorState = createStateFromHTML(
-        this.state.editorState,
-        nextProps.responseTemplate
-      );
-
-      // calling onChange, because draftjs's onChange is not trigerring after
-      // this setState
-      this.props.onChange(this.getContent(editorState));
-
-      // set editor state from response template
-      this.setState({ editorState });
+      this.changeEditorContent(nextProps.responseTemplate);
     }
 
     // check switch conversation and fill default content

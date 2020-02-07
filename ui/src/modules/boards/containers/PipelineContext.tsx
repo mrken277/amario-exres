@@ -79,8 +79,8 @@ export class PipelineProvider extends React.Component<Props, State> {
     PipelineProvider.currentTask = null;
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    const { queryParams, queryParamsChanged } = this.props;
+  componentWillReceiveProps(nextProps: Props) {
+    const { queryParams, queryParamsChanged, initialItemMap } = this.props;
 
     if (queryParamsChanged(queryParams, nextProps)) {
       const { stageIds } = this.state;
@@ -90,6 +90,38 @@ export class PipelineProvider extends React.Component<Props, State> {
 
       stageIds.forEach((stageId: string) => {
         this.scheduleStage(stageId);
+      });
+    }
+
+    // when adding or removing stage
+    const nextStageIds = Object.keys(nextProps.initialItemMap || {});
+    const nowStageIds = Object.keys(initialItemMap || {});
+
+    if (nextStageIds.length !== nowStageIds.length) {
+      let stageIds = [...this.state.stageIds];
+      const itemMap = { ...this.state.itemMap };
+
+      const newStageId = nextStageIds.find(
+        stageId => !stageIds.includes(stageId)
+      );
+
+      if (newStageId) {
+        stageIds.push(newStageId);
+
+        itemMap[newStageId] = [];
+      } else {
+        const deletedStageId = stageIds.find(
+          stageId => !nextStageIds.includes(stageId)
+        );
+
+        stageIds = stageIds.filter(stageId => deletedStageId !== stageId);
+
+        delete itemMap[deletedStageId || ''];
+      }
+
+      this.setState({
+        stageIds,
+        itemMap
       });
     }
   }

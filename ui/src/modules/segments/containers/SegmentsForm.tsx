@@ -66,7 +66,7 @@ const SegmentsFormContainer = (props: Props, state: State) => {
   }
 
   if (segmentDetailQueryLoading || headSegmentsQueryLoading || combinedFieldsQueryLoading) {
-    return <p>Loading...</p>;
+    return null;
   }
 
   const fields = (combinedFieldsQueryData ? combinedFieldsQueryData.fieldsCombinedByContentType : []).map(

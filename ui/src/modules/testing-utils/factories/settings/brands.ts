@@ -10,3 +10,5 @@ export const brandFactory = Factory.Sync.makeFactory<IBrand>({
   description: 'special brand',
   emailConfig: { type: 'string', template: 'string' }
 });
+
+

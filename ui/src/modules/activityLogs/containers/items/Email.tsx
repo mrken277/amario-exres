@@ -8,7 +8,7 @@ import ErrorMsg from 'modules/common/components/ErrorMsg';
 import Spinner from 'modules/common/components/Spinner';
 import checkError from 'modules/common/utils/checkError';
 import { queries as engageQueries } from 'modules/engage/graphql';
-import { EngageMessageDetailQueryResponse } from 'modules/engage/types';
+import { EngageMessageDetailQueryResponse, IEmailDelivery } from 'modules/engage/types';
 import React from 'react';
 import { queries } from '../../graphql';
 
@@ -46,9 +46,6 @@ function EmailContainer(props: Props) {
     }
   }
   );
-  if (!emailDeliveryDetailQueryData) {
-    return null;
-  }
 
   if (engageMessageDetailQueryError || emailDeliveryDetailQueryError) {
     const error = checkError([engageMessageDetailQueryError, emailDeliveryDetailQueryError]);
@@ -58,6 +55,11 @@ function EmailContainer(props: Props) {
 
   if (engageMessageDetailQueryLoading || emailDeliveryDetailQueryLoading) {
     return <Spinner objective={true} />;
+  }
+
+
+  if (!emailDeliveryDetailQueryData) {
+    return null;
   }
 
   if (emailType === 'engage') {
@@ -76,9 +78,11 @@ function EmailContainer(props: Props) {
   return (
     <Email
       {...props}
-      email={emailDeliveryDetailQueryData.emailDeliveryDetail}
+      email={emailDeliveryDetailQueryData ? emailDeliveryDetailQueryData.emailDeliveryDetail : {} as IEmailDelivery}
     />
   );
 }
 
 export default EmailContainer;
+
+

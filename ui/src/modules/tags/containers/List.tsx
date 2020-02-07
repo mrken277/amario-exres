@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
+import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
 import { Alert, confirm } from 'modules/common/utils';
 import React from 'react';
@@ -18,7 +19,8 @@ const ListContainer = (props: Props) => {
   const {
     loading: tagsQueryLoading,
     error: tagsQueryError,
-    data: tagsQueryData
+    data: tagsQueryData,
+    refetch: tagsQueryRefetch
   } = useQuery<TagsQueryResponse, { type: string }>(
     gql(queries.tags),
     {
@@ -44,6 +46,7 @@ const ListContainer = (props: Props) => {
       removeMutation({ variables: { ids: [tag._id] } })
         .then(() => {
           Alert.success('You successfully deleted a tag');
+          tagsQueryRefetch();
         })
         .catch(e => {
           Alert.error(e.message);
@@ -56,7 +59,7 @@ const ListContainer = (props: Props) => {
   }
 
   if (tagsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner />;
   }
 
   const renderButton = ({

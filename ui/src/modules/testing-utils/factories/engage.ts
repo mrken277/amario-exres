@@ -1,5 +1,5 @@
 import * as Factory from 'factory.ts';
-import { IEngageEmail, IEngageMessage, IEngageMessenger, IEngageScheduleDate, IEngageStats } from 'modules/engage/types';
+import { IEngageConfig, IEngageEmail, IEngageMessage, IEngageMessenger, IEngageScheduleDate, IEngageStats } from 'modules/engage/types';
 import { IEngageData, IEngageDataRules } from 'modules/inbox/types';
 import { attachmentFactory } from './attachment';
 import { conditionsRuleFactory } from './common';
@@ -24,6 +24,12 @@ export const engageDataRulesFactory = Factory.Sync.makeFactory<IEngageDataRules>
   text: 'test11',
   condition: 'content',
   value: 'engagedata',
+});
+
+export const engageConfigFactory = Factory.Sync.makeFactory<IEngageConfig>({
+  accessKeyId: '1',
+  secretAccessKey: '2',
+  region: 'mn'
 });
 
 export const engageDataFactory = Factory.Sync.makeFactory<IEngageData>({

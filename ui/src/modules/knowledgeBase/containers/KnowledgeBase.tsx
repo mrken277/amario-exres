@@ -1,10 +1,12 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
 import { IRouterProps } from 'modules/common/types';
 import { router as routerUtils, withProps } from 'modules/common/utils';
+import checkError from 'modules/common/utils/checkError';
 import queryString from 'query-string';
-import React from 'react';
-import { graphql } from 'react-apollo';
+import React, { useEffect } from 'react';
 import { withRouter } from 'react-router';
 import KnowledgeBaseComponent from '../components/KnowledgeBase';
 import { queries } from '../graphql';
@@ -21,19 +23,48 @@ type Props = {
 };
 
 type FinalProps = {
-  articlesCountQuery?: ArticlesTotalCountQueryResponse;
-  categoryDetailQuery?: CategoryDetailQueryResponse;
 } & Props &
   IRouterProps;
 
-const KnowledgeBase = (props: FinalProps) => {
-  const { categoryDetailQuery, articlesCountQuery } = props;
+const KnowledgeBaseContainer = (props: FinalProps) => {
+  const { currentCategoryId } = props;
+  const {
+    data: categoryDetailData,
+    error: categoryDetailError,
+    loading: categoryDetailLoading
+  } = useQuery<CategoryDetailQueryResponse, { _id: string }>(
+    gql(queries.knowledgeBaseCategoryDetail), {
+    variables: { _id: currentCategoryId },
+    fetchPolicy: 'network-only',
+    skip: !currentCategoryId
+  });
+
+  const {
+    data: articlesCountData,
+    error: articlesCountError,
+    loading: articlesCountLoading
+  } = useQuery<ArticlesTotalCountQueryResponse, { categoryIds: string[] }>(
+    gql(queries.knowledgeBaseArticlesTotalCount), {
+    variables: { categoryIds: [currentCategoryId] },
+    skip: !currentCategoryId
+  }
+  );
 
   const articlesCount =
-    articlesCountQuery && articlesCountQuery.knowledgeBaseArticlesTotalCount;
+    articlesCountData && articlesCountData.knowledgeBaseArticlesTotalCount;
 
   const currentCategory =
-    categoryDetailQuery && categoryDetailQuery.knowledgeBaseCategoryDetail;
+    categoryDetailData && categoryDetailData.knowledgeBaseCategoryDetail;
+
+  if (categoryDetailError || articlesCountError) {
+    const error = checkError([categoryDetailError, articlesCountError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  }
+
+  if (categoryDetailLoading || articlesCountLoading) {
+    return <Spinner objective={true} />;
+  }
 
   const updatedProps = {
     ...props,
@@ -44,54 +75,36 @@ const KnowledgeBase = (props: FinalProps) => {
   return <KnowledgeBaseComponent {...updatedProps} />;
 };
 
-const KnowledgeBaseContainer = withProps<Props>(
-  compose(
-    graphql<Props, CategoryDetailQueryResponse, { _id: string }>(
-      gql(queries.knowledgeBaseCategoryDetail),
-      {
-        name: 'categoryDetailQuery',
-        options: ({ currentCategoryId }) => ({
-          variables: { _id: currentCategoryId },
-          fetchPolicy: 'network-only'
-        }),
-        skip: ({ currentCategoryId }) => !currentCategoryId
-      }
-    ),
-    graphql<Props, ArticlesTotalCountQueryResponse, { categoryIds: string[] }>(
-      gql(queries.knowledgeBaseArticlesTotalCount),
-      {
-        name: 'articlesCountQuery',
-        options: ({ currentCategoryId }) => ({
-          variables: { categoryIds: [currentCategoryId] }
-        }),
-        skip: ({ currentCategoryId }) => !currentCategoryId
-      }
-    )
-  )(KnowledgeBase)
-);
-
 type WithCurrentIdProps = {
   history: any;
   queryParams: any;
-};
+} & IRouterProps;
 
-type WithCurrentIdFinalProps = {
-  lastCategoryQuery: LastCategoryQueryResponse;
-} & WithCurrentIdProps;
+const WithLastCategory = (nextProps: WithCurrentIdProps) => {
+  const { queryParams } = nextProps;
 
-class WithCurrentId extends React.Component<WithCurrentIdFinalProps> {
-  UNSAFE_componentWillReceiveProps(nextProps: WithCurrentIdFinalProps) {
+  const {
+    data: categoriesGetLastData,
+    error: categoriesGetLastError,
+    loading: categoriesGetLastLoading
+  } = useQuery<LastCategoryQueryResponse, WithCurrentIdProps>(
+    gql(queries.categoriesGetLast), {
+    fetchPolicy: 'network-only',
+    skip: queryParams.id
+  });
+
+  useEffect(() => {
     const {
-      lastCategoryQuery,
       history,
       queryParams: { _id }
     } = nextProps;
 
-    if (!lastCategoryQuery) {
+    if (!categoriesGetLastData) {
       return;
     }
 
-    const { knowledgeBaseCategoriesGetLast, loading } = lastCategoryQuery;
+    const { knowledgeBaseCategoriesGetLast, loading } =
+      categoriesGetLastData;
 
     if (!_id && knowledgeBaseCategoriesGetLast && !loading) {
       routerUtils.setParams(
@@ -102,34 +115,27 @@ class WithCurrentId extends React.Component<WithCurrentIdFinalProps> {
         true
       );
     }
+  });
+
+  if (categoriesGetLastError) {
+    return <ErrorMsg>{categoriesGetLastError.message}</ErrorMsg>;
   }
 
-  render() {
-    const {
-      queryParams: { id }
-    } = this.props;
+  if (categoriesGetLastLoading) {
+    return <Spinner objective={true} />;
+  };
 
-    const updatedProps = {
-      ...this.props,
-      currentCategoryId: id || ''
-    };
+  const {
+    queryParams: { id }
+  } = nextProps;
 
-    return <KnowledgeBaseContainer {...updatedProps} />;
-  }
+  const updatedProps = {
+    ...nextProps,
+    currentCategoryId: id || ''
+  };
+
+  return <KnowledgeBaseContainer {...updatedProps} />;
 }
-
-const WithLastCategory = withProps<WithCurrentIdProps>(
-  compose(
-    graphql<WithCurrentIdProps, LastCategoryQueryResponse>(
-      gql(queries.categoriesGetLast),
-      {
-        name: 'lastCategoryQuery',
-        skip: ({ queryParams }: { queryParams: any }) => queryParams.id,
-        options: () => ({ fetchPolicy: 'network-only' })
-      }
-    )
-  )(WithCurrentId)
-);
 
 const WithQueryParams = (props: IRouterProps) => {
   const { location } = props;

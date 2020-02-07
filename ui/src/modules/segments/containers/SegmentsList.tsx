@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import Spinner from 'modules/common/components/Spinner';
 import { Alert } from 'modules/common/utils';
 import { confirm } from 'modules/common/utils';
 import React from 'react';
@@ -54,7 +55,7 @@ const SegmentListContainer = (props: Props) => {
   }
 
   if (segmentsQueryLoading) {
-    return <p>Loading...</p>;
+    return <Spinner />;
   }
 
   const updatedProps = {

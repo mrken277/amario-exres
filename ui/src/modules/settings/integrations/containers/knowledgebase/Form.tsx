@@ -1,15 +1,11 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
-import Spinner from 'modules/common/components/Spinner';
-import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
-import { withProps } from 'modules/common/utils';
+import { IButtonMutateProps } from 'modules/common/types';
 import { queries as kbQueries } from 'modules/knowledgeBase/graphql';
 import { TopicsQueryResponse } from 'modules/knowledgeBase/types';
 import { queries } from 'modules/settings/integrations/graphql';
 import React from 'react';
-import { graphql, withApollo } from 'react-apollo';
-import { withRouter } from 'react-router';
 import KnowledgeBase from '../../components/knowledgebase/knowledgeBase';
 import { mutations } from '../../graphql';
 import { IntegrationsQueryResponse } from '../../types';
@@ -20,51 +16,70 @@ type Props = {
   closeModal: () => void;
 };
 
-type FinalProps = {
-  integrationsQuery: IntegrationsQueryResponse;
-  knowledgeBaseTopicsQuery: TopicsQueryResponse;
-} & IRouterProps &
-  Props;
+const KnowledgeBaseContainer = (props: Props) => {
+  const { queryParams } = props;
 
-class KnowledgeBaseContainer extends React.Component<FinalProps> {
-  render() {
-    const { integrationsQuery, knowledgeBaseTopicsQuery } = this.props;
-
-    if (integrationsQuery.loading && knowledgeBaseTopicsQuery.loading) {
-      return <Spinner objective={true} />;
+  const {
+    loading: integrationsQueryLoading,
+    error: integrationsQueryError,
+    data: integrationsQueryData
+  } = useQuery<IntegrationsQueryResponse>(
+    gql(queries.integrations),
+    {
+      notifyOnNetworkStatusChange: true,
+      variables: {
+        ...integrationsListParams(queryParams || {}),
+        kind: 'messenger'
+      },
+      fetchPolicy: 'network-only'
     }
+  );
 
-    const integrations = integrationsQuery.integrations || [];
-    const topics = knowledgeBaseTopicsQuery.knowledgeBaseTopics || [];
+  const {
+    loading: topicsQueryLoading,
+    error: topicsQueryError,
+    data: topicsQueryData
+  } = useQuery<TopicsQueryResponse>(
+    gql(kbQueries.knowledgeBaseTopics));
 
-    const renderButton = ({
-      name,
-      values,
-      isSubmitted,
-      callback
-    }: IButtonMutateProps) => {
-      return (
-        <ButtonMutate
-          mutation={mutations.messengerAppsAddKnowledgebase}
-          variables={values}
-          callback={callback}
-          refetchQueries={getRefetchQueries()}
-          isSubmitted={isSubmitted}
-          type="submit"
-          successMessage={`You successfully added a ${name}`}
-        />
-      );
-    };
+  const integrations = integrationsQueryData ? integrationsQueryData.integrations : [];
+  const topics = topicsQueryData ? topicsQueryData.knowledgeBaseTopics : [];
 
-    const updatedProps = {
-      ...this.props,
-      integrations,
-      topics,
-      renderButton
-    };
-
-    return <KnowledgeBase {...updatedProps} />;
+  if (integrationsQueryError || topicsQueryError) {
+    return <p>Error!</p>;
   }
+
+  if (integrationsQueryLoading || topicsQueryLoading) {
+    return <p>Loading...</p>;
+  }
+
+  const renderButton = ({
+    name,
+    values,
+    isSubmitted,
+    callback
+  }: IButtonMutateProps) => {
+    return (
+      <ButtonMutate
+        mutation={mutations.messengerAppsAddKnowledgebase}
+        variables={values}
+        callback={callback}
+        refetchQueries={getRefetchQueries()}
+        isSubmitted={isSubmitted}
+        type="submit"
+        successMessage={`You successfully added a ${name}`}
+      />
+    );
+  };
+
+  const updatedProps = {
+    ...props,
+    integrations,
+    topics,
+    renderButton
+  };
+
+  return <KnowledgeBase {...updatedProps} />;
 }
 
 const getRefetchQueries = () => {
@@ -80,24 +95,4 @@ const getRefetchQueries = () => {
   ];
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, IntegrationsQueryResponse>(gql(queries.integrations), {
-      name: 'integrationsQuery',
-      options: ({ queryParams }) => {
-        return {
-          notifyOnNetworkStatusChange: true,
-          variables: {
-            ...integrationsListParams(queryParams || {}),
-            kind: 'messenger'
-          },
-          fetchPolicy: 'network-only'
-        };
-      }
-    }),
-    graphql<Props, TopicsQueryResponse>(gql(kbQueries.knowledgeBaseTopics), {
-      name: 'knowledgeBaseTopicsQuery'
-    }),
-    withApollo
-  )(withRouter<FinalProps>(KnowledgeBaseContainer))
-);
+export default KnowledgeBaseContainer;

@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { configsDetailFactory } from 'modules/testing-utils//factories/settings/configs';
+import { configsDetailFactory } from 'modules/testing-utils/factories/settings/general';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
@@ -27,14 +27,7 @@ const configQueryMock = {
   },
   result: {
     data: {
-      configsDetail: [
-        configsDetailFactory.build(),
-        configsDetailFactory.build({
-          _id: 'id',
-          code: 'uom',
-          value: ['']
-        })
-      ]
+      configsDetail: [configsDetailFactory.build()]
     },
   },
 };
@@ -53,18 +46,22 @@ const insertConfigMutationMocks = {
 
 describe('Account default', () => {
   it('should render loading state initially', () => {
-    const component = create(
+    const testRenderer = create(
       <MockedProvider mocks={[]}>
         <ListContainer />
       </MockedProvider>
     );
 
-    const tree = component.toJSON();
-    expect(tree.children).toContain('Loading...');
+    const testInstance = testRenderer.root;
+    const loader = testInstance.findByProps({ objective: true }).type;
+
+    const spinner = loader({});
+
+    expect(spinner.props.objective).toEqual(false);
   });
 
   it('error', async () => {
-    const component = create(
+    const testRenderer = create(
       <MockedProvider
         mocks={[configErrorMock]}
         addTypename={false}
@@ -75,12 +72,12 @@ describe('Account default', () => {
 
     await wait(0);
 
-    const tree = component.toJSON();
+    const tree = testRenderer.toJSON();
     expect(tree.children).toContain('Error!')
   });
 
   it('should render content', async () => {
-    const component = create(
+    const testRenderer = create(
       <MockedProvider
         mocks={[configQueryMock, insertConfigMutationMocks]}
         addTypename={false}
@@ -91,7 +88,7 @@ describe('Account default', () => {
 
     await wait(0); // wait for response
 
-    const tree = component.toJSON();
+    const tree = testRenderer.toJSON();
     expect(tree).toBe(null);
   });
 });
