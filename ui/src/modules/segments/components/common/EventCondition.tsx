@@ -1,9 +1,9 @@
 import Button from 'modules/common/components/Button';
-import { FormControl } from 'modules/common/components/form';
 import { __ } from 'modules/common/utils';
 import { FlexRightItem } from 'modules/layout/styles';
 import React from 'react';
-import { IConditionFilter, IEvent } from '../../types';
+import Select from 'react-select-plus';
+import { IConditionFilter, IEvent, IField } from '../../types';
 import { ConditionItem, FilterProperty, FilterRow, SubProperties } from '../styles';
 import Filter from './Filter';
 
@@ -60,8 +60,8 @@ class Condition extends React.Component<Props, State> {
     this.setState({ attributeFilters }, this.onChangeFilter);
   };
 
-  onChangeEvents = (e) => {
-    this.setState({ currentEventName: e.currentTarget.value }, this.onChangeFilter);
+  onChangeEvents = (option: IField) => {
+    this.setState({ currentEventName: option ? option.value : '' }, this.onChangeFilter);
   }
 
   addAttributeFilter = () => {
@@ -106,17 +106,17 @@ class Condition extends React.Component<Props, State> {
   renderNames() {
     const { events } = this.props;
     const { currentEventName } = this.state;
+    const eventsData = events.map(event => ({ value: event.name, label: event.name }));
 
     return (
-      <FormControl componentClass="select" placeholder={__("select")} onChange={this.onChangeEvents} value={currentEventName}>
-        <option value="">{__('Select event')}...</option>
-
-        {events.map((event, index) => (
-          <option value={event.name} key={index}>
-            {event.name}
-          </option>
-        ))}
-      </FormControl>
+      <Select
+        isRequired={true}
+        clearable={true}
+        value={currentEventName}
+        onChange={this.onChangeEvents}
+        options={eventsData}
+        placeholder={__("Select event")}
+      />
     );
   }
 
@@ -140,17 +140,17 @@ class Condition extends React.Component<Props, State> {
                   Add event attribute
                 </Button>
               }
-            </FilterProperty>
-            <FlexRightItem>
-              <Button
-                className="round"
-                btnStyle="danger"
-                uppercase={false}
-                icon="times"
-                onClick={this.removeCondition}
-              />
-            </FlexRightItem>
+            </FilterProperty>            
           </FilterRow>
+          <FlexRightItem>
+            <Button
+              className="round"
+              btnStyle="danger"
+              uppercase={false}
+              icon="times"
+              onClick={this.removeCondition}
+            />
+          </FlexRightItem>
         </ConditionItem>
         <SubProperties>
           {this.renderAttributeFilters()}
