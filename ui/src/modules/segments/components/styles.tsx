@@ -41,7 +41,7 @@ const ResultCount = styled.div`
   font-size: ${typography.fontSizeHeading3}px;
 
   i {
-    color: ${colors.colorShadowGray};
+    color: ${colors.colorLightGray};
     font-size: ${typography.fontSizeHeading2}px;
   }
 
@@ -58,6 +58,11 @@ const FilterBox = styled.div`
   border: 1px solid ${colors.borderPrimary};
   border-radius: 4px;
   margin-bottom: 20px;
+
+  img {
+    max-height: 170px;
+    margin: 30px;
+  }
 `;
 
 const FilterRow = styled.div`

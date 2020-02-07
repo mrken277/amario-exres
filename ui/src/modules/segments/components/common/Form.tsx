@@ -207,8 +207,7 @@ class Form extends React.Component<Props, State> {
       return (
         <EmptyState
           text="There aren’t any filters at the moment."
-          icon="list-ul"
-          size="full"
+          image="/images/actions/14.svg"
         />
       )
     }
@@ -358,8 +357,8 @@ class Form extends React.Component<Props, State> {
 
             {
               previewCount && (
-                <Button uppercase={false} btnStyle="default" icon="times-circle" onClick={onPreviewCount}>
-                  show count
+                <Button uppercase={false} icon="crosshairs" onClick={onPreviewCount}>
+                  Show count
                 </Button>
               )
             }
