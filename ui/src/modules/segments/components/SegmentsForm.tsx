@@ -32,7 +32,7 @@ const SegmentsForm = (props: Props) => {
         <FlexContent>
           <SegmentResult>
             <ResultCount>
-              <Icon icon="users" />{' '}
+              <Icon icon="users-alt" />{' '}
               {counterLoading ? (
                 <Spinner objective={true} />
               ) : 
