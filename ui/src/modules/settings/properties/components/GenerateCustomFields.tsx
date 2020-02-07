@@ -30,7 +30,7 @@ class GenerateGroup extends React.Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (!nextProps.loading && this.props.data !== nextProps.data) {
       this.setState({ data: nextProps.data });
     }

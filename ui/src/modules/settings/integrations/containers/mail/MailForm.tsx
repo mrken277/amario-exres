@@ -1,15 +1,14 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import debounce from 'lodash/debounce';
-import withCurrentUser from 'modules/auth/containers/withCurrentUser';
-import { IUser } from 'modules/auth/types';
+// import withCurrentUser from 'modules/auth/containers/withCurrentUser';
+// import { IUser } from 'modules/auth/types';
 import Spinner from 'modules/common/components/Spinner';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import { queries as messageQueries } from 'modules/inbox/graphql';
 import { IMail } from 'modules/inbox/types';
 import { mutations, queries } from 'modules/settings/integrations/graphql';
 import * as React from 'react';
-import { graphql } from 'react-apollo';
 import MailForm from '../../components/mail/MailForm';
 import { IntegrationsQueryResponse } from '../../types';
 import {
@@ -34,29 +33,44 @@ type Props = {
   closeReply?: () => void;
 };
 
-type FinalProps = {
-  currentUser: IUser;
-  sendMailMutation: any;
-  integrationsQuery: IntegrationsQueryResponse;
-} & Props;
+// type FinalProps = {
+//   currentUser: IUser;
+// } & Props;
 
-const MailFormContainer = (props: FinalProps) => {
+const MailFormContainer = (props: Props) => {
   const {
     mailData,
     conversationId,
-    integrationsQuery,
     isReply,
     closeModal,
     closeReply,
-    sendMailMutation,
-    currentUser
+    // currentUser
   } = props;
 
-  if (integrationsQuery.loading) {
+  const {
+    loading: integrationsQueryLoading,
+    error: integrationsQueryError,
+    data: integrationsQueryData
+  } = useQuery<IntegrationsQueryResponse>(gql(queries.integrations), {
+    variables: { kind: 'mail' },
+    fetchPolicy: 'network-only'
+  }
+  );
+
+  const [sendMailMutation, { error: sendMailMutationError }] =
+    useMutation(gql(mutations.integrationSendMail), {
+      refetchQueries: ['activityLogs']
+    });
+
+  if (integrationsQueryLoading) {
     return <Spinner objective={true} />;
   }
 
-  const integrations = integrationsQuery.integrations || [];
+  if (integrationsQueryError || sendMailMutationError) {
+    return <p>Error!</p>;
+  }
+
+  const integrations = integrationsQueryData ? integrationsQueryData.integrations : [];
 
   const save = ({
     variables,
@@ -157,28 +171,11 @@ const MailFormContainer = (props: FinalProps) => {
     ...props,
     sendMail,
     integrations,
-    emailSignatures: currentUser.emailSignatures || []
+    // emailSignatures: currentUser.emailSignatures || [],
+    emailSignatures: []
   };
 
   return <MailForm {...updatedProps} />;
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, IntegrationsQueryResponse>(gql(queries.integrations), {
-      name: 'integrationsQuery',
-      options: () => {
-        return {
-          variables: { kind: 'mail' },
-          fetchPolicy: 'network-only'
-        };
-      }
-    }),
-    graphql<Props>(gql(mutations.integrationSendMail), {
-      name: 'sendMailMutation',
-      options: () => ({
-        refetchQueries: ['activityLogs']
-      })
-    })
-  )(withCurrentUser(MailFormContainer))
-);
+export default MailFormContainer;

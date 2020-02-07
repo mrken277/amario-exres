@@ -52,7 +52,7 @@ class WorkArea extends React.Component<FinalProps, State> {
     this.prevMessageInsertedSubscription = null;
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { currentUser } = this.props;
 
     const { currentId, currentConversation, messagesQuery } = nextProps;

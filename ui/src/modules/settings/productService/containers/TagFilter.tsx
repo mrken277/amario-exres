@@ -1,42 +1,49 @@
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import CountsByTag from 'modules/common/components/CountsByTag';
 import { TAG_TYPES } from 'modules/tags/constants';
 import { queries as tagQueries } from 'modules/tags/graphql';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import { TagsQueryResponse } from '../../../tags/types';
 import { queries } from '../graphql';
 import { CountByTagsQueryResponse } from '../types';
 
-const TagFilterContainer = (props: {
-  countByTagsQuery: CountByTagsQueryResponse;
-  tagsQuery?: TagsQueryResponse;
-}) => {
-  const { countByTagsQuery, tagsQuery } = props;
+const TagFilterContainer = () => {
+  const {
+    loading: countByTagsQueryLoading,
+    error: countByTagsQueryError,
+    data: countByTagsQueryData
+  } = useQuery<CountByTagsQueryResponse, {}>(
+    gql(queries.productCountByTags));
 
-  const counts = countByTagsQuery.productCountByTags || {};
+  const {
+    loading: tagsQueryLoading,
+    error: tagsQueryError,
+    data: tagsQueryData
+  } = useQuery<TagsQueryResponse, { type: string }>(gql(tagQueries.tags), {
+    variables: {
+      type: TAG_TYPES.PRODUCT
+    }
+  });
+
+  if (countByTagsQueryError || tagsQueryError) {
+    return <p>Error!</p>;
+  }
+
+  if (tagsQueryLoading) {
+    return null;
+  }
+
+  const counts = countByTagsQueryData ? countByTagsQueryData.productCountByTags : {};
 
   return (
     <CountsByTag
-      tags={(tagsQuery ? tagsQuery.tags : null) || []}
+      tags={(tagsQueryData ? tagsQueryData.tags : null) || []}
       counts={counts}
       manageUrl="/tags/product"
-      loading={(tagsQuery ? tagsQuery.loading : null) || false}
+      loading={(countByTagsQueryData ? countByTagsQueryLoading : null) || false}
     />
   );
 };
 
-export default compose(
-  graphql<{}, CountByTagsQueryResponse, {}>(gql(queries.productCountByTags), {
-    name: 'countByTagsQuery'
-  }),
-  graphql<{}, TagsQueryResponse, { type: string }>(gql(tagQueries.tags), {
-    name: 'tagsQuery',
-    options: () => ({
-      variables: {
-        type: TAG_TYPES.PRODUCT
-      }
-    })
-  })
-)(TagFilterContainer);
+export default TagFilterContainer;

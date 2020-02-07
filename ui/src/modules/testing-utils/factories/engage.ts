@@ -1,24 +1,14 @@
 import * as Factory from 'factory.ts';
-import { IAttachment } from 'modules/common/types';
-import {
-  IEmailDelivery,
-  IEngageEmail,
-  IEngageMessage,
-  IEngageMessenger,
-  IEngageScheduleDate,
-  IEngageStats
-} from 'modules/engage/types';
+import { IEngageEmail, IEngageMessage, IEngageMessenger, IEngageScheduleDate, IEngageStats } from 'modules/engage/types';
 import { IEngageData, IEngageDataRules } from 'modules/inbox/types';
-import { ISegment, ISegmentCondition } from 'modules/segments/types';
-import { IEmailSignature } from 'modules/settings/email/types';
+import { attachmentFactory } from './attachment';
 import { conditionsRuleFactory } from './common';
+import { segmentFactory } from './segments';
 import { brandFactory } from './settings/brands';
 import { tagFactory } from './tags';
 import { userFactory } from './user';
 
-export const engageMessengerFactory = Factory.Sync.makeFactory<
-  IEngageMessenger
->({
+export const engageMessengerFactory = Factory.Sync.makeFactory<IEngageMessenger>({
   brandId: '22',
   kind: 'auto',
   sentAs: 'Dorj',
@@ -29,13 +19,11 @@ export const engageMessengerFactory = Factory.Sync.makeFactory<
   ]
 });
 
-export const engageDataRulesFactory = Factory.Sync.makeFactory<
-  IEngageDataRules
->({
+export const engageDataRulesFactory = Factory.Sync.makeFactory<IEngageDataRules>({
   kind: 'manual',
   text: 'test11',
   condition: 'content',
-  value: 'engagedata'
+  value: 'engagedata',
 });
 
 export const engageDataFactory = Factory.Sync.makeFactory<IEngageData>({
@@ -51,13 +39,6 @@ export const engageDataFactory = Factory.Sync.makeFactory<IEngageData>({
   ]
 });
 
-export const attachmentFactory = Factory.Sync.makeFactory<IAttachment>({
-  name: 'Images1',
-  type: 'img',
-  url: '/images/logo',
-  size: 12
-});
-
 export const engageEmailFactory = Factory.Sync.makeFactory<IEngageEmail>({
   templateId: '3',
   subject: 'Subject',
@@ -65,41 +46,7 @@ export const engageEmailFactory = Factory.Sync.makeFactory<IEngageEmail>({
   attachments: [
     attachmentFactory.build(),
     attachmentFactory.build({ name: 'Images1' })
-  ]
-});
-
-export const segmentConditionFactory = Factory.Sync.makeFactory<
-  ISegmentCondition
->({
-  _id: '15',
-  field: 'auto',
-  value: 'string',
-  operator: 'string',
-  dateUnit: 'string',
-  type: 'string',
-  brandId: 'string'
-});
-
-export const segmentFactory = Factory.Sync.makeFactory<ISegment>({
-  _id: '5',
-  contentType: 'type',
-  getSubSegments: [],
-  getParentSegment: {} as ISegment,
-  // ISegmentDocs
-  name: 'segment',
-  description: 'desc',
-  color: '#fff',
-  connector: 'connect',
-  conditions: [
-    segmentConditionFactory.build(),
-    segmentConditionFactory.build({ _id: '15' })
   ],
-  subOf: 'sub'
-});
-
-export const emailSignatureFactory = Factory.Sync.makeFactory<IEmailSignature>({
-  brandId: '22',
-  signature: 'erxes'
 });
 
 export const engageStatsFactory = Factory.Sync.makeFactory<IEngageStats>({
@@ -111,12 +58,10 @@ export const engageStatsFactory = Factory.Sync.makeFactory<IEngageStats>({
   bounce: 6,
   renderingfailure: 7,
   reject: 9,
-  total: 25
+  total: 25,
 });
 
-export const engageScheduleDateFactory = Factory.Sync.makeFactory<
-  IEngageScheduleDate
->({
+export const engageScheduleDateFactory = Factory.Sync.makeFactory<IEngageScheduleDate>({
   type: 'everyday',
   month: 'July',
   day: '23',
@@ -132,7 +77,10 @@ export const engageMessageFactory = Factory.Sync.makeFactory<IEngageMessage>({
   segment: segmentFactory.build({ _id: '5' }),
   fromUser: userFactory.build({ _id: '12', email: 'erxes@nmma.co' }),
   tagIds: ['12', '13'],
-  getTags: [tagFactory.build(), tagFactory.build({ _id: '23' })],
+  getTags: [
+    tagFactory.build(),
+    tagFactory.build({ _id: '23' })
+  ],
   stats: engageStatsFactory.build({}),
   logs: [{ message: 'string' }],
   // IEngageMessageDocs
@@ -148,27 +96,5 @@ export const engageMessageFactory = Factory.Sync.makeFactory<IEngageMessage>({
   isLive: false,
   email: engageEmailFactory.build({ templateId: '3' }),
   messenger: engageMessengerFactory.build({ brandId: '22' }),
-  scheduleDate: engageScheduleDateFactory.build({
-    type: 'everyday',
-    month: 'July',
-    day: '12',
-    time: '2'
-  })
-});
-
-export const emailDeliveryFactory = Factory.Sync.makeFactory<IEmailDelivery>({
-  _id: '33',
-  subject: 'subject',
-  body: 'Body',
-  to: 'Dulam@yahoo.com',
-  cc: 'erxes@gmail.com',
-  bcc: 'erxes@nmma.co',
-  attachments: [JSON],
-  from: 'erxes',
-  kind: 'auto',
-  userId: '12',
-  customerId: '22',
-
-  fromUser: userFactory.build({ _id: '12' }),
-  fromEmail: 'erxes@nmma.co'
+  scheduleDate: engageScheduleDateFactory.build({ type: 'everyday', month: 'July', day: '12', time: '2' })
 });

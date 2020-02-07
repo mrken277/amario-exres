@@ -32,7 +32,7 @@ type Props = {
 };
 
 class WithStages extends React.Component<WithStatesQueryProps, {}> {
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const { stagesQuery, queryParams } = this.props;
     const { pipelineId } = queryParams;
 

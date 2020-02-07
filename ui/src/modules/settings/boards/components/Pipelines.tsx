@@ -21,7 +21,7 @@ type Props = {
   remove: (pipelineId: string) => void;
   boardId: string;
   options?: IOption;
-  refetch: ({ boardId }: { boardId?: string }) => Promise<any>;
+  refetch: () => Promise<any>;
   currentBoard: IBoard;
 } & IRouterProps;
 
@@ -46,7 +46,7 @@ class Pipelines extends React.Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.pipelines !== this.props.pipelines) {
       this.setState({ pipelines: nextProps.pipelines });
     }

@@ -1,11 +1,7 @@
 import * as Factory from 'factory.ts';
-import {
-  IUser,
-  IUserConversation,
-  IUserDetails,
-  IUserLinks
-} from 'modules/auth/types';
+import { IUser, IUserConversation, IUserDetails, IUserLinks } from 'modules/auth/types';
 import { brandFactory } from './settings/brands';
+import { emailSignatureFactory } from './settings/emails';
 
 export const userDetailsFactory = Factory.Sync.makeFactory<IUserDetails>({
   avatar: 'images',
@@ -26,16 +22,19 @@ export const userLinksFactory = Factory.Sync.makeFactory<IUserLinks>({
   website: 'website'
 });
 
-export const userConversationFactory = Factory.Sync.makeFactory<
-  IUserConversation
->({
+export const userConversationFactory = Factory.Sync.makeFactory<IUserConversation>({
   list: [1, 2],
   totalCount: 55
 });
 
 export const userFactory = Factory.Sync.makeFactory<IUser>({
   _id: '12',
-  brands: [brandFactory.build({ _id: '12' })],
+  brands: [
+    brandFactory.build({ _id: '12' })
+  ],
+  emailSignatures: [
+    emailSignatureFactory.build({}),
+  ],
   // IUserDoc
   username: 'Bataa',
   email: 'bat@nmma.co',

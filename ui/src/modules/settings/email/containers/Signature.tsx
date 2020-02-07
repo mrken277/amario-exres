@@ -1,14 +1,12 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { AppConsumer } from 'appContext';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import { queries } from 'modules/auth/graphql';
 import { IUser } from 'modules/auth/types';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import { queries as teamQueries } from 'modules/settings/team/graphql';
 import { UserDetailQueryResponse } from 'modules/settings/team/types';
 import React from 'react';
-import { graphql } from 'react-apollo';
-import Spinner from '../../../common/components/Spinner';
 import { queries as brandQueries } from '../../brands/graphql';
 import { BrandsQueryResponse } from '../../brands/types';
 import Signature from '../components/Signature';
@@ -24,19 +22,40 @@ type Props = {
   closeModal: () => void;
 };
 
-type FinalProps = {
-  userDetailQuery: UserDetailQueryResponse;
-  brandsQuery: BrandsQueryResponse;
-} & Props &
-  UsersConfigEmailSignaturesMutationResponse;
+export const SignatureContainer = (props: Props) => {
+  const { currentUser } = props;
 
-const SignatureContainer = (props: FinalProps) => {
-  const { userDetailQuery, brandsQuery, saveMutation } = props;
+  const {
+    loading: brandsQueryLoading,
+    error: brandsQueryError,
+    data: brandsQueryData
+  } = useQuery<BrandsQueryResponse, {}>(gql(brandQueries.brands));
 
-  if (userDetailQuery.loading || brandsQuery.loading) {
-    return <Spinner />;
-  }
+  const {
+    loading: userDetailQueryLoading,
+    error: userDetailQueryError,
+    data: userDetailQueryData
+  } = useQuery<UserDetailQueryResponse, { _id: string }>(
+    gql(teamQueries.userDetail),
+    { variables: { _id: currentUser._id } }
+  );
 
+  const [saveMutation, { error: usersConfigError }] =
+    useMutation<UsersConfigEmailSignaturesMutationResponse, UsersConfigEmailSignaturesMutationVariables>(
+      gql`
+      mutation usersConfigEmailSignatures($signatures: [EmailSignature]) {
+        usersConfigEmailSignatures(signatures: $signatures) {
+          _id
+        }
+      }
+    `, {
+      refetchQueries: [{
+        query: gql(queries.currentUser)
+      }, {
+        query: gql(teamQueries.userDetail),
+        variables: { _id: currentUser._id }
+      }]
+    });
   // save email configs action
   const save = (signaturesToSave: IEmailSignatureWithBrand[], callback) => {
     const doc: IEmailSignature[] = [];
@@ -55,17 +74,16 @@ const SignatureContainer = (props: FinalProps) => {
       .then(() => {
         Alert.success('Great job! You just set up your email signature.');
         callback();
-        userDetailQuery.refetch();
       })
       .catch(error => {
         Alert.success(error.message);
       });
   };
 
-  const user = userDetailQuery.userDetail;
+  const user = userDetailQueryData ? userDetailQueryData.userDetail : {} as IUser;
   const emailSignatures = user.emailSignatures || [];
   const signatures: IEmailSignatureWithBrand[] = [];
-  const brands = brandsQuery.brands || [];
+  const brands = brandsQueryData ? brandsQueryData.brands : [];
 
   brands.forEach(brand => {
     // previously configured signature
@@ -80,6 +98,14 @@ const SignatureContainer = (props: FinalProps) => {
     });
   });
 
+  if (brandsQueryError || userDetailQueryError || usersConfigError) {
+    return <p>Error!</p>;
+  }
+
+  if (brandsQueryLoading || userDetailQueryLoading) {
+    return <p>Loading...</p>;
+  }
+
   const updatedProps = {
     ...props,
     signatures,
@@ -89,50 +115,10 @@ const SignatureContainer = (props: FinalProps) => {
   return <Signature {...updatedProps} />;
 };
 
-const WithQuery = withProps<Props>(
-  compose(
-    graphql<Props, BrandsQueryResponse, {}>(gql(brandQueries.brands), {
-      name: 'brandsQuery'
-    }),
-    graphql<Props, UserDetailQueryResponse, { _id: string }>(
-      gql(teamQueries.userDetail),
-      {
-        name: 'userDetailQuery',
-        options: ({ currentUser }: { currentUser: IUser }) => ({
-          variables: { _id: currentUser._id }
-        })
-      }
-    ),
-    graphql<
-      Props,
-      UsersConfigEmailSignaturesMutationResponse,
-      UsersConfigEmailSignaturesMutationVariables
-    >(
-      gql`
-        mutation usersConfigEmailSignatures($signatures: [EmailSignature]) {
-          usersConfigEmailSignatures(signatures: $signatures) {
-            _id
-          }
-        }
-      `,
-      {
-        name: 'saveMutation',
-        options: () => ({
-          refetchQueries: [
-            {
-              query: gql(queries.currentUser)
-            }
-          ]
-        })
-      }
-    )
-  )(SignatureContainer)
-);
-
 const WithConsumer = props => {
   return (
     <AppConsumer>
-      {({ currentUser }) => <WithQuery {...props} currentUser={currentUser} />}
+      {({ currentUser }) => <SignatureContainer {...props} currentUser={currentUser} />}
     </AppConsumer>
   );
 };

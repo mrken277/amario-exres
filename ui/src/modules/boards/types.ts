@@ -96,7 +96,7 @@ export interface IPipeline {
   excludeCheckUserIds?: string[];
 }
 
-interface IStageComparisonInfo {
+export interface IStageComparisonInfo {
   count: number;
   percent: number;
 }

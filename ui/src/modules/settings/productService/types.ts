@@ -29,7 +29,6 @@ export interface IProduct {
   unitPrice: number;
   customFieldsData?: any;
   createdAt: Date;
-
   category: IProductCategory;
 }
 

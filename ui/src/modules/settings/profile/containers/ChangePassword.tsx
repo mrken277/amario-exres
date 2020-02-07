@@ -1,19 +1,20 @@
+import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
-import { Alert, withProps } from 'modules/common/utils';
+import { Alert } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import ChangePassword from '../components/ChangePassword';
-import { ChangePasswordMutationResponse } from '../types';
+import { mutations } from '../graphql';
 
 type Props = {
   closeModal: () => void;
 };
 
-const ChangePasswordContainer = (
-  props: Props & ChangePasswordMutationResponse
-) => {
-  const { changePasswordMutation } = props;
+const ChangePasswordContainer = (props: Props) => {
+  const [changePasswordMutation, { error: changePasswordMutationError }] = useMutation(gql(mutations.usersChangePassword));
+
+  if (changePasswordMutationError) {
+    return <p>Error!</p>;
+  }
 
   const save = ({ currentPassword, newPassword, confirmation }) => {
     if (newPassword !== confirmation) {
@@ -46,25 +47,4 @@ const ChangePasswordContainer = (
   return <ChangePassword {...updatedProps} />;
 };
 
-export default withProps<Props>(
-  compose(
-    graphql(
-      gql`
-        mutation usersChangePassword(
-          $currentPassword: String!
-          $newPassword: String!
-        ) {
-          usersChangePassword(
-            currentPassword: $currentPassword
-            newPassword: $newPassword
-          ) {
-            _id
-          }
-        }
-      `,
-      {
-        name: 'changePasswordMutation'
-      }
-    )
-  )(ChangePasswordContainer)
-);
+export default ChangePasswordContainer;

@@ -1,6 +1,6 @@
 import * as Factory from 'factory.ts';
 import { IChannel } from 'modules/settings/channels/types';
-import { userFactory } from './user'
+import { userFactory } from '../user'
 
 export const channelFactory = Factory.Sync.makeFactory<IChannel>({
   _id: '25',

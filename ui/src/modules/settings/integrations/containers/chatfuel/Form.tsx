@@ -1,18 +1,15 @@
 import ButtonMutate from 'modules/common/components/ButtonMutate';
-import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
+import { IButtonMutateProps } from 'modules/common/types';
 import Chatfuel from 'modules/settings/integrations/components/chatfuel/Form';
 import { mutations } from 'modules/settings/integrations/graphql';
 import React from 'react';
-import { withRouter } from 'react-router';
 
 type Props = {
   type?: string;
   closeModal: () => void;
 };
 
-type FinalProps = {} & IRouterProps & Props;
-
-class ChatfuelContainer extends React.Component<FinalProps> {
+class ChatfuelContainer extends React.Component<Props> {
   renderButton = ({
     name,
     values,
@@ -43,4 +40,4 @@ class ChatfuelContainer extends React.Component<FinalProps> {
   }
 }
 
-export default withRouter<FinalProps>(ChatfuelContainer);
+export default ChatfuelContainer;

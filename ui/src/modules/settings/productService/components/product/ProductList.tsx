@@ -135,7 +135,7 @@ class List extends React.Component<IProps> {
       </>
     );
 
-    if(currentCategory.productCount === 0) {
+    if (currentCategory.productCount === 0) {
       content = (
         <EmptyState
           image="/images/actions/8.svg"

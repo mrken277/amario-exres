@@ -1,7 +1,7 @@
 import * as Factory from 'factory.ts';
 import { IConversation, IFacebookPost } from 'modules/inbox/types';
-import { customerFactory } from './customer';
-import { integrationFacroty } from './integration';
+import { customerFactory } from './customer/customer';
+import { integrationFactory } from './settings/integration';
 import { tagFactory } from './tags';
 import { userFactory } from './user';
 
@@ -37,7 +37,7 @@ export const conversationFactory = Factory.Sync.makeFactory<IConversation>({
   // number of total conversations
   number: 33,
 
-  integration: integrationFacroty.build({ _id: '3' }),
+  integration: integrationFactory.build({ _id: '3' }),
   customer: customerFactory.build({ _id: '2' }),
   assignedUser: userFactory.build({ _id: '5' }),
   participatedUsers: [

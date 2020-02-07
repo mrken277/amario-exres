@@ -31,7 +31,7 @@ type FinalProps = {
 } & Props;
 
 class ConversationListContainer extends React.PureComponent<FinalProps> {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const {
       currentUser,
       conversationsQuery,

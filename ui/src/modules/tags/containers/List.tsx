@@ -1,10 +1,10 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
+import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
-import { Alert, confirm, withProps } from 'modules/common/utils';
+import { Alert, confirm } from 'modules/common/utils';
 import React from 'react';
-import { graphql } from 'react-apollo';
 import List from '../components/List';
 import { mutations, queries } from '../graphql';
 import { RemoveMutationResponse, TagsQueryResponse } from '../types';
@@ -13,26 +13,54 @@ type Props = {
   type: string;
 };
 
-type FinalProps = {
-  tagsQuery: TagsQueryResponse;
-} & Props &
-  RemoveMutationResponse;
+const ListContainer = (props: Props) => {
+  const { type } = props;
 
-const ListContainer = (props: FinalProps) => {
-  const { tagsQuery, removeMutation, type } = props;
+  const {
+    loading: tagsQueryLoading,
+    error: tagsQueryError,
+    data: tagsQueryData,
+    refetch: tagsQueryRefetch
+  } = useQuery<TagsQueryResponse, { type: string }>(
+    gql(queries.tags),
+    {
+      variables: { type },
+      fetchPolicy: 'network-only'
+    }
+  );
+
+  const [removeMutation, { error: removeTagsMutationError }] =
+    useMutation<RemoveMutationResponse, { ids: string[] }>(
+      gql(mutations.remove), {
+      refetchQueries: [
+        {
+          query: gql(queries.tags),
+          variables: { type }
+        }
+      ]
+    }
+    );
 
   const remove = tag => {
     confirm().then(() => {
       removeMutation({ variables: { ids: [tag._id] } })
         .then(() => {
           Alert.success('You successfully deleted a tag');
-          tagsQuery.refetch();
+          tagsQueryRefetch();
         })
         .catch(e => {
           Alert.error(e.message);
         });
     });
   };
+
+  if (tagsQueryError || removeTagsMutationError) {
+    return <p>Error!</p>;
+  }
+
+  if (tagsQueryLoading) {
+    return <Spinner />;
+  }
 
   const renderButton = ({
     name,
@@ -51,15 +79,15 @@ const ListContainer = (props: FinalProps) => {
         type="submit"
         successMessage={`You successfully ${
           object ? 'updated' : 'added'
-        } a ${name}`}
+          } a ${name}`}
       />
     );
   };
 
   const updatedProps = {
     ...props,
-    tags: tagsQuery.tags || [],
-    loading: tagsQuery.loading,
+    tags: tagsQueryData ? tagsQueryData.tags : [],
+    loading: tagsQueryLoading,
     type,
     remove,
     renderButton
@@ -77,23 +105,4 @@ const getRefetchQueries = (type: string) => {
   ];
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, TagsQueryResponse, { type: string }>(gql(queries.tags), {
-      name: 'tagsQuery',
-      options: ({ type }) => ({
-        variables: { type },
-        fetchPolicy: 'network-only'
-      })
-    }),
-    graphql<Props, RemoveMutationResponse, { ids: string[] }>(
-      gql(mutations.remove),
-      {
-        name: 'removeMutation',
-        options: ({ type }: Props) => ({
-          refetchQueries: getRefetchQueries(type)
-        })
-      }
-    )
-  )(ListContainer)
-);
+export default ListContainer;
