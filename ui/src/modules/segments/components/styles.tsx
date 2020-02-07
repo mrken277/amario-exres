@@ -72,7 +72,8 @@ const FilterRow = styled.div`
 `;
 
 const FilterProperty = styled.div`
-  max-width: 200px;
+  max-width: 30%;
+  min-width: 200px;
   flex: 1;
   margin-right: 20px;
 `;

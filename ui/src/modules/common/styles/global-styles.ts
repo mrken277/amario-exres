@@ -596,6 +596,8 @@ a:hover {
   text-transform: capitalize;
   font-weight: bold;
   padding: 8px 20px;
+  position: sticky;
+  top: 0;
 }
 
 .Select-option-group-label ~ .Select-option {
