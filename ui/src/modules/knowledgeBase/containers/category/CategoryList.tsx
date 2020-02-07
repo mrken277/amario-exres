@@ -1,10 +1,8 @@
-import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import ErrorMsg from 'modules/common/components/ErrorMsg';
-import Spinner from 'modules/common/components/Spinner';
+import * as compose from 'lodash.flowright';
 import { Alert, confirm } from 'modules/common/utils';
-import checkError from 'modules/common/utils/checkError';
 import React from 'react';
+import { graphql } from 'react-apollo';
 import CategoryList from '../../components/category/CategoryList';
 import { mutations, queries } from '../../graphql';
 import {
@@ -19,84 +17,22 @@ type Props = {
   topicIds: string;
 };
 
-function KnowledgeBaseContainer(props: Props) {
+type FinalProps = {
+  categoriesQuery: CategoriesQueryResponse;
+  categoriesCountQuery: CategoriesTotalCountQueryResponse;
+  articlesCountQuery: ArticlesTotalCountQueryResponse;
+} & Props &
+  RemoveCategoriesMutationResponse;
+
+const KnowledgeBaseContainer = (props: FinalProps) => {
   const {
     currentCategoryId,
+    categoriesQuery,
+    categoriesCountQuery,
+    articlesCountQuery,
+    removeCategoriesMutation,
     topicIds
   } = props;
-
-  const {
-    data: CategoriesData,
-    error: CategoriesError,
-    loading: CategoriesLoading,
-    refetch: CategoriesRefetch
-  } = useQuery<CategoriesQueryResponse, { topicIds: string[] }>(
-    gql(queries.knowledgeBaseCategories), {
-    variables: {
-      topicIds: [topicIds]
-    }
-  });
-
-  const {
-    data: ArticlesTotalCountData,
-    error: ArticlesTotalCountError,
-    loading: ArticlesTotalCountLoading
-  } = useQuery<ArticlesTotalCountQueryResponse, { categoryIds: string[] }>(
-    gql(queries.knowledgeBaseArticlesTotalCount), {
-    variables: { categoryIds: [currentCategoryId] || '' }
-  });
-
-  const {
-    data: CategoriesTotalCountData,
-    error: CategoriesTotalCountError,
-    loading: CategoriesTotalCountLoading
-  } = useQuery<CategoriesTotalCountQueryResponse>(
-    gql(queries.knowledgeBaseCategoriesTotalCount)
-  );
-
-  const [
-    removeCategoriesMutation,
-    { error: RemoveCategoriesError, data: RemoveCategoriesData }
-  ] = useMutation<RemoveCategoriesMutationResponse, { _id: string }>(
-    gql(mutations.knowledgeBaseCategoriesRemove));
-
-  if (currentCategoryId) {
-    const refetchQueries: any[] = [
-      {
-        query: gql(queries.knowledgeBaseCategories)
-      },
-      {
-        query: gql(queries.knowledgeBaseTopics)
-      }
-    ];
-
-    if (currentCategoryId) {
-      refetchQueries.push({
-        query: gql(queries.knowledgeBaseArticlesTotalCount),
-        variables: { categoryIds: [currentCategoryId] }
-      });
-
-      refetchQueries.push({
-        query: gql(queries.knowledgeBaseCategoryDetail),
-        variables: { _id: currentCategoryId },
-        skip: () => !currentCategoryId
-      });
-    }
-
-    return {
-      refetchQueries
-    };
-  };
-
-  if (ArticlesTotalCountError || CategoriesTotalCountError || CategoriesError) {
-    const error = checkError([ArticlesTotalCountError, CategoriesTotalCountError, CategoriesError]);
-
-    return <ErrorMsg>{error.message}</ErrorMsg>;
-  };
-
-  if (ArticlesTotalCountLoading || CategoriesTotalCountLoading) {
-    return <Spinner objective={true} />;
-  };
 
   // remove action
   const remove = categoryId => {
@@ -104,15 +40,14 @@ function KnowledgeBaseContainer(props: Props) {
       removeCategoriesMutation({
         variables: { _id: categoryId }
       })
-      if (RemoveCategoriesData) {
-        CategoriesRefetch();
+        .then(() => {
+          categoriesQuery.refetch();
 
-        Alert.success('You successfully deleted a category');
-      }
-
-      if (RemoveCategoriesError) {
-        Alert.error(RemoveCategoriesError.message);
-      };
+          Alert.success('You successfully deleted a category');
+        })
+        .catch(error => {
+          Alert.error(error.message);
+        });
     });
   };
 
@@ -121,14 +56,76 @@ function KnowledgeBaseContainer(props: Props) {
     remove,
     currentCategoryId,
     topicIds,
-    CategoriesData,
-    categories: CategoriesData ? CategoriesData.knowledgeBaseCategories : [],
-    loading: CategoriesLoading,
-    topicsCount: CategoriesTotalCountData ? CategoriesTotalCountData.knowledgeBaseCategoriesTotalCount : 0,
-    articlesCount: ArticlesTotalCountData ? ArticlesTotalCountData.knowledgeBaseArticlesTotalCount : 0
+    categoriesQuery,
+    categories: categoriesQuery.knowledgeBaseCategories || [],
+    loading: categoriesQuery.loading,
+    topicsCount: categoriesCountQuery.knowledgeBaseCategoriesTotalCount || 0,
+    articlesCount: articlesCountQuery.knowledgeBaseArticlesTotalCount || 0
   };
 
   return <CategoryList {...extendedProps} />;
-}
+};
 
-export default KnowledgeBaseContainer;
+export default compose(
+  graphql<Props, CategoriesQueryResponse, { topicIds: string[] }>(
+    gql(queries.knowledgeBaseCategories),
+    {
+      name: 'categoriesQuery',
+      options: ({ topicIds }) => {
+        return {
+          variables: {
+            topicIds: [topicIds]
+          }
+        };
+      }
+    }
+  ),
+  graphql<Props, ArticlesTotalCountQueryResponse, { categoryIds: string[] }>(
+    gql(queries.knowledgeBaseArticlesTotalCount),
+    {
+      name: 'articlesCountQuery',
+      options: ({ currentCategoryId }) => ({
+        variables: { categoryIds: [currentCategoryId] || '' }
+      })
+    }
+  ),
+  graphql<Props, CategoriesTotalCountQueryResponse>(
+    gql(queries.knowledgeBaseCategoriesTotalCount),
+    {
+      name: 'categoriesCountQuery'
+    }
+  ),
+  graphql<Props, RemoveCategoriesMutationResponse, { _id: string }>(
+    gql(mutations.knowledgeBaseCategoriesRemove),
+    {
+      name: 'removeCategoriesMutation',
+      options: ({ currentCategoryId }) => {
+        const refetchQueries: any[] = [
+          {
+            query: gql(queries.knowledgeBaseCategories)
+          },
+          {
+            query: gql(queries.knowledgeBaseTopics)
+          }
+        ];
+
+        if (currentCategoryId) {
+          refetchQueries.push({
+            query: gql(queries.knowledgeBaseArticlesTotalCount),
+            variables: { categoryIds: [currentCategoryId] }
+          });
+
+          refetchQueries.push({
+            query: gql(queries.knowledgeBaseCategoryDetail),
+            variables: { _id: currentCategoryId },
+            skip: () => !currentCategoryId
+          });
+        }
+
+        return {
+          refetchQueries
+        };
+      }
+    }
+  )
+)(KnowledgeBaseContainer);
