@@ -1,25 +1,27 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { engageMessageFactory } from 'modules/testing-utils/factories/engage';
+import { segmentFactory } from 'modules/testing-utils/factories/segments';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
 import { queries } from '../../graphql';
-import EmailStatistics from '../EmailStatistics';
+import SegmentStep from '../SegmentStep';
 
-const messageId = 'string';
+const segmentIds = ['string'];
+const messageType = 'string';
+const onChange = { name: 'string', value: ['string'] };
 
-const engageMessageDetailMock = {
+const segmentsMock = {
   request: {
-    query: gql(queries.engageMessageStats),
-    variables: { _id: '' }
+    query: gql(queries.segments),
+    variables: {}
   },
   result: {
     data: {
-      EngageMessageDetail: [
-        engageMessageFactory.build(),
-        engageMessageFactory.build({
+      segments: [
+        segmentFactory.build(),
+        segmentFactory.build({
           _id: '1'
         })
       ]
@@ -27,21 +29,48 @@ const engageMessageDetailMock = {
   }
 };
 
-const engageMessageDetailErrorMock = {
+const CountResponse = {
+  count: 11
+};
+
+const CustomerCounts = {
+  byBrand: CountResponse,
+  byFakeSegment: 1,
+  byForm: CountResponse,
+  byIntegrationType: CountResponse,
+  byLeadStatus: CountResponse,
+  byLifecycleState: CountResponse,
+  bySegment: CountResponse,
+  byTag: CountResponse,
+};
+
+const customerCountsMock = {
   request: {
-    query: gql(queries.engageMessageStats),
-    variables: { _id: '' }
+    query: gql(queries.customerCounts),
+    variables: { only: 'bySegment' }
+  },
+  result: {
+    data: {
+      customerCounts: CustomerCounts
+    }
+  }
+};
+
+const customerCountsErrorMock = {
+  request: {
+    query: gql(queries.customerCounts),
+    variables: { only: 'bySegment' }
   },
   result: {
     errors: [new GraphQLError('forced error')]
   }
 };
 
-describe('EmailStatistics', () => {
+describe('SegmentStep', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <EmailStatistics messageId={messageId} />
+        <SegmentStep segmentIds={segmentIds} messageType={messageType} onChange={onChange} />
       </MockedProvider>
     );
 
@@ -56,10 +85,10 @@ describe('EmailStatistics', () => {
   it('should show error', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailErrorMock]}
+        mocks={[customerCountsErrorMock, segmentsMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <SegmentStep segmentIds={segmentIds} messageType={messageType} onChange={onChange} />
       </MockedProvider>
     );
 
@@ -71,10 +100,10 @@ describe('EmailStatistics', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailMock]}
+        mocks={[customerCountsMock, segmentsMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <SegmentStep segmentIds={segmentIds} messageType={messageType} onChange={onChange} />
       </MockedProvider>
     );
 

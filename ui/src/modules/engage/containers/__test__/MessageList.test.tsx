@@ -6,42 +6,65 @@ import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
 import { queries } from '../../graphql';
-import EmailStatistics from '../EmailStatistics';
+import MessageList from '../MessageList';
 
-const messageId = 'string';
+const type = 'string';
+const queryParams = 'string';
+const loading = true;
+
+const listQueryVariables = {
+  page: 3,
+  perPage: 3,
+  kind: 'string',
+  status: 'string',
+  tag: 'string',
+  ids: ['string']
+};
 
 const engageMessageDetailMock = {
   request: {
-    query: gql(queries.engageMessageStats),
-    variables: { _id: '' }
+    query: gql(queries.engageMessageDetail),
+    variables: listQueryVariables
   },
   result: {
     data: {
       EngageMessageDetail: [
         engageMessageFactory.build(),
         engageMessageFactory.build({
-          _id: '1'
+          _id: '3'
         })
       ]
     }
   }
 };
 
-const engageMessageDetailErrorMock = {
+const engageMessagesTotalCountMock = {
   request: {
-    query: gql(queries.engageMessageStats),
-    variables: { _id: '' }
+    query: gql(queries.engageMessagesTotalCount),
+    variables: listQueryVariables
+  },
+  result: {
+    data: {
+      engageMessagesTotalCount: 3
+    }
+  }
+};
+
+const engageMessagesTotalCountErrorMock = {
+  request: {
+    query: gql(queries.engageMessagesTotalCount),
+    variables: listQueryVariables
   },
   result: {
     errors: [new GraphQLError('forced error')]
   }
 };
 
-describe('EmailStatistics', () => {
+describe('MessageList', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <EmailStatistics messageId={messageId} />
+        <MessageList type={type} queryParams={queryParams} loading={loading} />
       </MockedProvider>
     );
 
@@ -56,10 +79,10 @@ describe('EmailStatistics', () => {
   it('should show error', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailErrorMock]}
+        mocks={[engageMessagesTotalCountErrorMock, engageMessageDetailMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <MessageList type={type} queryParams={queryParams} loading={loading} />
       </MockedProvider>
     );
 
@@ -71,10 +94,10 @@ describe('EmailStatistics', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailMock]}
+        mocks={[engageMessagesTotalCountMock, engageMessageDetailMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <MessageList type={type} queryParams={queryParams} loading={loading} />
       </MockedProvider>
     );
 

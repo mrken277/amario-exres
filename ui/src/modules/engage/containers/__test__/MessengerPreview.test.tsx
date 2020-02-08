@@ -1,25 +1,27 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { engageMessageFactory } from 'modules/testing-utils/factories/engage';
+import { userFactory } from 'modules/testing-utils/factories/user';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
 import { queries } from '../../graphql';
-import EmailStatistics from '../EmailStatistics';
+import MessengerPreview from '../MessengerPreview';
 
-const messageId = 'string';
+const fromUserId = 'string';
+const sentAs = 'string';
+const content = 'string';
 
-const engageMessageDetailMock = {
+const userMock = {
   request: {
-    query: gql(queries.engageMessageStats),
+    query: gql(queries.userDetail),
     variables: { _id: '' }
   },
   result: {
     data: {
-      EngageMessageDetail: [
-        engageMessageFactory.build(),
-        engageMessageFactory.build({
+      user: [
+        userFactory.build(),
+        userFactory.build({
           _id: '1'
         })
       ]
@@ -27,9 +29,9 @@ const engageMessageDetailMock = {
   }
 };
 
-const engageMessageDetailErrorMock = {
+const userErrorMock = {
   request: {
-    query: gql(queries.engageMessageStats),
+    query: gql(queries.userDetail),
     variables: { _id: '' }
   },
   result: {
@@ -37,11 +39,11 @@ const engageMessageDetailErrorMock = {
   }
 };
 
-describe('EmailStatistics', () => {
+describe('MessengerPreview', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <EmailStatistics messageId={messageId} />
+        <MessengerPreview fromUserId={fromUserId} sentAs={sentAs} content={content} />
       </MockedProvider>
     );
 
@@ -56,10 +58,10 @@ describe('EmailStatistics', () => {
   it('should show error', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailErrorMock]}
+        mocks={[userErrorMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <MessengerPreview fromUserId={fromUserId} sentAs={sentAs} content={content} />
       </MockedProvider>
     );
 
@@ -71,10 +73,10 @@ describe('EmailStatistics', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailMock]}
+        mocks={[userMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <MessengerPreview fromUserId={fromUserId} sentAs={sentAs} content={content} />
       </MockedProvider>
     );
 

@@ -1,47 +1,71 @@
 import { MockedProvider } from '@apollo/react-testing';
-import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { engageMessageFactory } from 'modules/testing-utils/factories/engage';
-import * as React from 'react';
+import { queries as tagQueries } from 'modules/tags/graphql';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
 import { queries } from '../../graphql';
-import EmailStatistics from '../EmailStatistics';
+import Sidebar from '../Sidebar';
 
-const messageId = 'string';
+const queryParams = 'any';
 
-const engageMessageDetailMock = {
+const EngageMessageCounts = {
+  all: 3,
+  auto: 3,
+  manual: 3,
+  visitoryAuto: 3,
+};
+
+const kindCountsMock = {
   request: {
-    query: gql(queries.engageMessageStats),
-    variables: { _id: '' }
+    query: gql(queries.kindCounts),
+    variables: {}
   },
   result: {
     data: {
-      EngageMessageDetail: [
-        engageMessageFactory.build(),
-        engageMessageFactory.build({
-          _id: '1'
-        })
-      ]
+      engageMessageCounts: EngageMessageCounts
     }
   }
 };
 
-const engageMessageDetailErrorMock = {
+// const engageMessageDetailErrorMock = {
+//   request: {
+//     query: gql(queries.engageMessageStats),
+//     variables: { _id: '' }
+//   },
+//   result: {
+//     errors: [new GraphQLError('forced error')]
+//   }
+// };
+
+const statusCountsMock = {
   request: {
-    query: gql(queries.engageMessageStats),
-    variables: { _id: '' }
+    query: gql(tagQueries.tags),
+    variables: { type: 'string' }
   },
   result: {
-    errors: [new GraphQLError('forced error')]
+    data: {
+      count: 3
+    }
   }
 };
 
-describe('EmailStatistics', () => {
+const tagCountsMock = {
+  request: {
+    query: gql(queries.tagCounts),
+    variables: { kind: 'string', status: 'string' }
+  },
+  result: {
+    data: {
+      engageMessageCounts: EngageMessageCounts
+    }
+  }
+};
+
+describe('Sidebar', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <EmailStatistics messageId={messageId} />
+        <Sidebar queryParams={queryParams} />
       </MockedProvider>
     );
 
@@ -56,10 +80,10 @@ describe('EmailStatistics', () => {
   it('should show error', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailErrorMock]}
+        mocks={[kindCountsMock, statusCountsMock, tagCountsMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <Sidebar queryParams={queryParams} />
       </MockedProvider>
     );
 
@@ -71,10 +95,10 @@ describe('EmailStatistics', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailMock]}
+        mocks={[kindCountsMock, statusCountsMock, tagCountsMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <Sidebar queryParams={queryParams} />
       </MockedProvider>
     );
 

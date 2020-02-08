@@ -1,35 +1,27 @@
 import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
-import { engageMessageFactory } from 'modules/testing-utils/factories/engage';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
-import { queries } from '../../graphql';
-import EmailStatistics from '../EmailStatistics';
+import { mutations } from '../../graphql';
+import MessageListRow from '../MessageListRow';
 
-const messageId = 'string';
-
-const engageMessageDetailMock = {
+const removeMutationMock = {
   request: {
-    query: gql(queries.engageMessageStats),
+    query: gql(mutations.messageRemove),
     variables: { _id: '' }
   },
   result: {
     data: {
-      EngageMessageDetail: [
-        engageMessageFactory.build(),
-        engageMessageFactory.build({
-          _id: '1'
-        })
-      ]
+      _id: 'string'
     }
   }
 };
 
-const engageMessageDetailErrorMock = {
+const removeMutationErrorMock = {
   request: {
-    query: gql(queries.engageMessageStats),
+    query: gql(mutations.messageRemove),
     variables: { _id: '' }
   },
   result: {
@@ -37,11 +29,48 @@ const engageMessageDetailErrorMock = {
   }
 };
 
-describe('EmailStatistics', () => {
+const setPauseMutationMock = {
+  request: {
+    query: gql(mutations.setPause),
+    variables: { _id: '' }
+  },
+  result: {
+    data: {
+      _id: ''
+    }
+  }
+};
+
+const setLiveMutationMock = {
+  request: {
+    query: gql(mutations.setPause),
+    variables: { _id: '' }
+  },
+  result: {
+    data: {
+      _id: ''
+    }
+  }
+};
+
+
+const setLiveManualMutationMock = {
+  request: {
+    query: gql(mutations.setPause),
+    variables: { _id: '' }
+  },
+  result: {
+    data: {
+      _id: ''
+    }
+  }
+};
+
+describe('MessageListRow', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <EmailStatistics messageId={messageId} />
+        <MessageListRow />
       </MockedProvider>
     );
 
@@ -56,10 +85,10 @@ describe('EmailStatistics', () => {
   it('should show error', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailErrorMock]}
+        mocks={[removeMutationErrorMock, setPauseMutationMock, setLiveMutationMock, setLiveManualMutationMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <MessageListRow />
       </MockedProvider>
     );
 
@@ -71,10 +100,10 @@ describe('EmailStatistics', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailMock]}
+        mocks={[removeMutationMock, setPauseMutationMock, setLiveMutationMock, setLiveManualMutationMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <MessageListRow />
       </MockedProvider>
     );
 

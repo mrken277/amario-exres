@@ -2,46 +2,65 @@ import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { engageMessageFactory } from 'modules/testing-utils/factories/engage';
+import { brandFactory } from 'modules/testing-utils/factories/settings/brands';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
 import { queries } from '../../graphql';
-import EmailStatistics from '../EmailStatistics';
+import MessageForm from '../MessageForm';
 
+const kind = 'string';
 const messageId = 'string';
 
-const engageMessageDetailMock = {
+const EngageMessageDetailMock = {
   request: {
-    query: gql(queries.engageMessageStats),
-    variables: { _id: '' }
+    query: gql(queries.engageMessageDetail),
+    variables: { _id: 'string' }
   },
   result: {
     data: {
       EngageMessageDetail: [
         engageMessageFactory.build(),
         engageMessageFactory.build({
-          _id: '1'
+          _id: '3'
         })
       ]
     }
   }
 };
 
-const engageMessageDetailErrorMock = {
+const brandsMock = {
   request: {
-    query: gql(queries.engageMessageStats),
-    variables: { _id: '' }
+    query: gql(queries.brands),
+    variables: {}
+  },
+  result: {
+    data: {
+      brands: [
+        brandFactory.build(),
+        brandFactory.build({
+          _id: '3'
+        })
+      ]
+    }
+  }
+};
+
+const EngageMessageDetailErrorMock = {
+  request: {
+    query: gql(queries.engageMessageDetail),
+    variables: { _id: 'string' }
   },
   result: {
     errors: [new GraphQLError('forced error')]
   }
 };
 
-describe('EmailStatistics', () => {
+describe('MessageForm', () => {
   it('should render loading state initially', () => {
     const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <EmailStatistics messageId={messageId} />
+        <MessageForm kind={kind} messageId={messageId} />
       </MockedProvider>
     );
 
@@ -56,10 +75,10 @@ describe('EmailStatistics', () => {
   it('should show error', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailErrorMock]}
+        mocks={[EngageMessageDetailErrorMock, brandsMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <MessageForm kind={kind} messageId={messageId} />
       </MockedProvider>
     );
 
@@ -71,10 +90,10 @@ describe('EmailStatistics', () => {
   it('should render content', async () => {
     const testRenderer = create(
       <MockedProvider
-        mocks={[engageMessageDetailMock]}
+        mocks={[EngageMessageDetailMock, brandsMock]}
         addTypename={false}
       >
-        <EmailStatistics messageId={messageId} />
+        <MessageForm kind={kind} messageId={messageId} />
       </MockedProvider>
     );
 

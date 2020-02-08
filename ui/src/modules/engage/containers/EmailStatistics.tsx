@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import EmptyState from 'modules/common/components/EmptyState';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
 import Spinner from 'modules/common/components/Spinner';
 import React from 'react';
 import EmailStatistics from '../components/EmailStatistics';

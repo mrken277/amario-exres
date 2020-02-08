@@ -10,7 +10,7 @@ import React from 'react';
 import { withRouter } from 'react-router';
 import Sidebar from '../components/Sidebar';
 import { queries } from '../graphql';
-import { CountQueryResponse } from '../types';
+import { CountQueryResponse, TagCountQueryResponse } from '../types';
 
 type Props = {
   queryParams: any;
@@ -42,7 +42,7 @@ const SidebarContainer = (props: Props) => {
     loading: tagsLoading,
     error: tagsError,
     data: tagsData
-  } = useQuery(
+  } = useQuery<TagCountQueryResponse, { type: string }>(
     gql(tagQueries.tags), {
     variables: { type: 'engageMessage' }
   });
@@ -51,7 +51,7 @@ const SidebarContainer = (props: Props) => {
     loading: tagCountsLoading,
     error: tagCountsError,
     data: tagCountsData
-  } = useQuery<CountQueryResponse>(
+  } = useQuery<CountQueryResponse, { kind: string; status: string }>(
     gql(queries.tagCounts), {
     variables: {
       kind: queryParams.kind || '',

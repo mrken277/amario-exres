@@ -16,7 +16,6 @@ export const segmentFactory = Factory.Sync.makeFactory<ISegment>({
   contentType: 'type',
   getSubSegments: [],
   getParentSegment: {} as ISegment,
-
   // ISegmentDocs
   name: 'segment',
   description: 'desc',
