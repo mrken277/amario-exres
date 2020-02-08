@@ -26,7 +26,7 @@ function EmailStatisticsContainer(props: Props) {
   });
 
   if (engageMessageDetailError) {
-    return <EmptyState size="full" text="Error" icon="ban" />;
+    return <ErrorMsg>{engageMessageDetailError.message}</ErrorMsg>;
   };
 
   if (engageMessageDetailLoading) {

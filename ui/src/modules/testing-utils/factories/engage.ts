@@ -1,12 +1,19 @@
 import * as Factory from 'factory.ts';
 import { IEngageConfig, IEngageEmail, IEngageMessage, IEngageMessenger, IEngageScheduleDate, IEngageStats } from 'modules/engage/types';
 import { IEngageData, IEngageDataRules } from 'modules/inbox/types';
+import { IEmailTemplate } from 'modules/settings/emailTemplates/types';
 import { attachmentFactory } from './attachment';
 import { conditionsRuleFactory } from './common';
 import { segmentFactory } from './segments';
 import { brandFactory } from './settings/brands';
 import { tagFactory } from './tags';
 import { userFactory } from './user';
+
+export const emailTemplateFactory = Factory.Sync.makeFactory<IEmailTemplate>({
+  _id: 'string',
+  name: 'string',
+  content: 'string'
+});
 
 export const engageMessengerFactory = Factory.Sync.makeFactory<IEngageMessenger>({
   brandId: '22',
