@@ -56,6 +56,7 @@ export interface ICustomerDoc {
   customFieldsData?: { [key: string]: any };
   visitorContactInfo?: IVisitorContact;
   code?: string;
+  birthDate?: string;
 }
 
 export interface ICustomer extends ICustomerDoc {
