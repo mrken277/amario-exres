@@ -29,6 +29,10 @@ const basicFields = `
   doNotDisturb
   code
 
+  isOnline
+  lastSeenAt
+  sessionCount
+
   links {
     linkedIn
     twitter
@@ -54,7 +58,7 @@ const customerFields = `
   location
 
   customFieldsData
-  messengerData
+  getTrackedData
 
   tagIds
   getTags {
@@ -145,7 +149,6 @@ const customerDetail = `
         name
         isActive
       }
-      getMessengerCustomData
       companies {
         _id
         primaryName

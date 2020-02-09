@@ -47,13 +47,11 @@ export const CUSTOMER_BASIC_INFO = {
 };
 
 export const CUSTOMER_DATAS = {
-  messengerData: 'Messenger Data',
   visitorContactInfo: 'Visitor contact info',
   owner: 'Owner',
   links: 'Links',
 
   ALL: [
-    { field: 'messengerData', label: 'Messenger Data' },
     { field: 'visitorContactInfo', label: 'Visitor contact info' },
     { field: 'owner', label: 'Owner' },
     { field: 'links', label: 'Links' }

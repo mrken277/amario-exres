@@ -4,13 +4,6 @@ import { IActivityLog } from '../activityLogs/types';
 import { IUser } from '../auth/types';
 import { IIntegration } from '../settings/integrations/types';
 
-export interface IMessengerData {
-  lastSeenAt?: number;
-  sessionCount?: number;
-  isActive?: boolean;
-  customData?: any;
-}
-
 export interface IVisitorContact {
   email?: string;
   phone?: string;
@@ -52,18 +45,21 @@ export interface ICustomerDoc {
   description?: string;
   doNotDisturb?: string;
   links?: ICustomerLinks;
-  messengerData?: IMessengerData;
   customFieldsData?: { [key: string]: any };
   visitorContactInfo?: IVisitorContact;
   code?: string;
   birthDate?: string;
+
+  isOnline?: boolean;
+  lastSeenAt?: number;
+  sessionCount?: number;
 }
 
 export interface ICustomer extends ICustomerDoc {
   _id: string;
   owner?: IUser;
   integration?: IIntegration;
-  getMessengerCustomData?: any;
+  getTrackedData?: any;
   getTags: ITag[];
   companies: ICompany[];
 }
