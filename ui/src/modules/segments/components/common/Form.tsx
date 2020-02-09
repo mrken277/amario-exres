@@ -77,11 +77,13 @@ class Form extends React.Component<Props, State> {
     });
   };
 
-  changeEventCondition = (args: { key: string, name: string, attributeFilters: IConditionFilter[] }) => {
+  changeEventCondition = (args: { key: string, name: string, attributeFilters: IConditionFilter[], occurence: string, occurenceValue: number }) => {
     const condition = {
       type: 'event',
       key: args.key,
       eventName: args.name,
+      eventOccurence: args.occurence,
+      eventOccurenceValue: args.occurenceValue,
       eventAttributeFilters: (args.attributeFilters || []).map(filter => {
         const { key, ...rest } = filter;
 
@@ -193,6 +195,8 @@ class Form extends React.Component<Props, State> {
         key={condition.key}
         conditionKey={condition.key || ''}
         name={condition.eventName || ''}
+        occurence={condition.eventOccurence || ''}
+        occurenceValue={condition.eventOccurenceValue || 0}
         attributeFilters={condition.eventAttributeFilters || []}
         onChange={this.changeEventCondition}
         onRemove={this.removeCondition}

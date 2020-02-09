@@ -1,4 +1,5 @@
 import Button from 'modules/common/components/Button';
+import { FormControl } from 'modules/common/components/form';
 import { __ } from 'modules/common/utils';
 import { FlexRightItem } from 'modules/layout/styles';
 import React from 'react';
@@ -7,18 +8,30 @@ import { IConditionFilter, IEvent, IField } from '../../types';
 import { ConditionItem, FilterProperty, FilterRow, SubProperties } from '../styles';
 import Filter from './Filter';
 
+type OnChangeParams = {
+  key: string;
+  name: string;
+  attributeFilters: IConditionFilter[];
+  occurenceValue: number;
+  occurence: string;
+};
+
 type Props = {
   events: IEvent[];
   conditionKey: string;
   name: string;
   attributeFilters: IConditionFilter[];
-  onChange: (args: { key: string, name: string, attributeFilters: IConditionFilter[] }) => void;
+  occurence: string;
+  occurenceValue: number;
+  onChange: (args: OnChangeParams) => void;
   onRemove: (id: string) => void;
 };
 
 type State = {
   attributeFilters: IConditionFilter[];
   currentEventName?: string;
+  occurence?: string;
+  occurenceValue?: number;
 }
 
 class Condition extends React.Component<Props, State> {
@@ -27,7 +40,9 @@ class Condition extends React.Component<Props, State> {
 
     this.state = {
       currentEventName: props.name,
-      attributeFilters: props.attributeFilters.map(filter => ({ key: Math.random().toString(), ...filter }))
+      attributeFilters: props.attributeFilters.map(filter => ({ key: Math.random().toString(), ...filter })),
+      occurence: props.occurence,
+      occurenceValue: props.occurenceValue
     }
   }
 
@@ -37,11 +52,13 @@ class Condition extends React.Component<Props, State> {
 
   onChangeFilter = () => {
     const { onChange, conditionKey } = this.props;
-    const { currentEventName, attributeFilters } = this.state;
+    const { currentEventName, attributeFilters, occurenceValue, occurence } = this.state;
 
     return onChange({
       key: conditionKey,
       name: currentEventName || '',
+      occurence: occurence || 'exactly',
+      occurenceValue: occurenceValue || 0,
       attributeFilters,
     });
   }
@@ -62,6 +79,15 @@ class Condition extends React.Component<Props, State> {
 
   onChangeEvents = (option: IField) => {
     this.setState({ currentEventName: option ? option.value : '' }, this.onChangeFilter);
+  }
+
+  onChangeOccurence = (e) => {
+    this.setState({ occurence: e.target.value }, this.onChangeFilter);
+  }
+
+  onChangeOccurenceValue = (e) => {
+    const value = e.target.value;
+    this.setState({ occurenceValue: value ? parseFloat(value) : 0 }, this.onChangeFilter);
   }
 
   addAttributeFilter = () => {
@@ -120,6 +146,26 @@ class Condition extends React.Component<Props, State> {
     );
   }
 
+  renderOccurence() {
+    const { currentEventName, occurence, occurenceValue } = this.state;
+
+    if (!currentEventName) {
+      return null;
+    }
+
+    return (
+      <>
+        <FormControl componentClass="select" onChange={this.onChangeOccurence} value={occurence}>
+          <option value="exactly">exactly</option>
+          <option value="atleast">atleast</option>
+          <option value="atmost">atmost</option>
+        </FormControl>
+
+        <FormControl value={occurenceValue} onChange={this.onChangeOccurenceValue} />
+      </>
+    )
+  }
+
   render() {
     return (
       <>
@@ -128,6 +174,9 @@ class Condition extends React.Component<Props, State> {
             <FilterProperty>
               {this.renderNames()}
             </FilterProperty>
+
+            {this.renderOccurence()}
+
             <FilterProperty>
               {
                 this.state.currentEventName && 
@@ -142,6 +191,7 @@ class Condition extends React.Component<Props, State> {
               }
             </FilterProperty>            
           </FilterRow>
+
           <FlexRightItem>
             <Button
               className="round"
@@ -152,6 +202,7 @@ class Condition extends React.Component<Props, State> {
             />
           </FlexRightItem>
         </ConditionItem>
+
         <SubProperties>
           {this.renderAttributeFilters()}
         </SubProperties>

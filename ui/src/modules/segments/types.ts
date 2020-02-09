@@ -19,6 +19,8 @@ export interface ISegmentCondition {
   propertyValue?: string;
 
   eventName?: string;
+  eventOccurence?: string;
+  eventOccurenceValue?: number;
   eventAttributeFilters?: IConditionFilter[]
 }
 export interface ISegmentWithConditionDoc {
