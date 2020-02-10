@@ -26,8 +26,9 @@ function ChecklistsContainer(props: Props) {
     variables: {
       contentType,
       contentTypeId
-    },
-    refetchQueries: ['checklists'],
+    }
+    // ,
+    // refetchQueries: ['checklists'],
   });
 
   if (checklistsQueryLoading) {

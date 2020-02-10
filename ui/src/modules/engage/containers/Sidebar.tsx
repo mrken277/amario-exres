@@ -63,12 +63,11 @@ const SidebarContainer = (props: Props) => {
     const error = checkError([kindCountsError, statusCountsError, tagsError, tagCountsError]);
 
     return <ErrorMsg>{error.message}</ErrorMsg>;
-  };
+  }
 
   if (kindCountsLoading || statusCountsLoading || tagsLoading || tagCountsLoading) {
     return <Spinner objective={true} />;
-  };
-
+  }
 
   const updatedProps = {
     ...props,

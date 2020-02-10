@@ -1,18 +1,20 @@
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import * as compose from 'lodash.flowright';
 import withCurrentUser from 'modules/auth/containers/withCurrentUser';
 import { IUser } from 'modules/auth/types';
-import { Alert, withProps } from 'modules/common/utils';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
+import Spinner from 'modules/common/components/Spinner';
+import { Alert } from 'modules/common/utils';
+import checkError from 'modules/common/utils/checkError';
 import { ICustomer } from 'modules/customers/types';
 import { AddMutationResponse, IEngageMessageDoc } from 'modules/engage/types';
+import { IEmailTemplate } from 'modules/settings/emailTemplates/types';
 import React from 'react';
-import { graphql } from 'react-apollo';
-import { BrandsQueryResponse } from '../../settings/brands/types';
+import { BrandsQueryResponse, IBrand } from '../../settings/brands/types';
 import { EmailTemplatesQueryResponse } from '../../settings/emailTemplates/containers/List';
 import Widget from '../components/Widget';
 import { MESSAGE_KINDS, MESSENGER_KINDS, SENT_AS_CHOICES } from '../constants';
 import { mutations, queries } from '../graphql';
-import { crudMutationsOptions } from '../utils';
 
 type Props = {
   customers: ICustomer[];
@@ -23,26 +25,56 @@ type Props = {
 
 type FinalProps = {
   currentUser: IUser;
-  emailTemplatesQuery: EmailTemplatesQueryResponse;
-  brandsQuery: BrandsQueryResponse;
-} & Props &
-  AddMutationResponse;
+} & Props;
 
 const WidgetContainer = (props: FinalProps) => {
   const {
     currentUser,
-    emailTemplatesQuery,
-    brandsQuery,
     emptyBulk,
-    messagesAddMutation
   } = props;
 
-  if (emailTemplatesQuery.loading || brandsQuery.loading) {
-    return null;
+  const {
+    loading: emailTemplatesLoading,
+    error: emailTemplatesError,
+    data: emailTemplatesData
+  } = useQuery<EmailTemplatesQueryResponse>(
+    gql(queries.emailTemplates));
+
+  const {
+    loading: brandsLoading,
+    error: brandsError,
+    data: brandsData
+  } = useQuery<BrandsQueryResponse>(
+    gql(queries.brands));
+
+  const [messagesAddMutation,
+    {
+      loading: messagesAddLoading,
+      error: messagesAddError,
+      data: messagesAddData
+    }] = useMutation<AddMutationResponse, IEngageMessageDoc>(
+      gql(mutations.messagesAdd), {
+      refetchQueries: [
+        'engageMessages',
+        'engageMessagesTotalCount',
+        'kindCounts',
+        'statusCounts'
+      ]
+    });
+
+  if (emailTemplatesLoading || brandsLoading || messagesAddLoading) {
+    return <Spinner objective={true} />;
   }
 
-  const emailTemplates = emailTemplatesQuery.emailTemplates;
-  const brands = brandsQuery.brands;
+  if (emailTemplatesError || brandsError) {
+    const error = checkError([emailTemplatesError, brandsError,
+    ]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
+  };
+
+  const emailTemplates = emailTemplatesData && emailTemplatesData.emailTemplates as IEmailTemplate[];
+  const brands = brandsData && brandsData.brands as IBrand[];
 
   // save
   const save = (doc, callback) => {
@@ -53,18 +85,19 @@ const WidgetContainer = (props: FinalProps) => {
     messagesAddMutation({
       variables: doc
     })
-      .then(() => {
-        callback();
+    if (messagesAddData) {
+      callback();
 
-        Alert.success(`You successfully added a engagement message`);
+      Alert.success(`You successfully added a engagement message`);
 
-        if (emptyBulk) {
-          emptyBulk();
-        }
-      })
-      .catch(error => {
-        Alert.error(error.message);
-      });
+      if (emptyBulk) {
+        emptyBulk();
+      }
+    }
+
+    if (messagesAddError) {
+      Alert.error(messagesAddError.message);
+    };
   };
 
   const updatedProps = {
@@ -79,20 +112,4 @@ const WidgetContainer = (props: FinalProps) => {
   return <Widget {...updatedProps} />;
 };
 
-export default withProps<Props>(
-  compose(
-    graphql<Props, EmailTemplatesQueryResponse>(gql(queries.emailTemplates), {
-      name: 'emailTemplatesQuery'
-    }),
-    graphql<Props, BrandsQueryResponse>(gql(queries.brands), {
-      name: 'brandsQuery'
-    }),
-    graphql<Props, AddMutationResponse, IEngageMessageDoc>(
-      gql(mutations.messagesAdd),
-      {
-        name: 'messagesAddMutation',
-        options: crudMutationsOptions
-      }
-    )
-  )(withCurrentUser(WidgetContainer))
-);
+export default withCurrentUser(WidgetContainer);
