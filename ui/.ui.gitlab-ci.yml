@@ -52,11 +52,11 @@ ui:test_and_build:
 ui:build_docker_image:
   stage: build_docker_images
   before_script:
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
   script:
     - cd ui
-    - docker build -t erxes/$CI_PROJECT_NAME:${CI_COMMIT_REF_NAME} -f Dockerfile .
-    - docker push erxes/$CI_PROJECT_NAME:${CI_COMMIT_REF_NAME}
+    - docker build -t $DOCKER_REGISTRY/erxes/$CI_PROJECT_NAME:${CI_COMMIT_REF_NAME} -f Dockerfile .
+    - docker push $DOCKER_REGISTRY/erxes/$CI_PROJECT_NAME:${CI_COMMIT_REF_NAME}
   rules:
     - changes:
         - ui/**/*
