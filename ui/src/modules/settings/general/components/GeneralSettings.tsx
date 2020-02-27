@@ -198,6 +198,13 @@ class GeneralSettings extends React.Component<Props, State> {
           {this.renderItem('AWS_SES_CONFIG_SET')}
         </CollapseContent>
 
+        <CollapseContent title="Google">
+            {this.renderItem('GOOGLE_PROJECT_ID')}
+            {this.renderItem('GOOGLE_APPLICATION_CREDENTIALS')}
+            {this.renderItem('GOOGLE_CLIENT_ID')}
+            {this.renderItem('GOOGLE_CLIENT_SECRET')}
+        </CollapseContent>
+
         <CollapseContent title={__("Common mail config")}>  
           <Info>
             <a target="_blank" href="https://docs.erxes.io/administrator/environment-variables#email-settings" rel="noopener noreferrer">

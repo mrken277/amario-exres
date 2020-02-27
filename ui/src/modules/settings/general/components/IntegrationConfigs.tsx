@@ -137,12 +137,8 @@ class IntegrationConfigs extends React.Component<Props, State> {
           </FormGroup>
           <br />
           <ContentDisabler disable={!useNativeGmail}>
-            {this.renderItem('GOOGLE_PROJECT_ID')}
             {this.renderItem('GOOGLE_GMAIL_TOPIC')}
-            {this.renderItem('GOOGLE_APPLICATION_CREDENTIALS')}
             {this.renderItem('GOOGLE_GMAIL_SUBSCRIPTION_NAME')}
-            {this.renderItem('GOOGLE_CLIENT_ID')}
-            {this.renderItem('GOOGLE_CLIENT_SECRET')}
           </ContentDisabler>
         </CollapseContent>
       </ContentBox>
