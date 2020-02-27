@@ -101,6 +101,7 @@ export const KEY_LABELS = {
   MICROSOFT_CLIENT_ID: 'Microsoft Client Id',
   MICROSOFT_CLIENT_SECRET: 'Microsoft Client Secret',
   ENCRYPTION_KEY: 'Encryption Key',
+  ALGORITHM: 'Algorithm',
   USE_NATIVE_GMAIL: 'Use Default Gmail Service',
   GOOGLE_PROJECT_ID: 'Google Project Id',
   GOOGLE_GMAIL_TOPIC: 'Google Gmail Topic',
