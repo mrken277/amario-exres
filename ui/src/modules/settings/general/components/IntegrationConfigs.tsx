@@ -121,6 +121,11 @@ class IntegrationConfigs extends React.Component<Props, State> {
           {this.renderItem('ALGORITHM', 'aes-256-cbc')}
         </CollapseContent>
 
+        <CollapseContent title="Daily">
+          {this.renderItem('DAILY_API_KEY')}
+          {this.renderItem('DAILY_END_POINT')}
+        </CollapseContent>
+
         <CollapseContent title="Gmail">
           <Info>
             <a target="_blank" href="https://docs.erxes.io/administrator/integrations#gmail-integration" rel="noopener noreferrer">
