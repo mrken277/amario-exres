@@ -114,7 +114,7 @@ class IntegrationConfigs extends React.Component<Props, State> {
         
           {this.renderItem('NYLAS_CLIENT_ID')}
           {this.renderItem('NYLAS_CLIENT_SECRET')}
-          {this.renderItem('NYLAS_WEBHOOK_CALLBACK_URL')}
+          {this.renderItem('NYLAS_WEBHOOK_CALLBACK_URL', 'https://yourdomain/nylas/webhook')}
           {this.renderItem('MICROSOFT_CLIENT_ID')}
           {this.renderItem('MICROSOFT_CLIENT_SECRET')}
           {this.renderItem('ENCRYPTION_KEY', 'Must be 256 bits (32 characters)')}
