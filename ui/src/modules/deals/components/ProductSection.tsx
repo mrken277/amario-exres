@@ -7,7 +7,7 @@ import { __ } from 'modules/common/utils';
 import { SectionBody, SectionBodyItem } from 'modules/layout/styles';
 import { IProduct } from 'modules/settings/productService/types';
 import React from 'react';
-import ProductForm from '../containers/product/ProductItemForm';
+import ProductForm from '../containers/product/ProductForm';
 import { CustomField, ProductName } from '../styles';
 import { IPaymentsData, IProductData } from '../types';
 

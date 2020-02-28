@@ -1,17 +1,21 @@
 import { AppConsumer } from 'appContext';
+import { IProduct } from 'modules/settings/productService/types';
 import React from 'react';
-import ProductItemForm from '../../components/product/ProductItemForm';
-import { IProductData } from '../../types';
+import ProductForm from '../../components/product/ProductForm';
+import { IPaymentsData, IProductData } from '../../types';
 
 type Props = {
-  productData: IProductData;
-  removeProductItem?: (productId: string) => void;
-  productsData?: IProductData[];
   onChangeProductsData: (productsData: IProductData[]) => void;
-  updateTotal: () => void;
+  saveProductsData: () => void;
+  savePaymentsData: () => void;
+  onChangePaymentsData: (paymentsData: IPaymentsData) => void;
+  productsData: IProductData[];
+  products: IProduct[];
+  paymentsData?: IPaymentsData;
+  closeModal: () => void;
 };
 
-export default class ProductItemFormContainer extends React.Component<Props> {
+export default class ProductFormContainer extends React.Component<Props> {
   render() {
     return (
       <AppConsumer>
@@ -29,7 +33,7 @@ export default class ProductItemFormContainer extends React.Component<Props> {
             currencies: configs.dealCurrency || []
           };
 
-          return <ProductItemForm {...extendedProps} />
+          return <ProductForm {...extendedProps} />
         }}
       </AppConsumer>
     )

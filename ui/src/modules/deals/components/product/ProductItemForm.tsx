@@ -227,7 +227,6 @@ class ProductItemForm extends React.Component<Props, { categoryId: string }> {
 
   render() {
     const { uom, currencies, productData } = this.props;
-    console.log(productData);
 
     const selectOption = option => (
       <div className="simple-option">
