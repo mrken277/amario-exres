@@ -269,6 +269,8 @@ export type RelatedItemsQueryResponse = {
 export type DetailQueryResponse = {
   loading: boolean;
   error?: Error;
+  subscribeToMore: any;
+  refetch: () => void;
 };
 
 // query response

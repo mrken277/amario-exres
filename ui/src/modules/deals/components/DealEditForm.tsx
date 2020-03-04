@@ -33,6 +33,14 @@ type State = {
 };
 
 export default class DealEditForm extends React.Component<Props, State> {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.someValue !== prevState.someValue) {
+      return { someState: nextProps.someValue };
+    }
+
+    return null;
+  }
+
   constructor(props) {
     super(props);
 
