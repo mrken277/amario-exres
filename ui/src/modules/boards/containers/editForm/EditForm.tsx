@@ -7,7 +7,7 @@ import { AllUsersQueryResponse } from 'modules/settings/team/types';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import ErrorMsg from '../../../common/components/ErrorMsg';
-import { queries, subscriptions } from '../../graphql';
+import { queries } from '../../graphql';
 import {
   CopyMutation,
   DetailQueryResponse,
@@ -62,10 +62,10 @@ class EditFormContainer extends React.Component<FinalProps> {
   }
 
   componentDidUpdate() {
-    const { detailQuery, itemId } = this.props;
+    const { detailQuery, itemId, options } = this.props;
 
     this.unsubcribe = detailQuery.subscribeToMore({
-      document: gql(subscriptions.dealsChanged),
+      document: gql(options.subscriptions.changeSubscription),
       variables: { _id: itemId },
       updateQuery: () => {
         this.props.detailQuery.refetch();

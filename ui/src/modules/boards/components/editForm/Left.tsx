@@ -47,7 +47,7 @@ const Left = (props: Props) => {
     [item.description]
   );
 
-  const onBlurDescription = e => {
+  const onBlurDescription = () => {
     if (description !== item.description) {
       saveItem({ description });
     }

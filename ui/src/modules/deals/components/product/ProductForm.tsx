@@ -57,7 +57,7 @@ class ProductForm extends React.Component<Props, State> {
   addProductItem = () => {
     const { productsData, onChangeProductsData, currencies } = this.props;
 
-    productsData.push({
+    const productData = {
       _id: Math.random().toString(),
       quantity: 1,
       unitPrice: 0,
@@ -68,9 +68,9 @@ class ProductForm extends React.Component<Props, State> {
       amount: 0,
       currency: currencies ? currencies[0] : '',
       tickUsed: true
-    });
+    };
 
-    onChangeProductsData(productsData);
+    onChangeProductsData([...productsData, productData]);
   };
 
   removeProductItem = productId => {
@@ -175,17 +175,17 @@ class ProductForm extends React.Component<Props, State> {
     if (productsData.length !== 0) {
       for (const data of productsData) {
         if (!data.product) {
-          return Alert.error("Please choose a product");
+          return Alert.error('Please choose a product');
         }
 
         if (!data.unitPrice) {
           return Alert.error(
-            "Please enter an unit price. It should be a number"
+            'Please enter an unit price. It should be a number'
           );
         }
 
         if (!data.currency) {
-          return Alert.error("Please choose a currency");
+          return Alert.error('Please choose a currency');
         }
       }
     }
@@ -221,6 +221,7 @@ class ProductForm extends React.Component<Props, State> {
 
   renderTabContent() {
     const { total, tax, discount, currentTab } = this.state;
+
     if (currentTab === 'payments') {
       const { onChangePaymentsData } = this.props;
 
@@ -253,15 +254,15 @@ class ProductForm extends React.Component<Props, State> {
           <table>
             <tbody>
               <tr>
-                <td>{__("Tax")}:</td>
+                <td>{__('Tax')}:</td>
                 <td>{this.renderTotal(tax)}</td>
               </tr>
               <tr>
-                <td>{__("Discount")}:</td>
+                <td>{__('Discount')}:</td>
                 <td>{this.renderTotal(discount)}</td>
               </tr>
               <tr>
-                <td>{__("Total")}:</td>
+                <td>{__('Total')}:</td>
                 <td>{this.renderTotal(total)}</td>
               </tr>
             </tbody>

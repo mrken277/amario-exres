@@ -39,6 +39,9 @@ export interface IOptions {
     archiveMutation: string;
     copyMutation: string;
   };
+  subscriptions: {
+    changeSubscription: string;
+  };
   texts: {
     addText: string;
     addSuccessText?: string;
