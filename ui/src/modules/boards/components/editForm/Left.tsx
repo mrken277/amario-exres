@@ -109,7 +109,7 @@ const Left = (props: Props) => {
 
         <FormControl
           componentClass="textarea"
-          value={description}
+          value={description || ''}
           onBlur={onBlurDescription}
           onChange={onChangeDescription}
         />

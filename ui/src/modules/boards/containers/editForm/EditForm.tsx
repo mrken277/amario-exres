@@ -50,6 +50,8 @@ type FinalProps = {
 } & ContainerProps;
 
 class EditFormContainer extends React.Component<FinalProps> {
+  private unsubcribe;
+
   constructor(props) {
     super(props);
 
@@ -57,6 +59,22 @@ class EditFormContainer extends React.Component<FinalProps> {
     this.saveItem = this.saveItem.bind(this);
     this.removeItem = this.removeItem.bind(this);
     this.copyItem = this.copyItem.bind(this);
+  }
+
+  componentDidUpdate() {
+    const { detailQuery, itemId } = this.props;
+
+    this.unsubcribe = detailQuery.subscribeToMore({
+      document: gql(subscriptions.dealsChanged),
+      variables: { _id: itemId },
+      updateQuery: () => {
+        this.props.detailQuery.refetch();
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubcribe();
   }
 
   addItem(doc: IItemParams, callback: () => void) {
@@ -131,18 +149,6 @@ class EditFormContainer extends React.Component<FinalProps> {
         })
     );
   };
-
-  componentDidUpdate() {
-    const { detailQuery, itemId } = this.props;
-
-    detailQuery.subscribeToMore({
-      document: gql(subscriptions.dealsChanged),
-      variables: { _id: itemId },
-      updateQuery: () => {
-        this.props.detailQuery.refetch();
-      }
-    });
-  }
 
   render() {
     const { usersQuery, detailQuery, options } = this.props;
