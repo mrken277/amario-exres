@@ -38,7 +38,6 @@ const Events: any = {
     })
       .then(response => response.json())
       .then(response => {
-        console.log(response);
         if (response.customerId) {
           setLocalStorageItem("customerId", response.customerId);
         }
