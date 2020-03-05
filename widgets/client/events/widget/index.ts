@@ -2,9 +2,7 @@
  * Event's embeddable script
  */
 
-declare const window: any;
-
-import { generateIntegrationUrl } from "../../utils";
+import { generateIntegrationUrl, setErxesProperty } from "../../utils";
 
 // add iframe
 const iframe = document.createElement("iframe");
@@ -24,32 +22,28 @@ iframe.onload = async () => {
     return;
   }
 
-  const Erxes = {
-    sendMessage(action: string, args: any) {
-      contentWindow.postMessage(
-        {
-          fromPublisher: true,
-          action,
-          args
-        },
-        "*"
-      );
-    },
-
-    identifyCustomer(args: any) {
-      this.sendMessage("identifyCustomer", args);
-    },
-
-    updateCustomerProperty(name: string, value: any) {
-      this.sendMessage("updateCustomerProperty", { name, value });
-    },
-
-    sendEvent(args: any) {
-      this.sendMessage("sendEvent", args);
-    }
+  const sendMessage = (action: string, args: any) => {
+    contentWindow.postMessage(
+      {
+        fromPublisher: true,
+        action,
+        args
+      },
+      "*"
+    );
   };
 
-  window.Erxes = Erxes;
+  setErxesProperty("identifyCustomer", (args: any) => {
+    sendMessage("identifyCustomer", args);
+  });
 
-  Erxes.sendMessage("init", { url: window.location.href });
+  setErxesProperty("updateCustomerProperty", (name: string, value: any) => {
+    sendMessage("updateCustomerProperty", { name, value });
+  });
+
+  setErxesProperty("sendEvent", (args: any) => {
+    sendMessage("sendEvent", args);
+  });
+
+  sendMessage("init", { url: window.location.href });
 };
