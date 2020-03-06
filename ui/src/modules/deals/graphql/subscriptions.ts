@@ -6,6 +6,13 @@ const dealsChanged = `
   }
 `;
 
+const dealsMoved = `
+  subscription dealsMoved {
+    dealsMoved
+  }
+`;
+
 export default {
-  dealsChanged
+  dealsChanged,
+  dealsMoved
 };

@@ -24,6 +24,10 @@ export interface IOptions {
     copyMutation: string;
     archiveMutation: string;
   };
+  subscriptionName: {
+    changeSubscription: string;
+    moveSubscription: string;
+  };
   queries: {
     itemsQuery: string;
     detailQuery: string;
@@ -41,6 +45,7 @@ export interface IOptions {
   };
   subscriptions: {
     changeSubscription: string;
+    moveSubscription: string;
   };
   texts: {
     addText: string;
@@ -237,6 +242,7 @@ export type BoardDetailQueryResponse = {
 export type PipelineDetailQueryResponse = {
   pipelineDetail: IPipeline;
   loading: boolean;
+  subscribeToMore: any;
 };
 
 export type WatchVariables = {

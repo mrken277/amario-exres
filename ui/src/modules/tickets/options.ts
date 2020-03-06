@@ -23,6 +23,10 @@ const options = {
     archiveMutation: 'ticketsArchive',
     copyMutation: 'ticketsCopy'
   },
+  subscriptionName: {
+    changeSubscription: 'ticketsChanged',
+    moveSubscription: 'ticketsMoved'
+  },
   queries: {
     itemsQuery: queries.tickets,
     detailQuery: queries.ticketDetail,
@@ -39,7 +43,8 @@ const options = {
     copyMutation: mutations.ticketsCopy
   },
   subscriptions: {
-    changeSubscription: subscriptions.ticketsChanged
+    changeSubscription: subscriptions.ticketsChanged,
+    moveSubscription: subscriptions.ticketsMoved
   },
   texts: {
     addText: 'Add a ticket',

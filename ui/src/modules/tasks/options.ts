@@ -23,6 +23,10 @@ const options = {
     archiveMutation: 'tasksArchive',
     copyMutation: 'tasksCopy'
   },
+  subscriptionName: {
+    changeSubscription: 'tasksChanged',
+    moveSubscription: 'tasksMoved'
+  },
   queries: {
     itemsQuery: queries.tasks,
     detailQuery: queries.taskDetail,
@@ -39,7 +43,8 @@ const options = {
     copyMutation: mutations.tasksCopy
   },
   subscriptions: {
-    changeSubscription: subscriptions.tasksChanged
+    changeSubscription: subscriptions.tasksChanged,
+    moveSubscription: subscriptions.tasksMoved
   },
   texts: {
     addText: 'Add a task',

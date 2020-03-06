@@ -6,6 +6,13 @@ const growthHacksChanged = `
   }
 `;
 
+const growthHacksMoved = `
+  subscription growthHacksMoved {
+    growthHacksMoved 
+  }
+`;
+
 export default {
-  growthHacksChanged
+  growthHacksChanged,
+  growthHacksMoved
 };

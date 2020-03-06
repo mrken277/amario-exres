@@ -1,24 +1,37 @@
 import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import EmptyState from 'modules/common/components/EmptyState';
-import { withProps } from 'modules/common/utils';
-import React from 'react';
+import { IRouterProps } from 'modules/common/types';
+import { router as routerUtils, withProps } from 'modules/common/utils';
+import React, { useEffect } from 'react';
 import { graphql } from 'react-apollo';
+import { withRouter } from 'react-router';
 import { queries } from '../graphql';
 import { IOptions, PipelineDetailQueryResponse } from '../types';
 
 type Props = {
   queryParams: any;
-  options?: IOptions;
+  options: IOptions;
 };
 
 type ContainerProps = {
   pipelineDetailQuery: PipelineDetailQueryResponse;
-} & Props;
+} & IRouterProps &
+  Props;
 
 const withPipeline = Component => {
   const Container = (props: ContainerProps) => {
-    const { pipelineDetailQuery } = props;
+    const { pipelineDetailQuery, history, options } = props;
+
+    useEffect(() => {
+      return pipelineDetailQuery.subscribeToMore({
+        document: gql(options.subscriptions.moveSubscription),
+        updateQuery: () => {
+          routerUtils.setParams(history, { key: Math.random() });
+          // location.reload();
+        }
+      });
+    });
 
     const pipeline = pipelineDetailQuery && pipelineDetailQuery.pipelineDetail;
 
@@ -53,7 +66,7 @@ const withPipeline = Component => {
           })
         }
       )
-    )(Container)
+    )(withRouter(Container))
   );
 };
 
