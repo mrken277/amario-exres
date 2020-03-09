@@ -8,8 +8,8 @@ import { readFile } from '../../utils';
 import { Attachment, User } from '../components/common';
 import { MESSAGE_TYPES } from '../containers/AppContext';
 import { IAttachment, IMessengerAppData, IVideoCallData } from '../types';
-import VideoChatMessage from './VideoChatMessage';
-import VideoChatRequest from './VideoChatRequest';
+import VideoCallMessage from './VideoCallMessage';
+import VideoCallRequest from './VideoCallRequest';
 
 type Props = {
   content: string;
@@ -82,14 +82,14 @@ class Message extends React.Component<Props> {
 
     if (contentType === MESSAGE_TYPES.VIDEO_CALL) {
       return (
-        <VideoChatMessage
+        <VideoCallMessage
           videoCallData={videoCallData || { status: 'end', url: '' }}
         />
       );
     }
 
     if (contentType === MESSAGE_TYPES.VIDEO_CALL_REQUEST) {
-      return <VideoChatRequest />;
+      return <VideoCallRequest />;
     }
 
     if (messengerAppData) {

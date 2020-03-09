@@ -9,7 +9,7 @@ export default function VideoCallRequest() {
           <span role="img" aria-label="Phone">
             📞
           </span>{' '}
-          {__('Video chat request sent')}
+          {__('Video call request sent')}
         </strong>
       </div>
     </div>

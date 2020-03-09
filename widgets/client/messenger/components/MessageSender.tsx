@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { iconAttach } from '../../icons/Icons';
+import { iconAttach, iconFilm } from '../../icons/Icons';
+import { __ } from '../../utils';
 import { MESSAGE_TYPES } from '../containers/AppContext';
 
 type Props = {
@@ -160,7 +161,7 @@ class MessageSender extends React.Component<Props, State> {
     }
 
     return (
-      <label htmlFor="file-upload" className="ctrl-item">
+      <label title="File upload" htmlFor="file-upload" className="ctrl-item">
         {iconAttach}
         <input id="file-upload" type="file" onChange={this.handleFileInput} />
       </label>
@@ -173,8 +174,12 @@ class MessageSender extends React.Component<Props, State> {
     }
 
     return (
-      <label className="ctrl-item" onClick={this.sendVideoCallRequest}>
-        📞
+      <label
+        title="Video call request"
+        className="ctrl-item"
+        onClick={this.sendVideoCallRequest}
+      >
+        {iconFilm}
       </label>
     );
   }
