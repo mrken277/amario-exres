@@ -173,48 +173,102 @@ Consumer Key (API Key), Consumer Secret (API Secret) values to <code>erxes-api/.
 </ol>
 <h2><a class="anchor" aria-hidden="true" id="gmail-integration"></a><a href="#gmail-integration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Gmail Integration</h2>
 <p>Erxes app can be integrated with Gmail API and that means we can receive our gmail inbox messages directly to our erxes app's inbox. With the help of gmail API we have many more possibilities, like realtime email synchronization, send &amp; reply email etc. There is an active development process going on this subject.</p>
-<p>Requirements:</p>
+<h3><a class="anchor" aria-hidden="true" id="create-a-google-cloud-project"></a><a href="#create-a-google-cloud-project" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create a Google Cloud Project</h3>
 <ul>
-<li>To create google project.</li>
-<li>Enable gmail api.</li>
-<li>Configure google cloud pub/sub.</li>
+<li>Go to the <a href="https://console.cloud.google.com/"> Google Cloud Project </a></li>
+<li>Navigate to Select a project =&gt; NEW PROJECT</li>
 </ul>
-<p>Creating google project:</p>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-1.png" width="70%" height="70%" /></p>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-1.png" width="70%" height="70%" /></p>
+<h3><a class="anchor" aria-hidden="true" id="enable-gmail-api"></a><a href="#enable-gmail-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Enable Gmail API</h3>
 <ul>
-<li>Go to <a href="https://console.cloud.google.com/cloud-resource-manager">https://console.cloud.google.com/cloud-resource-manager</a> and create new project.</li>
+<li>Now we need to enable Gmail API in order to add scopes</li>
+<li>Side menu =&gt; APIs &amp; Services =&gt; Library =&gt; Search =&gt; Gmail API and enable</li>
 </ul>
-<p>Enable gmail api:</p>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-7.png" width="70%" height="70%" /></p>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-8.png" width="70%" height="70%" /></p>
+<h3><a class="anchor" aria-hidden="true" id="create-consent-screen"></a><a href="#create-consent-screen" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create consent screen</h3>
 <ul>
-<li>Go to the APIs &amp; Services/library &amp; enable gmail api.</li>
-<li>Go to the APIs &amp; Services/credentials &amp; create new <code>OAuth client ID</code> credentials. If you see warning about <code>product name</code> follow the instruction, make it disappear. Afterwards select <code>Web application</code> &amp; add <code>http://localhost:3000/service/oauth/gmail_callback</code> in <code>Authorized redirect URIs</code> &amp; create.</li>
-<li>Copy <code>Client ID</code> &amp; <code>Client secret</code> paste in your erxes-api/.env file. It looks like following example:</li>
+<li>Side menu =&gt; APIs Services =&gt; OAuth Consent screen =&gt; Create</li>
 </ul>
-<pre><code class="hljs css language-shell"><span class="hljs-meta">#</span><span class="bash">.env</span>
-GOOGLE_CLIENT_ID = '234373437285-11asa2131kjk231231.apps.googleusercontent.com'
-GOOGLE_CLIENT_SECRET = 'kE9K8W8A9KJSADQPWE'
-GMAIL_REDIRECT_URL = 'http://localhost:3000/service/oauth/gmail_callback'
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-3.png" width="70%" height="70%" />
+<img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-4.png" width="70%" height="70%" /></p>
+<p>Fill out the form below and click on add scope the button</p>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-5.png" width="70%" height="70%" /></p>
+<p>Since we already enabled the Gmail API, we are able to add the Gmail scopes. Search Gmail API and select the following scopes and add. Afterward, do not forget to click on save on bottom</p>
+<pre><code class="hljs css language-Shell">  https://mail.google.com/
+  https://www.googleapis.com/auth/gmail.modify
+  https://www.googleapis.com/auth/gmail.compose
+  https://www.googleapis.com/auth/gmail.send
+  https://www.googleapis.com/auth/gmail.readonly
 </code></pre>
-<p>Configure google cloud pub/sub:</p>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-9.png" width="70%" height="70%" /></p>
+<h3><a class="anchor" aria-hidden="true" id="create-an-oauth-client"></a><a href="#create-an-oauth-client" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create an OAuth client</h3>
 <ul>
-<li>Go to <a href="https://console.cloud.google.com/cloudpubsub/enableApi">https://console.cloud.google.com/cloudpubsub/enableApi</a> &amp; select your project.</li>
-<li>Enable api &amp; create topic.</li>
-<li>On the topic we must create subscription which is shown on the right of the topic as 3 dots. Select <code>New subscrition</code> &amp; create.</li>
-<li>Now grant publish rights on your topic. To do this, select <code>permissions</code> from the menu shown as a 3 dots &amp; add member <code>serviceAccount:gmail-api-push@system.gserviceaccount.com</code> role as a pub/sub publisher.</li>
-<li>Then copy the topic &amp; subscrition put it in erxes-api/.env file. It should looks like following example:</li>
+<li>In order to enable Google Cloud Project, we need to have a OAuth client for authorization</li>
 </ul>
-<pre><code class="hljs css language-shell"><span class="hljs-meta">#</span><span class="bash">.env</span>
-GOOGLE_TOPIC = "projects/myproject/topics/erxes-topic"
-GOOGLE_SUPSCRIPTION_NAME = "projects/myproject/subscriptions/erxes-subscription"
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-2.png" width="70%" height="70%" /></p>
+<ul>
+<li>In application, type select web application and fill out the rest of the form</li>
+</ul>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-10.png" width="70%" height="70%" /></p>
+<ul>
+<li>Keep the client id and client secret we're going to use later on</li>
+</ul>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-11.png" width="70%" height="70%" /></p>
+<h3><a class="anchor" aria-hidden="true" id="add-authorization-callback"></a><a href="#add-authorization-callback" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Add authorization callback</h3>
+<ul>
+<li>Now we need to add authorization callback for our OAuth2 client</li>
+<li>Go to =&gt; Side menu =&gt; APIs and Services =&gt; Credentials and select an OAuth client you just created.</li>
+</ul>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-12.png" width="70%" height="70%" /></p>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-13.png" width="70%" height="70%" /></p>
+<ul>
+<li>erxes-integrations repo works on PORT 3400, so that for the test purpose you can add as follows</li>
+</ul>
+<pre><code class="hljs css language-shell">  http://localhost:3400/gmaillogin
+</code></pre>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-14.png" width="70%" height="70%" /></p>
+<h3><a class="anchor" aria-hidden="true" id="enable-pubsub-api"></a><a href="#enable-pubsub-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Enable PubSub API</h3>
+<p>-In order to send and receive an email we will need the PubSub API</p>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-15.png" width="70%" height="70%"/></p>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-16.png" width="70%" height="70%"/></p>
+<h3><a class="anchor" aria-hidden="true" id="create-a-service-account"></a><a href="#create-a-service-account" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create a service account</h3>
+<ul>
+<li>Go to =&gt; IAM &amp; Admin =&gt; Service Accounts =&gt; CREATE SERVICE ACCOUNTS</li>
+<li>Enter service account name and Create</li>
+</ul>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-17.png" width="70%" height="70%" /></p>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-18.png" width="70%" height="70%" />
+<img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-19.png" width="70%" height="70%" /></p>
+<ul>
+<li><p>You will automatically download the JSON file</p></li>
+<li><p>Let's grant publish topic right to Gmail's service account.</p></li>
+<li><p>Go to =&gt; Side menu =&gt; IAM &amp; Admin =&gt; IAM =&gt; Add</p></li>
+</ul>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-22.png" width="70%" height="70%" /></p>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-23.png" width="70%" height="70%" /></p>
+<ul>
+<li>In new members add the following value</li>
+</ul>
+<pre><code class="hljs css language-shell">  gmail-api-push@system.gserviceaccount.com
 </code></pre>
 <ul>
-<li>Go to <a href="https://console.cloud.google.com/apis/credentials/serviceaccountkey">https://console.cloud.google.com/apis/credentials/serviceaccountkey</a></li>
-<li>Select your project &amp; create new service account with role as project owner.</li>
-<li>Download json file, put file path in erxes/.env file. It should looks like following example:</li>
+<li>In role select PubSub/Publisher</li>
 </ul>
-<pre><code class="hljs css language-shell"><span class="hljs-meta">#</span><span class="bash">.env</span>
-GOOGLE_APPLICATION_CREDENTIALS = "/Users/user/Downloads/9bb5b70c121c.json"
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-21.png" width="70%" height="70%" /></p>
+<h3><a class="anchor" aria-hidden="true" id="shell-env"></a><a href="#shell-env" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Shell env</h3>
+<ul>
+<li>You also need to set env to your shell session</li>
+</ul>
+<pre><code class="hljs css language-shell">export GOOGLE_APPLICATION_CREDENTIALS='path/to/your/google_cred.json' # service account json file
 </code></pre>
-<p>Add integration:</p>
+<h3><a class="anchor" aria-hidden="true" id="config-env"></a><a href="#config-env" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Config env</h3>
+<ul>
+<li>Now we are good to config our env as follows,</li>
+</ul>
+<p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-gmail-20.png" width="70%" height="70%" /></p>
+<p>You need to restart the erxes-integration repo after configuring .env</p>
 <ul>
 <li>Go to erxes settings - App store - add gmail. (Make sure you create new brand beforehand)</li>
 </ul>
@@ -403,7 +457,7 @@ GOOGLE_APPLICATION_CREDENTIALS=./google_cred.json
 <img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/nylas-outlook-3.png"/>
 </div></p></li>
 </ul>
-</span></div></article></div><div class="docLastUpdate"><em>Last updated on 1/24/2020 by Muji</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/administrator/file-upload"><span class="arrow-prev">← </span><span>File Upload</span></a><a class="docs-next button" href="/administrator/migration"><span>Migration</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#facebook-integration">Facebook Integration</a></li><li><a href="#creating-facebook-app">Creating facebook app.</a></li><li><a href="#getting-facebook-permissions-manage_pages-publish_pages">Getting facebook permissions (<em>manage_pages</em>, <em>publish_pages</em>)</a></li><li><a href="#twitter-integration">Twitter Integration</a><ul class="toc-headings"><li><a href="#creating-twitter-app">Creating Twitter app.</a></li><li><a href="#erxes-twitter-integration-settings">Erxes twitter integration settings.</a></li></ul></li><li><a href="#gmail-integration">Gmail Integration</a></li><li><a href="#aws-s3-integration">AWS S3 Integration</a></li><li><a href="#aws-ses-integration">AWS SES Integration</a><ul class="toc-headings"><li><a href="#configure-amazon-ses-and-amazon-sns-to-track-each-email-responses">Configure Amazon SES and Amazon SNS to track each email responses.</a></li><li><a href="#to-find-your-region">To find your Region.</a></li><li><a href="#to-determine-if-your-account-is-in-the-sandbox">To determine if your account is in the sandbox.</a></li><li><a href="#paste-amazon-ses-access-keys-to-erxes-aws-ses-engage">Paste Amazon-Ses Access Keys to Erxes AWS-SES engage.</a></li><li><a href="#test-configuration">Test configuration.</a></li></ul></li><li><a href="#nylas-integration">Nylas Integration</a><ul class="toc-headings"><li><a href="#gmail">Gmail</a></li><li><a href="#yahoo">Yahoo</a></li><li><a href="#outlook">Outlook</a></li></ul></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div></article></div><div class="docLastUpdate"><em>Last updated on 3/9/2020 by Munkh-Orgil</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/administrator/file-upload"><span class="arrow-prev">← </span><span>File Upload</span></a><a class="docs-next button" href="/administrator/migration"><span>Migration</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#facebook-integration">Facebook Integration</a></li><li><a href="#creating-facebook-app">Creating facebook app.</a></li><li><a href="#getting-facebook-permissions-manage_pages-publish_pages">Getting facebook permissions (<em>manage_pages</em>, <em>publish_pages</em>)</a></li><li><a href="#twitter-integration">Twitter Integration</a><ul class="toc-headings"><li><a href="#creating-twitter-app">Creating Twitter app.</a></li><li><a href="#erxes-twitter-integration-settings">Erxes twitter integration settings.</a></li></ul></li><li><a href="#gmail-integration">Gmail Integration</a><ul class="toc-headings"><li><a href="#create-a-google-cloud-project">Create a Google Cloud Project</a></li><li><a href="#enable-gmail-api">Enable Gmail API</a></li><li><a href="#create-consent-screen">Create consent screen</a></li><li><a href="#create-an-oauth-client">Create an OAuth client</a></li><li><a href="#add-authorization-callback">Add authorization callback</a></li><li><a href="#enable-pubsub-api">Enable PubSub API</a></li><li><a href="#create-a-service-account">Create a service account</a></li><li><a href="#shell-env">Shell env</a></li><li><a href="#config-env">Config env</a></li></ul></li><li><a href="#aws-s3-integration">AWS S3 Integration</a></li><li><a href="#aws-ses-integration">AWS SES Integration</a><ul class="toc-headings"><li><a href="#configure-amazon-ses-and-amazon-sns-to-track-each-email-responses">Configure Amazon SES and Amazon SNS to track each email responses.</a></li><li><a href="#to-find-your-region">To find your Region.</a></li><li><a href="#to-determine-if-your-account-is-in-the-sandbox">To determine if your account is in the sandbox.</a></li><li><a href="#paste-amazon-ses-access-keys-to-erxes-aws-ses-engage">Paste Amazon-Ses Access Keys to Erxes AWS-SES engage.</a></li><li><a href="#test-configuration">Test configuration.</a></li></ul></li><li><a href="#nylas-integration">Nylas Integration</a><ul class="toc-headings"><li><a href="#gmail">Gmail</a></li><li><a href="#yahoo">Yahoo</a></li><li><a href="#outlook">Outlook</a></li></ul></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
