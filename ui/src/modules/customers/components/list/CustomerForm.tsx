@@ -30,7 +30,6 @@ import {
   genderChoices,
   isValidPhone,
   leadStatusChoices,
-  lifecycleStateChoices
 } from '../../utils';
 
 type Props = {
@@ -87,7 +86,6 @@ class CustomerForm extends React.Component<Props, State> {
       position: finalValues.position,
       department: finalValues.department,
       leadStatus: finalValues.leadStatus,
-      lifecycleState: finalValues.lifecycleState,
       description: finalValues.description,
       code: finalValues.code,
 
@@ -305,14 +303,6 @@ class CustomerForm extends React.Component<Props, State> {
                 ...formProps,
                 name: 'department',
                 defaultValue: customer.department || ''
-              })}
-
-              {this.renderFormGroup('Lifecycle State', {
-                ...formProps,
-                name: 'lifecycleState',
-                componentClass: 'select',
-                defaultValue: customer.lifecycleState || '',
-                options: lifecycleStateChoices(__)
               })}
 
               {this.renderFormGroup('Code', {

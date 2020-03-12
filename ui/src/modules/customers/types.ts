@@ -40,7 +40,6 @@ export interface ICustomerDoc {
   };
   department?: string;
   leadStatus?: string;
-  lifecycleState?: string;
   hasAuthority?: string;
   description?: string;
   doNotDisturb?: string;
@@ -100,6 +99,19 @@ export type MergeMutationResponse = {
   ) => Promise<any>;
 };
 
+export type ChangeStateMutationVariables = {
+  _id: string;
+  value: string;
+};
+
+export type ChangeStateMutationResponse = {
+  customersChangeState: (
+    doc: {
+      variables: ChangeStateMutationVariables;
+    }
+  ) => Promise<any>;
+};
+
 // query types
 
 export type ListQueryVariables = {
@@ -115,7 +127,6 @@ export type ListQueryVariables = {
   startDate?: string;
   endDate?: string;
   leadStatus?: string;
-  lifecycleState?: string;
   sortField?: string;
   sortDirection?: number;
 };

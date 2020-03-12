@@ -10,8 +10,6 @@ const commonFields = `
   $ownerId: String,
   $phones: [String],
   $primaryPhone: String,
-  $leadStatus: String,
-  $lifecycleState: String,
   $businessType: String,
   $description: String,
   $doNotDisturb: String,
@@ -32,8 +30,6 @@ const commonVariables = `
   ownerId: $ownerId,
   phones: $phones,
   primaryPhone: $primaryPhone,
-  leadStatus: $leadStatus,
-  lifecycleState: $lifecycleState,
   businessType: $businessType,
   description: $description,
   doNotDisturb: $doNotDisturb,
@@ -65,8 +61,6 @@ const companiesEdit = `
       ownerId
       phones
       primaryPhone
-      leadStatus
-      lifecycleState
       businessType
       description
       doNotDisturb

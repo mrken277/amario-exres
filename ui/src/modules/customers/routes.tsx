@@ -24,7 +24,7 @@ const detail = ({ match }) => {
 const list = ({ match, location }) => {
   const queryParams = queryString.parse(location.search);
   const type = match.params.type;
-  const finalType = type !== 'visitors' ? '' : type;
+  const finalType = type !== 'lead' ? '' : type;
 
   return <CustomersList queryParams={queryParams} type={finalType} />;
 };

@@ -1,5 +1,6 @@
 import Button from 'modules/common/components/Button';
 import DropdownToggle from 'modules/common/components/DropdownToggle';
+import { ControlLabel, FormControl, FormGroup } from 'modules/common/components/form';
 import Icon from 'modules/common/components/Icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { __, Alert, confirm } from 'modules/common/utils';
@@ -24,6 +25,7 @@ type Props = {
   remove: () => void;
   merge: (doc: { ids: string[]; data: ICustomer | ICompany }) => void;
   search: (value: string, callback: (objects: any[]) => void) => void;
+  changeState?: (value: string) => void;
   isSmall?: boolean;
 };
 class ActionSection extends React.Component<Props> {
@@ -101,6 +103,46 @@ class ActionSection extends React.Component<Props> {
     );
   }
 
+  onChangeState = (e) => {
+    const { changeState } = this.props;
+
+    if (changeState) {
+      changeState(e.target.value);
+    }
+  }
+
+  renderChangeStateForm() {
+    const { changeState } = this.props;
+    
+    if (!changeState) {
+      return null;
+    }
+
+    const options = [
+      { value: 'visitor', label: 'Visitor' },
+      { value: 'lead', label: 'Lead' },
+      { value: 'customer', label: 'Customer' },
+    ];
+
+    const modalContent = () => {
+      return (
+        <FormGroup>
+          <ControlLabel>State</ControlLabel>
+          <FormControl componentClass="select" options={options} onChange={this.onChangeState} />
+        </FormGroup>
+      );
+    };
+
+    return (
+      <ModalTrigger
+        title={__('Change state')}
+        trigger={<a href="#changeState">{__('Change state')}</a>}
+        size="lg"
+        content={modalContent}
+      />
+    );
+  }
+
   render() {
     const { coc, cocType, merge, remove, search } = this.props;
 
@@ -158,6 +200,9 @@ class ActionSection extends React.Component<Props> {
               <a href="#delete" onClick={onClick}>
                 {__('Delete')}
               </a>
+            </li>
+            <li>
+              {this.renderChangeStateForm()}
             </li>
           </Dropdown.Menu>
         </Dropdown>

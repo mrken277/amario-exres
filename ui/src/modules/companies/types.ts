@@ -33,8 +33,6 @@ export interface ICompanyDoc {
   primaryPhone?: string;
   phones?: string[];
 
-  leadStatus?: string;
-  lifecycleState?: string;
   businessType?: string;
   description?: string;
   employees?: number;
@@ -104,8 +102,6 @@ export type ListQueryVariables = {
   brand?: string;
   ids?: string[];
   searchValue?: string;
-  leadStatus?: string;
-  lifecycleState?: string;
   sortField?: string;
   sortDirection?: number;
 };

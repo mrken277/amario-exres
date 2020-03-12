@@ -6,8 +6,6 @@ export const COMPANY_INFO = {
   plan: 'Plan',
   primaryEmail: 'Primary Email',
   primaryPhone: 'Primary Phone',
-  leadStatus: 'Pop Ups Status',
-  lifecycleState: 'Lifecycle State',
   businessType: 'Business Type',
   description: 'Description',
   doNotDisturb: 'Do not disturb',
@@ -20,8 +18,6 @@ export const COMPANY_INFO = {
     { field: 'plan', label: 'Plan' },
     { field: 'primaryEmail', label: 'Primary Email' },
     { field: 'primaryPhone', label: 'Primary Phone' },
-    { field: 'leadStatus', label: 'Pop Ups Status' },
-    { field: 'lifecycleState', label: 'Lifecycle State' },
     { field: 'businessType', label: 'Business Type' },
     { field: 'description', label: 'Description' },
     { field: 'doNotDisturb', label: 'Do not disturb' }

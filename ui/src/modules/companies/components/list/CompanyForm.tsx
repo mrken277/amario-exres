@@ -17,8 +17,6 @@ import { __ } from 'modules/common/utils';
 import SelectCompanies from 'modules/companies/containers/SelectCompanies';
 import {
   isValidPhone,
-  leadStatusChoices,
-  lifecycleStateChoices
 } from 'modules/customers/utils';
 import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMembers';
 import React from 'react';
@@ -89,8 +87,6 @@ class CompanyForm extends React.Component<Props, State> {
       ...this.state,
       size: Number(finalValues.size),
       industry: finalValues.industry,
-      leadStatus: finalValues.leadStatus,
-      lifecycleState: finalValues.lifecycleState,
       businessType: finalValues.businessType,
       description: finalValues.description,
       code: finalValues.code,
@@ -218,14 +214,6 @@ class CompanyForm extends React.Component<Props, State> {
                 />
               </FormGroup>
 
-              {this.renderFormGroup('Pop Ups Status', {
-                ...formProps,
-                name: 'leadStatus',
-                componentClass: 'select',
-                defaultValue: company.leadStatus || '',
-                options: leadStatusChoices(__)
-              })}
-
               <FormGroup>
                 <ControlLabel>Description</ControlLabel>
                 <FormControl
@@ -280,13 +268,6 @@ class CompanyForm extends React.Component<Props, State> {
                 />
               </FormGroup>
 
-              {this.renderFormGroup('Lifecycle State', {
-                ...formProps,
-                name: 'lifecycleState',
-                componentClass: 'select',
-                defaultValue: company.lifecycleState || '',
-                options: lifecycleStateChoices(__)
-              })}
               {this.renderFormGroup('Do not disturb', {
                 componentClass: 'radio',
                 options: [
