@@ -1,4 +1,4 @@
-import { colors, dimensions } from 'modules/common/styles';
+import { colors, dimensions, typography } from 'modules/common/styles';
 import { SidebarList } from 'modules/layout/styles';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
@@ -79,13 +79,21 @@ const Contact = styled.div`
 const Name = styled.div`
   flex: 1;
   word-break: break-word;
-  margin-bottom: 10px;
 
   p {
     color: ${colors.colorCoreLightGray};
     margin: 0;
     font-size: 12px;
   }
+`;
+
+const CustomerState = styled.div`
+  text-transform: capitalize;
+  text-align: center;
+  font-size: ${typography.fontSizeUppercase}px;
+  line-height: 20px;
+  font-weight: 500;
+  color: ${colors.colorCoreGray};
 `;
 
 const TabContent = styled.div`
@@ -121,5 +129,6 @@ export {
   Name,
   TabContent,
   ClickableRow,
-  BooleanStatus
+  BooleanStatus,
+  CustomerState
 };

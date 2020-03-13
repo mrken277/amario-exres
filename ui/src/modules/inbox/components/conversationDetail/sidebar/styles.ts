@@ -114,10 +114,6 @@ const ActivityLogContent = styled(ActivityContent)`
 
 const BasicInfo = styled.div`
   margin-top: 10px;
-
-  .icon-edit {
-    display: none;
-  }
 `;
 
 const TabContent = styled.div`

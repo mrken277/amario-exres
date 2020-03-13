@@ -7,10 +7,11 @@ import { renderFullName } from 'modules/common/utils';
 import CustomerForm from 'modules/customers/containers/CustomerForm';
 import { ICustomer } from 'modules/customers/types';
 import React from 'react';
-import { Name } from '../../styles';
+import { CustomerState, Name } from '../../styles';
 
 type Props = {
   customer: ICustomer;
+  hideForm?: boolean;
 };
 
 class InfoSection extends React.Component<Props> {
@@ -49,23 +50,34 @@ class InfoSection extends React.Component<Props> {
     return <p>{this.props.customer.position}</p>;
   }
 
-  renderStatus(isUser) {
-    return <div>{isUser ? 'User' : 'Visitor'}</div>;
+  renderEditForm = () => {
+    if (this.props.hideForm) {
+      return null;
+    }
+
+    const customerForm = props => {
+      return <CustomerForm {...props} size="lg" customer={this.props.customer} />;
+    };
+
+    return (
+      <ModalTrigger
+        title="Edit basic info"
+        trigger={<Icon icon="pen-1" />}
+        size="lg"
+        content={customerForm}
+      />
+    )
   }
 
   render() {
     const { customer } = this.props;
-    const { links = {}, isOnline, isUser } = customer;
-
-    const customerForm = props => {
-      return <CustomerForm {...props} size="lg" customer={customer} />;
-    };
+    const { links = {}, isOnline, state } = customer;
 
     return (
       <InfoWrapper>
         <AvatarWrapper isOnline={isOnline}>
           <NameCard.Avatar customer={customer} size={50} />
-          {this.renderStatus(isUser)}
+          <CustomerState>{state}</CustomerState>
         </AvatarWrapper>
 
         <Name>
@@ -73,13 +85,7 @@ class InfoSection extends React.Component<Props> {
           {this.renderPosition()}
           {this.renderLinks(links)}
         </Name>
-
-        <ModalTrigger
-          title="Edit basic info"
-          trigger={<Icon icon="edit" />}
-          size="lg"
-          content={customerForm}
-        />
+        {this.renderEditForm()}
       </InfoWrapper>
     );
   }

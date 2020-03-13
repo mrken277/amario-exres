@@ -63,7 +63,7 @@ class InfoSection extends React.Component<Props> {
 
         <ModalTrigger
           title="Edit basic info"
-          trigger={<Icon icon="edit" />}
+          trigger={<Icon icon="pen-1" />}
           size="lg"
           content={content}
         />

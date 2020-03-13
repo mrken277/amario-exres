@@ -24,7 +24,7 @@ const RoundedBackground = styledTS<{ type: string; size?: number }>(
     (props.type === 'facebook-messenger' && colors.socialFacebookMessenger) ||
     (props.type === 'gmail' && colors.socialGmail) ||
     (props.type.includes('nylas') && colors.socialGmail) ||
-    colors.colorCoreBlue};
+    colors.colorCoreRed};
 
   i {
     color: ${colors.colorWhite};

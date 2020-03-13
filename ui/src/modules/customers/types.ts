@@ -27,7 +27,7 @@ export interface ICustomerDoc {
   primaryEmail?: string;
   emails?: string[];
   avatar?: string;
-  isUser?: boolean;
+  state?: string;
   ownerId?: string;
   position?: string;
   location?: {

@@ -122,6 +122,7 @@ const Row = styled.div`
 const AvatarWrapper = styledTS<{ isOnline?: boolean, hideIndicator?: boolean }>(styled.div)`
   margin-right: ${dimensions.unitSpacing}px;
   position: relative;
+  max-height: 50px;
 
   a {
     float: none;
@@ -133,20 +134,15 @@ const AvatarWrapper = styledTS<{ isOnline?: boolean, hideIndicator?: boolean }>(
     right: -3px;
     top: 32px;
     background: ${props =>
-    props.isOnline ? colors.colorCoreGreen : colors.colorCoreLightGray};
+    props.isOnline ? colors.colorCoreGreen : colors.colorShadowGray};
     width: 14px;
     height: 14px;
     border-radius: ${dimensions.unitSpacing}px;
     font-size: ${dimensions.unitSpacing}px;
     border: 1px solid ${colors.colorWhite};
-    z-index: 2;
+    z-index: 1;
     display: ${props => props.hideIndicator && 'none'};
   }
-
-  > div {
-    text-align: center;
-    font-size: ${typography.fontSizeUppercase}px;
-  } 
 `;
 
 const ActivityIcon = styledTS<{ color?: string }>(styled.span)`

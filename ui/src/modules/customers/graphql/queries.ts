@@ -15,7 +15,7 @@ const basicFields = `
   primaryPhone
   phones
 
-  isUser
+  state
   visitorContactInfo
 
   modifiedAt
