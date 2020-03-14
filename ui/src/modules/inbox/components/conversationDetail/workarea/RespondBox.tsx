@@ -118,7 +118,7 @@ class RespondBox extends React.Component<Props, State> {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.conversation.customer !== nextProps.conversation.customer) {
       this.setState({
         isInactive: !this.checkIsActive(nextProps.conversation)
@@ -153,9 +153,7 @@ class RespondBox extends React.Component<Props, State> {
   checkIsActive(conversation: IConversation) {
     return (
       conversation.integration.kind !== 'messenger' ||
-      (conversation.customer &&
-        conversation.customer.messengerData &&
-        conversation.customer.messengerData.isActive)
+      (conversation.customer && conversation.customer.isOnline)
     );
   }
 

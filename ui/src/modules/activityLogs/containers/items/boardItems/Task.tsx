@@ -1,10 +1,7 @@
-import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import Task from 'modules/activityLogs/components/items/boardItems/Task';
-import ErrorMsg from 'modules/common/components/ErrorMsg';
-import Spinner from 'modules/common/components/Spinner';
-import { Alert, confirm } from 'modules/common/utils';
-import checkError from 'modules/common/utils/checkError';
+import { Alert, confirm, withProps } from 'modules/common/utils';
 import { mutations, queries } from 'modules/tasks/graphql';
 import {
   EditMutationResponse,
@@ -12,93 +9,87 @@ import {
   TaskDetailQueryResponse
 } from 'modules/tasks/types';
 import React from 'react';
+import { graphql } from 'react-apollo';
 
 type Props = {
   taskId: string;
 };
 
-function FormContainer(props: Props) {
-  const { taskId } = props;
-  const {
-    data: taskDetailsQueryData,
-    error: taskDetailsQueryError,
-    loading: taskDetailsQueryLoading
-  } = useQuery<TaskDetailQueryResponse>(
-    gql(queries.taskDetail), {
-    variables: {
-      _id: taskId
-    }
-  });
+type FinalProps = {
+  taskDetailsQuery: TaskDetailQueryResponse;
+  editMutation: EditMutationResponse;
+} & Props &
+  RemoveMutationResponse;
 
-  const [
-    editMutation,
-    { data: editMutationData,
-      error: editMutationError }
-  ] = useMutation<EditMutationResponse>(
-    gql(mutations.tasksEdit)
-  );
+class FormContainer extends React.Component<FinalProps> {
+  render() {
+    const { taskDetailsQuery, editMutation, removeMutation } = this.props;
 
-  const [
-    removeMutation,
-    { data: removeMutationData,
-      error: removeMutationError }
-  ] = useMutation<RemoveMutationResponse>(
-    gql(mutations.tasksRemove), {
-    refetchQueries: ['activityLogs']
-  });
-
-  if (taskDetailsQueryLoading) {
-    return <Spinner objective={true} />;
-  }
-
-  if (taskDetailsQueryError) {
-    const error = checkError([taskDetailsQueryError]);
-    return <ErrorMsg>{error.message}</ErrorMsg>;
-  };
-
-  const task = taskDetailsQueryData && taskDetailsQueryData.taskDetail;
-
-  if (!task) {
-    return <strong>You do not have permission to view this task</strong>;
-  }
-
-  const save = (variables, callback) => {
-    editMutation({ variables })
-    if (editMutationData) {
-      Alert.success('You successfully updated a task.');
-
-      if (callback) {
-        callback();
-      }
+    if (taskDetailsQuery.loading) {
+      return null;
     }
 
-    if (editMutationError) {
-      Alert.error(editMutationError.message);
+    const task = taskDetailsQuery.taskDetail;
+
+    if (!task) {
+      return <strong>You do not have permission to view this task</strong>;
     }
-  };
 
-  const remove = () => {
-    confirm().then(() => {
-      removeMutation({
-        variables: { _id: taskId }
-      })
+    const save = (variables, callback) => {
+      editMutation({ variables })
+        .then(() => {
+          Alert.success('You successfully updated a task.');
 
-      if (removeMutationData) {
-        Alert.success('You successfully deleted a task.');
-      }
+          if (callback) {
+            callback();
+          }
+        })
+        .catch(error => {
+          Alert.error(error.message);
+        });
+    };
 
-      if (removeMutationError) {
-        Alert.error(removeMutationError.message);
-      }
-    });
+    const remove = (taskId: string) => {
+      confirm().then(() =>
+        removeMutation({ variables: { _id: taskId } })
+          .then(() => {
+            Alert.success('You successfully deleted a task.');
+          })
+          .catch(error => {
+            Alert.error(error.message);
+          })
+      );
+    };
+
+    const updatedProps = {
+      ...this.props,
+      task,
+      save,
+      remove
+    };
+
+    return <Task {...updatedProps} />;
   }
-  const updatedProps = {
-    ...props,
-    task,
-    save,
-    remove
-  };
-
-  return <Task {...updatedProps} />;
 }
-export default FormContainer;
+
+export default withProps<Props>(
+  compose(
+    graphql<Props, TaskDetailQueryResponse>(gql(queries.taskDetail), {
+      name: 'taskDetailsQuery',
+      options: ({ taskId }) => ({
+        variables: {
+          _id: taskId
+        }
+      })
+    }),
+    graphql<Props, EditMutationResponse>(gql(mutations.tasksEdit), {
+      name: 'editMutation'
+    }),
+    graphql<Props, RemoveMutationResponse>(gql(mutations.tasksRemove), {
+      name: 'removeMutation',
+      options: () => ({
+        refetchQueries: ['activityLogs']
+      })
+    })
+  )(FormContainer)
+);

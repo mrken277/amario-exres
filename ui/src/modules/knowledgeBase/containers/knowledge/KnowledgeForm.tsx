@@ -1,10 +1,11 @@
-import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import ErrorMsg from 'modules/common/components/ErrorMsg';
+import * as compose from 'lodash.flowright';
 import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
 import { queries } from 'modules/settings/brands/graphql';
 import React from 'react';
+import { graphql } from 'react-apollo';
+import { withProps } from '../../../common/utils';
 import { BrandsQueryResponse } from '../../../settings/brands/types';
 import KnowledgeForm from '../../components/knowledge/KnowledgeForm';
 import { ITopic } from '../../types';
@@ -17,34 +18,30 @@ type Props = {
 
 type FinalProps = { getBrandListQuery: BrandsQueryResponse } & Props;
 
-function TopicAddFormContainer(props: FinalProps) {
-  const { topic } = props;
-
-  const {
-    data: getBrandListData,
-    error: getBrandListError,
-    loading: getBrandListLoading
-  } = useQuery<BrandsQueryResponse>(
-    gql(queries.brands), {
-    fetchPolicy: 'network-only'
-  }
-  );
-
-  if (getBrandListLoading) {
+const TopicAddFormContainer = ({
+  topic,
+  getBrandListQuery,
+  ...props
+}: FinalProps) => {
+  if (getBrandListQuery.loading) {
     return <Spinner objective={true} />;
-  }
-
-  if (getBrandListError) {
-    return <ErrorMsg>{getBrandListError.message}</ErrorMsg>;
   }
 
   const updatedProps = {
     ...props,
     topic,
-    brands: getBrandListData ? getBrandListData.brands : []
+    brands: getBrandListQuery.brands || []
   };
-
   return <KnowledgeForm {...updatedProps} />;
-}
+};
 
-export default TopicAddFormContainer;
+export default withProps<Props>(
+  compose(
+    graphql<Props, BrandsQueryResponse>(gql(queries.brands), {
+      name: 'getBrandListQuery',
+      options: () => ({
+        fetchPolicy: 'network-only'
+      })
+    })
+  )(TopicAddFormContainer)
+);

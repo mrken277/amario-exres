@@ -1,13 +1,14 @@
-import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { queries } from 'modules/boards/graphql';
 import { StagesQueryResponse } from 'modules/boards/types';
 import EmptyState from 'modules/common/components/EmptyState';
-import ErrorMsg from 'modules/common/components/ErrorMsg';
 import Spinner from 'modules/common/components/Spinner';
+import { withProps } from 'modules/common/utils';
 import List from 'modules/deals/components/conversion/list/List';
 import Table from 'modules/deals/components/conversion/table/Table';
 import * as React from 'react';
+import { graphql } from 'react-apollo';
 
 type Props = {
   pipelineId: string;
@@ -15,57 +16,60 @@ type Props = {
   type: string;
 };
 
-function StagesContainer(props: Props) {
-  const { type, pipelineId, queryParams } = props;
+type FinalProps = {
+  stagesQuery: StagesQueryResponse;
+} & Props;
 
-  const {
-    loading: stagesQueryLoading,
-    error: stagesQueryError,
-    data: stagesQueryData,
-    refetch
-  } = useQuery<StagesQueryResponse>(gql(queries.stages), {
-    skip: !pipelineId,
-    variables: {
-      isNotLost: true,
-      pipelineId,
-      search: queryParams.search,
-      customerIds: queryParams.customerIds,
-      companyIds: queryParams.companyIds,
-      assignedUserIds: queryParams.assignedUserIds,
-      productIds: queryParams.productIds,
-      closeDateType: queryParams.closeDateType
+class DealStagesContainer extends React.Component<FinalProps> {
+  render() {
+    const { stagesQuery, type, pipelineId } = this.props;
+
+    if (!stagesQuery || !stagesQuery.stages) {
+      return (
+        <EmptyState
+          image="/images/actions/18.svg"
+          text="Oh boy, looks like you need to get a head start on your board"
+          size="small"
+        />
+      );
     }
-  });
 
-  if (!stagesQueryData || !stagesQueryData.stages) {
-    return (
-      <EmptyState
-        image="/images/actions/18.svg"
-        text="Oh boy, looks like you need to get a head start on your board"
-        size="small"
-      />
-    );
+    if (localStorage.getItem('cacheInvalidated') === 'true') {
+      stagesQuery.refetch({ pipelineId });
+    }
+
+    if (stagesQuery.loading) {
+      return <Spinner objective={true} />;
+    }
+
+    const stages = stagesQuery.stages || [];
+
+    if (type === 'more') {
+      return <Table {...this.props} stages={stages} />;
+    }
+
+    return <List stages={stages} />;
   }
-
-  if (localStorage.getItem('cacheInvalidated') === 'true') {
-    refetch({ pipelineId });
-  }
-
-  if (stagesQueryError) {
-    return <ErrorMsg>{stagesQueryError.message}</ErrorMsg>;
-  }
-
-  if (stagesQueryLoading) {
-    return <Spinner objective={true} />;
-  }
-
-  const stages = stagesQueryData.stages || [];
-
-  if (type === 'more') {
-    return <Table {...props} stages={stages} />;
-  }
-
-  return <List stages={stages} />;
 }
 
-export default StagesContainer;
+export default withProps<Props>(
+  compose(
+    graphql<Props, StagesQueryResponse>(gql(queries.stages), {
+      name: 'stagesQuery',
+      skip: ({ pipelineId }) => !pipelineId,
+      options: ({ pipelineId, queryParams }) => ({
+        variables: {
+          isNotLost: true,
+          pipelineId,
+          search: queryParams.search,
+          customerIds: queryParams.customerIds,
+          companyIds: queryParams.companyIds,
+          assignedUserIds: queryParams.assignedUserIds,
+          productIds: queryParams.productIds,
+          closeDateType: queryParams.closeDateType,
+          userIds: queryParams.userIds
+        }
+      })
+    })
+  )(DealStagesContainer)
+);

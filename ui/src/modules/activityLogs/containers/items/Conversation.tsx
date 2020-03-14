@@ -1,86 +1,92 @@
-import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import Conversation from 'modules/activityLogs/components/items/Conversation';
 import { IActivityLog } from 'modules/activityLogs/types';
-import ErrorMsg from 'modules/common/components/ErrorMsg';
 import Spinner from 'modules/common/components/Spinner';
-import checkError from 'modules/common/utils/checkError';
+import { withProps } from 'modules/common/utils';
 import { queries } from 'modules/inbox/graphql';
 import {
   ConversationDetailQueryResponse,
   FacebookCommentsQueryResponse,
-  IConversation,
   MessagesQueryResponse
 } from 'modules/inbox/types';
 import React from 'react';
+import { graphql } from 'react-apollo';
 
 type Props = {
   activity: IActivityLog;
   conversationId: string;
 };
 
-function ConversationContainer(props: Props) {
-  const { conversationId, activity } = props;
+type FinalProps = {
+  messagesQuery: MessagesQueryResponse;
+  commentsQuery: FacebookCommentsQueryResponse;
+  conversationDetailQuery: ConversationDetailQueryResponse;
+} & Props;
 
-  const {
-    loading: conversationDetailQueryLoading,
-    error: conversationDetailQueryError,
-    data: conversationDetailQueryData
-  } = useQuery<ConversationDetailQueryResponse>(
-    gql(queries.conversationDetail), {
-    variables: {
-      _id: conversationId
+class ConversationContainer extends React.Component<FinalProps> {
+  render() {
+    const {
+      conversationDetailQuery,
+      messagesQuery,
+      commentsQuery
+    } = this.props;
+
+    if (conversationDetailQuery.loading || messagesQuery.loading) {
+      return <Spinner />;
     }
-  });
 
-  const {
-    loading: messagesQueryLoading,
-    error: messagesQueryError,
-    data: messagesQueryData
-  } = useQuery<MessagesQueryResponse>(
-    gql(queries.conversationMessages), {
-    variables: {
-      conversationId,
-      limit: 10,
-      getFirst: true
-    }
-  });
+    const conversation = conversationDetailQuery.conversationDetail;
+    const messages = messagesQuery.conversationMessages || {};
+    const comments =
+      (commentsQuery && commentsQuery.converstationFacebookComments) || [];
 
-  const {
-    loading: commentsQueryLoading,
-    error: commentsQueryError,
-    data: commentsQueryData
-  } = useQuery<FacebookCommentsQueryResponse>(
-    gql(queries.converstationFacebookComments), {
-    variables: {
-      postId: conversationId,
-      senderId: activity.contentId
-    }
-  });
+    const updatedProps = {
+      ...this.props,
+      conversation,
+      messages,
+      comments
+    };
 
-  if (conversationDetailQueryError || messagesQueryError || commentsQueryError) {
-    const error = checkError([conversationDetailQueryError, messagesQueryError || commentsQueryError]);
-
-    return <ErrorMsg>{error.message}</ErrorMsg>;
+    return <Conversation {...updatedProps} />;
   }
-
-  if (conversationDetailQueryLoading || messagesQueryLoading || commentsQueryLoading) {
-    return <Spinner objective={true} />;
-  }
-
-  const conversation = conversationDetailQueryData ? conversationDetailQueryData.conversationDetail : {} as IConversation;
-  const messages = (messagesQueryData && messagesQueryData.conversationMessages) || [];
-  const comments =
-    (commentsQueryData && commentsQueryData.converstationFacebookComments) || [];
-
-  const updatedProps = {
-    ...props,
-    conversation,
-    messages,
-    comments
-  };
-
-  return <Conversation {...updatedProps} />;
 }
-export default ConversationContainer;
 
+export default withProps<Props>(
+  compose(
+    graphql<Props, ConversationDetailQueryResponse>(
+      gql(queries.conversationDetail),
+      {
+        name: 'conversationDetailQuery',
+        options: ({ conversationId }) => ({
+          variables: {
+            _id: conversationId
+          }
+        })
+      }
+    ),
+    graphql<Props, MessagesQueryResponse>(gql(queries.conversationMessages), {
+      name: 'messagesQuery',
+      options: ({ conversationId }) => ({
+        variables: {
+          conversationId,
+          limit: 10,
+          getFirst: true
+        }
+      })
+    }),
+    graphql<Props, FacebookCommentsQueryResponse>(
+      gql(queries.converstationFacebookComments),
+      {
+        name: 'commentsQuery',
+        skip: ({ activity }) => activity.contentType !== 'comment',
+        options: ({ conversationId, activity }) => ({
+          variables: {
+            postId: conversationId,
+            senderId: activity.contentId
+          }
+        })
+      }
+    )
+  )(ConversationContainer)
+);

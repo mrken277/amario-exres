@@ -1,77 +1,61 @@
-import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import { IStage } from 'modules/boards/types';
 import EmptyState from 'modules/common/components/EmptyState';
-import ErrorMsg from 'modules/common/components/ErrorMsg';
 import Spinner from 'modules/common/components/Spinner';
+import { withProps } from 'modules/common/utils';
 import Stage from 'modules/deals/components/conversion/table/Stage';
 import { queries } from 'modules/deals/graphql';
 import { DealsQueryResponse, IDeal } from 'modules/deals/types';
-import React, { useState } from 'react';
+import { IQueryParams } from 'modules/insights/types';
+import * as React from 'react';
+import { graphql } from 'react-apollo';
 
 type Props = {
   stage: IStage;
-  queryParams: any;
+  queryParams: IQueryParams;
   pipelineId: string;
 };
+
+type FinalStageProps = {
+  dealsQuery: DealsQueryResponse;
+} & Props;
 
 type State = {
   loadingDeals: boolean;
 };
 
-function StageContainer(props: Props, state: State) {
-  const { stage, pipelineId, queryParams } = props;
-  const [loadingDeals, setLoadingDeals] = useState(false);
+class StageContainer extends React.PureComponent<FinalStageProps, State> {
+  constructor(props) {
+    super(props);
 
-  const {
-    loading: dealsQueryLoading,
-    data: dealsQueryData,
-    error: dealsQueryError,
-    refetch,
-    fetchMore
-  } = useQuery<DealsQueryResponse>(gql(queries.deals), {
-    variables: {
-      initialStageId: stage._id,
-      pipelineId,
-      ...getFilterParams(queryParams)
-    }
-  });
-
-  if (dealsQueryError) {
-    return <ErrorMsg>{dealsQueryError.message}</ErrorMsg>;
+    this.state = {
+      loadingDeals: false
+    };
   }
 
-  if (dealsQueryLoading) {
-    return <Spinner objective={true} />;
-  }
+  loadMore = () => {
+    const { stage, dealsQuery, queryParams } = this.props;
 
-  const deals = (dealsQueryData && dealsQueryData.deals) || [];
-
-  if (!deals) {
-    return <EmptyState text="Deals not found" icon="piggy-bank" />;
-  }
-
-  const hasMore = stage.initialDealsTotalCount > deals.length;
-
-  const loadMore = () => {
-    const loading = dealsQueryLoading;
+    const deals = dealsQuery.deals || [];
+    const loading = dealsQuery.loading || dealsQuery.loading;
+    const hasMore = stage.initialDealsTotalCount > deals.length;
 
     if (deals.length === stage.initialDealsTotalCount) {
       return;
     }
 
     if (!loading && hasMore) {
-      setLoadingDeals(true);
+      this.setState({ loadingDeals: true });
 
-      fetchMore({
+      dealsQuery.fetchMore({
         variables: {
           initialStageId: stage._id,
           skip: deals.length,
-          pipelineId,
           ...getFilterParams(queryParams)
         },
-        updateQuery: (prev: DealsQueryResponse, { fetchMoreResult }) => {
-          setLoadingDeals(false);
+        updateQuery: (prev, { fetchMoreResult }) => {
+          this.setState({ loadingDeals: false });
 
           if (!fetchMoreResult) {
             return prev;
@@ -96,21 +80,38 @@ function StageContainer(props: Props, state: State) {
     }
   };
 
-  if (localStorage.getItem('cacheInvalidated') === 'true') {
-    localStorage.setItem('cacheInvalidated', 'false');
+  render() {
+    const { stage, dealsQuery } = this.props;
+    const { loadingDeals } = this.state;
 
-    refetch();
+    if (localStorage.getItem('cacheInvalidated') === 'true') {
+      localStorage.setItem('cacheInvalidated', 'false');
+
+      dealsQuery.refetch();
+    }
+
+    if (dealsQuery.loading) {
+      return <Spinner objective={true} />;
+    }
+
+    const deals = dealsQuery.deals;
+
+    if (!deals) {
+      return <EmptyState text="Deals not found" icon="piggy-bank" />;
+    }
+
+    const hasMore = stage.initialDealsTotalCount > deals.length;
+
+    return (
+      <Stage
+        hasMore={hasMore}
+        stage={stage}
+        deals={deals}
+        loadMore={this.loadMore}
+        loadingDeals={loadingDeals}
+      />
+    );
   }
-
-  return (
-    <Stage
-      hasMore={hasMore}
-      stage={stage}
-      deals={deals}
-      loadMore={loadMore}
-      loadingDeals={loadingDeals}
-    />
-  );
 }
 
 const getFilterParams = queryParams => {
@@ -125,8 +126,22 @@ const getFilterParams = queryParams => {
     assignedUserIds: queryParams.assignedUserIds,
     closeDateType: queryParams.closeDateType,
     productIds: queryParams.productIds,
-    labelIds: queryParams.labelIds
+    labelIds: queryParams.labelIds,
+    userIds: queryParams.userIds
   };
 };
 
-export default StageContainer;
+export default withProps<Props>(
+  compose(
+    graphql<Props, DealsQueryResponse>(gql(queries.deals), {
+      name: 'dealsQuery',
+      options: ({ pipelineId, stage, queryParams }) => ({
+        variables: {
+          initialStageId: stage._id,
+          pipelineId,
+          ...getFilterParams(queryParams)
+        }
+      })
+    })
+  )(StageContainer)
+);

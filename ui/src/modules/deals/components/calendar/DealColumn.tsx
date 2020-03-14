@@ -13,7 +13,7 @@ import Deal from '../DealItem';
 type Props = {
   deals: IDeal[];
   date: IDateColumn;
-  dealTotalAmounts?: IDealTotalAmount;
+  dealTotalAmounts: IDealTotalAmount;
   onUpdate: (deal: IDeal) => void;
   onRemove: () => void;
   onLoadMore: (skip: number) => void;
@@ -97,23 +97,18 @@ class DealColumn extends React.Component<Props, {}> {
 
   renderAmount(currencies: [{ name: string; amount: number }]) {
     return currencies.map((total, index) => (
-      <label key={index}>
+      <>
         {total.amount.toLocaleString()}{' '}
         <span>
           {total.name}
           {index < currencies.length - 1 && ', '}
         </span>
-      </label>
+      </>
     ));
   }
 
   renderTotalAmount() {
     const { dealTotalAmounts } = this.props;
-
-    if (!dealTotalAmounts) {
-      return;
-    }
-
     const totalForType = dealTotalAmounts.totalForType || [];
 
     return (
@@ -130,7 +125,7 @@ class DealColumn extends React.Component<Props, {}> {
 
   renderFooter() {
     const { deals, dealTotalAmounts } = this.props;
-    const count = (dealTotalAmounts && dealTotalAmounts.dealCount) || 0;
+    const count = dealTotalAmounts.dealCount;
 
     if (deals.length === count || deals.length > count) {
       return null;

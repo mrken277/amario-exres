@@ -146,8 +146,8 @@ class KnowledgeForm extends React.Component<Props, State> {
             </Button>
           </CopyToClipboard>
         ) : (
-            <EmptyState icon="copy" text="No copyable code" size="small" />
-          )}
+          <EmptyState icon="copy" text="No copyable code" size="small" />
+        )}
       </MarkdownWrapper>
     );
   }
@@ -295,12 +295,12 @@ class KnowledgeForm extends React.Component<Props, State> {
             defaultFileList={
               backgroundImage
                 ? [
-                  {
-                    name: 'backgroundImage',
-                    url: backgroundImage,
-                    type: 'img'
-                  }
-                ]
+                    {
+                      name: 'backgroundImage',
+                      url: backgroundImage,
+                      type: 'img'
+                    }
+                  ]
                 : []
             }
             onChange={this.onBackgroundImageChange}

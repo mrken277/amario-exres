@@ -1,10 +1,7 @@
-import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import Chooser from 'modules/common/components/Chooser';
-import ErrorMsg from 'modules/common/components/ErrorMsg';
-import Spinner from 'modules/common/components/Spinner';
-import { Alert } from 'modules/common/utils';
-import checkError from 'modules/common/utils/checkError';
+import { Alert, withProps } from 'modules/common/utils';
 import ProductCategoryChooser from 'modules/deals/components/product/ProductCategoryChooser';
 import ProductForm from 'modules/settings/productService/containers/product/ProductForm';
 import {
@@ -12,7 +9,8 @@ import {
   queries as productQueries
 } from 'modules/settings/productService/graphql';
 import { ProductCategoriesQueryResponse } from 'modules/settings/productService/types';
-import React, { useState } from 'react';
+import React from 'react';
+import { graphql } from 'react-apollo';
 import { IProduct, IProductDoc } from '../../../settings/productService/types';
 import { ProductAddMutationResponse, ProductsQueryResponse } from '../../types';
 
@@ -24,117 +22,124 @@ type Props = {
   onSelect: (products: IProduct[]) => void;
 };
 
-function ProductChooserContainer(props: Props, state: any) {
-  const defaultPerPage = 20;
-  const { data, onSelect, categoryId, onChangeCategory } = props;
-  const [perPage, setPerPage] = useState(defaultPerPage);
+type FinalProps = {
+  productsQuery: ProductsQueryResponse;
+  productCategoriesQuery: ProductCategoriesQueryResponse;
+} & Props &
+  ProductAddMutationResponse;
 
-  const {
-    data: productsData,
-    refetch: productsRefetch,
-    error: productsError,
-    loading: productsLoading
-  } = useQuery<ProductsQueryResponse>(gql(productQueries.products), {
-    variables: {
-      perPage: defaultPerPage,
-      categoryId
-    }
-  });
+class ProductChooser extends React.Component<FinalProps, { perPage: number }> {
+  constructor(props) {
+    super(props);
 
-  const {
-    data: productsCategoriesData,
-    error: productsCategoriesError,
-    loading: productsCategoriesLoading
-  } = useQuery<ProductCategoriesQueryResponse>(
-    gql(productQueries.productCategories)
-  );
-
-  const [
-    productAdd,
-    { error: mutationError, data: mutationData }
-  ] = useMutation<ProductAddMutationResponse>(
-    gql(productMutations.productAdd),
-    {
-      refetchQueries: [
-        {
-          query: gql(productQueries.products),
-          variables: { perPage: defaultPerPage }
-        }
-      ]
-    }
-  );
-
-  if (productsError || productsCategoriesError) {
-    const error = checkError([productsError, productsCategoriesError]);
-
-    return <ErrorMsg>{error.message}</ErrorMsg>;
+    this.state = { perPage: 20 };
   }
 
-  if (productsLoading || productsCategoriesLoading) {
-    return <Spinner objective={true} />;
-  }
-
-  const search = (value: string, reload?: boolean) => {
+  search = (value: string, reload?: boolean) => {
     if (!reload) {
-      setPerPage(0);
+      this.setState({ perPage: 0 });
     }
 
-    // setPerPage(page => page + defaultPerPage);
-
-    // productsRefetch({ perPage, searchValue: value });
+    this.setState({ perPage: this.state.perPage + 20 }, () =>
+      this.props.productsQuery.refetch({
+        searchValue: value,
+        perPage: this.state.perPage
+      })
+    );
   };
 
   // add product
-  const addProduct = (doc: IProductDoc, callback: () => void) => {
-    productAdd({
-      variables: doc
-    });
+  addProduct = (doc: IProductDoc, callback: () => void) => {
+    this.props
+      .productAdd({
+        variables: doc
+      })
+      .then(() => {
+        this.props.productsQuery.refetch();
 
-    if (mutationError) {
-      Alert.error(mutationError.message);
-    }
+        Alert.success('You successfully added a product or service');
 
-    if (mutationData) {
-      productsRefetch();
-
-      Alert.success('You successfully added a product or service');
-
-      callback();
-    }
+        callback();
+      })
+      .catch(e => {
+        Alert.error(e.message);
+      });
   };
 
-  const renderProductCategoryChooser = () => {
+  renderProductCategoryChooser = () => {
+    const { productCategoriesQuery, onChangeCategory } = this.props;
+
     return (
       <ProductCategoryChooser
-        categories={
-          (productsCategoriesData &&
-            productsCategoriesData.productCategories) ||
-          []
-        }
+        categories={productCategoriesQuery.productCategories || []}
         onChangeCategory={onChangeCategory}
       />
     );
   };
 
-  const updatedProps = {
-    ...props,
-    data: { name: data.name, datas: data.products },
-    search,
-    title: 'Product',
-    renderName: (product: IProduct) => product.name,
-    renderForm: ({ closeModal }: { closeModal: () => void }) => (
-      <ProductForm closeModal={closeModal} />
-    ),
-    perPage,
-    add: addProduct,
-    clearState: () => search('', true),
-    datas: (productsData && productsData.products) || [],
-    onSelect
-  };
+  render() {
+    const { data, productsQuery, onSelect } = this.props;
 
-  return (
-    <Chooser {...updatedProps} renderFilter={renderProductCategoryChooser} />
-  );
+    const updatedProps = {
+      ...this.props,
+      data: { name: data.name, datas: data.products },
+      search: this.search,
+      title: 'Product',
+      renderName: (product: IProduct) => product.name,
+      renderForm: ({ closeModal }: { closeModal: () => void }) => (
+        <ProductForm closeModal={closeModal} />
+      ),
+      perPage: this.state.perPage,
+      add: this.addProduct,
+      clearState: () => this.search('', true),
+      datas: productsQuery.products || [],
+      onSelect
+    };
+
+    return (
+      <Chooser
+        {...updatedProps}
+        renderFilter={this.renderProductCategoryChooser}
+      />
+    );
+  }
 }
 
-export default ProductChooserContainer;
+export default withProps<Props>(
+  compose(
+    graphql<
+      { categoryId: string },
+      ProductsQueryResponse,
+      { perPage: number; categoryId: string }
+    >(gql(productQueries.products), {
+      name: 'productsQuery',
+      options: props => ({
+        variables: {
+          perPage: 20,
+          categoryId: props.categoryId
+        }
+      })
+    }),
+    graphql<{}, ProductCategoriesQueryResponse, {}>(
+      gql(productQueries.productCategories),
+      {
+        name: 'productCategoriesQuery'
+      }
+    ),
+    // mutations
+    graphql<{}, ProductAddMutationResponse, IProduct>(
+      gql(productMutations.productAdd),
+      {
+        name: 'productAdd',
+        options: () => ({
+          refetchQueries: [
+            {
+              query: gql(productQueries.products),
+              variables: { perPage: 20 }
+            }
+          ]
+        })
+      }
+    )
+  )(ProductChooser)
+);

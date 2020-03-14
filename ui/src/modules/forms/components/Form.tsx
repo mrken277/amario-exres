@@ -48,7 +48,7 @@ class Form extends React.Component<Props, State> {
     };
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props) {
     const { saveForm, type, isReadyToSave } = this.props;
     const { title, btnText, desc, fields } = this.state;
 

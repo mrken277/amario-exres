@@ -78,7 +78,7 @@ class DateFilter extends React.Component<Props & ApolloClientProps, State> {
     this.state = state;
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     const { queryParams } = nextProps;
 
     if (nextProps.countQuery) {

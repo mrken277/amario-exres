@@ -1,13 +1,10 @@
-import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import ErrorMsg from 'modules/common/components/ErrorMsg';
-import Spinner from 'modules/common/components/Spinner';
+import * as compose from 'lodash.flowright';
 import { IQueryParams } from 'modules/common/types';
-import { Alert } from 'modules/common/utils';
-import checkError from 'modules/common/utils/checkError';
+import { Alert, withProps } from 'modules/common/utils';
 import { generatePaginationParams } from 'modules/common/utils/router';
 import React from 'react';
-import { useMutation } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import NotificationList from '../components/NotificationList';
 import { mutations, queries } from '../graphql';
 import {
@@ -20,89 +17,93 @@ type Props = {
   queryParams: IQueryParams;
 };
 
-function NotificationListContainer(props: Props) {
-  const { queryParams } = props;
+type FinalProps = {
+  notificationsQuery: NotificationsQueryResponse;
+  notificationCountQuery: NotificationsCountQueryResponse;
+} & Props &
+  MarkAsReadMutationResponse;
 
-  const {
-    data: notificationsData,
-    error: notificationsError,
-    loading: notificationsLoading,
-    refetch: notificationsRefetch
-  } = useQuery<NotificationsQueryResponse, { requireRead: boolean; page?: number; perPage?: number; title?: string }>(
-    gql(queries.notifications), {
-    variables: {
-      ...generatePaginationParams(queryParams),
-      requireRead: queryParams.requireRead === 'true' ? true : false,
-      title: queryParams.title
-    }
-  });
+class NotificationListContainer extends React.Component<FinalProps> {
+  render() {
+    const {
+      notificationsQuery,
+      notificationCountQuery,
+      notificationsMarkAsReadMutation
+    } = this.props;
 
-  const {
-    data: notificationCountData,
-    error: notificationCountError,
-    loading: notificationCountLoading,
-    refetch: notificationsCountRefetch
-  } = useQuery<NotificationsCountQueryResponse>(
-    gql(queries.notificationCounts), {
-    variables: {
-      requireRead: queryParams.requireRead === 'true' ? true : false
-    }
-  });
-
-  const [notificationsMarkAsReadMutation,
-    {
-      data: markAsReadData,
-      error: markAsReadError,
-      loading: markAsReadLoading
-    }] = useMutation<MarkAsReadMutationResponse, { _ids?: string[] }>(
-      gql(mutations.markAsRead), {
-      refetchQueries: [
-        {
-          query: gql(queries.notifications),
-          variables: {
-            limit: 10,
-            requireRead: false
+    const markAsRead = (notificationIds?: string[]) => {
+      notificationsMarkAsReadMutation({
+        variables: { _ids: notificationIds }
+      })
+        .then(() => {
+          if (notificationsQuery.refetch) {
+            notificationsQuery.refetch();
+            notificationCountQuery.refetch();
           }
-        },
-        'notificationCounts'
-      ]
-    });
 
-  if (notificationCountError || notificationsError) {
-    const error = checkError([notificationCountError, notificationsError])
-    return <ErrorMsg>{error.message}</ErrorMsg>;
-  }
-
-  if (markAsReadLoading || notificationCountLoading) {
-    return <Spinner objective={true} />;
-  }
-
-  const markAsRead = (notificationIds?: string[]) => {
-    notificationsMarkAsReadMutation({
-      variables: { _ids: notificationIds }
-    })
-    if (markAsReadData) {
-      if (notificationsRefetch) {
-        notificationsRefetch();
-        notificationsCountRefetch();
-      }
-
-      Alert.success('Notification have been seen');
-    }
-    if (markAsReadError) {
-      Alert.error(markAsReadError.message);
+          Alert.success('Notification have been seen');
+        })
+        .catch(error => {
+          Alert.error(error.message);
+        });
     };
-  };
 
-  const updatedProps = {
-    ...props,
-    markAsRead,
-    notifications: notificationsData ? notificationsData.notifications : [],
-    count: notificationCountData ? notificationCountData.notificationCounts : 0,
-    loading: notificationsLoading
-  };
+    const updatedProps = {
+      ...this.props,
+      markAsRead,
+      notifications: notificationsQuery.notifications || [],
+      count: notificationCountQuery.notificationCounts || 0,
+      loading: notificationsQuery.loading
+    };
 
-  return <NotificationList {...updatedProps} />;
+    return <NotificationList {...updatedProps} />;
+  }
 }
 
-export default NotificationListContainer;
+export default withProps<Props>(
+  compose(
+    graphql<
+      Props,
+      NotificationsQueryResponse,
+      { requireRead: boolean; page?: number; perPage?: number; title?: string }
+    >(gql(queries.notifications), {
+      name: 'notificationsQuery',
+      options: ({ queryParams }) => ({
+        variables: {
+          ...generatePaginationParams(queryParams),
+          requireRead: queryParams.requireRead === 'true' ? true : false,
+          title: queryParams.title
+        }
+      })
+    }),
+    graphql<Props, NotificationsCountQueryResponse>(
+      gql(queries.notificationCounts),
+      {
+        name: 'notificationCountQuery',
+        options: ({ queryParams }) => ({
+          variables: {
+            requireRead: queryParams.requireRead === 'true' ? true : false
+          }
+        })
+      }
+    ),
+    graphql<Props, MarkAsReadMutationResponse, { _ids?: string[] }>(
+      gql(mutations.markAsRead),
+      {
+        name: 'notificationsMarkAsReadMutation',
+        options: {
+          refetchQueries: [
+            {
+              query: gql(queries.notifications),
+              variables: {
+                limit: 10,
+                requireRead: false
+              }
+            },
+            'notificationCounts'
+          ]
+        }
+      }
+    )
+  )(NotificationListContainer)
+);

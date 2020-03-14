@@ -50,7 +50,7 @@ class FilterableList extends React.Component<Props, State> {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (JSON.stringify(this.props.items) !== JSON.stringify(nextProps.items)) {
       this.setState({
         items: nextProps.items

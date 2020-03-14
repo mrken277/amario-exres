@@ -1,7 +1,8 @@
 import * as Factory from 'factory.ts';
-import { IBoard, IPipeline, IStage } from 'modules/boards/types';
+import { IBoard, IPipeline } from 'modules/boards/types';
 import { IDeal } from 'modules/deals/types';
 import { userFactory } from './auth';
+import { stageFactory } from './boards/stage';
 import { companyFactory } from './companies';
 import { customerFactory } from './customer/customer';
 
@@ -18,20 +19,6 @@ export const pipelineFactory = Factory.Sync.makeFactory<IPipeline>({
   boardId: board._id,
   visibility: 'public',
   isWatched: true
-});
-
-export const stageFactory = Factory.Sync.makeFactory<IStage>({
-  _id: '1',
-  name: 'New stage',
-  type: 'deal',
-  probability: 'probability',
-  itemsTotalCount: 2,
-  initialDealsTotalCount: 3,
-  inProcessDealsTotalCount: 4,
-  stayedDealsTotalCount: 5,
-  compareNextStage: { count: 1, percent: 20 },
-  formId: 'formId',
-  pipelineId: 'pipelineId'
 });
 
 const stage = stageFactory.build();

@@ -68,7 +68,7 @@ class VolumenAndResponseReportContainer extends React.Component<
     this.load('summaryData', 'insightsSummaryData', false);
   }
 
-  UNSAFE_componentWillUpdate(nextProps) {
+  componentWillUpdate(nextProps) {
     if (
       JSON.stringify(this.props.queryParams) !==
       JSON.stringify(nextProps.queryParams)

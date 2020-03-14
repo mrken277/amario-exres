@@ -35,7 +35,7 @@ class FacebookPostContainer extends React.Component<FinalProps> {
     this.subscription = null;
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     const { conversation, commentsQuery } = nextProps;
 
     // It is first time or subsequent conversation change

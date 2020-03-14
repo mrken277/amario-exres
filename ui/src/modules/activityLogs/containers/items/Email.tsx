@@ -1,15 +1,14 @@
-import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import * as compose from 'lodash.flowright';
 import Email from 'modules/activityLogs/components/items/email/Email';
 import EngageEmail from 'modules/activityLogs/components/items/email/EngageEmail';
 import { EmailDeliveryDetailQueryResponse } from 'modules/activityLogs/types';
 import EmptyState from 'modules/common/components/EmptyState';
-import ErrorMsg from 'modules/common/components/ErrorMsg';
-import Spinner from 'modules/common/components/Spinner';
-import checkError from 'modules/common/utils/checkError';
+import { withProps } from 'modules/common/utils';
 import { queries as engageQueries } from 'modules/engage/graphql';
-import { EngageMessageDetailQueryResponse, IEmailDelivery } from 'modules/engage/types';
+import { EngageMessageDetailQueryResponse } from 'modules/engage/types';
 import React from 'react';
+import { graphql } from 'react-apollo';
 import { queries } from '../../graphql';
 
 type Props = {
@@ -18,71 +17,74 @@ type Props = {
   emailType: string;
 };
 
-function EmailContainer(props: Props) {
-  const { emailId, emailType } = props;
+type FinalProps = {
+  engageMessageDetailQuery: EngageMessageDetailQueryResponse;
+  emailDeliveryDetailQuery: EmailDeliveryDetailQueryResponse;
+} & Props;
 
-  const {
-    loading: engageMessageDetailQueryLoading,
-    error: engageMessageDetailQueryError,
-    data: engageMessageDetailQueryData
-  } = useQuery<EngageMessageDetailQueryResponse>(
-    gql(engageQueries.engageMessageDetail), {
-    skip: emailType === 'engage',
-    variables: {
-      _id: emailId
+class EmailContainer extends React.Component<FinalProps> {
+  render() {
+    const {
+      engageMessageDetailQuery,
+      emailDeliveryDetailQuery,
+      emailType
+    } = this.props;
+
+    if (engageMessageDetailQuery && engageMessageDetailQuery.loading) {
+      return null;
     }
-  }
-  );
 
-  const {
-    loading: emailDeliveryDetailQueryLoading,
-    error: emailDeliveryDetailQueryError,
-    data: emailDeliveryDetailQueryData
-  } = useQuery<EmailDeliveryDetailQueryResponse>(
-    gql(queries.emailDeliveryDetail), {
-    skip: emailType === 'engage',
-    variables: {
-      _id: emailId
+    if (emailDeliveryDetailQuery && emailDeliveryDetailQuery.loading) {
+      return null;
     }
-  }
-  );
 
-  if (engageMessageDetailQueryError || emailDeliveryDetailQueryError) {
-    const error = checkError([engageMessageDetailQueryError, emailDeliveryDetailQueryError]);
+    if (emailType === 'engage') {
+      if (!engageMessageDetailQuery.engageMessageDetail) {
+        return <EmptyState icon="email-4" text="Email not found" />;
+      }
 
-    return <ErrorMsg>{error.message}</ErrorMsg>;
-  }
-
-  if (engageMessageDetailQueryLoading || emailDeliveryDetailQueryLoading) {
-    return <Spinner objective={true} />;
-  }
-
-
-  if (!emailDeliveryDetailQueryData) {
-    return null;
-  }
-
-  if (emailType === 'engage') {
-    if (!engageMessageDetailQueryData || !emailDeliveryDetailQueryData) {
-      return <EmptyState icon="email-4" text="Email not found" />;
+      return (
+        <EngageEmail
+          {...this.props}
+          email={engageMessageDetailQuery.engageMessageDetail}
+        />
+      );
     }
 
     return (
-      <EngageEmail
-        {...props}
-        email={engageMessageDetailQueryData.engageMessageDetail || []}
+      <Email
+        {...this.props}
+        email={emailDeliveryDetailQuery.emailDeliveryDetail}
       />
     );
   }
-
-  return (
-    <Email
-      {...props}
-      email={emailDeliveryDetailQueryData ? emailDeliveryDetailQueryData.emailDeliveryDetail : {} as IEmailDelivery}
-    />
-  );
 }
 
-export default EmailContainer;
-
-
+export default withProps<Props>(
+  compose(
+    graphql<Props, EngageMessageDetailQueryResponse>(
+      gql(engageQueries.engageMessageDetail),
+      {
+        name: 'engageMessageDetailQuery',
+        skip: ({ emailType }) => emailType === 'email',
+        options: ({ emailId }) => ({
+          variables: {
+            _id: emailId
+          }
+        })
+      }
+    ),
+    graphql<Props, EngageMessageDetailQueryResponse>(
+      gql(queries.emailDeliveryDetail),
+      {
+        name: 'emailDeliveryDetailQuery',
+        skip: ({ emailType }) => emailType === 'engage',
+        options: ({ emailId }) => ({
+          variables: {
+            _id: emailId
+          }
+        })
+      }
+    )
+  )(EmailContainer)
+);

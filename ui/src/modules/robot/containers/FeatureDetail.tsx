@@ -24,7 +24,7 @@ type FinalProps = Props &
   };
 
 class FeatureDetailContainer extends React.Component<FinalProps> {
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     const { stepsCompletenessQuery, currentUser } = this.props;
 
     stepsCompletenessQuery.subscribeToMore({

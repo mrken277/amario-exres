@@ -1,13 +1,7 @@
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
-import ErrorMsg from 'modules/common/components/ErrorMsg';
-import Spinner from 'modules/common/components/Spinner';
-import checkError from 'modules/common/utils/checkError';
-import { queries as generalQueries } from 'modules/settings/general/graphql';
+import { AppConsumer } from 'appContext';
 import { IProduct } from 'modules/settings/productService/types';
 import React from 'react';
-import { ConfigDetailQueryResponse } from '../../../settings/general/types';
-import ProductItemForm from '../../components/product/ProductItemForm';
+import ProductForm from '../../components/product/ProductForm';
 import { IPaymentsData, IProductData } from '../../types';
 
 type Props = {
@@ -18,65 +12,30 @@ type Props = {
   productsData: IProductData[];
   products: IProduct[];
   paymentsData?: IPaymentsData;
+  currentProduct?: string;
   closeModal: () => void;
 };
 
-type TVariables = {
-  code: string;
-};
+export default class ProductFormContainer extends React.Component<Props> {
+  render() {
+    return (
+      <AppConsumer>
+        {({ currentUser }) => {
+          if (!currentUser) {
+            return;
+          }
 
-const getValue = (data?: ConfigDetailQueryResponse) => {
-  return data && data.configsDetail ? data.configsDetail.value : [];
-};
+          const configs = currentUser.configs || {};
 
-function ProductItemFormContainer(props: Props) {
-  const {
-    error: getUomError,
-    loading: getUomLoading,
-    data: getUomData
-  } = useQuery<ConfigDetailQueryResponse, TVariables>(
-    gql(generalQueries.configsDetail),
-    {
-      variables: {
-        code: 'dealUOM'
-      }
-    }
-  );
+          const extendedProps = {
+            ...this.props,
+            uom: configs.dealUOM || [],
+            currencies: configs.dealCurrency || []
+          };
 
-  const {
-    error: getCurrenciesError,
-    loading: getCurrenciesLoading,
-    data: getCurrenciesData
-  } = useQuery<ConfigDetailQueryResponse, TVariables>(
-    gql(generalQueries.configsDetail),
-    {
-      variables: {
-        code: 'dealCurrency'
-      }
-    }
-  );
-
-  if (getUomError || getCurrenciesError) {
-    const error = checkError([getUomError, getCurrenciesError]);
-
-    return <ErrorMsg>{error.message}</ErrorMsg>;
+          return <ProductForm {...extendedProps} />;
+        }}
+      </AppConsumer>
+    );
   }
-
-  if (getUomLoading || getCurrenciesLoading) {
-    return <Spinner objective={true} />;
-  }
-
-  const uom = getValue(getUomData);
-  const currencies = getValue(getCurrenciesData);
-
-  const extendedProps = {
-    ...props,
-    uom,
-    currencies,
-    productData: {} as IProductData
-  };
-
-  return <ProductItemForm {...extendedProps} />;
 }
-
-export default ProductItemFormContainer;

@@ -49,7 +49,7 @@ class EditFormContainer extends React.Component<FinalProps> {
     showMessage: true
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps: FinalProps) {
+  componentWillReceiveProps(nextProps: FinalProps) {
     const { onInit, fieldsQuery } = this.props;
 
     if (fieldsQuery.loading && !nextProps.fieldsQuery.loading && onInit) {

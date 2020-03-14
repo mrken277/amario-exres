@@ -125,7 +125,7 @@ const NavIcon = styled.i`
 class Navigation extends React.Component<{
   unreadConversationsCount?: number;
 }> {
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     const unreadCount = nextProps.unreadConversationsCount;
 
     if (unreadCount !== this.props.unreadConversationsCount) {
