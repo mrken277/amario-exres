@@ -24,13 +24,15 @@ const withPipeline = Component => {
     const { pipelineDetailQuery, history, options } = props;
 
     useEffect(() => {
-      return pipelineDetailQuery.subscribeToMore({
-        document: gql(options.subscriptions.moveSubscription),
-        updateQuery: () => {
-          routerUtils.setParams(history, { key: Math.random() });
-          // location.reload();
-        }
-      });
+      return (
+        pipelineDetailQuery &&
+        pipelineDetailQuery.subscribeToMore({
+          document: gql(options.subscriptions.moveSubscription),
+          updateQuery: () => {
+            routerUtils.setParams(history, { key: Math.random() });
+          }
+        })
+      );
     });
 
     const pipeline = pipelineDetailQuery && pipelineDetailQuery.pipelineDetail;
