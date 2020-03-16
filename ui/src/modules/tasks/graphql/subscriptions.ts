@@ -6,13 +6,6 @@ const tasksChanged = `
   }
 `;
 
-const tasksMoved = `
-  subscription tasksMoved {
-    tasksMoved
-  }
-`;
-
 export default {
-  tasksChanged,
-  tasksMoved
+  tasksChanged
 };

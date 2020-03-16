@@ -27,7 +27,6 @@ export interface IOptions {
   };
   subscriptionName: {
     changeSubscription: string;
-    moveSubscription: string;
   };
   queries: {
     itemsQuery: string;
@@ -47,7 +46,6 @@ export interface IOptions {
   };
   subscriptions: {
     changeSubscription: string;
-    moveSubscription: string;
   };
   texts: {
     addText: string;

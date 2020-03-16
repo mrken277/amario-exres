@@ -6,13 +6,6 @@ const ticketsChanged = `
   }
 `;
 
-const ticketsMoved = `
-  subscription ticketsMoved {
-    ticketsMoved
-  }
-`;
-
 export default {
-  ticketsChanged,
-  ticketsMoved
+  ticketsChanged
 };
