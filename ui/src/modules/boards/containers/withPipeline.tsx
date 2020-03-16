@@ -6,7 +6,7 @@ import { router as routerUtils, withProps } from 'modules/common/utils';
 import React, { useEffect } from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
-import { queries } from '../graphql';
+import { queries, subscriptions } from '../graphql';
 import { IOptions, PipelineDetailQueryResponse } from '../types';
 
 type Props = {
@@ -21,15 +21,25 @@ type ContainerProps = {
 
 const withPipeline = Component => {
   const Container = (props: ContainerProps) => {
-    const { pipelineDetailQuery, history, options } = props;
+    const { pipelineDetailQuery, history, queryParams } = props;
 
     useEffect(() => {
+      const pipelineId = queryParams.pipelineId;
+
       return (
         pipelineDetailQuery &&
         pipelineDetailQuery.subscribeToMore({
-          document: gql(options.subscriptions.moveSubscription),
+          document: gql(subscriptions.pipelinesChanged),
+          variables: { _id: pipelineId },
           updateQuery: () => {
-            routerUtils.setParams(history, { key: Math.random() });
+            const currentTab = sessionStorage.getItem('currentTab');
+
+            // don't reload current tab
+            if (!currentTab) {
+              routerUtils.setParams(history, { key: Math.random() });
+            }
+
+            sessionStorage.removeItem('currentTab');
           }
         })
       );

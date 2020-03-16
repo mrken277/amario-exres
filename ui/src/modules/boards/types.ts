@@ -344,6 +344,12 @@ export interface IFilterParams extends ISavedConformity {
   userIds?: string;
 }
 
+export interface INonFilterParams {
+  key?: string;
+  pipelineId: string;
+  id: string;
+}
+
 export interface IEditFormContent {
   state: any;
   saveItem: (doc: { [key: string]: any }, callback?: (item) => void) => void;
