@@ -12,6 +12,7 @@ type Props = {
   productsData: IProductData[];
   products: IProduct[];
   paymentsData?: IPaymentsData;
+  currentProduct?: string;
   closeModal: () => void;
 };
 
@@ -20,7 +21,6 @@ export default class ProductFormContainer extends React.Component<Props> {
     return (
       <AppConsumer>
         {({ currentUser }) => {
-
           if (!currentUser) {
             return;
           }
@@ -33,9 +33,9 @@ export default class ProductFormContainer extends React.Component<Props> {
             currencies: configs.dealCurrency || []
           };
 
-          return <ProductForm {...extendedProps} />
+          return <ProductForm {...extendedProps} />;
         }}
       </AppConsumer>
-    )
+    );
   }
 }
