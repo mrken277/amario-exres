@@ -68,41 +68,47 @@
         </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/erxes/erxes/edit/develop/docs/docs/developer/push-notifications.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Push notifications</h1></header><article><div><span><p>Push Notifications are an important feature to retain and re-engage users and monetize on their attention. We use Firebase's cloud messaging feature as a push notification service. Let's get started with following steps.</p>
 <p>First things first, The Firebase is part of the Google product so we will need a Google project.</p>
 <ol>
-<li><a href="https://console.cloud.google.com/">Go to the Google Cloud Console website</a></li>
+<li><a href="https://console.cloud.google.com/">Go to the Google Cloud Console website.</a></li>
+<li><a href="/administrator/system-config#create-a-google-cloud-project">Create Google project.</a></li>
+<li>Select the project.</li>
 </ol>
-<div><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-1.png" width="100%" height="320"></div>
-<p>
-  2. Click on Select a project/New Project and enter the name of the project and create
-</p>
-<div><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-2.png" width="100%" height="100%"></div>
 <div><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-3.png" width="100%" height="100%"></div>
-<p>
-  3. We need to enable Firebase API for our Google project </br>
-  4. Select a newly created project </br>
-  5. Click on Library from the left side menu </br>
-  6. Search Firebase Cloud Messaging API and click on the enable button </br>
+<ol start="4">
+<li>We need to enable Firebase API for our Google project </br></li>
+<li>Select a newly created project </br></li>
+<li>Click on Library from the left side menu </br></li>
+<li>Search Firebase Cloud Messaging API and click on the enable button </br></li>
+</ol>
 </p>
 <div><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-4.png" width="100%" height="100%"></div>
 <p>
-  7. Now we need a Firebase Project, let's create one </br>
-  8. <a href="https://console.firebase.google.com/">Go to the Firebase Console website</a> </br>
-  9. Click on create a project, enter your firebase project name and continue, it might take a while. </br>
+<ol start="8">
+<li>Now we need a Firebase Project, let's create one </br></li>
+<li><a href="https://console.firebase.google.com/">Go to the Firebase Console website</a> </br></li>
+<li>Click on create a project, enter your firebase project name and continue, it might take a while. </br></li>
+</ol>
 </p>
 <div><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-5.png" width="100%" height="100%"></div>
 <p>
-  10. Go to project settings.
+<ol start="11">
+<li>Go to project settings.</li>
+</ol>
 </p>
 <div><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-6.png" width="100%" height="100%"></div>
 <p>
-  11. We are going to use Firebase Admin SDK to send a push notification. Thus we have to authenticate, in order to use Firebase feature, here comes the Firebase service account. Create the JSON key and download it.
+<ol start="12">
+<li>We are going to use Firebase Admin SDK to send a push notification. Thus we have to authenticate, in order to use Firebase feature, here comes the Firebase service account. Create the JSON key and download it.</li>
+</ol>
 </p>
 <div><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-7.png" width="100%" height="100%"></div> </br>
 <div><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-8.png" width="100%" height="100%"></div> </br>
 <div><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-9.png" width="100%" height="100%"></div> </br>
 <p>
-  12. Now we have the Firebase service account, copy all values of the file you downloaded and replace all values to <b>erxes-api/google_cred.json</b> file
+<ol start="13">
+<li>Now we have the Firebase service account, copy all values of the file you downloaded and replace all values to <b>erxes-api/google_cred.json</b> file</li>
+</ol>
 </p>
-<div><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-10.png" width="100%" height="100%"></div> </br></span></div></article></div><div class="docLastUpdate"><em>Last updated on 3/17/2020 by BatAmar Battulga</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/developer/graphql-api"><span class="arrow-prev">← </span><span class="function-name-prevnext">GraphQL API</span></a><a class="docs-next button" href="/developer/android-sdk"><span>Android SDK</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+<div><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/integration/google-project-10.png" width="100%" height="100%"></div> </br></span></div></article></div><div class="docLastUpdate"><em>Last updated on 3/18/2020 by Munkhjargal</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/developer/graphql-api"><span class="arrow-prev">← </span><span class="function-name-prevnext">GraphQL API</span></a><a class="docs-next button" href="/developer/android-sdk"><span>Android SDK</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
