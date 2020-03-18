@@ -89,6 +89,8 @@ export class PipelineProvider extends React.Component<Props, State> {
       PipelineProvider.tasks = [];
       PipelineProvider.currentTask = null;
 
+      this.setState({ stageLoadMap: {} });
+
       stageIds.forEach((stageId: string) => {
         this.scheduleStage(stageId);
       });
@@ -257,7 +259,7 @@ export class PipelineProvider extends React.Component<Props, State> {
    * - Mark stage's task as complete
    * - Mark stage's loading state as loaded
    */
-  onLoadStage = (stageId: string, items: IItem[]) => {
+  onLoadStage = (stageId: string, items: IItem[], callback?: () => void) => {
     const { itemMap, stageLoadMap } = this.state;
     const task = PipelineProvider.tasks.find(t => t.stageId === stageId);
 
@@ -265,10 +267,28 @@ export class PipelineProvider extends React.Component<Props, State> {
       task.isComplete = true;
     }
 
-    this.setState({
-      itemMap: { ...itemMap, [stageId]: items },
-      stageLoadMap: { ...stageLoadMap, [stageId]: 'loaded' }
-    });
+    this.setState(
+      {
+        itemMap: { ...itemMap, [stageId]: items },
+        stageLoadMap: { ...stageLoadMap, [stageId]: 'loaded' }
+      },
+      () => {
+        const values = Object.values(this.state.stageLoadMap);
+        console.log('values: ', values);
+
+        // checking if all tasks are finished
+        if (
+          values.length === this.state.stageIds.length &&
+          !values.includes('readyToLoad')
+        ) {
+          PipelineProvider.currentTask = null;
+
+          if (callback) {
+            callback();
+          }
+        }
+      }
+    );
   };
 
   /*

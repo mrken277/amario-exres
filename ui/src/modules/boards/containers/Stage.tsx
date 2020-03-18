@@ -3,9 +3,16 @@ import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import { PipelineConsumer } from 'modules/boards/containers/PipelineContext';
 import { queries } from 'modules/boards/graphql';
-import { Alert, confirm, withProps } from 'modules/common/utils';
+import { IRouterProps } from 'modules/common/types';
+import {
+  Alert,
+  confirm,
+  router as routerUtils,
+  withProps
+} from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
+import { withRouter } from 'react-router';
 import Stage from '../components/stage/Stage';
 import { mutations } from '../graphql';
 import {
@@ -29,7 +36,7 @@ type WrapperProps = {
 };
 
 type StageProps = {
-  onLoad: (stageId: string, items: IItem[]) => void;
+  onLoad: (stageId: string, items: IItem[], callback?: () => void) => void;
   scheduleStage: (stageId: string) => void;
   onAddItem: (stageId: string, item: IItem) => void;
   onRemoveItem: (itemId: string, stageId: string) => void;
@@ -38,7 +45,8 @@ type StageProps = {
 type FinalStageProps = {
   addMutation: SaveItemMutation;
   itemsQuery?: ItemsQueryResponse;
-} & StageProps;
+} & IRouterProps &
+  StageProps;
 
 class StageContainer extends React.PureComponent<FinalStageProps> {
   componentWillReceiveProps(nextProps: FinalStageProps) {
@@ -47,7 +55,26 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
     if (itemsQuery && !itemsQuery.loading && loadingState !== 'loaded') {
       // Send loaded items to PipelineContext so that context is able to set it
       // to global itemsMap
-      onLoad(stage._id, itemsQuery[options.queriesName.itemsQuery] || []);
+      onLoad(
+        stage._id,
+        itemsQuery[options.queriesName.itemsQuery] || [],
+        () => {
+          const currentTab = sessionStorage.getItem('currentTab');
+
+          // don't reload current tab
+          if (!currentTab) {
+            const pipelineUpdate = sessionStorage.getItem('pipelineUpdate');
+
+            console.log('pipelineUpdate for Stage');
+
+            if (pipelineUpdate === 'newRequest') {
+              routerUtils.setParams(this.props.history, { key: Math.random() });
+            }
+
+            sessionStorage.setItem('pipelineUpdate', 'end');
+          }
+        }
+      );
     }
   }
 
@@ -117,7 +144,7 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
           Alert.error(e.message);
         });
     });
-  }
+  };
 
   archiveList = () => {
     const { stage, refetchStages, options } = this.props;
@@ -217,7 +244,7 @@ const withQuery = ({ options }) => {
           notifyOnNetworkStatusChange: loadingState === 'readyToLoad'
         })
       })
-    )(StageContainer)
+    )(withRouter(StageContainer))
   );
 };
 

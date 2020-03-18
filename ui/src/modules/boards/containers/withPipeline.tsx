@@ -36,7 +36,18 @@ const withPipeline = Component => {
 
             // don't reload current tab
             if (!currentTab) {
-              routerUtils.setParams(history, { key: Math.random() });
+              const pipelineUpdate =
+                sessionStorage.getItem('pipelineUpdate') || 'end';
+
+              console.log('pipelineUpdate: ', pipelineUpdate);
+
+              if (pipelineUpdate === 'end') {
+                sessionStorage.setItem('pipelineUpdate', 'start');
+
+                routerUtils.setParams(history, { key: Math.random() });
+              } else {
+                sessionStorage.setItem('pipelineUpdate', 'newRequest');
+              }
             }
 
             sessionStorage.removeItem('currentTab');
