@@ -42,6 +42,8 @@ const companiesAdd = `
   mutation companiesAdd(${commonFields}) {
     companiesAdd(${commonVariables}) {
       _id
+      primaryName
+      primaryEmail
     }
   }
 `;
