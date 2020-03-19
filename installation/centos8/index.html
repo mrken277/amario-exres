@@ -73,25 +73,42 @@
 <li><p>Log in to your new server as <code>root</code> account and run the following command.</p>
 <p><code>bash -c &quot;$(curl https://raw.githubusercontent.com/erxes/erxes/develop/scripts/install/centos8.sh)&quot;</code></p>
 <p><strong>Note</strong>: you will be asked to provide a domain for nginx server to set up config for erxes</p></li>
-<li><p>This installation will create a new user <code>erxes</code>. Run the following command to change your password.</p>
-<p><code>passwd erxes</code></p></li>
 <li><p>Log in to your domain DNS and create A record based on your new server IP.</p></li>
 </ol>
+<h2><a class="anchor" aria-hidden="true" id="create-an-admin-user"></a><a href="#create-an-admin-user" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create an admin user</h2>
+<p>Switch to user <code>erxes</code> and run the following commands based on your needs.</p>
+<pre><code class="hljs css language-sh">su erxes
+<span class="hljs-built_in">cd</span> ~/erxes-api
+<span class="hljs-built_in">export</span> MONGO_URL=mongodb://localhost/erxes
+</code></pre>
+<p>The following will create an admin user <a href="mailto:admin@erxes.io">admin@erxes.io</a> with a random password (check your console to grab the password)</p>
+<pre><code class="hljs"><span class="hljs-attribute">yarn initProject</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="load-initial-data"></a><a href="#load-initial-data" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Load initial data</h2>
+<p>The below command will create initial permission groups, permissions, growth hack templates, email templates and some sample data and reset the admin password (check your console to grab the password)</p>
+<pre><code class="hljs"><span class="hljs-attribute">yarn loadInitialData</span>
+</code></pre>
+<p>If do not want to load sample data then you can run following command just to load permissions.</p>
+<pre><code class="hljs"><span class="hljs-attribute">yarn loadPermission</span>
+</code></pre>
 <p>Now you have erxes up and running!</p>
 <h2><a class="anchor" aria-hidden="true" id="ssl-integration"></a><a href="#ssl-integration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>SSL integration</h2>
 <p>The following is the demonstration of how to secure your nginx by installing letsencrypt.</p>
 <p><strong>Note</strong>: it is up to you if you wish to use different SSL provider.</p>
 <ol>
-<li><p>Log in to your server as <code>root</code> via <code>ssh</code> and run the following commands.</p>
-<pre><code class="hljs css language-sh">   curl -O https://dl.eff.org/certbot-auto
-   mv certbot-auto /usr/<span class="hljs-built_in">local</span>/bin/certbot-auto
-   chmod 0755 /usr/<span class="hljs-built_in">local</span>/bin/certbot-auto
-   /usr/<span class="hljs-built_in">local</span>/bin/certbot-auto --nginx
+<li>Log in to your server as <code>root</code> via <code>ssh</code> and run the following commands.</li>
+</ol>
+<pre><code class="hljs css language-sh">curl -O https://dl.eff.org/certbot-auto
+mv certbot-auto /usr/<span class="hljs-built_in">local</span>/bin/certbot-auto
+chmod 0755 /usr/<span class="hljs-built_in">local</span>/bin/certbot-auto
+/usr/<span class="hljs-built_in">local</span>/bin/certbot-auto --nginx
 </code></pre>
-<p><code>/usr/local/bin/certbot-auto --nginx</code> command will install multiple Python packages that are required by certbot and prompt you to answer some questions. Please follow the interactive prompt.</p></li>
-<li><p>Log in to your server as <code>erxes</code> via <code>ssh</code> or switch to <code>erxes</code> from <code>root</code> user.<br>
+<p><code>/usr/local/bin/certbot-auto --nginx</code> command will install multiple Python packages that are required by certbot and prompt you to answer some questions. Please follow the interactive prompt.</p>
+<ol start="2">
+<li>Log in to your server as <code>erxes</code> via <code>ssh</code> or switch to <code>erxes</code> from <code>root</code> user.<br>
 Edit <code>erxes/build/js/env.js</code> file where env vars for frontend app are stored.
-The content of the file should be as follows:</p>
+The content of the file should be as follows:</li>
+</ol>
 <pre><code class="hljs css language-javascript"><span class="hljs-built_in">window</span>.env = {
   <span class="hljs-attr">PORT</span>: <span class="hljs-number">3000</span>,
   <span class="hljs-attr">NODE_ENV</span>: <span class="hljs-string">"production"</span>,
@@ -99,14 +116,15 @@ The content of the file should be as follows:</p>
   <span class="hljs-attr">REACT_APP_API_SUBSCRIPTION_URL</span>: <span class="hljs-string">"wss://your_domain/api/subscriptions"</span>,
   <span class="hljs-attr">REACT_APP_CDN_HOST</span>: <span class="hljs-string">"https://your_domain/widgets"</span>
 };
-</code></pre></li>
-<li><p>Update all env vars with HTTPS url in the <code>ecosystem.json</code> file.</p></li>
-<li><p>Finally, you need to restart pm2 erxes processes by running the following command:</p>
+</code></pre>
+<ol start="3">
+<li>Update all env vars with HTTPS url in the <code>ecosystem.json</code> file.</li>
+<li>Finally, you need to restart pm2 erxes processes by running the following command:</li>
+</ol>
 <pre><code class="hljs css language-sh">pm2 restart ecosystem.json
 </code></pre>
-<p>If you need more information about pm2, please go to official documentation <a href="https://pm2.keymetrics.io/docs/usage/application-declaration/">here</a>.</p></li>
-</ol>
-</span></div></article></div><div class="docLastUpdate"><em>Last updated on 3/19/2020 by Batnasan Byambasuren</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/installation/debian10"><span class="arrow-prev">← </span><span>Debian 10</span></a><a class="docs-next button" href="/installation/redhat8"><span>REHL 8</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#installing-erxes-on-centos-8">Installing erxes on CentOS 8</a></li><li><a href="#ssl-integration">SSL integration</a></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+<p>If you need more information about pm2, please go to official documentation <a href="https://pm2.keymetrics.io/docs/usage/application-declaration/">here</a>.</p>
+</span></div></article></div><div class="docLastUpdate"><em>Last updated on 3/19/2020 by Batnasan Byambasuren</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/installation/debian10"><span class="arrow-prev">← </span><span>Debian 10</span></a><a class="docs-next button" href="/installation/redhat8"><span>REHL 8</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#installing-erxes-on-centos-8">Installing erxes on CentOS 8</a></li><li><a href="#create-an-admin-user">Create an admin user</a></li><li><a href="#load-initial-data">Load initial data</a></li><li><a href="#ssl-integration">SSL integration</a></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;

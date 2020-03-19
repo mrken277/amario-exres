@@ -96,9 +96,10 @@
 <p>If you want to use <code>erxes</code> with HTTPS, please go to <a href="https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-debian-10">this article</a> written by Digital Ocean, where you can install letsencrypt, free SSL certificate, to secure your nginx. But, it is up to you if you want to use different SSL provider.</p>
 <p>Once you have installed your ssl certificate, you need to update env vars.</p>
 <ol>
-<li><p>Log in to your server as <code>erxes</code> via <code>ssh</code>.</p></li>
-<li><p>Edit <code>erxes/build/js/env.js</code> file where env vars for frontend app are stored.
-The content of the file should be as follows:</p>
+<li>Log in to your server as <code>erxes</code> via <code>ssh</code>.</li>
+<li>Edit <code>erxes/build/js/env.js</code> file where env vars for frontend app are stored.
+The content of the file should be as follows:</li>
+</ol>
 <pre><code class="hljs css language-javascript"><span class="hljs-built_in">window</span>.env = {
   <span class="hljs-attr">PORT</span>: <span class="hljs-number">3000</span>,
   <span class="hljs-attr">NODE_ENV</span>: <span class="hljs-string">"production"</span>,
@@ -106,13 +107,14 @@ The content of the file should be as follows:</p>
   <span class="hljs-attr">REACT_APP_API_SUBSCRIPTION_URL</span>: <span class="hljs-string">"wss://your_domain/api/subscriptions"</span>,
   <span class="hljs-attr">REACT_APP_CDN_HOST</span>: <span class="hljs-string">"https://your_domain/widgets"</span>
 };
-</code></pre></li>
-<li><p>Update all env vars with HTTPS url in the <code>ecosystem.json</code> file.</p></li>
-<li><p>Finally, you need to restart pm2 erxes processes by running the following command:</p>
+</code></pre>
+<ol start="3">
+<li>Update all env vars with HTTPS url in the <code>ecosystem.json</code> file.</li>
+<li>Finally, you need to restart pm2 erxes processes by running the following command:</li>
+</ol>
 <pre><code class="hljs css language-sh">pm2 restart ecosystem.json
 </code></pre>
-<p>If you need more information about pm2, please go to official documentation <a href="https://pm2.keymetrics.io/docs/usage/application-declaration/">here</a>.</p></li>
-</ol>
+<p>If you need more information about pm2, please go to official documentation <a href="https://pm2.keymetrics.io/docs/usage/application-declaration/">here</a>.</p>
 </span></div></article></div><div class="docLastUpdate"><em>Last updated on 3/19/2020 by Batnasan Byambasuren</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/installation/ubuntu"><span class="arrow-prev">← </span><span>Ubuntu 16.04/18.04 LTS</span></a><a class="docs-next button" href="/installation/centos8"><span class="function-name-prevnext">CentOS 8</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#installing-erxes-on-debian-10">Installing erxes on Debian 10</a></li><li><a href="#create-an-admin-user">Create an admin user</a></li><li><a href="#load-initial-data">Load initial data</a></li><li><a href="#ssl-integration">SSL integration</a></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
