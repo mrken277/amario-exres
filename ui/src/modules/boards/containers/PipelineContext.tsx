@@ -276,13 +276,11 @@ export class PipelineProvider extends React.Component<Props, State> {
         const values = Object.values(this.state.stageLoadMap);
         console.log('values: ', values);
 
-        // checking if all tasks are finished
+        // checking if all tasks are finished to work
         if (
           values.length === this.state.stageIds.length &&
           !values.includes('readyToLoad')
         ) {
-          PipelineProvider.currentTask = null;
-
           if (callback) {
             callback();
           }

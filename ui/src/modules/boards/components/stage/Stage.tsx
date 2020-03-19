@@ -63,11 +63,9 @@ export default class Stage extends React.Component<Props, {}> {
         clearInterval(handle);
       }
 
-      const { items, stage, loadMore } = this.props;
+      const { items, stage } = this.props;
 
-      if (items.length < stage.itemsTotalCount) {
-        loadMore();
-      } else {
+      if (items.length === stage.itemsTotalCount) {
         clearInterval(handle);
       }
     }, 1000);

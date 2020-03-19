@@ -65,7 +65,7 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
           if (!currentTab) {
             const pipelineUpdate = sessionStorage.getItem('pipelineUpdate');
 
-            console.log('pipelineUpdate for Stage');
+            console.log('pipelineUpdate for Stage: ', pipelineUpdate);
 
             if (pipelineUpdate === 'newRequest') {
               routerUtils.setParams(this.props.history, { key: Math.random() });
