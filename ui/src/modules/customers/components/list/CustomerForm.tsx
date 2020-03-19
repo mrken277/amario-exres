@@ -192,10 +192,32 @@ class CustomerForm extends React.Component<Props, State> {
     return (
       <>
         <ScrollWrapper>
-          <AvatarUpload
-            avatar={customer.avatar}
-            onAvatarUpload={this.onAvatarUpload}
-          />
+          <FormWrapper>
+            <FormColumn>
+              <AvatarUpload
+                avatar={customer.avatar}
+                onAvatarUpload={this.onAvatarUpload}
+              />
+            </FormColumn>
+            <FormColumn>
+              {this.renderFormGroup('Code', {
+                ...formProps,
+                name: 'code',
+                defaultValue: customer.code || ''
+              })}
+
+              <FormGroup>
+                <ControlLabel>Owner</ControlLabel>
+                <SelectTeamMembers
+                  label="Choose an owner"
+                  name="ownerId"
+                  value={this.state.ownerId}
+                  onSelect={this.onOwnerChange}
+                  multi={false}
+                />
+              </FormGroup>
+            </FormColumn>
+          </FormWrapper>
           <FormWrapper>
             <FormColumn>
               {this.renderFormGroup('First Name', {
@@ -212,8 +234,7 @@ class CustomerForm extends React.Component<Props, State> {
                   value={primaryEmail}
                   type="email"
                   options={this.getEmailsOptions(customer)}
-                  placeholder="Choose primary email"
-                  buttonText="Add Email"
+                  name="Email"
                   onChange={this.onEmailChange}
                   required={true}
                   checkFormat={validator.isEmail}
@@ -228,6 +249,49 @@ class CustomerForm extends React.Component<Props, State> {
                 defaultValue: customer.sex || 0,
                 options: genderChoices(__)
               })}
+
+              {this.renderFormGroup('Department', {
+                ...formProps,
+                name: 'department',
+                defaultValue: customer.department || ''
+              })}
+
+              {this.renderFormGroup('Pop Ups Status', {
+                ...formProps,
+                name: 'leadStatus',
+                componentClass: 'select',
+                defaultValue: customer.leadStatus || '',
+                options: leadStatusChoices(__)
+              })}
+
+              <FormGroup>
+                <ControlLabel>Description</ControlLabel>
+                <FormControl
+                  {...formProps}
+                  max={140}
+                  name="description"
+                  componentClass="textarea"
+                  defaultValue={customer.description || ''}
+                />
+              </FormGroup>
+            </FormColumn>
+            <FormColumn>
+              {this.renderFormGroup('Last Name', {
+                ...formProps,
+                name: 'lastName',
+                defaultValue: customer.lastName || ''
+              })}
+
+              <FormGroup>
+                <ControlLabel>Phone</ControlLabel>
+                <ModifiableSelect
+                  value={primaryPhone}
+                  options={this.getPhonesOptions(customer)}
+                  name="Phone"
+                  onChange={this.onPhoneChange}
+                  checkFormat={isValidPhone}
+                />
+              </FormGroup>
 
               <FormGroup>
                 <ControlLabel required={false}>Birthday</ControlLabel>
@@ -247,68 +311,6 @@ class CustomerForm extends React.Component<Props, State> {
                 ...formProps,
                 name: 'position',
                 defaultValue: customer.position || ''
-              })}
-
-              {this.renderFormGroup('Pop Ups Status', {
-                ...formProps,
-                name: 'leadStatus',
-                componentClass: 'select',
-                defaultValue: customer.leadStatus || '',
-                options: leadStatusChoices(__)
-              })}
-
-              <FormGroup>
-                <ControlLabel>Owner</ControlLabel>
-                <SelectTeamMembers
-                  label="Choose an owner"
-                  name="ownerId"
-                  value={this.state.ownerId}
-                  onSelect={this.onOwnerChange}
-                  multi={false}
-                />
-              </FormGroup>
-
-              <FormGroup>
-                <ControlLabel>Description</ControlLabel>
-                <FormControl
-                  {...formProps}
-                  max={140}
-                  name="description"
-                  componentClass="textarea"
-                  defaultValue={customer.description || ''}
-                />
-              </FormGroup>
-            </FormColumn>
-
-            <FormColumn>
-              {this.renderFormGroup('Last Name', {
-                ...formProps,
-                name: 'lastName',
-                defaultValue: customer.lastName || ''
-              })}
-
-              <FormGroup>
-                <ControlLabel>Phone</ControlLabel>
-                <ModifiableSelect
-                  value={primaryPhone}
-                  options={this.getPhonesOptions(customer)}
-                  placeholder="Choose primary phone"
-                  buttonText="Add Phone"
-                  onChange={this.onPhoneChange}
-                  checkFormat={isValidPhone}
-                />
-              </FormGroup>
-
-              {this.renderFormGroup('Department', {
-                ...formProps,
-                name: 'department',
-                defaultValue: customer.department || ''
-              })}
-
-              {this.renderFormGroup('Code', {
-                ...formProps,
-                name: 'code',
-                defaultValue: customer.code || ''
               })}
 
               {this.renderFormGroup('Has Authority', {
@@ -405,7 +407,7 @@ class CustomerForm extends React.Component<Props, State> {
           </FormWrapper>
         </ScrollWrapper>
         <ModalFooter>
-          <Button btnStyle="simple" onClick={closeModal} icon="cancel-1">
+          <Button btnStyle="simple" uppercase={false} onClick={closeModal} icon="times-circle">
             Close
           </Button>
 
@@ -422,6 +424,7 @@ class CustomerForm extends React.Component<Props, State> {
               <Button
                 btnStyle="primary"
                 type="submit"
+                uppercase={false}
                 icon="user-square"
                 onClick={this.saveAndRedirect.bind(this, 'detail')}
                 disabled={isSubmitted}
@@ -430,6 +433,7 @@ class CustomerForm extends React.Component<Props, State> {
               </Button>
               <Button
                 type="submit"
+                uppercase={false}
                 onClick={this.saveAndRedirect.bind(this, 'new')}
                 disabled={isSubmitted}
                 icon="user-plus"

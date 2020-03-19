@@ -175,8 +175,7 @@ class CompanyForm extends React.Component<Props, State> {
                 <ModifiableSelect
                   value={primaryName}
                   options={names || []}
-                  placeholder="Primary name"
-                  buttonText="Add name"
+                  name="Name"
                   adding={true}
                   required={true}
                   onChange={this.onChange.bind(this, 'names', 'primaryName')}
@@ -207,8 +206,7 @@ class CompanyForm extends React.Component<Props, State> {
                 <ModifiableSelect
                   value={primaryEmail}
                   options={emails || []}
-                  placeholder="Primary Email"
-                  buttonText="Add email"
+                  name="Email"
                   onChange={this.onChange.bind(this, 'emails', 'primaryEmail')}
                   checkFormat={validator.isEmail}
                 />
@@ -261,8 +259,7 @@ class CompanyForm extends React.Component<Props, State> {
                 <ModifiableSelect
                   value={primaryPhone}
                   options={phones || []}
-                  placeholder="Primary phone"
-                  buttonText="Add phone"
+                  name="Phone"
                   onChange={this.onChange.bind(this, 'phones', 'primaryPhone')}
                   checkFormat={isValidPhone}
                 />

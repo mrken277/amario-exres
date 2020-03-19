@@ -205,7 +205,7 @@ const ScrollWrapper = styledTS<{ calcHeight?: string }>(styled.div)`
       ? `calc(100vh - ${props.calcHeight}px)`
       : 'calc(100vh - 280px)'};
   overflow: auto;
-  padding-right: 10px;
+  padding-right: 20px;
 `;
 
 const DateContainer = styled.div`

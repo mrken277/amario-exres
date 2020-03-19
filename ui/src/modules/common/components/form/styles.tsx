@@ -14,8 +14,7 @@ const Label = styled.label`
   font-weight: ${typography.fontWeightMedium};
   color: ${colors.textPrimary};
   font-size: ${typography.fontSizeUppercase}px;
-  margin-bottom: 5px;
-
+  
   > span {
     color: ${colors.colorCoreRed};
   }
