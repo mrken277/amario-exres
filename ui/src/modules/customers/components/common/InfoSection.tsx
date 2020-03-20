@@ -7,11 +7,14 @@ import { renderFullName } from 'modules/common/utils';
 import CustomerForm from 'modules/customers/containers/CustomerForm';
 import { ICustomer } from 'modules/customers/types';
 import React from 'react';
-import { CustomerState, Name } from '../../styles';
+import { CustomerState, Name, NameContainer } from '../../styles';
 
 type Props = {
   customer: ICustomer;
   hideForm?: boolean;
+  avatarSize?: number;
+  nameSize?: number;
+  children?: React.ReactNode;
 };
 
 class InfoSection extends React.Component<Props> {
@@ -70,22 +73,25 @@ class InfoSection extends React.Component<Props> {
   }
 
   render() {
-    const { customer } = this.props;
+    const { customer, avatarSize = 50, children, nameSize } = this.props;
     const { links = {}, isOnline, state } = customer;
 
     return (
       <InfoWrapper>
-        <AvatarWrapper isOnline={isOnline}>
-          <NameCard.Avatar customer={customer} size={50} />
+        <AvatarWrapper isOnline={isOnline} size={avatarSize}>
+          <NameCard.Avatar customer={customer} size={avatarSize} />
           <CustomerState>{state}</CustomerState>
         </AvatarWrapper>
 
-        <Name>
-          {renderFullName(customer)}
+        <NameContainer>
+          <Name fontSize={nameSize}>
+            {renderFullName(customer)}
+            {this.renderEditForm()}
+          </Name>
           {this.renderPosition()}
           {this.renderLinks(links)}
-        </Name>
-        {this.renderEditForm()}
+        </NameContainer>
+        {children}
       </InfoWrapper>
     );
   }

@@ -119,10 +119,10 @@ const Row = styled.div`
   margin-right: ${dimensions.coreSpacing}px;
 `;
 
-const AvatarWrapper = styledTS<{ isOnline?: boolean, hideIndicator?: boolean }>(styled.div)`
-  margin-right: ${dimensions.unitSpacing}px;
+const AvatarWrapper = styledTS<{ isOnline?: boolean, hideIndicator?: boolean, size?: number }>(styled.div)`
+  margin-right: ${dimensions.unitSpacing * 1.5}px;
   position: relative;
-  max-height: 50px;
+  max-height: ${props => props.size ? `${props.size}px` : '50px'};
 
   a {
     float: none;

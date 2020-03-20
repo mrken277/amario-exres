@@ -25,21 +25,6 @@ const FlexItem = styled.div`
   margin-left: 5px;
 `;
 
-const Actions = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 0 ${dimensions.coreSpacing}px ${dimensions.unitSpacing}px;
-
-  > a,
-  button {
-    flex: 1;
-  }
-
-  > div {
-    margin-left: 10px;
-  }
-`;
-
 const SectionContainer = styled.div`
   position: relative;
   box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.08);
@@ -122,13 +107,6 @@ const TabContent = styled.div`
   }
 `;
 
-const MailBox = styled.div`
-  background: ${colors.colorWhite};
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  transition: all ease 0.3s;
-`;
-
 const SidebarCollapse = styled.a`
   color: ${colors.colorCoreGray};
   position: absolute;
@@ -149,11 +127,9 @@ export {
   FlexRow,
   FlexItem,
   SectionContainer,
-  Actions,
   NoteFormContainer,
   ActivityLogContent,
   BasicInfo,
   SidebarCollapse,
-  TabContent,
-  MailBox
+  TabContent
 };

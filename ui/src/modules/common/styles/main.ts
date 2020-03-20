@@ -1,5 +1,6 @@
 import { colors, dimensions, typography } from 'modules/common/styles';
 import { rgba } from 'modules/common/styles/color';
+import { Actions } from 'modules/customers/styles';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 
@@ -80,14 +81,8 @@ const InfoWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  i {
-    transition: all 0.3s ease;
-    color: ${colors.colorCoreLightGray};
-
-    &:hover {
-      cursor: pointer;
-      color: ${colors.colorCoreGray};
-    }
+  ${Actions} {
+    padding: 0;
   }
 `;
 

@@ -4,12 +4,14 @@ import Icon from 'modules/common/components/Icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { TabTitle } from 'modules/common/components/tabs';
 import { __, renderFullName } from 'modules/common/utils';
+import ActionSection from 'modules/customers/containers/common/ActionSection';
+import { MailBox, UserHeader } from 'modules/customers/styles';
 import Widget from 'modules/engage/containers/Widget';
-import { MailBox } from 'modules/inbox/components/conversationDetail/sidebar/styles';
 import Wrapper from 'modules/layout/components/Wrapper';
 import MailForm from 'modules/settings/integrations/containers/mail/MailForm';
 import React from 'react';
 import { ICustomer } from '../../types';
+import InfoSection from '../common/InfoSection';
 import LeftSidebar from './LeftSidebar';
 import RightSidebar from './RightSidebar';
 
@@ -113,6 +115,13 @@ class CustomerDetails extends React.Component<Props> {
             breadcrumb={breadcrumb}
           />
         }
+        mainHead={
+          <UserHeader>
+            <InfoSection nameSize={16} avatarSize={60} customer={customer}>
+              <ActionSection customer={customer} />
+            </InfoSection>
+          </UserHeader>
+        }
         leftSidebar={
           <LeftSidebar
             wide={true}
@@ -120,7 +129,7 @@ class CustomerDetails extends React.Component<Props> {
             taggerRefetchQueries={taggerRefetchQueries}
           />
         }
-        rightSidebar={<RightSidebar customer={customer} />}
+        rightSidebar={customer.state === 'customer' && <RightSidebar customer={customer} />}
         content={content}
         transparent={true}
       />

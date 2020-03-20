@@ -26,6 +26,21 @@ const InfoDetail = styled.p`
   color: ${colors.colorCoreGray};
 `;
 
+const Actions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 0 ${dimensions.coreSpacing}px ${dimensions.unitSpacing}px;
+
+  > a,
+  button {
+    flex: 1;
+  }
+
+  > div {
+    margin-left: 10px;
+  }
+`;
+
 const Action = styled.div`
   display: flex;
   justify-content: center;
@@ -76,7 +91,7 @@ const Contact = styled.div`
   }
 `;
 
-const Name = styled.div`
+const NameContainer = styled.div`
   flex: 1;
   word-break: break-word;
 
@@ -86,6 +101,23 @@ const Name = styled.div`
     font-size: 12px;
   }
 `;
+
+const Name = styledTS<{ fontSize?: number }>(styled.div)`
+  font-size: ${props => props.fontSize && `${props.fontSize}px`};
+  font-weight: 500;
+
+  i {
+    margin-left: 10px;
+    transition: all 0.3s ease;
+    color: ${colors.colorCoreLightGray};
+
+    &:hover {
+      cursor: pointer;
+      color: ${colors.colorCoreGray};
+    }
+  }
+`;
+
 
 const CustomerState = styled.div`
   text-transform: capitalize;
@@ -118,17 +150,33 @@ const BooleanStatus = styledTS<{ isTrue?: boolean }>(styled.div)`
   }
 `;
 
+const UserHeader = styled.div`
+  margin: 0 -10px;
+  padding: 10px 0;
+`;
+
+const MailBox = styled.div`
+  background: ${colors.colorWhite};
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  transition: all ease 0.3s;
+`;
+
 export {
   InfoTitle,
   InfoDetail,
   Info,
+  Actions,
   Action,
   List,
   InfoAvatar,
   Contact,
+  NameContainer,
   Name,
   TabContent,
   ClickableRow,
   BooleanStatus,
-  CustomerState
+  CustomerState,
+  UserHeader,
+  MailBox
 };

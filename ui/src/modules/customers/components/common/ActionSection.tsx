@@ -10,11 +10,8 @@ import { ICompany } from 'modules/companies/types';
 import TargetMerge from 'modules/customers/components/common/TargetMerge';
 import CustomersMerge from 'modules/customers/components/detail/CustomersMerge';
 import CustomerForm from 'modules/customers/containers/CustomerForm';
+import { Actions, MailBox } from 'modules/customers/styles';
 import { ICustomer } from 'modules/customers/types';
-import {
-  Actions,
-  MailBox
-} from 'modules/inbox/components/conversationDetail/sidebar/styles';
 import MailForm from 'modules/settings/integrations/containers/mail/MailForm';
 import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -53,7 +50,7 @@ class ActionSection extends React.Component<Props> {
           dialogClassName="middle"
           title="Email"
           trigger={
-            <Button disabled={primaryEmail ? false : true} size="small">
+            <Button disabled={primaryEmail ? false : true} size="small" btnStyle="success">
               {__('Email')}
             </Button>
           }
@@ -63,7 +60,7 @@ class ActionSection extends React.Component<Props> {
         />
         <Button
           href={primaryPhone && `tel:${primaryPhone}`}
-          size="small"
+          size="small" btnStyle="success"
           disabled={primaryPhone ? false : true}
         >
           {__('Call')}
@@ -74,7 +71,7 @@ class ActionSection extends React.Component<Props> {
 
   renderButton() {
     return (
-      <Button size="small">
+      <Button size="small" btnStyle="success">
         {__('Action')} <Icon icon="angle-down" />
       </Button>
     );
