@@ -65,25 +65,17 @@ export default class Stage extends React.Component<Props, {}> {
       const isScrolled = current.scrollHeight > current.clientHeight;
 
       if (isScrolled) {
-        finishLoad();
+        return clearInterval(handle);
       }
 
       const { items, stage } = this.props;
 
       if (items.length < stage.itemsTotalCount) {
-        this.props.loadMore();
+        return this.props.loadMore();
       } else {
-        finishLoad();
+        return clearInterval(handle);
       }
     }, 1000);
-
-    const finishLoad = () => {
-      const { onChangeStageFinishMap, stage } = this.props;
-
-      clearInterval(handle);
-
-      onChangeStageFinishMap(stage._id);
-    };
   }
 
   onScroll = (e: React.UIEvent<HTMLDivElement>) => {

@@ -22,6 +22,7 @@ type Props = {
   options: IOptions;
   queryParams: IFilterParams & INonFilterParams;
   queryParamsChanged: (queryParams: IFilterParams, args: any) => boolean;
+  afterFinish: () => void;
 };
 
 type StageLoadMap = {
@@ -85,17 +86,19 @@ export class PipelineProvider extends React.Component<Props, State> {
   componentWillReceiveProps(nextProps: Props) {
     const { queryParams, queryParamsChanged, initialItemMap } = this.props;
 
-    if (queryParamsChanged(queryParams, nextProps)) {
+    if (queryParamsChanged(queryParams, nextProps.queryParams)) {
+      console.log('queryParamsChanged');
+
       const { stageIds } = this.state;
 
       PipelineProvider.tasks = [];
       PipelineProvider.currentTask = null;
 
-      this.setState({ stageLoadMap: {} });
-
       stageIds.forEach((stageId: string) => {
         this.scheduleStage(stageId);
       });
+    } else {
+      console.log('queryParamsNotChanged');
     }
 
     // when adding or removing stage
@@ -128,6 +131,18 @@ export class PipelineProvider extends React.Component<Props, State> {
         stageIds,
         itemMap
       });
+    }
+  }
+
+  componentDidUpdate() {
+    const { stageIds, stageLoadMap } = this.state;
+    console.log('stageLoadMap: ', stageLoadMap);
+    const values = Object.values(stageLoadMap);
+
+    if (values.length === stageIds.length && !values.includes('readyToLoad')) {
+      console.log('finished');
+
+      this.props.afterFinish();
     }
   }
 
