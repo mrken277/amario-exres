@@ -15,11 +15,10 @@ import {
 import { IButtonMutateProps, IFormProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
 import SelectCompanies from 'modules/companies/containers/SelectCompanies';
-import {
-  isValidPhone,
-} from 'modules/customers/utils';
+import { isValidPhone } from 'modules/customers/utils';
 import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMembers';
 import React from 'react';
+import Select from 'react-select-plus';
 import validator from 'validator';
 import { IUser } from '../../../auth/types';
 import {
@@ -48,6 +47,8 @@ type State = {
   primaryName?: string;
   primaryEmail?: string;
   primaryPhone?: string;
+  industry?: string;
+  businessType?: string;
 };
 
 class CompanyForm extends React.Component<Props, State> {
@@ -67,7 +68,9 @@ class CompanyForm extends React.Component<Props, State> {
       companies,
       doNotDisturb: company.doNotDisturb || 'No',
       users: [],
-      avatar: company.avatar
+      avatar: company.avatar,
+      industry: company.industry || '',
+      businessType: company.businessType || ''
     };
   }
 
@@ -86,7 +89,6 @@ class CompanyForm extends React.Component<Props, State> {
       _id: finalValues._id,
       ...this.state,
       size: Number(finalValues.size),
-      industry: finalValues.industry,
       businessType: finalValues.businessType,
       description: finalValues.description,
       code: finalValues.code,
@@ -127,6 +129,14 @@ class CompanyForm extends React.Component<Props, State> {
     );
   };
 
+  onIndustryChange = option => {
+    this.setState({ industry: option.value });
+  };
+
+  onBusinessChange = option => {
+    this.setState({ businessType: option.value });
+  };
+
   onChange = (
     optionsName: string,
     optionName: string,
@@ -163,11 +173,34 @@ class CompanyForm extends React.Component<Props, State> {
     return (
       <>
         <ScrollWrapper>
-          <AvatarUpload
-            avatar={company.avatar}
-            onAvatarUpload={this.onAvatarUpload}
-            defaultAvatar="/images/integrations/company.png"
-          />
+          <FormWrapper>
+            <FormColumn>
+              <AvatarUpload
+                avatar={company.avatar}
+                onAvatarUpload={this.onAvatarUpload}
+                defaultAvatar="/images/integrations/company.png"
+              />
+            </FormColumn>
+
+            <FormColumn>
+              {this.renderFormGroup('Code', {
+                ...formProps,
+                name: 'code',
+                defaultValue: company.code || ''
+              })}
+
+              <FormGroup>
+                <ControlLabel>Owner</ControlLabel>
+                <SelectTeamMembers
+                  label="Choose an owner"
+                  name="ownerId"
+                  value={ownerId}
+                  onSelect={onSelectOwner}
+                  multi={false}
+                />
+              </FormGroup>
+            </FormColumn>
+          </FormWrapper>
           <FormWrapper>
             <FormColumn>
               <FormGroup>
@@ -182,22 +215,13 @@ class CompanyForm extends React.Component<Props, State> {
                 />
               </FormGroup>
 
-              {this.renderFormGroup('Industry', {
-                ...formProps,
-                name: 'industry',
-                componentClass: 'select',
-                defaultValue: company.industry || '',
-                options: this.generateConstantParams(COMPANY_INDUSTRY_TYPES)
-              })}
-
               <FormGroup>
-                <ControlLabel>Owner</ControlLabel>
-                <SelectTeamMembers
-                  label="Choose an owner"
-                  name="ownerId"
-                  value={ownerId}
-                  onSelect={onSelectOwner}
-                  multi={false}
+                <ControlLabel>Industry</ControlLabel>
+                <Select
+                  value={this.state.industry}
+                  onChange={this.onIndustryChange}
+                  options={this.generateConstantParams(COMPANY_INDUSTRY_TYPES)}
+                  clearable={false}
                 />
               </FormGroup>
 
@@ -224,12 +248,6 @@ class CompanyForm extends React.Component<Props, State> {
               </FormGroup>
             </FormColumn>
             <FormColumn>
-              {this.renderFormGroup('Code', {
-                ...formProps,
-                name: 'code',
-                defaultValue: company.code || ''
-              })}
-
               <FormGroup>
                 <ControlLabel>Parent Company</ControlLabel>
                 <SelectCompanies
@@ -240,20 +258,16 @@ class CompanyForm extends React.Component<Props, State> {
                   multi={false}
                 />
               </FormGroup>
-              {this.renderFormGroup('Business Type', {
-                ...formProps,
-                name: 'businessType',
-                componentClass: 'select',
-                defaultValue: company.businessType || '',
-                options: this.generateConstantParams(COMPANY_BUSINESS_TYPES)
-              })}
-              {this.renderFormGroup('Size', {
-                ...formProps,
-                name: 'size',
-                type: 'number',
-                defaultValue: company.size || 0
-              })}
-
+              <FormGroup>
+                <ControlLabel>Business Type</ControlLabel>
+                <Select
+                  value={this.state.businessType}
+                  onChange={this.onBusinessChange}
+                  options={this.generateConstantParams(COMPANY_BUSINESS_TYPES)}
+                  clearable={false}
+                />
+              </FormGroup>
+              
               <FormGroup>
                 <ControlLabel>Phone</ControlLabel>
                 <ModifiableSelect
@@ -264,6 +278,13 @@ class CompanyForm extends React.Component<Props, State> {
                   checkFormat={isValidPhone}
                 />
               </FormGroup>
+
+              {this.renderFormGroup('Size', {
+                ...formProps,
+                name: 'size',
+                type: 'number',
+                defaultValue: company.size || 0
+              })}
 
               {this.renderFormGroup('Do not disturb', {
                 componentClass: 'radio',

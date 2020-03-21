@@ -55,7 +55,6 @@ export const COMPANY_DATAS = {
 };
 
 export const COMPANY_INDUSTRY_TYPES = [
-  '',
   'Advertising/Public Relations',
   'Aerospace, Defense Contractors',
   'Agriculture',
@@ -113,7 +112,6 @@ export const COMPANY_INDUSTRY_TYPES = [
 ];
 
 export const COMPANY_BUSINESS_TYPES = [
-  '',
   'Competitor',
   'Customer',
   'Investor',
