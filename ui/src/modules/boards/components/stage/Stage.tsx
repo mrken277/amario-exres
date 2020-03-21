@@ -37,6 +37,7 @@ type Props = {
   options: IOptions;
   archiveItems: () => void;
   archiveList: () => void;
+  onChangeStageFinishMap: (stageId: string) => void;
 };
 export default class Stage extends React.Component<Props, {}> {
   private bodyRef;
@@ -51,6 +52,10 @@ export default class Stage extends React.Component<Props, {}> {
   componentDidMount() {
     // Load items until scroll created
     const handle = setInterval(() => {
+      if (this.props.loadingItems) {
+        return;
+      }
+
       const { current } = this.bodyRef;
 
       if (!current) {
@@ -60,15 +65,25 @@ export default class Stage extends React.Component<Props, {}> {
       const isScrolled = current.scrollHeight > current.clientHeight;
 
       if (isScrolled) {
-        clearInterval(handle);
+        finishLoad();
       }
 
       const { items, stage } = this.props;
 
-      if (items.length === stage.itemsTotalCount) {
-        clearInterval(handle);
+      if (items.length < stage.itemsTotalCount) {
+        this.props.loadMore();
+      } else {
+        finishLoad();
       }
     }, 1000);
+
+    const finishLoad = () => {
+      const { onChangeStageFinishMap, stage } = this.props;
+
+      clearInterval(handle);
+
+      onChangeStageFinishMap(stage._id);
+    };
   }
 
   onScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -213,7 +228,10 @@ export default class Stage extends React.Component<Props, {}> {
     }
 
     return (
-      <Draggable draggableId={stage._id} index={index}>
+      <Draggable
+        draggableId={`${stage._id}-${Math.random.toString()}`}
+        index={index}
+      >
         {(provided, snapshot) => (
           <Container innerRef={provided.innerRef} {...provided.draggableProps}>
             <StageRoot isDragging={snapshot.isDragging}>

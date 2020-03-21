@@ -1,18 +1,10 @@
 import client from 'apolloClient';
 import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
-import { PipelineConsumer } from 'modules/boards/containers/PipelineContext';
 import { queries } from 'modules/boards/graphql';
-import { IRouterProps } from 'modules/common/types';
-import {
-  Alert,
-  confirm,
-  router as routerUtils,
-  withProps
-} from 'modules/common/utils';
+import { Alert, confirm, withProps } from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router';
 import Stage from '../components/stage/Stage';
 import { mutations } from '../graphql';
 import {
@@ -24,7 +16,7 @@ import {
   SaveItemMutation
 } from '../types';
 
-type WrapperProps = {
+type StageProps = {
   stage: IStage;
   index: number;
   loadingState: 'readyToLoad' | 'loaded';
@@ -33,20 +25,17 @@ type WrapperProps = {
   queryParams: IFilterParams;
   options: IOptions;
   refetchStages: ({ pipelineId }: { pipelineId?: string }) => Promise<any>;
-};
-
-type StageProps = {
   onLoad: (stageId: string, items: IItem[], callback?: () => void) => void;
   scheduleStage: (stageId: string) => void;
   onAddItem: (stageId: string, item: IItem) => void;
   onRemoveItem: (itemId: string, stageId: string) => void;
-} & WrapperProps;
+  onChangeStageFinishMap: (stageId: string) => void;
+};
 
 type FinalStageProps = {
   addMutation: SaveItemMutation;
   itemsQuery?: ItemsQueryResponse;
-} & IRouterProps &
-  StageProps;
+} & StageProps;
 
 class StageContainer extends React.PureComponent<FinalStageProps> {
   componentWillReceiveProps(nextProps: FinalStageProps) {
@@ -58,22 +47,7 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
       onLoad(
         stage._id,
         itemsQuery[options.queriesName.itemsQuery] || [],
-        () => {
-          const currentTab = sessionStorage.getItem('currentTab');
-
-          // don't reload current tab
-          if (!currentTab) {
-            const pipelineUpdate = sessionStorage.getItem('pipelineUpdate');
-
-            console.log('pipelineUpdate for Stage: ', pipelineUpdate);
-
-            if (pipelineUpdate === 'newRequest') {
-              routerUtils.setParams(this.props.history, { key: Math.random() });
-            }
-
-            sessionStorage.setItem('pipelineUpdate', 'end');
-          }
-        }
+        this.checkSubscribe
       );
     }
   }
@@ -84,6 +58,8 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
     // register stage to queue on first render
     scheduleStage(stage._id);
   }
+
+  checkSubscribe = () => {};
 
   loadMore = () => {
     const { onLoad, stage, items, queryParams, options } = this.props;
@@ -103,10 +79,11 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
         }
       })
       .then(({ data }: any) => {
-        onLoad(stage._id, [
-          ...items,
-          ...(data[options.queriesName.itemsQuery] || [])
-        ]);
+        onLoad(
+          stage._id,
+          [...items, ...(data[options.queriesName.itemsQuery] || [])],
+          this.checkSubscribe
+        );
       })
       .catch(e => {
         Alert.error(e.message);
@@ -184,10 +161,18 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
       itemsQuery,
       options,
       onAddItem,
-      onRemoveItem
+      onRemoveItem,
+      loadingState,
+      onChangeStageFinishMap
     } = this.props;
 
-    const loadingItems = (itemsQuery ? itemsQuery.loading : null) || false;
+    const loadingItems = () => {
+      if ((itemsQuery && !itemsQuery.loading) || loadingState !== 'loaded') {
+        return true;
+      }
+
+      return false;
+    };
 
     return (
       <Stage
@@ -198,10 +183,11 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
         items={items}
         archiveItems={this.archiveItems}
         archiveList={this.archiveList}
-        loadingItems={loadingItems}
+        loadingItems={loadingItems()}
         loadMore={this.loadMore}
         onAddItem={onAddItem}
         onRemoveItem={onRemoveItem}
+        onChangeStageFinishMap={onChangeStageFinishMap}
       />
     );
   }
@@ -244,7 +230,7 @@ const withQuery = ({ options }) => {
           notifyOnNetworkStatusChange: loadingState === 'readyToLoad'
         })
       })
-    )(withRouter(StageContainer))
+    )(StageContainer)
   );
 };
 
@@ -264,20 +250,4 @@ class WithData extends React.Component<StageProps> {
   }
 }
 
-export default (props: WrapperProps) => {
-  return (
-    <PipelineConsumer>
-      {({ onAddItem, onLoadStage, scheduleStage, onRemoveItem }) => {
-        return (
-          <WithData
-            {...props}
-            scheduleStage={scheduleStage}
-            onLoad={onLoadStage}
-            onAddItem={onAddItem}
-            onRemoveItem={onRemoveItem}
-          />
-        );
-      }}
-    </PipelineConsumer>
-  );
-};
+export default withProps<StageProps>(WithData);

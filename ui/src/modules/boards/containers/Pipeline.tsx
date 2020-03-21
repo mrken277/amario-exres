@@ -2,10 +2,12 @@ import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import EmptyState from 'modules/common/components/EmptyState';
 import Spinner from 'modules/common/components/Spinner';
-import { withProps } from 'modules/common/utils';
+import { IRouterProps } from 'modules/common/types';
+import { router as routerUtils, withProps } from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { withRouter } from 'react-router';
 import styled from 'styled-components';
 import { queries } from '../graphql';
 import {
@@ -29,9 +31,20 @@ type Props = {
   stageMap?: IStageMap;
   queryParams: any;
   options: IOptions;
-};
+} & IRouterProps;
 
-class WithStages extends React.Component<WithStatesQueryProps, {}> {
+class WithStages extends React.Component<
+  WithStatesQueryProps,
+  { stageFinishMap: { [key: string]: boolean } }
+> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      stageFinishMap: {}
+    };
+  }
+
   componentWillReceiveProps(nextProps: Props) {
     const { stagesQuery, queryParams } = this.props;
     const { pipelineId } = queryParams;
@@ -40,6 +53,39 @@ class WithStages extends React.Component<WithStatesQueryProps, {}> {
       stagesQuery.refetch({ pipelineId });
     }
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    const values = Object.values(prevState.stageFinishMap);
+    const stagesCount = this.countStages(prevProps.stageMap);
+
+    console.log('values: ', values);
+
+    // checking if all tasks are finished to work
+    if (values.length === stagesCount && !values.includes(false)) {
+      console.log('finished');
+      const currentTab = sessionStorage.getItem('currentTab');
+
+      // don't reload current tab
+      if (!currentTab) {
+        const pipelineUpdate = sessionStorage.getItem('pipelineUpdate');
+
+        // if there is a newRequest
+        if (pipelineUpdate === 'newRequest') {
+          routerUtils.setParams(this.props.history, { key: Math.random() });
+        }
+
+        sessionStorage.setItem('pipelineUpdate', 'end');
+
+        this.setState({ stageFinishMap: {} });
+      }
+    }
+  }
+
+  onChangeStageFinishMap = (stageId: string) => {
+    this.setState({
+      stageFinishMap: { ...this.state.stageFinishMap, [stageId]: true }
+    });
+  };
 
   queryParamsChanged = (queryParams, nextProps: Props) => {
     const nextQueryParams = nextProps.queryParams;
@@ -91,7 +137,16 @@ class WithStages extends React.Component<WithStatesQueryProps, {}> {
         queryParamsChanged={this.queryParamsChanged}
       >
         <PipelineConsumer>
-          {({ stageLoadMap, itemMap, onDragEnd, stageIds }) => (
+          {({
+            stageLoadMap,
+            itemMap,
+            onDragEnd,
+            stageIds,
+            scheduleStage,
+            onLoadStage,
+            onAddItem,
+            onRemoveItem
+          }) => (
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable
                 droppableId="pipeline"
@@ -122,6 +177,11 @@ class WithStages extends React.Component<WithStatesQueryProps, {}> {
                           queryParams={queryParams}
                           loadingState={stageLoadMap[stageId]}
                           refetchStages={stagesQuery.refetch}
+                          scheduleStage={scheduleStage}
+                          onLoad={onLoadStage}
+                          onAddItem={onAddItem}
+                          onRemoveItem={onRemoveItem}
+                          onChangeStageFinishMap={this.onChangeStageFinishMap}
                         />
                       );
                     })}
@@ -179,5 +239,5 @@ export default withProps<Props>(
         }
       })
     })
-  )(WithStatesQuery)
+  )(withRouter(WithStatesQuery))
 );

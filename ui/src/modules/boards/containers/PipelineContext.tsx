@@ -69,10 +69,12 @@ export class PipelineProvider extends React.Component<Props, State> {
 
     const { initialItemMap } = props;
 
+    const stageIds = Object.keys(initialItemMap || {});
+
     this.state = {
       itemMap: initialItemMap || {},
       stageLoadMap: {},
-      stageIds: Object.keys(initialItemMap || {}),
+      stageIds,
       isShowLabel: false
     };
 
@@ -259,7 +261,7 @@ export class PipelineProvider extends React.Component<Props, State> {
    * - Mark stage's task as complete
    * - Mark stage's loading state as loaded
    */
-  onLoadStage = (stageId: string, items: IItem[], callback?: () => void) => {
+  onLoadStage = (stageId: string, items: IItem[]) => {
     const { itemMap, stageLoadMap } = this.state;
     const task = PipelineProvider.tasks.find(t => t.stageId === stageId);
 
@@ -267,26 +269,10 @@ export class PipelineProvider extends React.Component<Props, State> {
       task.isComplete = true;
     }
 
-    this.setState(
-      {
-        itemMap: { ...itemMap, [stageId]: items },
-        stageLoadMap: { ...stageLoadMap, [stageId]: 'loaded' }
-      },
-      () => {
-        const values = Object.values(this.state.stageLoadMap);
-        console.log('values: ', values);
-
-        // checking if all tasks are finished to work
-        if (
-          values.length === this.state.stageIds.length &&
-          !values.includes('readyToLoad')
-        ) {
-          if (callback) {
-            callback();
-          }
-        }
-      }
-    );
+    this.setState({
+      itemMap: { ...itemMap, [stageId]: items },
+      stageLoadMap: { ...stageLoadMap, [stageId]: 'loaded' }
+    });
   };
 
   /*

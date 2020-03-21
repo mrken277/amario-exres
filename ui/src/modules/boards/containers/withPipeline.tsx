@@ -39,13 +39,12 @@ const withPipeline = Component => {
               const pipelineUpdate =
                 sessionStorage.getItem('pipelineUpdate') || 'end';
 
-              console.log('pipelineUpdate: ', pipelineUpdate);
-
               if (pipelineUpdate === 'end') {
                 sessionStorage.setItem('pipelineUpdate', 'start');
 
                 routerUtils.setParams(history, { key: Math.random() });
               } else {
+                // if last subscription is not end
                 sessionStorage.setItem('pipelineUpdate', 'newRequest');
               }
             }
