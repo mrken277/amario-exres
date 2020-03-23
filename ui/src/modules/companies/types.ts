@@ -23,6 +23,7 @@ export interface ICompanyDoc {
   industry?: string;
   website?: string;
   plan?: string;
+  state?: string;
   parentCompanyId?: string;
 
   ownerId?: string;

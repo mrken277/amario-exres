@@ -109,7 +109,7 @@ class ActionSection extends React.Component<Props> {
   }
 
   renderChangeStateForm() {
-    const { changeState } = this.props;
+    const { changeState, coc, cocType } = this.props;
     
     if (!changeState) {
       return null;
@@ -121,11 +121,14 @@ class ActionSection extends React.Component<Props> {
       { value: 'customer', label: 'Customer' },
     ];
 
+    const state = cocType === 'customer' ? coc.state : '';
+
     const modalContent = () => {
       return (
         <FormGroup>
           <ControlLabel>State</ControlLabel>
-          <FormControl componentClass="select" options={options} onChange={this.onChangeState} />
+          <FormControl componentClass="select" defaultValue={state} options={options} onChange={this.onChangeState} />
+          
         </FormGroup>
       );
     };
@@ -134,7 +137,6 @@ class ActionSection extends React.Component<Props> {
       <ModalTrigger
         title={__('Change state')}
         trigger={<a href="#changeState">{__('Change state')}</a>}
-        size="lg"
         content={modalContent}
       />
     );

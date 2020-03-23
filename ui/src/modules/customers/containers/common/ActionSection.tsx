@@ -54,7 +54,7 @@ const ActionSectionContainer = (props: FinalProps) => {
         value,
       }
     })
-      .then(response => {
+      .then(() => {
         Alert.success('You successfully changed the state');
       })
       .catch(e => {
