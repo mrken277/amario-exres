@@ -27,6 +27,7 @@ type Props = {
   showChat?: boolean;
   showLauncher?: boolean;
   forceLogoutWhenResolve?: boolean;
+  showVideoCallRequest?: boolean;
 };
 
 type State = {
@@ -52,7 +53,7 @@ class Options extends React.Component<Props, State> {
     checked
   }: {
     label: string;
-    description: string;
+    description?: string;
     checked?: boolean;
     onChange: (e: React.FormEvent) => void;
   }) {
@@ -87,6 +88,9 @@ class Options extends React.Component<Props, State> {
 
     const notifyCustomerChange = e =>
       this.onChangeFunction('notifyCustomer', e.target.checked);
+
+    const showVideoCallRequestChange = e =>
+      this.onChangeFunction('showVideoCallRequest', e.target.checked);
 
     const requireAuthChange = e =>
       this.onChangeFunction('requireAuth', e.target.checked);
@@ -163,6 +167,12 @@ class Options extends React.Component<Props, State> {
               'If customer is offline and inserted email, it will send email when operator respond',
             checked: this.props.notifyCustomer,
             onChange: notifyCustomerChange
+          })}
+
+          {this.renderToggle({
+            label: 'Show video call request',
+            checked: this.props.showVideoCallRequest,
+            onChange: showVideoCallRequestChange
           })}
         </LeftItem>
       </FlexItem>

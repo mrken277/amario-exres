@@ -65,6 +65,7 @@ export interface IMessengerData {
   showChat?: boolean;
   showLauncher?: boolean;
   forceLogoutWhenResolve?: boolean;
+  showVideoCallRequest?: boolean;
   onlineHours?: IOnlineHour[];
   links?: ILink;
 }

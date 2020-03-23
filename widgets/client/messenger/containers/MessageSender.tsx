@@ -19,7 +19,7 @@ const Container = (props: Props) => {
         sendTypingInfo,
         sendFile,
         readMessages,
-        getUiOptions
+        getMessengerData
       }) => {
         return (
           <MessageSender
@@ -36,7 +36,7 @@ const Container = (props: Props) => {
             }}
             readMessages={readMessages}
             sendFile={sendFile}
-            videoCallUsageStatus={getUiOptions().videoCallUsageStatus}
+            showVideoCallRequest={getMessengerData().showVideoCallRequest}
           />
         );
       }}
