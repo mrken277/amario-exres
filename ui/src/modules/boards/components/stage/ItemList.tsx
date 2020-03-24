@@ -198,6 +198,8 @@ export default class ItemList extends React.Component<Props> {
       onRemoveItem
     } = this.props;
 
+    console.log('listId: ', listId);
+
     return (
       <Droppable
         droppableId={listId}

@@ -25,7 +25,7 @@ type StageProps = {
   queryParams: IFilterParams;
   options: IOptions;
   refetchStages: ({ pipelineId }: { pipelineId?: string }) => Promise<any>;
-  onLoad: (stageId: string, items: IItem[], callback?: () => void) => void;
+  onLoad: (stageId: string, items: IItem[]) => void;
   scheduleStage: (stageId: string) => void;
   onAddItem: (stageId: string, item: IItem) => void;
   onRemoveItem: (itemId: string, stageId: string) => void;
@@ -44,11 +44,7 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
     if (itemsQuery && !itemsQuery.loading && loadingState !== 'loaded') {
       // Send loaded items to PipelineContext so that context is able to set it
       // to global itemsMap
-      onLoad(
-        stage._id,
-        itemsQuery[options.queriesName.itemsQuery] || [],
-        this.checkSubscribe
-      );
+      onLoad(stage._id, itemsQuery[options.queriesName.itemsQuery] || []);
     }
   }
 
@@ -58,8 +54,6 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
     // register stage to queue on first render
     scheduleStage(stage._id);
   }
-
-  checkSubscribe = () => {};
 
   loadMore = () => {
     const { onLoad, stage, items, queryParams, options } = this.props;
@@ -79,11 +73,10 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
         }
       })
       .then(({ data }: any) => {
-        onLoad(
-          stage._id,
-          [...items, ...(data[options.queriesName.itemsQuery] || [])],
-          this.checkSubscribe
-        );
+        onLoad(stage._id, [
+          ...items,
+          ...(data[options.queriesName.itemsQuery] || [])
+        ]);
       })
       .catch(e => {
         Alert.error(e.message);
@@ -183,7 +176,7 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
         items={items}
         archiveItems={this.archiveItems}
         archiveList={this.archiveList}
-        loadingItems={loadingItems()}
+        loadingItems={loadingItems}
         loadMore={this.loadMore}
         onAddItem={onAddItem}
         onRemoveItem={onRemoveItem}

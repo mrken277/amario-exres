@@ -26,7 +26,7 @@ import { renderAmount } from '../../utils';
 import ItemList from '../stage/ItemList';
 
 type Props = {
-  loadingItems: boolean;
+  loadingItems: () => boolean;
   index: number;
   stage: IStage;
   length: number;
@@ -52,7 +52,7 @@ export default class Stage extends React.Component<Props, {}> {
   componentDidMount() {
     // Load items until scroll created
     const handle = setInterval(() => {
-      if (this.props.loadingItems) {
+      if (this.props.loadingItems()) {
         return;
       }
 
@@ -131,7 +131,7 @@ export default class Stage extends React.Component<Props, {}> {
 
     if (
       index !== nextProps.index ||
-      loadingItems !== nextProps.loadingItems ||
+      loadingItems() !== nextProps.loadingItems() ||
       length !== nextProps.length ||
       JSON.stringify(stage) !== JSON.stringify(nextProps.stage) ||
       JSON.stringify(items) !== JSON.stringify(nextProps.items)
@@ -149,7 +149,7 @@ export default class Stage extends React.Component<Props, {}> {
   renderItemList() {
     const { stage, items, loadingItems, options, onRemoveItem } = this.props;
 
-    if (loadingItems) {
+    if (loadingItems()) {
       return (
         <LoadingContent>
           <img alt="Loading" src="/images/loading-content.gif" />

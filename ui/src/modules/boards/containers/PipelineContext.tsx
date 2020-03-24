@@ -87,8 +87,6 @@ export class PipelineProvider extends React.Component<Props, State> {
     const { queryParams, queryParamsChanged, initialItemMap } = this.props;
 
     if (queryParamsChanged(queryParams, nextProps.queryParams)) {
-      console.log('queryParamsChanged');
-
       const { stageIds } = this.state;
 
       PipelineProvider.tasks = [];
@@ -97,8 +95,6 @@ export class PipelineProvider extends React.Component<Props, State> {
       stageIds.forEach((stageId: string) => {
         this.scheduleStage(stageId);
       });
-    } else {
-      console.log('queryParamsNotChanged');
     }
 
     // when adding or removing stage
@@ -134,17 +130,16 @@ export class PipelineProvider extends React.Component<Props, State> {
     }
   }
 
-  componentDidUpdate() {
-    const { stageIds, stageLoadMap } = this.state;
-    console.log('stageLoadMap: ', stageLoadMap);
-    const values = Object.values(stageLoadMap);
+  // componentDidUpdate() {
+  //   const { stageIds, stageLoadMap } = this.state;
+  //   const values = Object.values(stageLoadMap);
 
-    if (values.length === stageIds.length && !values.includes('readyToLoad')) {
-      console.log('finished');
+  //   if (values.length === stageIds.length && !values.includes('readyToLoad')) {
+  //     console.log('finished');
 
-      this.props.afterFinish();
-    }
-  }
+  //     this.props.afterFinish();
+  //   }
+  // }
 
   onDragEnd = result => {
     // dropped nowhere

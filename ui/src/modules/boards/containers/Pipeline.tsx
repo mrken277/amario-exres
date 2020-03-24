@@ -64,7 +64,6 @@ const WithStages = (props: WithStatesQueryProps) => {
 
   const afterFinish = () => {
     const currentTab = sessionStorage.getItem('currentTab');
-    console.log('currentTab: ');
 
     // don't reload current tab
     if (!currentTab) {
