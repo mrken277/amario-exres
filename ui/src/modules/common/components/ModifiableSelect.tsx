@@ -265,7 +265,7 @@ class ModifiableSelect extends React.PureComponent<Props, State> {
         </FillContent>
         
 
-        <Button onClick={this.handleAdding} size="small" uppercase={false} icon="plus-circle">
+        <Button onClick={this.handleAdding} size="small" btnStyle="primary" uppercase={false} icon="plus-circle">
           {`${__('Add')} ${__(name)}`}
         </Button>
       </Wrapper>

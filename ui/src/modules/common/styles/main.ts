@@ -124,15 +124,6 @@ const FormColumn = styled.div`
   }
 `;
 
-const ColumnTitle = styled.h4`
-  text-transform: uppercase;
-  font-weight: ${typography.fontWeightMedium};
-  border-bottom: 1px dotted ${colors.colorShadowGray};
-  padding: ${dimensions.unitSpacing}px 0;
-  font-size: 14px;
-  margin: ${dimensions.unitSpacing}px 0 ${dimensions.coreSpacing}px 0;
-`;
-
 const ModalFooter = styled.div`
   text-align: right;
   margin-top: 30px;
@@ -200,7 +191,10 @@ const ScrollWrapper = styledTS<{ calcHeight?: string }>(styled.div)`
       ? `calc(100vh - ${props.calcHeight}px)`
       : 'calc(100vh - 280px)'};
   overflow: auto;
-  padding-right: 20px;
+  padding: 5px 10px 0 20px;
+  margin-left: -20px;
+  margin-right: -10px;
+  margin-top: -5px;
 `;
 
 const DateContainer = styled.div`
@@ -289,7 +283,6 @@ export {
   Links,
   FormWrapper,
   FormColumn,
-  ColumnTitle,
   CenterContent,
   ActivityContent,
   DropIcon,
