@@ -171,8 +171,7 @@ class CustomersList extends React.Component<IProps, State> {
       history,
       queryParams,
       exportData,
-      mergeCustomerLoading,
-      type
+      mergeCustomerLoading
     } = this.props;
 
     const addTrigger = (
