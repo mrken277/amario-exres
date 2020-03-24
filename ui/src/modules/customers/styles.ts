@@ -48,12 +48,17 @@ const Action = styled.div`
   margin-bottom: ${dimensions.unitSpacing}px;
 `;
 
-const States = styled(Action)`
-  flex-direction: column;
+const States = styled.div`
+  display: flex;
+  margin-bottom: ${dimensions.unitSpacing}px;
 
   > div {
     width: 100%;
-    margin-right: 0;
+
+    b {
+      font-size: 16px;
+      line-height: 22px;
+    }
   }
 `;
 
