@@ -162,6 +162,17 @@ const MailBox = styled.div`
   transition: all ease 0.3s;
 `;
 
+const Status = styledTS<{ verified: boolean }>(styled.span)`
+  background: ${props => props.verified ? colors.colorCoreGreen : colors.bgGray};
+  color: ${props => props.verified ? colors.colorWhite : colors.textSecondary};
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  border-radius: 9px;
+  font-size: 11px;
+  line-height: 18px;
+`;
+
 export {
   InfoTitle,
   InfoDetail,
@@ -178,5 +189,6 @@ export {
   BooleanStatus,
   CustomerState,
   UserHeader,
-  MailBox
+  MailBox,
+  Status
 };

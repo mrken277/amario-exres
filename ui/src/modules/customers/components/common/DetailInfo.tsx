@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
+import Icon from 'modules/common/components/Icon';
+import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
 import { GENDER_TYPES, LEAD_STATUS_TYPES } from 'modules/customers/constants';
+import { Status } from 'modules/customers/styles';
 import { ICustomer } from 'modules/customers/types';
 import {
   FieldStyle,
@@ -27,16 +30,35 @@ class DetailInfo extends React.PureComponent<Props> {
     );
   }
 
+  renderEmail(status?: string, email?: string) {
+    return (
+      <li>
+        <FieldStyle>{__('Primary email')}:</FieldStyle>
+        <SidebarCounter>
+          {email && 
+            <a href={`mailto:${email}`}>
+              {email}
+
+              {status && 
+                <Tip text={`Status: ${status}`} placement="top">
+                  <Status verified={status === 'valid'}>
+                    <Icon icon={status === 'valid' ? 'shield-check' : 'shield-slash'} />
+                  </Status>
+                </Tip>
+              }
+            </a>
+          }
+        </SidebarCounter>
+      </li>
+    );
+  }
+
   renderPosition(customer) {
     if (!this.props.hasPosition) {
       return null;
     }
 
-    return (
-      <React.Fragment>
-        {this.renderRow('Position', customer.position)}
-      </React.Fragment>
-    );
+    return this.renderRow('Position', customer.position);
   }
 
   render() {
@@ -45,8 +67,7 @@ class DetailInfo extends React.PureComponent<Props> {
     return (
       <SidebarList className="no-link">
         {this.renderRow('Code', customer.code)}
-        {this.renderRow('Primary email', customer.primaryEmail)}
-        {this.renderRow('Primary email status', customer.emailValidationStatus)}
+        {this.renderEmail(customer.emailValidationStatus, customer.primaryEmail)}
         {this.renderRow('Primary phone', customer.primaryPhone)}
         {this.renderPosition(customer)}
         {this.renderRow(

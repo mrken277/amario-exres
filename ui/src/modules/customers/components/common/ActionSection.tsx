@@ -50,7 +50,7 @@ class ActionSection extends React.Component<Props> {
           dialogClassName="middle"
           title="Email"
           trigger={
-            <Button disabled={primaryEmail ? false : true} size="small" btnStyle="success">
+            <Button disabled={primaryEmail ? false : true} size="small" btnStyle="primary">
               {__('Email')}
             </Button>
           }
@@ -60,7 +60,7 @@ class ActionSection extends React.Component<Props> {
         />
         <Button
           href={primaryPhone && `tel:${primaryPhone}`}
-          size="small" btnStyle="success"
+          size="small" btnStyle="primary"
           disabled={primaryPhone ? false : true}
         >
           {__('Call')}
@@ -71,7 +71,7 @@ class ActionSection extends React.Component<Props> {
 
   renderButton() {
     return (
-      <Button size="small" btnStyle="success">
+      <Button size="small" btnStyle="primary">
         {__('Action')} <Icon icon="angle-down" />
       </Button>
     );
