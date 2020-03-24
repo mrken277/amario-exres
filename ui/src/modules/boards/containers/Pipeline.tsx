@@ -31,7 +31,7 @@ type Props = {
   stageMap?: IStageMap;
   queryParams: any;
   options: IOptions;
-} & IRouterProps;
+};
 
 const WithStages = (props: WithStatesQueryProps) => {
   const {
@@ -179,7 +179,8 @@ const WithStages = (props: WithStatesQueryProps) => {
 
 type WithStatesQueryProps = {
   stagesQuery: StagesQueryResponse;
-} & Props;
+} & IRouterProps &
+  Props;
 
 const WithStatesQuery = (props: WithStatesQueryProps) => {
   const { stagesQuery } = props;
