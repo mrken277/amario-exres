@@ -1,9 +1,13 @@
+import client from 'apolloClient';
+import gql from 'graphql-tag';
 import FormControl from 'modules/common/components/form/Control';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
 import { FlexItem, LeftItem } from 'modules/common/components/step/styles';
 import Toggle from 'modules/common/components/Toggle';
+import { Alert } from 'modules/common/utils';
 import { LANGUAGES } from 'modules/settings/general/constants';
+import { queries } from 'modules/settings/integrations/graphql';
 import React from 'react';
 import SelectBrand from '../../../containers/SelectBrand';
 import { Description } from '../../../styles';
@@ -89,8 +93,27 @@ class Options extends React.Component<Props, State> {
     const notifyCustomerChange = e =>
       this.onChangeFunction('notifyCustomer', e.target.checked);
 
-    const showVideoCallRequestChange = e =>
-      this.onChangeFunction('showVideoCallRequest', e.target.checked);
+    const showVideoCallRequestChange = e => {
+      const checked = e.target.checked;
+
+      if (checked) {
+        client
+          .query({
+            query: gql(queries.fetchApi),
+            variables: { path: '/videoCall/usageStatus', params: {} },
+            fetchPolicy: 'network-only'
+          })
+          .then(({ data: { integrationsFetchApi } }) => {
+            if (integrationsFetchApi) {
+              this.onChangeFunction('showVideoCallRequest', true);
+            } else {
+              Alert.error('Please configure a video call settings');
+            }
+          });
+      } else {
+        this.onChangeFunction('showVideoCallRequest', false);
+      }
+    };
 
     const requireAuthChange = e =>
       this.onChangeFunction('requireAuth', e.target.checked);
