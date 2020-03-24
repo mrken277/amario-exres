@@ -1,6 +1,6 @@
 import Button from 'modules/common/components/Button';
 import DropdownToggle from 'modules/common/components/DropdownToggle';
-import { ControlLabel, FormControl, FormGroup } from 'modules/common/components/form';
+import { ControlLabel } from 'modules/common/components/form';
 import Icon from 'modules/common/components/Icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { __, Alert, confirm } from 'modules/common/utils';
@@ -10,8 +10,9 @@ import { ICompany } from 'modules/companies/types';
 import TargetMerge from 'modules/customers/components/common/TargetMerge';
 import CustomersMerge from 'modules/customers/components/detail/CustomersMerge';
 import CustomerForm from 'modules/customers/containers/CustomerForm';
-import { Actions, MailBox } from 'modules/customers/styles';
+import { Actions, MailBox, States } from 'modules/customers/styles';
 import { ICustomer } from 'modules/customers/types';
+import { Box } from 'modules/settings/growthHacks/styles';
 import MailForm from 'modules/settings/integrations/containers/mail/MailForm';
 import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -25,7 +26,15 @@ type Props = {
   changeState?: (value: string) => void;
   isSmall?: boolean;
 };
-class ActionSection extends React.Component<Props> {
+class ActionSection extends React.Component<Props, { customerState: string}> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      customerState: props.cocType === 'customer' ? props.coc.state : ''
+    };
+  }
+
   renderActions() {
     const { coc, cocType } = this.props;
     const { primaryPhone, primaryEmail } = coc;
@@ -100,36 +109,43 @@ class ActionSection extends React.Component<Props> {
     );
   }
 
-  onChangeState = (e) => {
+  renderBox(type, desc) {
     const { changeState } = this.props;
 
-    if (changeState) {
-      changeState(e.target.value);
-    }
-  }
-
-  renderChangeStateForm() {
-    const { changeState, coc, cocType } = this.props;
-    
     if (!changeState) {
       return null;
     }
 
-    const options = [
-      { value: 'visitor', label: 'Visitor' },
-      { value: 'lead', label: 'Lead' },
-      { value: 'customer', label: 'Customer' },
-    ];
+    const onClick = () => {
+      this.setState({ customerState: type });
+      changeState(type);
+    };
 
-    const state = cocType === 'customer' ? coc.state : '';
+    return (
+      <Box selected={this.state.customerState === type} onClick={onClick}>
+        <b>{type}</b>
+        <p>
+          {__(desc)}
+        </p>
+      </Box>
+    );
+  }
+
+  renderChangeStateForm() {
+    const options = [
+      { value: 'visitor', desc: 'A person who contact with you and stored in our database.' },
+      { value: 'lead', desc: 'A person who contact with you and preparing to buy some service or product.' },
+      { value: 'customer', desc: 'A person who contact with you and bought some service or product.' },
+    ];
 
     const modalContent = () => {
       return (
-        <FormGroup>
-          <ControlLabel>State</ControlLabel>
-          <FormControl componentClass="select" defaultValue={state} options={options} onChange={this.onChangeState} />
-          
-        </FormGroup>
+        <>
+          <ControlLabel>Change State</ControlLabel>
+          <States>
+            {options.map(option => this.renderBox(option.value, option.desc))}
+          </States>
+        </>
       );
     };
 
@@ -138,6 +154,8 @@ class ActionSection extends React.Component<Props> {
         title={__('Change state')}
         trigger={<a href="#changeState">{__('Change state')}</a>}
         content={modalContent}
+        hideHeader={true}
+        centered={true}
       />
     );
   }

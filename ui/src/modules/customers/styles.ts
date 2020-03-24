@@ -48,6 +48,15 @@ const Action = styled.div`
   margin-bottom: ${dimensions.unitSpacing}px;
 `;
 
+const States = styled(Action)`
+  flex-direction: column;
+
+  > div {
+    width: 100%;
+    margin-right: 0;
+  }
+`;
+
 const List = styled(SidebarList)`
   li {
     border-bottom: 1px solid ${colors.borderPrimary};
@@ -190,5 +199,6 @@ export {
   CustomerState,
   UserHeader,
   MailBox,
-  Status
+  Status,
+  States
 };

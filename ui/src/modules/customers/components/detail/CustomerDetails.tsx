@@ -12,7 +12,6 @@ import MailForm from 'modules/settings/integrations/containers/mail/MailForm';
 import React from 'react';
 import { ICustomer } from '../../types';
 import InfoSection from '../common/InfoSection';
-import LeadState from '../common/leadState/LeadState';
 import LeftSidebar from './LeftSidebar';
 import RightSidebar from './RightSidebar';
 
@@ -122,7 +121,6 @@ class CustomerDetails extends React.Component<Props> {
             <InfoSection nameSize={16} avatarSize={60} customer={customer}>
               <ActionSection customer={customer} />
             </InfoSection>
-            {!isCustomer && <LeadState />}
           </UserHeader>
         }
         leftSidebar={
