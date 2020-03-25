@@ -8,6 +8,7 @@ import AuthRoutes from './modules/auth/routes';
 import { IUser } from './modules/auth/types';
 import CompaniesRoutes from './modules/companies/routes';
 import CustomersRoutes from './modules/customers/routes';
+import DashboardRoutes from './modules/dashboard/routes';
 import DealsRoutes from './modules/deals/routes';
 import EngageRoutes from './modules/engage/routes';
 import GrowthHackRoutes from './modules/growthHacks/routes';
@@ -48,6 +49,7 @@ const renderRoutes = currentUser => {
           <TaskRoutes />
           <GrowthHackRoutes />
           <VideoCallRoutes />
+          <DashboardRoutes />
         </MainLayout>
       </>
     );
@@ -56,9 +58,9 @@ const renderRoutes = currentUser => {
   return (
     <Switch>
       <Route
-        key="/confirmation"
+        key='/confirmation'
         exact={true}
-        path="/confirmation"
+        path='/confirmation'
         component={userConfirmation}
       />
       <AuthRoutes />
