@@ -78,6 +78,57 @@ export default class Stage extends React.Component<Props, {}> {
     }, 1000);
   }
 
+  componentDidUpdate(prevProps) {
+    const { current } = this.bodyRef;
+
+    if (!current) {
+      return;
+    }
+
+    const isScrolled = current.scrollHeight > current.clientHeight;
+    const { items, stage, onChangeStageFinishMap } = this.props;
+
+    // console.log(
+    //   '------------------------------------------------------------------'
+    // );
+    // console.log('stage.name: ', stage.name);
+    // console.log('isScrolled: ', isScrolled);
+    // console.log(
+    //   'prevProps.stage.itemsTotalCount: ',
+    //   prevProps.stage.itemsTotalCount
+    // );
+    // console.log('prevProps.items.length: ', prevProps.items.length);
+    // console.log('stage.itemsTotalCount: ', stage.itemsTotalCount);
+    // console.log('items.length: ', items.length);
+
+    if (!isScrolled && items.length < stage.itemsTotalCount) {
+      this.props.loadMore();
+    } else if (
+      (prevProps.stage.itemsTotalCount !== stage.itemsTotalCount ||
+        prevProps.items.length !== items.length) &&
+      (isScrolled || items.length === stage.itemsTotalCount)
+    ) {
+      console.log('finish: ', stage.name);
+      onChangeStageFinishMap(stage._id);
+    }
+  }
+
+  shouldComponentUpdate(nextProps: Props) {
+    const { stage, index, length, items, loadingItems } = this.props;
+
+    if (
+      index !== nextProps.index ||
+      loadingItems() !== nextProps.loadingItems() ||
+      length !== nextProps.length ||
+      JSON.stringify(stage) !== JSON.stringify(nextProps.stage) ||
+      items.length !== nextProps.items.length
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   onScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
     const bottom =
@@ -124,22 +175,6 @@ export default class Stage extends React.Component<Props, {}> {
     }
 
     return data;
-  }
-
-  shouldComponentUpdate(nextProps: Props) {
-    const { stage, index, length, items, loadingItems } = this.props;
-
-    if (
-      index !== nextProps.index ||
-      loadingItems() !== nextProps.loadingItems() ||
-      length !== nextProps.length ||
-      JSON.stringify(stage) !== JSON.stringify(nextProps.stage) ||
-      JSON.stringify(items) !== JSON.stringify(nextProps.items)
-    ) {
-      return true;
-    }
-
-    return false;
   }
 
   onClosePopover = () => {
@@ -218,6 +253,8 @@ export default class Stage extends React.Component<Props, {}> {
     if (!stage) {
       return <EmptyState icon="clipboard" text="No stage" size="small" />;
     }
+
+    console.log('items: ', this.props.items);
 
     return (
       <Draggable

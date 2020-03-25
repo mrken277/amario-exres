@@ -21,7 +21,10 @@ type Props = {
   initialItemMap?: IItemMap;
   options: IOptions;
   queryParams: IFilterParams & INonFilterParams;
-  queryParamsChanged: (queryParams: IFilterParams, args: any) => boolean;
+  queryParamsChanged: (
+    queryParams: IFilterParams,
+    nextQueryParams: IFilterParams
+  ) => boolean;
   afterFinish: () => void;
 };
 
@@ -34,6 +37,7 @@ type State = {
   stageLoadMap: StageLoadMap;
   stageIds: string[];
   isShowLabel: boolean;
+  stageFinishMap: { [key: string]: boolean };
 };
 
 interface IStore {
@@ -49,6 +53,7 @@ interface IStore {
   onUpdateItem: (item: IItem, prevStageId?: string) => void;
   isShowLabel: boolean;
   toggleLabels: () => void;
+  onChangeStageFinishMap: (stageId: string) => void;
 }
 
 const PipelineContext = React.createContext({} as IStore);
@@ -76,7 +81,8 @@ export class PipelineProvider extends React.Component<Props, State> {
       itemMap: initialItemMap || {},
       stageLoadMap: {},
       stageIds,
-      isShowLabel: false
+      isShowLabel: false,
+      stageFinishMap: {}
     };
 
     PipelineProvider.tasks = [];
@@ -91,6 +97,10 @@ export class PipelineProvider extends React.Component<Props, State> {
 
       PipelineProvider.tasks = [];
       PipelineProvider.currentTask = null;
+
+      this.setState({
+        stageLoadMap: {}
+      });
 
       stageIds.forEach((stageId: string) => {
         this.scheduleStage(stageId);
@@ -130,16 +140,24 @@ export class PipelineProvider extends React.Component<Props, State> {
     }
   }
 
-  // componentDidUpdate() {
-  //   const { stageIds, stageLoadMap } = this.state;
-  //   const values = Object.values(stageLoadMap);
+  componentDidUpdate() {
+    const { stageFinishMap } = this.state;
 
-  //   if (values.length === stageIds.length && !values.includes('readyToLoad')) {
-  //     console.log('finished');
+    console.log('stageFinishMap: ', stageFinishMap);
 
-  //     this.props.afterFinish();
-  //   }
-  // }
+    if (Object.keys(stageFinishMap).length === 2) {
+      console.log('finish');
+      this.props.afterFinish();
+
+      this.setState({ stageFinishMap: {} });
+    }
+  }
+
+  onChangeStageFinishMap = (stageId: string) => {
+    this.setState({
+      stageFinishMap: { ...this.state.stageFinishMap, [stageId]: true }
+    });
+  };
 
   onDragEnd = result => {
     // dropped nowhere
@@ -418,7 +436,8 @@ export class PipelineProvider extends React.Component<Props, State> {
           stageLoadMap,
           stageIds,
           isShowLabel,
-          toggleLabels: this.toggleLabels
+          toggleLabels: this.toggleLabels,
+          onChangeStageFinishMap: this.onChangeStageFinishMap
         }}
       >
         {this.props.children}

@@ -95,11 +95,12 @@ class DraggableContainer extends React.Component<
   render() {
     const { stageId, item, index, options } = this.props;
     const { isDragDisabled } = this.state;
+    const uniqueId = `${item._id}-${Math.random().toString()}`;
 
     return (
       <Draggable
-        key={item._id}
-        draggableId={`${item._id}-${Math.random().toString()}`}
+        key={uniqueId}
+        draggableId={uniqueId}
         index={index}
         isDragDisabled={isDragDisabled}
       >
@@ -197,8 +198,6 @@ export default class ItemList extends React.Component<Props> {
       options,
       onRemoveItem
     } = this.props;
-
-    console.log('listId: ', listId);
 
     return (
       <Droppable

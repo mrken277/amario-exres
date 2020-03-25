@@ -39,8 +39,6 @@ const withPipeline = Component => {
               const pipelineUpdate =
                 sessionStorage.getItem('pipelineUpdate') || 'end';
 
-              console.log('pipelineUpdate: ', pipelineUpdate);
-
               if (pipelineUpdate === 'end') {
                 sessionStorage.setItem('pipelineUpdate', 'start');
 

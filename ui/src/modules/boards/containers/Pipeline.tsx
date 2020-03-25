@@ -4,7 +4,7 @@ import EmptyState from 'modules/common/components/EmptyState';
 import Spinner from 'modules/common/components/Spinner';
 import { IRouterProps } from 'modules/common/types';
 import { router as routerUtils, withProps } from 'modules/common/utils';
-import React, { useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { withRouter } from 'react-router';
@@ -33,36 +33,44 @@ type Props = {
   options: IOptions;
 };
 
-const WithStages = (props: WithStatesQueryProps) => {
-  const {
-    initialItemMap,
-    pipeline,
-    stageMap,
-    options,
-    queryParams,
-    stagesQuery
-  } = props;
+class WithStages extends Component<
+  WithStagesQueryProps,
+  { stageFinishMap: any }
+> {
+  constructor(props) {
+    super(props);
 
-  const stagesCount = Object.keys(stageMap || {}).length;
-  // const initStageFinishMap = Object.keys(stageMap || {}).reduce(
-  //   (acc, stageId) => ({ ...acc, [stageId]: false }),
-  //   {}
-  // );
+    this.state = {
+      stageFinishMap: {}
+    };
+  }
 
-  const [stageFinishMap, setStageFinishMap] = useState({});
+  componentWillReceiveProps(nextProps: Props) {
+    const { stagesQuery, queryParams } = this.props;
+    const { pipelineId } = queryParams;
 
-  useEffect(
-    () => {
-      const { pipelineId } = props.queryParams;
+    if (this.queryParamsChanged(queryParams, nextProps.queryParams)) {
+      stagesQuery.refetch({ pipelineId });
+    }
+  }
 
-      if (queryParamsChanged(queryParams, props.queryParams)) {
-        stagesQuery.refetch({ pipelineId });
-      }
-    },
-    [props.queryParams]
-  );
+  queryParamsChanged = (queryParams: any, nextQueryParams: any) => {
+    if (nextQueryParams.itemId || (!queryParams.key && queryParams.itemId)) {
+      return false;
+    }
 
-  const afterFinish = () => {
+    if (queryParams !== nextQueryParams) {
+      return true;
+    }
+
+    return false;
+  };
+
+  countStages(obj) {
+    return Object.keys(obj).length;
+  }
+
+  afterFinish = () => {
     const currentTab = sessionStorage.getItem('currentTab');
 
     // don't reload current tab
@@ -71,118 +79,113 @@ const WithStages = (props: WithStatesQueryProps) => {
 
       // if there is a newRequest
       if (pipelineUpdate === 'newRequest') {
-        routerUtils.setParams(props.history, { key: Math.random() });
+        routerUtils.setParams(this.props.history, { key: Math.random() });
       }
 
       sessionStorage.setItem('pipelineUpdate', 'end');
     }
   };
 
-  const queryParamsChanged = (beforeQueryParams, nextQueryParams) => {
-    if (
-      nextQueryParams.itemId ||
-      (!beforeQueryParams.key && queryParams.itemId)
-    ) {
-      return false;
+  render() {
+    const {
+      initialItemMap,
+      pipeline,
+      stageMap,
+      options,
+      queryParams,
+      stagesQuery
+    } = this.props;
+
+    const stagesCount = this.countStages(stageMap);
+
+    if (stagesCount === 0) {
+      return (
+        <EmptyState
+          image="/images/actions/8.svg"
+          text="No stage in this pipeline"
+          size="small"
+          light={true}
+        />
+      );
     }
 
-    if (beforeQueryParams !== nextQueryParams) {
-      return true;
-    }
-
-    return false;
-  };
-
-  const onChangeStageFinishMap = (stageId: string) => {
-    setStageFinishMap({ ...stageFinishMap, [stageId]: true });
-  };
-
-  if (stagesCount === 0) {
     return (
-      <EmptyState
-        image="/images/actions/8.svg"
-        text="No stage in this pipeline"
-        size="small"
-        light={true}
-      />
+      <PipelineProvider
+        pipeline={pipeline}
+        initialItemMap={initialItemMap}
+        queryParams={queryParams}
+        options={options}
+        queryParamsChanged={this.queryParamsChanged}
+        afterFinish={this.afterFinish}
+      >
+        <PipelineConsumer>
+          {({
+            stageLoadMap,
+            itemMap,
+            onDragEnd,
+            stageIds,
+            scheduleStage,
+            onLoadStage,
+            onAddItem,
+            onRemoveItem,
+            onChangeStageFinishMap
+          }) => (
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable
+                droppableId="pipeline"
+                type="STAGE"
+                direction="horizontal"
+                ignoreContainerClipping={true}
+              >
+                {provided => (
+                  <Container
+                    innerRef={provided.innerRef}
+                    {...provided.droppableProps}
+                  >
+                    {stageIds.map((stageId, index) => {
+                      const stage = stageMap && stageMap[stageId];
+
+                      if (!stage) {
+                        return null;
+                      }
+
+                      return (
+                        <Stage
+                          options={options}
+                          key={stageId}
+                          index={index}
+                          length={stagesCount}
+                          stage={stage}
+                          items={itemMap[stageId]}
+                          queryParams={queryParams}
+                          loadingState={stageLoadMap[stageId]}
+                          refetchStages={stagesQuery.refetch}
+                          scheduleStage={scheduleStage}
+                          onLoad={onLoadStage}
+                          onAddItem={onAddItem}
+                          onRemoveItem={onRemoveItem}
+                          onChangeStageFinishMap={onChangeStageFinishMap}
+                        />
+                      );
+                    })}
+                    {provided.placeholder}
+                  </Container>
+                )}
+              </Droppable>
+            </DragDropContext>
+          )}
+        </PipelineConsumer>
+      </PipelineProvider>
     );
   }
+}
 
-  return (
-    <PipelineProvider
-      pipeline={pipeline}
-      initialItemMap={initialItemMap}
-      queryParams={queryParams}
-      options={options}
-      queryParamsChanged={queryParamsChanged}
-      afterFinish={afterFinish}
-    >
-      <PipelineConsumer>
-        {({
-          stageLoadMap,
-          itemMap,
-          onDragEnd,
-          stageIds,
-          scheduleStage,
-          onLoadStage,
-          onAddItem,
-          onRemoveItem
-        }) => (
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable
-              droppableId="pipeline"
-              type="STAGE"
-              direction="horizontal"
-              ignoreContainerClipping={true}
-            >
-              {provided => (
-                <Container
-                  innerRef={provided.innerRef}
-                  {...provided.droppableProps}
-                >
-                  {stageIds.map((stageId, index) => {
-                    const stage = stageMap && stageMap[stageId];
-
-                    if (!stage) {
-                      return null;
-                    }
-
-                    return (
-                      <Stage
-                        options={options}
-                        key={stageId}
-                        index={index}
-                        length={stagesCount}
-                        stage={stage}
-                        items={itemMap[stageId]}
-                        queryParams={queryParams}
-                        loadingState={stageLoadMap[stageId]}
-                        refetchStages={stagesQuery.refetch}
-                        scheduleStage={scheduleStage}
-                        onLoad={onLoadStage}
-                        onAddItem={onAddItem}
-                        onRemoveItem={onRemoveItem}
-                        onChangeStageFinishMap={onChangeStageFinishMap}
-                      />
-                    );
-                  })}
-                  {provided.placeholder}
-                </Container>
-              )}
-            </Droppable>
-          </DragDropContext>
-        )}
-      </PipelineConsumer>
-    </PipelineProvider>
-  );
-};
-
-type WithStatesQueryProps = {
+type WithStagesQueryProps = {
   stagesQuery: StagesQueryResponse;
 } & IRouterProps &
   Props;
 
-const WithStatesQuery = (props: WithStatesQueryProps) => {
+const WithStagesQuery = (props: WithStagesQueryProps) => {
   const { stagesQuery } = props;
 
   if (stagesQuery.loading) {
@@ -220,5 +223,5 @@ export default withProps<Props>(
         }
       })
     })
-  )(withRouter(WithStatesQuery))
+  )(withRouter(WithStagesQuery))
 );
