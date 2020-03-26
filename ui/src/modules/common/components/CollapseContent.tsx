@@ -5,8 +5,8 @@ import styledTS from 'styled-components-ts';
 import colors from '../styles/colors';
 import Icon from './Icon';
 
-const Title = styledTS<{compact?: boolean}>(styled.div)`
-  padding: ${props => props.compact ? '10px 20px' : '20px'};
+const Title = styledTS<{ compact?: boolean }>(styled.div)`
+  padding: ${props => (props.compact ? '10px 20px' : '20px')};
   transition: background 0.3s ease;
   display: flex;
   align-items: center;
@@ -22,11 +22,11 @@ const Title = styledTS<{compact?: boolean}>(styled.div)`
   }
 `;
 
-const Container = styledTS<{open: boolean}>(styled.div)`
+const Container = styledTS<{ open: boolean }>(styled.div)`
   margin-bottom: 10px;
   box-shadow: 0 0 6px 1px rgba(0,0,0,0.08);
   border-radius: 4px;
-  background: ${props => props.open ? colors.bgLight : colors.colorWhite};
+  background: ${props => (props.open ? colors.bgLight : colors.colorWhite)};
 
   &:last-child {
     margin-bottom: 5px;
@@ -54,10 +54,10 @@ type Props = {
   compact?: boolean;
 };
 
-function CollapseContent (props: Props) {
-  const [ open, toggleCollapse ] = useState<boolean>(props.open || false);
+function CollapseContent(props: Props) {
+  const [open, toggleCollapse] = useState<boolean>(props.open || false);
 
-  const  onClick = () => toggleCollapse(!open);
+  const onClick = () => toggleCollapse(!open);
 
   return (
     <Container open={open}>
@@ -67,14 +67,11 @@ function CollapseContent (props: Props) {
       </Title>
       <Collapse in={open}>
         <div>
-          <Content>
-            {props.children}
-          </Content>
+          <Content>{props.children}</Content>
         </div>
       </Collapse>
     </Container>
   );
-
 }
 
 export default CollapseContent;

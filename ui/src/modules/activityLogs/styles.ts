@@ -119,10 +119,14 @@ const Row = styled.div`
   margin-right: ${dimensions.coreSpacing}px;
 `;
 
-const AvatarWrapper = styledTS<{ isOnline?: boolean, hideIndicator?: boolean, size?: number }>(styled.div)`
+const AvatarWrapper = styledTS<{
+  isOnline?: boolean;
+  hideIndicator?: boolean;
+  size?: number;
+}>(styled.div)`
   margin-right: ${dimensions.unitSpacing * 1.5}px;
   position: relative;
-  max-height: ${props => props.size ? `${props.size}px` : '50px'};
+  max-height: ${props => (props.size ? `${props.size}px` : '50px')};
 
   a {
     float: none;
@@ -134,7 +138,7 @@ const AvatarWrapper = styledTS<{ isOnline?: boolean, hideIndicator?: boolean, si
     right: -3px;
     top: 32px;
     background: ${props =>
-    props.isOnline ? colors.colorCoreGreen : colors.colorShadowGray};
+      props.isOnline ? colors.colorCoreGreen : colors.colorShadowGray};
     width: 14px;
     height: 14px;
     border-radius: ${dimensions.unitSpacing}px;
@@ -259,14 +263,14 @@ const IconWrapper = styledTS<{ isComplete?: boolean }>(styled.div)`
 
   > i {
     background: ${props =>
-    props.isComplete ? colors.colorCoreGreen : colors.bgLight};
+      props.isComplete ? colors.colorCoreGreen : colors.bgLight};
     color: ${props =>
-    props.isComplete ? colors.colorWhite : colors.colorShadowGray};
+      props.isComplete ? colors.colorWhite : colors.colorShadowGray};
     border-radius: 25px;
     display: inline-block;
     line-height: 25px;
     border: 2px solid ${props =>
-    props.isComplete ? colors.colorCoreGreen : colors.colorShadowGray};
+      props.isComplete ? colors.colorCoreGreen : colors.colorShadowGray};
     transition: all ease 0.3s;
   }
 `;
