@@ -6,6 +6,7 @@ import { router as routerUtils, withProps } from 'modules/common/utils';
 import React, { useEffect } from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router';
+import { PIPELINE_UPDATE_STATUSES } from '../constants';
 import { queries, subscriptions } from '../graphql';
 import { IOptions, PipelineDetailQueryResponse } from '../types';
 
@@ -34,22 +35,32 @@ const withPipeline = Component => {
           updateQuery: () => {
             const currentTab = sessionStorage.getItem('currentTab');
 
+            console.log('currentTab: ', currentTab);
+
             // don't reload current tab
             if (!currentTab) {
-              const pipelineUpdate =
-                sessionStorage.getItem('pipelineUpdate') || 'end';
+              const pipelineUpdate = sessionStorage.getItem('pipelineUpdate');
 
-              if (pipelineUpdate === 'end') {
-                sessionStorage.setItem('pipelineUpdate', 'start');
+              routerUtils.setParams(history, { key: Math.random() });
 
-                routerUtils.setParams(history, { key: Math.random() });
+              if (
+                !pipelineUpdate ||
+                pipelineUpdate === PIPELINE_UPDATE_STATUSES.END
+              ) {
+                sessionStorage.setItem(
+                  'pipelineUpdate',
+                  PIPELINE_UPDATE_STATUSES.START
+                );
               } else {
                 // if last subscription is not end
-                sessionStorage.setItem('pipelineUpdate', 'newRequest');
+                sessionStorage.setItem(
+                  'pipelineUpdate',
+                  PIPELINE_UPDATE_STATUSES.NEW_REQUEST
+                );
               }
+            } else {
+              sessionStorage.removeItem('currentTab');
             }
-
-            sessionStorage.removeItem('currentTab');
           }
         })
       );

@@ -1,3 +1,4 @@
+import { PIPELINE_UPDATE_STATUSES } from 'modules/boards/constants';
 import {
   ActionButton,
   ActionList,
@@ -37,7 +38,7 @@ type Props = {
   options: IOptions;
   archiveItems: () => void;
   archiveList: () => void;
-  onChangeStageFinishMap: (stageId: string) => void;
+  onChangeRealTimeStageIds: (stageId: string) => void;
 };
 export default class Stage extends React.Component<Props, {}> {
   private bodyRef;
@@ -85,33 +86,48 @@ export default class Stage extends React.Component<Props, {}> {
       return;
     }
 
-    const isScrolled = current.scrollHeight > current.clientHeight;
-    const { items, stage, onChangeStageFinishMap } = this.props;
+    // const isScrolled = current.scrollHeight > current.clientHeight;
+    const {
+      // items,
+      // index,
+      // loadingItems,
+      // length,
+      stage,
+      onChangeRealTimeStageIds
+    } = this.props;
 
     // console.log(
-    //   '------------------------------------------------------------------'
+    //   '-------------------------------' +
+    //     stage.name +
+    //     '-----------------------------------'
     // );
-    // console.log('stage.name: ', stage.name);
-    // console.log('isScrolled: ', isScrolled);
     // console.log(
     //   'prevProps.stage.itemsTotalCount: ',
     //   prevProps.stage.itemsTotalCount
     // );
-    // console.log('prevProps.items.length: ', prevProps.items.length);
     // console.log('stage.itemsTotalCount: ', stage.itemsTotalCount);
+    // console.log('prevProps.items.length: ', prevProps.items.length);
     // console.log('items.length: ', items.length);
 
     // if (!isScrolled && items.length < stage.itemsTotalCount) {
     //   console.log('loadMore');
     //   this.props.loadMore();
     // } else
+    const pipelineUpdate = sessionStorage.getItem('pipelineUpdate');
+
     if (
-      (prevProps.stage.itemsTotalCount !== stage.itemsTotalCount ||
-        prevProps.items.length !== items.length) &&
-      (isScrolled || items.length === stage.itemsTotalCount)
+      (pipelineUpdate === PIPELINE_UPDATE_STATUSES.START ||
+        pipelineUpdate === PIPELINE_UPDATE_STATUSES.NEW_REQUEST) &&
+      stage.itemsTotalCount !== prevProps.stage.itemsTotalCount
+      // (index !== prevProps.index ||
+      //   loadingItems() !== prevProps.loadingItems() ||
+      //   length !== prevProps.length ||
+      // (stage.itemsTotalCount !== prevProps.stage.itemsTotalCount ||
+      //   items.length !== prevProps.items.length) &&
+      // (isScrolled || items.length !== prevProps.items.length)
     ) {
-      console.log('finish: ', stage.name);
-      onChangeStageFinishMap(stage._id);
+      // console.log('finish: ', stage.name);
+      onChangeRealTimeStageIds(stage._id);
     }
   }
 
@@ -257,10 +273,7 @@ export default class Stage extends React.Component<Props, {}> {
     }
 
     return (
-      <Draggable
-        draggableId={`${stage._id}-${Math.random.toString()}`}
-        index={index}
-      >
+      <Draggable draggableId={stage._id} index={index}>
         {(provided, snapshot) => (
           <Container innerRef={provided.innerRef} {...provided.draggableProps}>
             <StageRoot isDragging={snapshot.isDragging}>

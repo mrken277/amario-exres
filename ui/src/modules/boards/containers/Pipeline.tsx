@@ -9,6 +9,7 @@ import { graphql } from 'react-apollo';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { withRouter } from 'react-router';
 import styled from 'styled-components';
+import { PIPELINE_UPDATE_STATUSES } from '../constants';
 import { queries } from '../graphql';
 import {
   IItemMap,
@@ -71,18 +72,15 @@ class WithStages extends Component<
   }
 
   afterFinish = () => {
-    const currentTab = sessionStorage.getItem('currentTab');
+    const pipelineUpdate = sessionStorage.getItem('pipelineUpdate');
 
-    // don't reload current tab
-    if (!currentTab) {
-      const pipelineUpdate = sessionStorage.getItem('pipelineUpdate');
+    // if there is a newRequest
+    if (pipelineUpdate === PIPELINE_UPDATE_STATUSES.NEW_REQUEST) {
+      sessionStorage.setItem('pipelineUpdate', PIPELINE_UPDATE_STATUSES.START);
 
-      // if there is a newRequest
-      if (pipelineUpdate === 'newRequest') {
-        routerUtils.setParams(this.props.history, { key: Math.random() });
-      }
-
-      sessionStorage.setItem('pipelineUpdate', 'end');
+      routerUtils.setParams(this.props.history, { key: Math.random() });
+    } else {
+      sessionStorage.setItem('pipelineUpdate', PIPELINE_UPDATE_STATUSES.END);
     }
   };
 
@@ -128,7 +126,7 @@ class WithStages extends Component<
             onLoadStage,
             onAddItem,
             onRemoveItem,
-            onChangeStageFinishMap
+            onChangeRealTimeStageIds
           }) => (
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable
@@ -164,7 +162,7 @@ class WithStages extends Component<
                           onLoad={onLoadStage}
                           onAddItem={onAddItem}
                           onRemoveItem={onRemoveItem}
-                          onChangeStageFinishMap={onChangeStageFinishMap}
+                          onChangeRealTimeStageIds={onChangeRealTimeStageIds}
                         />
                       );
                     })}

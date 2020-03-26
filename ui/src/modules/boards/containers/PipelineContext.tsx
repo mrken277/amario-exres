@@ -37,7 +37,7 @@ type State = {
   stageLoadMap: StageLoadMap;
   stageIds: string[];
   isShowLabel: boolean;
-  stageFinishMap: { [key: string]: boolean };
+  realTimeStageIds: string[];
 };
 
 interface IStore {
@@ -53,7 +53,7 @@ interface IStore {
   onUpdateItem: (item: IItem, prevStageId?: string) => void;
   isShowLabel: boolean;
   toggleLabels: () => void;
-  onChangeStageFinishMap: (stageId: string) => void;
+  onChangeRealTimeStageIds: (stageId: string) => void;
 }
 
 const PipelineContext = React.createContext({} as IStore);
@@ -82,7 +82,7 @@ export class PipelineProvider extends React.Component<Props, State> {
       stageLoadMap: {},
       stageIds,
       isShowLabel: false,
-      stageFinishMap: {}
+      realTimeStageIds: []
     };
 
     PipelineProvider.tasks = [];
@@ -97,10 +97,6 @@ export class PipelineProvider extends React.Component<Props, State> {
 
       PipelineProvider.tasks = [];
       PipelineProvider.currentTask = null;
-
-      // this.setState({
-      //   stageLoadMap: {}
-      // });
 
       stageIds.forEach((stageId: string) => {
         this.scheduleStage(stageId);
@@ -141,23 +137,20 @@ export class PipelineProvider extends React.Component<Props, State> {
   }
 
   componentDidUpdate() {
-    const { stageFinishMap } = this.state;
+    const { realTimeStageIds } = this.state;
 
-    console.log('stageFinishMap: ', stageFinishMap);
-
-    if (Object.keys(stageFinishMap).length === 2) {
-      console.log('finish');
-      this.setState({ stageFinishMap: {} });
+    // don't reload current tab
+    if (realTimeStageIds.length >= 2) {
+      this.setState({ realTimeStageIds: [] });
 
       this.props.afterFinish();
     }
   }
 
-  onChangeStageFinishMap = (stageId: string) => {
+  onChangeRealTimeStageIds = (stageId: string) => {
     this.setState(prevState => {
-      console.log('prevState.stageFinishMap: ', prevState.stageFinishMap);
       return {
-        stageFinishMap: { ...prevState.stageFinishMap, [stageId]: true }
+        realTimeStageIds: [...prevState.realTimeStageIds, stageId]
       };
     });
   };
@@ -189,18 +182,21 @@ export class PipelineProvider extends React.Component<Props, State> {
 
       this.setState({ stageIds });
 
-      // save orders to database
+      // save orders to database[']
       return this.saveStageOrders(stageIds);
     }
+
+    // to avoid to refetch current tab
+    sessionStorage.setItem('currentTab', 'true');
+    const currentTab = sessionStorage.getItem('currentTab');
+
+    console.log('currentTab for context: ', currentTab);
 
     const { itemMap } = reorderItemMap({
       itemMap: this.state.itemMap,
       source,
       destination
     });
-
-    // to avoid to refetch current tab
-    sessionStorage.setItem('currentTab', 'true');
 
     // update item to database
     const itemId = result.draggableId.split('-')[0];
@@ -440,7 +436,7 @@ export class PipelineProvider extends React.Component<Props, State> {
           stageIds,
           isShowLabel,
           toggleLabels: this.toggleLabels,
-          onChangeStageFinishMap: this.onChangeStageFinishMap
+          onChangeRealTimeStageIds: this.onChangeRealTimeStageIds
         }}
       >
         {this.props.children}
