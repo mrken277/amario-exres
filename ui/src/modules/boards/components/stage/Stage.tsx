@@ -101,9 +101,11 @@ export default class Stage extends React.Component<Props, {}> {
     // console.log('stage.itemsTotalCount: ', stage.itemsTotalCount);
     // console.log('items.length: ', items.length);
 
-    if (!isScrolled && items.length < stage.itemsTotalCount) {
-      this.props.loadMore();
-    } else if (
+    // if (!isScrolled && items.length < stage.itemsTotalCount) {
+    //   console.log('loadMore');
+    //   this.props.loadMore();
+    // } else
+    if (
       (prevProps.stage.itemsTotalCount !== stage.itemsTotalCount ||
         prevProps.items.length !== items.length) &&
       (isScrolled || items.length === stage.itemsTotalCount)
@@ -253,8 +255,6 @@ export default class Stage extends React.Component<Props, {}> {
     if (!stage) {
       return <EmptyState icon="clipboard" text="No stage" size="small" />;
     }
-
-    console.log('items: ', this.props.items);
 
     return (
       <Draggable

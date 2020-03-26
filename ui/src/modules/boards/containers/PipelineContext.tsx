@@ -98,9 +98,9 @@ export class PipelineProvider extends React.Component<Props, State> {
       PipelineProvider.tasks = [];
       PipelineProvider.currentTask = null;
 
-      this.setState({
-        stageLoadMap: {}
-      });
+      // this.setState({
+      //   stageLoadMap: {}
+      // });
 
       stageIds.forEach((stageId: string) => {
         this.scheduleStage(stageId);
@@ -147,15 +147,18 @@ export class PipelineProvider extends React.Component<Props, State> {
 
     if (Object.keys(stageFinishMap).length === 2) {
       console.log('finish');
-      this.props.afterFinish();
-
       this.setState({ stageFinishMap: {} });
+
+      this.props.afterFinish();
     }
   }
 
   onChangeStageFinishMap = (stageId: string) => {
-    this.setState({
-      stageFinishMap: { ...this.state.stageFinishMap, [stageId]: true }
+    this.setState(prevState => {
+      console.log('prevState.stageFinishMap: ', prevState.stageFinishMap);
+      return {
+        stageFinishMap: { ...prevState.stageFinishMap, [stageId]: true }
+      };
     });
   };
 

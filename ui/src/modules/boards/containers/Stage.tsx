@@ -44,7 +44,8 @@ class StageContainer extends React.PureComponent<FinalStageProps> {
     if (itemsQuery && !itemsQuery.loading && loadingState !== 'loaded') {
       // Send loaded items to PipelineContext so that context is able to set it
       // to global itemsMap
-      onLoad(stage._id, itemsQuery[options.queriesName.itemsQuery] || []);
+      const items = itemsQuery[options.queriesName.itemsQuery] || [];
+      onLoad(stage._id, items);
     }
   }
 
