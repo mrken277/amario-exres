@@ -2,6 +2,7 @@ import cubejs from '@cubejs-client/core';
 import { CubeProvider } from '@cubejs-client/react';
 import '@nateradebaugh/react-datetime/css/react-datetime.css';
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
+import 'antd/dist/antd.css';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import relativeTime from 'dayjs/plugin/relativeTime';

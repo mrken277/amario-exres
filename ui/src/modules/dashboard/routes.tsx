@@ -1,3 +1,4 @@
+import { Layout } from 'antd';
 import asyncComponent from 'modules/common/components/AsyncComponent';
 import React from 'react';
 import { Route } from 'react-router-dom';
@@ -11,27 +12,47 @@ const DashboardPage = asyncComponent(() =>
 );
 
 const dashBoard = history => {
-  return <DashboardPage history={history} />;
+  return (
+    <Layout
+      style={{
+        height: '100%'
+      }}
+    >
+      <Layout.Content>
+        <DashboardPage history={history} />;
+      </Layout.Content>
+    </Layout>
+  );
 };
 
 const explorePage = history => {
-  return <ExplorePage history={history} />;
+  return (
+    <Layout
+      style={{
+        height: '100%'
+      }}
+    >
+      <Layout.Content>
+        <ExplorePage history={history} />;
+      </Layout.Content>
+    </Layout>
+  );
 };
 
 const routes = () => {
   return (
     <React.Fragment>
       <Route
-        key='/dashboard/home'
+        key="/dashboard/home"
         exact={true}
-        path='/dashboard'
+        path="/dashboard"
         component={dashBoard}
       />
 
       <Route
-        key='/engage/messages/create'
+        key="/engage/messages/create"
         exact={true}
-        path='/dashboard/explore'
+        path="/dashboard/explore"
         component={explorePage}
       />
     </React.Fragment>

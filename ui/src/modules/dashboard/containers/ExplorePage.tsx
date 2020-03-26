@@ -3,7 +3,7 @@ import { Alert, Button, Spin } from 'antd';
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import ExploreQueryBuilder from '../components/QueryBuilder/ExploreQueryBuilder';
-import TitleModal from '../components/TitleModal.js';
+import TitleModal from '../components/TitleModal';
 import { GET_DASHBOARD_ITEM } from '../graphql/queries';
 const ExplorePage = withRouter(({ history, location }) => {
   const [addingToDashboard, setAddingToDashboard] = useState(false);
@@ -32,7 +32,7 @@ const ExplorePage = withRouter(({ history, location }) => {
   }
 
   if (error) {
-    return <Alert type='error' message={error.toString()} />;
+    return <Alert type="error" message={error.toString()} />;
   }
 
   return (
@@ -52,8 +52,8 @@ const ExplorePage = withRouter(({ history, location }) => {
         setVizState={setVizState}
         chartExtra={[
           <Button
-            key='button'
-            type='primary'
+            key="button"
+            type="primary"
             loading={addingToDashboard}
             onClick={() => setTitleModalVisible(true)}
           >

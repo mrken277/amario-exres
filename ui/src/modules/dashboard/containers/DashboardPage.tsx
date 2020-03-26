@@ -33,9 +33,9 @@ const DashboardPage = () => {
   if (error) {
     return (
       <Alert
-        message='Error occured while loading your query'
+        message="Error occured while loading your query"
         description={error.toString()}
-        type='error'
+        type="error"
       />
     );
   }
@@ -56,15 +56,15 @@ const DashboardPage = () => {
       }}
     >
       <h2>There are no charts on this dashboard</h2>
-      <Link to='/explore'>
-        <Button type='primary' size='large' icon={<Icon type='plus' />}>
+      <Link to="/explore">
+        <Button type="primary" size="large" icon={<Icon type="plus" />}>
           Add chart
         </Button>
       </Link>
     </div>
   );
 
-  return !data || data.dashboardItems.length ? (
+  return !data.dashboardItems || data.dashboardItems.length ? (
     <Dashboard dashboardItems={data && data.dashboardItems}>
       {data && data.dashboardItems.map(deserializeItem).map(dashboardItem)}
     </Dashboard>

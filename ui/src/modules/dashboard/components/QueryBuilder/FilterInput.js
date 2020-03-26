@@ -1,5 +1,5 @@
-import { Input, Select } from 'antd';
 import React from 'react';
+import { Select, Input } from 'antd';
 
 const FilterInputs = {
   string: ({ values, onChange }) => (
