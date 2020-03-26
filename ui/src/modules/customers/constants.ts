@@ -88,3 +88,10 @@ export const CUSTOMER_LINKS = {
     { field: 'website', label: 'Website' }
   ]
 };
+
+export const LEAD_CHOICES = [
+  { name: 'New', time: '18h' },
+  { name: 'Contacted', time: '1day' },
+  { name: 'Working', time: '' },
+  { name: 'Unqualified', time: '' }
+];
