@@ -35,19 +35,23 @@ class DetailInfo extends React.PureComponent<Props> {
       <li>
         <FieldStyle>{__('Primary email')}:</FieldStyle>
         <SidebarCounter>
-          {email && 
+          {email && (
             <a href={`mailto:${email}`}>
               {email}
 
-              {status && 
+              {status && (
                 <Tip text={`Status: ${status}`} placement="top">
                   <Status verified={status === 'valid'}>
-                    <Icon icon={status === 'valid' ? 'shield-check' : 'shield-slash'} />
+                    <Icon
+                      icon={
+                        status === 'valid' ? 'shield-check' : 'shield-slash'
+                      }
+                    />
                   </Status>
                 </Tip>
-              }
+              )}
             </a>
-          }
+          )}
         </SidebarCounter>
       </li>
     );
@@ -67,7 +71,10 @@ class DetailInfo extends React.PureComponent<Props> {
     return (
       <SidebarList className="no-link">
         {this.renderRow('Code', customer.code)}
-        {this.renderEmail(customer.emailValidationStatus, customer.primaryEmail)}
+        {this.renderEmail(
+          customer.emailValidationStatus,
+          customer.primaryEmail
+        )}
         {this.renderRow('Primary phone', customer.primaryPhone)}
         {this.renderPosition(customer)}
         {this.renderRow(
@@ -81,7 +88,7 @@ class DetailInfo extends React.PureComponent<Props> {
           'Pop Ups Status',
           LEAD_STATUS_TYPES[customer.leadStatus || '']
         )}
-        {this.renderRow('Gender', GENDER_TYPES[customer.sex])}
+        {this.renderRow('Gender', GENDER_TYPES[customer.sex || 0])}
         {this.renderRow(
           'Birthday',
           customer.birthDate && dayjs(customer.birthDate).format('MMM,DD YYYY')

@@ -26,7 +26,7 @@ type Props = {
   changeState?: (value: string) => void;
   isSmall?: boolean;
 };
-class ActionSection extends React.Component<Props, { customerState: string}> {
+class ActionSection extends React.Component<Props, { customerState: string }> {
   constructor(props) {
     super(props);
 
@@ -59,7 +59,11 @@ class ActionSection extends React.Component<Props, { customerState: string}> {
           dialogClassName="middle"
           title="Email"
           trigger={
-            <Button disabled={primaryEmail ? false : true} size="small" btnStyle="primary">
+            <Button
+              disabled={primaryEmail ? false : true}
+              size="small"
+              btnStyle="primary"
+            >
               {__('Email')}
             </Button>
           }
@@ -69,7 +73,8 @@ class ActionSection extends React.Component<Props, { customerState: string}> {
         />
         <Button
           href={primaryPhone && `tel:${primaryPhone}`}
-          size="small" btnStyle="primary"
+          size="small"
+          btnStyle="primary"
           disabled={primaryPhone ? false : true}
         >
           {__('Call')}
@@ -109,7 +114,7 @@ class ActionSection extends React.Component<Props, { customerState: string}> {
     );
   }
 
-  renderBox(type, desc) {
+  renderBox(index, type, desc) {
     const { changeState } = this.props;
 
     if (!changeState) {
@@ -122,20 +127,31 @@ class ActionSection extends React.Component<Props, { customerState: string}> {
     };
 
     return (
-      <Box selected={this.state.customerState === type} onClick={onClick}>
+      <Box
+        key={index}
+        selected={this.state.customerState === type}
+        onClick={onClick}
+      >
         <b>{type}</b>
-        <p>
-          {__(desc)}
-        </p>
+        <p>{__(desc)}</p>
       </Box>
     );
   }
 
   renderChangeStateForm() {
     const options = [
-      { value: 'visitor', desc: 'A person who contact with you and stored in our database.' },
-      { value: 'lead', desc: 'A person who preparing to buy some service or product.' },
-      { value: 'customer', desc: 'A person who already bought some service or product.' },
+      {
+        value: 'visitor',
+        desc: 'A person who contact with you and stored in our database.'
+      },
+      {
+        value: 'lead',
+        desc: 'A person who preparing to buy some service or product.'
+      },
+      {
+        value: 'customer',
+        desc: 'A person who already bought some service or product.'
+      }
     ];
 
     const modalContent = () => {
@@ -143,7 +159,9 @@ class ActionSection extends React.Component<Props, { customerState: string}> {
         <>
           <ControlLabel>Change State</ControlLabel>
           <States>
-            {options.map(option => this.renderBox(option.value, option.desc))}
+            {options.map((option, index) =>
+              this.renderBox(index, option.value, option.desc)
+            )}
           </States>
         </>
       );
@@ -218,9 +236,7 @@ class ActionSection extends React.Component<Props, { customerState: string}> {
                 {__('Delete')}
               </a>
             </li>
-            <li>
-              {this.renderChangeStateForm()}
-            </li>
+            <li>{this.renderChangeStateForm()}</li>
           </Dropdown.Menu>
         </Dropdown>
       </Actions>

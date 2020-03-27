@@ -4,19 +4,36 @@ import { LeadStateWrapper, StateItem } from 'modules/customers/styles';
 import { ICustomer } from 'modules/customers/types';
 import React from 'react';
 
-class LeadState extends React.Component<
-  { customer: ICustomer },
-  { currentState: number }
-> {
-  constructor(props) {
+type IProps = {
+  customer: ICustomer;
+  saveState: (state: string) => void;
+};
+
+class LeadState extends React.Component<IProps, { currentState: string }> {
+  constructor(props: IProps) {
     super(props);
 
-    this.state = { currentState: 0 };
+    const { customer } = props;
+
+    this.state = { currentState: customer.leadStatus || 'new' };
   }
 
-  render() {
-    const { customer } = this.props;
+  findIndex = () => {
     const { currentState } = this.state;
+
+    let i = 0;
+
+    LEAD_CHOICES.forEach(({ value }, index) => {
+      if (value === currentState) {
+        i = index;
+      }
+    });
+
+    return i;
+  };
+
+  render() {
+    const { customer, saveState } = this.props;
 
     if (customer.state !== 'lead') {
       return null;
@@ -24,22 +41,25 @@ class LeadState extends React.Component<
 
     return (
       <LeadStateWrapper>
-        {LEAD_CHOICES.map((data, index) => {
+        {LEAD_CHOICES.map(({ value, label }, index) => {
           const onClick = () => {
-            this.setState({ currentState: index });
+            this.setState({ currentState: value });
+
+            saveState(value);
           };
+
+          const currentIndex = this.findIndex();
 
           return (
             <StateItem
-              key={data.name}
-              past={index < currentState}
-              active={index === currentState}
+              key={index}
+              past={index < currentIndex}
+              active={index === currentIndex}
               onClick={onClick}
             >
               <div>
-                {index < currentState && <Icon icon="check-1" size={16} />}
-                {data.name}
-                {data.time && <span> {data.time}</span>}
+                {index < currentIndex && <Icon icon="check-1" size={16} />}
+                {label}
               </div>
             </StateItem>
           );

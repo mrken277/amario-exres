@@ -5,6 +5,7 @@ import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { TabTitle } from 'modules/common/components/tabs';
 import { __, renderFullName } from 'modules/common/utils';
 import ActionSection from 'modules/customers/containers/common/ActionSection';
+import LeadState from 'modules/customers/containers/LeadState';
 import { MailBox, UserHeader } from 'modules/customers/styles';
 import Widget from 'modules/engage/containers/Widget';
 import Wrapper from 'modules/layout/components/Wrapper';
@@ -12,7 +13,6 @@ import MailForm from 'modules/settings/integrations/containers/mail/MailForm';
 import React from 'react';
 import { ICustomer } from '../../types';
 import InfoSection from '../common/InfoSection';
-import LeadState from './LeadState';
 import LeftSidebar from './LeftSidebar';
 import RightSidebar from './RightSidebar';
 

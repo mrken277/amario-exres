@@ -90,8 +90,8 @@ export const CUSTOMER_LINKS = {
 };
 
 export const LEAD_CHOICES = [
-  { name: 'New', time: '18h' },
-  { name: 'Contacted', time: '1day' },
-  { name: 'Working', time: '' },
-  { name: 'Unqualified', time: '' }
+  { label: 'New', value: 'new' },
+  { label: 'Contacted', value: 'contacted' },
+  { label: 'Working', value: 'working' },
+  { label: 'Unqualified', value: 'unqualified' }
 ];

@@ -19,10 +19,10 @@ export interface ICustomerLinks {
 }
 
 export interface ICustomerDoc {
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   phones?: string[];
-  sex: number;
+  sex?: number;
   primaryPhone?: string;
   primaryEmail?: string;
   emails?: string[];
@@ -60,8 +60,8 @@ export interface ICustomer extends ICustomerDoc {
   owner?: IUser;
   integration?: IIntegration;
   getTrackedData?: any;
-  getTags: ITag[];
-  companies: ICompany[];
+  getTags?: ITag[];
+  companies?: ICompany[];
 }
 
 // mutation types
