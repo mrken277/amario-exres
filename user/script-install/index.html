@@ -540,66 +540,78 @@ bio:</span>”<span class="hljs-params">&lt;Bio&gt;</span>”,
 </p>
 <p><img src=https://erxes-docs.s3-us-west-2.amazonaws.com/script-installation/advancedsetup/12.+Result+5.png /></p>
 <h3><a class="anchor" aria-hidden="true" id="manipulate-your-messenger-function"></a><a href="#manipulate-your-messenger-function" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Manipulate your messenger function</h3>
-<p>You able to manipulate your messenger function such change look of a messenger style, position and you can configure that click button to call action.</p>
+<p>A messenger can be launched programmatically on some user interaction, &quot;like clicking on request for help button&quot;. Rather than attaching to document, there should be an option to attach the erxes launcher to a specific element, as it causes the problem in single-page apps since it is not ideal to display the launcher icon in every page.You are now able to manipulate your messenger functions such as change the appearance of a messenger style, a position as well as you can set up the button on your website to call the messenger on specified page.</p>
 <h4><a class="anchor" aria-hidden="true" id="button-submit"></a><a href="#button-submit" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Button submit</h4>
-<p>Ability to call submit from outside, which means  that listen for callSubmit action from outside (parent website) to force submit action. For example, you can add any button to call action to open your messenger.</p>
+<p>Ability to call submit from outside (parent website), which means listen for callSubmit action from outside to force submit action. For example, you can add any button to call action to open your messenger. There is a window.Erxes.showMessenger() function available on the window object. You can use this function to show messenger programmatically. Insert the following script inside your messenger script code.</p>
 <pre><code class="hljs"> <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'button'</span>).onclick = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
     <span class="hljs-built_in">window</span>.Erxes.showMessenger()
   }
 </code></pre>
+<p>First you need uncheck show launcher check to hide default handler. When you check show launcher, the widget section will invisible but you can still callSubmit action to get messenger.</p>
+<p><img src=https://erxes-docs.s3-us-west-2.amazonaws.com/script-installation/advancedsetup/manipulate1.png /></p>
+<p>Insert the following script inside your messenger script code.</p>
+<p><img src=https://erxes-docs.s3-us-west-2.amazonaws.com/script-installation/advancedsetup/manipulate2.png /></p>
+<p>Once you click submit button on your website, messenger will open.</p>
+<p><img src=https://erxes-docs.s3-us-west-2.amazonaws.com/script-installation/advancedsetup/manipulate.png /></p>
 <h4><a class="anchor" aria-hidden="true" id="messenger-position"></a><a href="#messenger-position" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Messenger position</h4>
-<p>Problem:</p>
-<p>As part of the support system inside the web, it is always difficult to fix the position of launcher icon to the bottom, especially on mobile, since it overlaps with other elements, especially bottom navbar.
-Say the launcher icon is loaded on home page on a single page app where games are listed, it is disturbing to show the launcher icon on the gameplay page as well. Since it is attached to the scope of the body, it will remain on other pages as well, since its a single page app.</p>
-<p>Solution:</p>
-<p>It would be great if a messenger can be launched programmatically like erxes.launch() on some user interaction, &quot;like clicking on request for help button&quot;.
-Rather than attaching to document, there should be an option to attach the erxes launcher to a specific element, as it causes the problem in single-page apps since it is not ideal to display the launcher icon in every page.</p>
-<p>Now you can follow the below steps to accomplish your needs</p>
-<ol>
-<li>Uncheck show launcher check to hide default handler</li>
-</ol>
-<ol start="2">
-<li>There is a showErxesMessenger function available on the window object. You can use this function to show messenger programmatically.</li>
-</ol>
-<p><code>window.showErxesMessenger()</code></p>
-<ol start="3">
-<li>You can manipulate the position of the messenger body like following.</li>
-</ol>
-<p><code>#erxes-messenger-container { top: 0px; left: 55%; }</code></p>
-<h4><a class="anchor" aria-hidden="true" id="css-style"></a><a href="#css-style" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CSS style</h4>
-<p>Ability to change form css from parent. In some cases, the developer wants to hide form title, button or modify some auto-generated CSS.</p>
-<pre><code class="hljs"> 
-    <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
-      <span class="hljs-built_in">window</span>.erxesSettings = {
-        <span class="hljs-attr">messenger</span>: {
-          <span class="hljs-attr">brand_id</span>: <span class="hljs-string">"5fkS4v"</span>,
-          <span class="hljs-attr">css</span>: <span class="hljs-string">`
-            .erxes-form {
-            color: red;
-            }
+<p>As part of the support system inside the web, it is always difficult to fix the position of launcher icon to the bottom, or right left position, especially on mobile, since it overlaps with other elements, especially bottom navbar.</p>
+<p>You can manipulate the position of the messenger body like following. The messenger is show left side of your website.</p>
+<pre><code class="hljs"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+  <span class="hljs-built_in">window</span>.erxesSettings = {
+    <span class="hljs-attr">messenger</span>: {
+      <span class="hljs-attr">brand_id</span>: <span class="hljs-string">"AtaT4Z"</span>,
+      <span class="hljs-attr">css</span>: <span class="hljs-string">`
+          .erxes-messenger {
+          left: 8px;
+          transform-origin: 0% 100%;
+          }
 
-            .erxes-form .erxes-topbar {
-            display: none;
-            }
-            
-            .erxes-button.btn-block {
-            display: none;
-            }
-        `</span>
-        },
-      };
-      
-    (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-      <span class="hljs-keyword">var</span> script = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'script'</span>);
-      script.src = <span class="hljs-string">"https://w.office.erxes.io/build/messengerWidget.bundle.js"</span>;
-      script.async = <span class="hljs-literal">true</span>;
-      <span class="hljs-keyword">var</span> entry = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">'script'</span>)[<span class="hljs-number">0</span>];
-      entry.parentNode.insertBefore(script, entry);
-    })();
+          .erxes-launcher {
+          left: 8px;
+          right: auto;
+          }
+          `</span>
+          },
+  };
   
-    </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> script = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'script'</span>);
+  script.src = <span class="hljs-string">"https://w.office.erxes.io/build/messengerWidget.bundle.js"</span>;
+  script.async = <span class="hljs-literal">true</span>;
+  <span class="hljs-keyword">var</span> entry = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">'script'</span>)[<span class="hljs-number">0</span>];
+  entry.parentNode.insertBefore(script, entry);
+})();
+
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="css-style"></a><a href="#css-style" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CSS style</h4>
+<p>Ability to change form css from parent. In some cases, the developer wants to hide form title, button or modify some auto-generated CSS. Refer the following example of css file.</p>
+<pre><code class="hljs"><span class="hljs-selector-class">.erxes-embed-iframe</span> {
+<span class="hljs-attribute">margin-top</span>: <span class="hljs-number">100px</span> <span class="hljs-meta">!important</span>;
+<span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">100px</span> <span class="hljs-meta">!important</span>;
+<span class="hljs-attribute">height</span>: <span class="hljs-number">500px</span> <span class="hljs-meta">!important</span>;
+}
+
+<span class="hljs-selector-id">#erxes-messenger-container</span> {
+<span class="hljs-attribute">left</span>: <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-selector-id">#erxes-messenger-iframe</span> {
+<span class="hljs-attribute">left</span>: <span class="hljs-number">24px</span>;
+}
+
+<span class="hljs-selector-id">#erxes-messenger-container</span><span class="hljs-selector-pseudo">:after</span> {
+<span class="hljs-attribute">left</span>: -<span class="hljs-number">300px</span>;
+<span class="hljs-attribute">transform</span>: <span class="hljs-built_in">scaleX</span>(-<span class="hljs-number">1</span>);
+}
+
+<span class="hljs-selector-id">#erxes-messenger-container</span><span class="hljs-selector-class">.erxes-messenger-shown</span><span class="hljs-selector-pseudo">:after</span> {
+<span class="hljs-attribute">left</span>: -<span class="hljs-number">20px</span>;
+}
 
 </code></pre>
+<p>The messenger position is now left side.
+<img src=https://erxes-docs.s3-us-west-2.amazonaws.com/script-installation/advancedsetup/manipulate3.png /></p>
 <h2><a class="anchor" aria-hidden="true" id="advanced-combination-installation"></a><a href="#advanced-combination-installation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Advanced combination installation</h2>
 <p>In the advanced combination installation is described combination of the following features.</p>
 <ul>
@@ -1515,7 +1527,7 @@ This instruction covers the case that <strong>all web pages contain the messenge
 <li>See the figure for Google tag script with trigger configuration.</li>
 </ol>
 <p><img src="https://erxes-docs.s3-us-west-2.amazonaws.com/script-installation/GMT+troubleshooting/5.png" /></p>
-</span></div></article></div><div class="docLastUpdate"><em>Last updated on 3/23/2020 by Anu-Ujin Bat-Ulzii</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/user/popups"><span class="arrow-prev">← </span><span>Popups</span></a><a class="docs-next button" href="/user/contacts"><span>Contacts</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#quick-installation">Quick installation</a><ul class="toc-headings"><li><a href="#web-messenger">Web messenger</a></li><li><a href="#pop-ups">Pop-Ups</a></li><li><a href="#knowledgebase">Knowledgebase</a></li></ul></li><li><a href="#google-tag-manager">Google tag manager</a><ul class="toc-headings"><li><a href="#install-google-tag-manager">Install google tag manager</a></li><li><a href="#web-messenger-1">Web messenger</a></li><li><a href="#pop-ups-1">Pop-Ups</a></li><li><a href="#knowledgebase-1">Knowledgebase</a></li></ul></li><li><a href="#erxes-script-manager">Erxes script manager</a><ul class="toc-headings"><li><a href="#web-messenger-2">Web messenger</a></li><li><a href="#pop-ups-2">Pop-Ups</a></li><li><a href="#knowledgebase-2">Knowledgebase</a></li></ul></li><li><a href="#advanced-setup">Advanced setup</a><ul class="toc-headings"><li><a href="#get-data-from-your-web-app-for-logged-in-users">Get data from your web app (for logged-in users)</a></li><li><a href="#manipulate-your-messenger-function">Manipulate your messenger function</a></li></ul></li><li><a href="#advanced-combination-installation">Advanced combination installation</a><ul class="toc-headings"><li><a href="#web-messenger--pop-ups-or-knowledgebase">Web messenger + Pop-Ups (or Knowledgebase)</a></li><li><a href="#web-messenger--pop-ups--knowledgebase-mpk">Web messenger + Pop-Ups + Knowledgebase (M+P+K)</a></li><li><a href="#m--p--k--pop-ups">(M + P + K) + Pop-Ups</a></li><li><a href="#m--p--k--knowledgebase">(M + P + K) + Knowledgebase</a></li><li><a href="#m--p--k--pop-ups--knowledgebase">(M + P + K) + Pop-Ups + Knowledgebase</a></li></ul></li><li><a href="#advanced-google-tag-manager">Advanced Google tag manager</a><ul class="toc-headings"><li><a href="#install-google-tag-manager-1">Install google tag manager</a></li><li><a href="#web-messenger--pop-ups-or-knowledgebase-1">Web messenger + Pop-Ups (or Knowledgebase)</a></li><li><a href="#web-messenger--pop-ups--knowledgebase-mpk-1">Web messenger + Pop-Ups + Knowledgebase (M+P+K)</a></li><li><a href="#m--p--k--pop-ups-1">(M + P + K) + Pop-Ups</a></li><li><a href="#m--p--k--knowledgebase-1">(M + P + K) + Knowledgebase</a></li><li><a href="#m--p--k--pop-ups--knowledgebase-1">(M + P + K) + Pop-Ups + Knowledgebase</a></li></ul></li><li><a href="#advanced-erxes-script-manager">Advanced Erxes script manager</a><ul class="toc-headings"><li><a href="#web-messenger--pop-ups-or-knowledgebase-2">Web messenger + Pop-Ups (or Knowledgebase)</a></li><li><a href="#web-messenger--pop-ups--knowledgebase-mpk-2">Web messenger + Pop-Ups + Knowledgebase (M+P+K)</a></li><li><a href="#m--p--k--pop-ups-or-knowledgebase">(M + P + K) + Pop-Ups (or Knowledgebase)</a></li><li><a href="#m--p--k--pop-ups--knowledgebase-2">(M + P + K) + Pop-Ups + Knowledgebase</a></li></ul></li><li><a href="#google-tag-manager-troubleshooting-guide">Google Tag Manager Troubleshooting guide</a><ul class="toc-headings"><li><a href="#configure-trigger-on-messenger-script">Configure trigger on Messenger script:</a></li><li><a href="#configure-trigger-on-messenger--pop-up-script">Configure trigger on Messenger + Pop-Up script:</a></li></ul></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div></article></div><div class="docLastUpdate"><em>Last updated on 3/27/2020 by Munkhjargal</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/user/popups"><span class="arrow-prev">← </span><span>Popups</span></a><a class="docs-next button" href="/user/contacts"><span>Contacts</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#quick-installation">Quick installation</a><ul class="toc-headings"><li><a href="#web-messenger">Web messenger</a></li><li><a href="#pop-ups">Pop-Ups</a></li><li><a href="#knowledgebase">Knowledgebase</a></li></ul></li><li><a href="#google-tag-manager">Google tag manager</a><ul class="toc-headings"><li><a href="#install-google-tag-manager">Install google tag manager</a></li><li><a href="#web-messenger-1">Web messenger</a></li><li><a href="#pop-ups-1">Pop-Ups</a></li><li><a href="#knowledgebase-1">Knowledgebase</a></li></ul></li><li><a href="#erxes-script-manager">Erxes script manager</a><ul class="toc-headings"><li><a href="#web-messenger-2">Web messenger</a></li><li><a href="#pop-ups-2">Pop-Ups</a></li><li><a href="#knowledgebase-2">Knowledgebase</a></li></ul></li><li><a href="#advanced-setup">Advanced setup</a><ul class="toc-headings"><li><a href="#get-data-from-your-web-app-for-logged-in-users">Get data from your web app (for logged-in users)</a></li><li><a href="#manipulate-your-messenger-function">Manipulate your messenger function</a></li></ul></li><li><a href="#advanced-combination-installation">Advanced combination installation</a><ul class="toc-headings"><li><a href="#web-messenger--pop-ups-or-knowledgebase">Web messenger + Pop-Ups (or Knowledgebase)</a></li><li><a href="#web-messenger--pop-ups--knowledgebase-mpk">Web messenger + Pop-Ups + Knowledgebase (M+P+K)</a></li><li><a href="#m--p--k--pop-ups">(M + P + K) + Pop-Ups</a></li><li><a href="#m--p--k--knowledgebase">(M + P + K) + Knowledgebase</a></li><li><a href="#m--p--k--pop-ups--knowledgebase">(M + P + K) + Pop-Ups + Knowledgebase</a></li></ul></li><li><a href="#advanced-google-tag-manager">Advanced Google tag manager</a><ul class="toc-headings"><li><a href="#install-google-tag-manager-1">Install google tag manager</a></li><li><a href="#web-messenger--pop-ups-or-knowledgebase-1">Web messenger + Pop-Ups (or Knowledgebase)</a></li><li><a href="#web-messenger--pop-ups--knowledgebase-mpk-1">Web messenger + Pop-Ups + Knowledgebase (M+P+K)</a></li><li><a href="#m--p--k--pop-ups-1">(M + P + K) + Pop-Ups</a></li><li><a href="#m--p--k--knowledgebase-1">(M + P + K) + Knowledgebase</a></li><li><a href="#m--p--k--pop-ups--knowledgebase-1">(M + P + K) + Pop-Ups + Knowledgebase</a></li></ul></li><li><a href="#advanced-erxes-script-manager">Advanced Erxes script manager</a><ul class="toc-headings"><li><a href="#web-messenger--pop-ups-or-knowledgebase-2">Web messenger + Pop-Ups (or Knowledgebase)</a></li><li><a href="#web-messenger--pop-ups--knowledgebase-mpk-2">Web messenger + Pop-Ups + Knowledgebase (M+P+K)</a></li><li><a href="#m--p--k--pop-ups-or-knowledgebase">(M + P + K) + Pop-Ups (or Knowledgebase)</a></li><li><a href="#m--p--k--pop-ups--knowledgebase-2">(M + P + K) + Pop-Ups + Knowledgebase</a></li></ul></li><li><a href="#google-tag-manager-troubleshooting-guide">Google Tag Manager Troubleshooting guide</a><ul class="toc-headings"><li><a href="#configure-trigger-on-messenger-script">Configure trigger on Messenger script:</a></li><li><a href="#configure-trigger-on-messenger--pop-up-script">Configure trigger on Messenger + Pop-Up script:</a></li></ul></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
