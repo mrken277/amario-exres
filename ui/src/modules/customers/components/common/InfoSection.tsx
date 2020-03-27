@@ -40,11 +40,11 @@ class InfoSection extends React.Component<Props> {
     return (
       <Links>
         {this.renderLink(links.facebook, 'facebook-official')}
+        {this.renderLink(links.linkedIn, 'linkedin')}
         {this.renderLink(links.twitter, 'twitter')}
-        {this.renderLink(links.linkedIn, 'linkedin-logo')}
         {this.renderLink(links.youtube, 'youtube-play')}
         {this.renderLink(links.github, 'github-circled')}
-        {this.renderLink(links.website, 'link-alt')}
+        {this.renderLink(links.website, 'external-link-alt')}
       </Links>
     );
   }
@@ -59,7 +59,9 @@ class InfoSection extends React.Component<Props> {
     }
 
     const customerForm = props => {
-      return <CustomerForm {...props} size="lg" customer={this.props.customer} />;
+      return (
+        <CustomerForm {...props} size="lg" customer={this.props.customer} />
+      );
     };
 
     return (
@@ -69,8 +71,8 @@ class InfoSection extends React.Component<Props> {
         size="lg"
         content={customerForm}
       />
-    )
-  }
+    );
+  };
 
   render() {
     const { customer, avatarSize = 50, children, nameSize } = this.props;
