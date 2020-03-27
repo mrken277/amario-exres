@@ -146,7 +146,6 @@ type CustomerCounts = {
   byForm: CountResponse;
   byIntegrationType: CountResponse;
   byLeadStatus: CountResponse;
-  byLifecycleState: CountResponse;
   bySegment: CountResponse;
   byTag: CountResponse;
 };

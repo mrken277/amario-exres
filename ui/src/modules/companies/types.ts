@@ -149,7 +149,6 @@ type CompanyCounts = {
   byTag: Count;
   byBrand: Count;
   byLeadStatus: Count;
-  byLifecycleState: Count;
 };
 
 export type CountQueryResponse = {
