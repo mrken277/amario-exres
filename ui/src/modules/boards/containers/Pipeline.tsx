@@ -34,18 +34,7 @@ type Props = {
   options: IOptions;
 };
 
-class WithStages extends Component<
-  WithStagesQueryProps,
-  { stageFinishMap: any }
-> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      stageFinishMap: {}
-    };
-  }
-
+class WithStages extends Component<WithStagesQueryProps> {
   componentWillReceiveProps(nextProps: Props) {
     const { stagesQuery, queryParams } = this.props;
     const { pipelineId } = queryParams;

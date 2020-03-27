@@ -139,7 +139,6 @@ export class PipelineProvider extends React.Component<Props, State> {
   componentDidUpdate() {
     const { realTimeStageIds } = this.state;
 
-    // don't reload current tab
     if (realTimeStageIds.length >= 2) {
       this.setState({ realTimeStageIds: [] });
 
@@ -182,7 +181,7 @@ export class PipelineProvider extends React.Component<Props, State> {
 
       this.setState({ stageIds });
 
-      // save orders to database[']
+      // save orders to database
       return this.saveStageOrders(stageIds);
     }
 
