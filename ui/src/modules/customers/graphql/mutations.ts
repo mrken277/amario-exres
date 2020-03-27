@@ -43,8 +43,8 @@ const commonVariables = `
 `;
 
 const customersAdd = `
-  mutation customersAdd(${commonFields}) {
-    customersAdd(${commonVariables}) {
+  mutation customersAdd($state: String, ${commonFields}) {
+    customersAdd(state: $state, ${commonVariables}) {
       _id
       firstName
       primaryEmail
