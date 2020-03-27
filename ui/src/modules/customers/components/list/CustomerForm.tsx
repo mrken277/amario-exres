@@ -26,11 +26,7 @@ import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMember
 import React from 'react';
 import validator from 'validator';
 import { ICustomer, ICustomerDoc } from '../../types';
-import {
-  genderChoices,
-  isValidPhone,
-  leadStatusChoices,
-} from '../../utils';
+import { genderChoices, isValidPhone } from '../../utils';
 
 type Props = {
   customer?: ICustomer;
@@ -192,7 +188,11 @@ class CustomerForm extends React.Component<Props, State> {
     return (
       <>
         <ScrollWrapper>
-          <CollapseContent title={__('General information')} compact={true} open={true}>
+          <CollapseContent
+            title={__('General information')}
+            compact={true}
+            open={true}
+          >
             <FormWrapper>
               <FormColumn>
                 <AvatarUpload
@@ -255,14 +255,6 @@ class CustomerForm extends React.Component<Props, State> {
                   ...formProps,
                   name: 'department',
                   defaultValue: customer.department || ''
-                })}
-
-                {this.renderFormGroup('Pop Ups Status', {
-                  ...formProps,
-                  name: 'leadStatus',
-                  componentClass: 'select',
-                  defaultValue: customer.leadStatus || '',
-                  options: leadStatusChoices(__)
                 })}
 
                 <FormGroup>
@@ -410,7 +402,12 @@ class CustomerForm extends React.Component<Props, State> {
           </CollapseContent>
         </ScrollWrapper>
         <ModalFooter>
-          <Button btnStyle="simple" uppercase={false} onClick={closeModal} icon="times-circle">
+          <Button
+            btnStyle="simple"
+            uppercase={false}
+            onClick={closeModal}
+            icon="times-circle"
+          >
             Close
           </Button>
 

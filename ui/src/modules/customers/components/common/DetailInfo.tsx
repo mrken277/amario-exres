@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import Icon from 'modules/common/components/Icon';
 import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
-import { GENDER_TYPES, LEAD_STATUS_TYPES } from 'modules/customers/constants';
+import { GENDER_TYPES } from 'modules/customers/constants';
 import { Status } from 'modules/customers/styles';
 import { ICustomer } from 'modules/customers/types';
 import {
@@ -84,10 +84,6 @@ class DetailInfo extends React.PureComponent<Props> {
             : ''
         )}
         {this.renderRow('Department', customer.department)}
-        {this.renderRow(
-          'Pop Ups Status',
-          LEAD_STATUS_TYPES[customer.leadStatus || '']
-        )}
         {this.renderRow('Gender', GENDER_TYPES[customer.sex || 0])}
         {this.renderRow(
           'Birthday',

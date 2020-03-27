@@ -24,7 +24,6 @@ export const CUSTOMER_BASIC_INFO = {
   primaryPhone: 'Primary Phone',
   position: 'Position',
   department: 'Department',
-  leadStatus: 'Pop Ups Status',
   hasAuthority: 'Has Authority',
   description: 'Description',
   doNotDisturb: 'Do not disturb',
@@ -37,7 +36,6 @@ export const CUSTOMER_BASIC_INFO = {
     { field: 'primaryPhone', label: 'Primary Phone' },
     { field: 'position', label: 'Position' },
     { field: 'department', label: 'Department' },
-    { field: 'leadStatus', label: 'Pop Ups Status' },
     { field: 'hasAuthority', label: 'Has Authority' },
     { field: 'description', label: 'Description' },
     { field: 'doNotDisturb', label: 'Do not disturb' }
