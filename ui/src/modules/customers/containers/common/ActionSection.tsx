@@ -47,7 +47,7 @@ const ActionSectionContainer = (props: FinalProps) => {
     })
       .then(() => {
         Alert.success('You successfully deleted a customer');
-        history.push('/contacts/customers/all');
+        history.push('/contacts/customers/customer');
       })
       .catch(e => {
         Alert.error(e.message);
