@@ -30,7 +30,14 @@ type FinalProps = Props &
   IRouterProps;
 
 const ActionSectionContainer = (props: FinalProps) => {
-  const { isSmall, customer, customersRemove, customersMerge, customersChangeState, history } = props;
+  const {
+    isSmall,
+    customer,
+    customersRemove,
+    customersMerge,
+    customersChangeState,
+    history
+  } = props;
 
   const { _id } = customer;
 
@@ -51,7 +58,7 @@ const ActionSectionContainer = (props: FinalProps) => {
     customersChangeState({
       variables: {
         _id,
-        value,
+        value
       }
     })
       .then(() => {
@@ -113,7 +120,7 @@ const ActionSectionContainer = (props: FinalProps) => {
 };
 
 const generateOptions = () => ({
-  refetchQueries: ['customersMain', 'customerCounts']
+  refetchQueries: ['customersMain', 'customerCounts', 'customerDetail']
 });
 
 export default withProps<Props>(
