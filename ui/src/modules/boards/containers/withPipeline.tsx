@@ -35,8 +35,6 @@ const withPipeline = Component => {
           updateQuery: () => {
             const currentTab = sessionStorage.getItem('currentTab');
 
-            console.log('currentTab: ', currentTab);
-
             // don't reload current tab
             if (!currentTab) {
               const pipelineUpdate = sessionStorage.getItem('pipelineUpdate');

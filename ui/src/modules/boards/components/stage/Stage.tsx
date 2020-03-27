@@ -86,47 +86,14 @@ export default class Stage extends React.Component<Props, {}> {
       return;
     }
 
-    // const isScrolled = current.scrollHeight > current.clientHeight;
-    const {
-      // items,
-      // index,
-      // loadingItems,
-      // length,
-      stage,
-      onChangeRealTimeStageIds
-    } = this.props;
-
-    // console.log(
-    //   '-------------------------------' +
-    //     stage.name +
-    //     '-----------------------------------'
-    // );
-    // console.log(
-    //   'prevProps.stage.itemsTotalCount: ',
-    //   prevProps.stage.itemsTotalCount
-    // );
-    // console.log('stage.itemsTotalCount: ', stage.itemsTotalCount);
-    // console.log('prevProps.items.length: ', prevProps.items.length);
-    // console.log('items.length: ', items.length);
-
-    // if (!isScrolled && items.length < stage.itemsTotalCount) {
-    //   console.log('loadMore');
-    //   this.props.loadMore();
-    // } else
+    const { stage, onChangeRealTimeStageIds } = this.props;
     const pipelineUpdate = sessionStorage.getItem('pipelineUpdate');
 
     if (
       (pipelineUpdate === PIPELINE_UPDATE_STATUSES.START ||
         pipelineUpdate === PIPELINE_UPDATE_STATUSES.NEW_REQUEST) &&
       stage.itemsTotalCount !== prevProps.stage.itemsTotalCount
-      // (index !== prevProps.index ||
-      //   loadingItems() !== prevProps.loadingItems() ||
-      //   length !== prevProps.length ||
-      // (stage.itemsTotalCount !== prevProps.stage.itemsTotalCount ||
-      //   items.length !== prevProps.items.length) &&
-      // (isScrolled || items.length !== prevProps.items.length)
     ) {
-      // console.log('finish: ', stage.name);
       onChangeRealTimeStageIds(stage._id);
     }
   }

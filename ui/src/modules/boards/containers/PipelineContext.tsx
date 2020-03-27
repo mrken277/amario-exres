@@ -188,9 +188,6 @@ export class PipelineProvider extends React.Component<Props, State> {
 
     // to avoid to refetch current tab
     sessionStorage.setItem('currentTab', 'true');
-    const currentTab = sessionStorage.getItem('currentTab');
-
-    console.log('currentTab for context: ', currentTab);
 
     const { itemMap } = reorderItemMap({
       itemMap: this.state.itemMap,
