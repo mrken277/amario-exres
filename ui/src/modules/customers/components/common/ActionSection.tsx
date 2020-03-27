@@ -141,10 +141,6 @@ class ActionSection extends React.Component<Props, { customerState: string }> {
   renderChangeStateForm() {
     const options = [
       {
-        value: 'visitor',
-        desc: 'A person who contact with you and stored in our database.'
-      },
-      {
         value: 'lead',
         desc: 'A person who preparing to buy some service or product.'
       },
