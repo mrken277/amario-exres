@@ -47,6 +47,10 @@ class Sidebar extends React.Component {
             'Integrations config'
           )}
           {this.renderListItem('/settings/engage-configs', 'Engage config')}
+          {this.renderListItem(
+            '/settings/api-token-configs',
+            'Api auth config'
+          )}
         </List>
       </LeftSidebar>
     );

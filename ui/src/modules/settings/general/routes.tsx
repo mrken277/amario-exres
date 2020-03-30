@@ -14,6 +14,10 @@ const EngageConfigs = asyncComponent(() =>
   import(/* webpackChunkName: "Integration configs" */ './components/EngageConfigs')
 );
 
+const ApiTokenConfigs = asyncComponent(() =>
+  import(/* webpackChunkName: "Integration configs" */ './components/ApiTokenConfigs')
+);
+
 const routes = () => {
   return (
     <React.Fragment>
@@ -23,6 +27,7 @@ const routes = () => {
         component={IntegrationConfigs}
       />
       <Route path="/settings/engage-configs/" component={EngageConfigs} />
+      <Route path="/settings/api-token-configs/" component={ApiTokenConfigs} />
     </React.Fragment>
   );
 };

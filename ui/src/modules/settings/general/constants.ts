@@ -120,7 +120,10 @@ export const KEY_LABELS = {
   SMOOCH_WEBHOOK_CALLBACK_URL: 'Smooch Webhook Callback Url',
 
   CHAT_API_UID: 'Chat-API API key',
-  CHAT_API_WEBHOOK_CALLBACK_URL: 'Chat-API Webhook Callback Url'
+  CHAT_API_WEBHOOK_CALLBACK_URL: 'Chat-API Webhook Callback Url',
+  API_KEY: 'Api key',
+  API_TOKEN: 'Api token',
+  API_AUTH: 'Api oath'
 };
 
 export const FILE_MIME_TYPES = [
