@@ -19,3 +19,16 @@ export const GET_DASHBOARD_ITEM = gql`
     }
   }
 `;
+
+const dashboards = `
+  query dashboards {
+    dashboards {
+	    _id
+	    name
+	  }
+  }
+`;
+
+export default {
+  dashboards
+};
