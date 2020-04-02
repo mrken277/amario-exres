@@ -4,8 +4,8 @@ import Spinner from 'modules/common/components/Spinner';
 import { Alert, withProps } from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { mutations, queries } from '../../integrations/graphql';
-import IntegrationsConfig from '../components/IntegrationConfigs';
+import ApiTokenConfig from '../components/ApiTokenConfigs';
+import { mutations, queries } from '../graphql';
 import { IConfigsMap } from '../types';
 
 type FinalProps = {
@@ -36,7 +36,9 @@ class ConfigContainer extends React.Component<FinalProps> {
         });
     };
 
-    const configs = fetchApiQuery.integrationsFetchApi || [];
+    const configs = (fetchApiQuery.configs || []).filter(item =>
+      ['API_KEY', 'API_TOKEN'].includes(item.code)
+    );
 
     const configsMap = {};
 
@@ -45,14 +47,14 @@ class ConfigContainer extends React.Component<FinalProps> {
     }
 
     return (
-      <IntegrationsConfig {...this.props} configsMap={configsMap} save={save} />
+      <ApiTokenConfig {...this.props} configsMap={configsMap} save={save} />
     );
   }
 }
 
 export default withProps<{}>(
   compose(
-    graphql<{}>(gql(queries.fetchApi), {
+    graphql<{}>(gql(queries.configs), {
       name: 'fetchApiQuery',
       options: () => ({
         variables: {
@@ -61,7 +63,7 @@ export default withProps<{}>(
         }
       })
     }),
-    graphql<{}>(gql(mutations.integrationsUpdateConfigs), {
+    graphql<{}>(gql(mutations.updateConfigs), {
       name: 'updateConfigs'
     })
   )(ConfigContainer)

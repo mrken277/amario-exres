@@ -15,7 +15,7 @@ const EngageConfigs = asyncComponent(() =>
 );
 
 const ApiTokenConfigs = asyncComponent(() =>
-  import(/* webpackChunkName: "Integration configs" */ './components/ApiTokenConfigs')
+  import(/* webpackChunkName: "Integration configs" */ './containers/ApiTokenConfigs')
 );
 
 const routes = () => {

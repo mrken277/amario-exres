@@ -32,7 +32,7 @@ class ApiTokenConfigs extends React.Component<Props, State> {
     };
   }
 
-  save = e => {
+  generate = e => {
     e.preventDefault();
 
     const { configsMap } = this.state;
@@ -78,16 +78,15 @@ class ApiTokenConfigs extends React.Component<Props, State> {
           </Info>
           {this.renderItem('API_KEY')}
           {this.renderItem('API_TOKEN')}
-          {this.renderItem('API_AUTH')}
 
           <ModalFooter>
             <Button
               btnStyle="primary"
               icon="message"
-              // onClick={this.onSendTestEmail}
+              onClick={this.generate}
               uppercase={false}
             >
-              Send test email
+              Generate
             </Button>
           </ModalFooter>
         </CollapseContent>
