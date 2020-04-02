@@ -21,14 +21,21 @@ export const GET_DASHBOARD_ITEM = gql`
 `;
 
 const dashboards = `
-  query dashboards {
-    dashboards {
+  query dashboards($page: Int, $perPage: Int) {
+    dashboards(page: $page, perPage: $perPage) {
 	    _id
 	    name
 	  }
   }
 `;
 
+const totalCount = `
+  query dashboardsTotalCount {
+	  dashboardsTotalCount
+  }
+`;
+
 export default {
+  totalCount,
   dashboards
 };

@@ -214,7 +214,7 @@ class Navigation extends React.Component<{
             'showKnowledgeBase',
             __('Dashboard'),
             '/dashboard',
-            'icon-book'
+            'icon-dashboard'
           )}
         </Nav>
         <Robot />

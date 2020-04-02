@@ -20,7 +20,7 @@ type Props = {
   renderButton: (props: IButtonMutateProps) => JSX.Element;
 } & ICommonListProps;
 
-class EmailTemplateList extends React.Component<Props> {
+class DashboardList extends React.Component<Props> {
   renderForm = props => {
     return <DashboardForm {...props} renderButton={this.props.renderButton} />;
   };
@@ -77,18 +77,14 @@ class EmailTemplateList extends React.Component<Props> {
   render() {
     return (
       <List
-        formTitle="New email template"
+        formTitle="New dashboard"
         size="lg"
-        breadcrumb={[
-          { title: __('Settings'), link: '/settings' },
-          { title: __('Email templates') }
-        ]}
-        title={__('Email templates')}
+        title={__('Dashboard')}
         leftActionBar={
           <HeaderDescription
             icon="/images/actions/22.svg"
-            title="Email templates"
-            description={`It's all about thinking ahead for your customers. Team members will be able to choose from email templates and send out one message to multiple recipients. You can use the email templates to send out a Mass email for leads/customers or you can send to other team members.`}
+            title="Dashboards"
+            description={`Dashboard`}
           />
         }
         renderForm={this.renderForm}
@@ -99,4 +95,4 @@ class EmailTemplateList extends React.Component<Props> {
   }
 }
 
-export default EmailTemplateList;
+export default DashboardList;

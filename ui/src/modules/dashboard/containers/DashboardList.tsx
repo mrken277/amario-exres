@@ -6,8 +6,8 @@ import DashboardList from '../components/DashboardList';
 import { mutations, queries } from '../graphql';
 import { IDashboard } from '../types';
 
-export type EmailTemplatesQueryResponse = {
-  emailTemplates: IDashboard[];
+export type DashboardsQueryResponse = {
+  dashboards: IDashboard[];
   loading: boolean;
   refetch: () => void;
 };
@@ -17,8 +17,8 @@ type Props = {
 };
 
 export default commonListComposer<Props>({
-  text: 'email template',
-  label: 'emailTemplates',
+  text: 'dashboard',
+  label: 'dashboards',
   stringEditMutation: mutations.dashboardEdit,
   stringAddMutation: mutations.dashboardAdd,
 
@@ -30,6 +30,10 @@ export default commonListComposer<Props>({
         variables: generatePaginationParams(queryParams)
       };
     }
+  }),
+
+  gqlTotalCountQuery: graphql(gql(queries.totalCount), {
+    name: 'totalCountQuery'
   }),
 
   gqlAddMutation: graphql(gql(mutations.dashboardAdd), {

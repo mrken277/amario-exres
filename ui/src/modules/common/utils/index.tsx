@@ -177,6 +177,7 @@ export function withProps<IProps>(
 ) {
   return class WithProps extends React.Component<IProps, {}> {
     render() {
+      console.log('xxaxa', this.props);
       return <Wrapped {...this.props} />;
     }
   };
@@ -330,7 +331,7 @@ function createLinkFromUrl(url) {
   };
 
   return (
-    <a href='#website' onClick={onClick}>
+    <a href="#website" onClick={onClick}>
       {urlParser.extractRootDomain(url)}
     </a>
   );

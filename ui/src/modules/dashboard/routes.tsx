@@ -1,6 +1,7 @@
 import cubejs from '@cubejs-client/core';
 import { CubeProvider } from '@cubejs-client/react';
 import asyncComponent from 'modules/common/components/AsyncComponent';
+import queryString from 'query-string';
 import React from 'react';
 import { Route } from 'react-router-dom';
 
@@ -12,8 +13,18 @@ const DashboardPage = asyncComponent(() =>
   import(/* webpackChunkName: "DashboardPage - Dashboard" */ './containers/DashboardPage')
 );
 
-const dashBoard = history => {
-  return <DashboardPage history={history} />;
+const List = asyncComponent(() =>
+  import(/* webpackChunkName: "Settings - List EmailTemplate" */ './containers/DashboardList')
+);
+
+const dashboards = ({ location }) => {
+  return <List queryParams={queryString.parse(location.search)} />;
+};
+
+const dashboardDetail = ({ match, history }) => {
+  const id = match.params.id;
+
+  return <DashboardPage history={history} id={id} />;
 };
 
 const explorePage = history => {
@@ -34,14 +45,20 @@ const routes = () => {
     <CubeProvider cubejsApi={cubejsApi}>
       <React.Fragment>
         <Route
-          key="/dashboard/home"
+          key="/dashboard/list"
           exact={true}
           path="/dashboard"
-          component={dashBoard}
+          component={dashboards}
+        />
+        <Route
+          key="/dashboard/detail"
+          exact={true}
+          path="/dashboard/details/:id"
+          component={dashboardDetail}
         />
 
         <Route
-          key="/engage/messages/create"
+          key="/dashboard/explore"
           exact={true}
           path="/dashboard/explore"
           component={explorePage}
