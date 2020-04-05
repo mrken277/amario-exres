@@ -4,4 +4,10 @@ const updateConfigs = `
   }
 `;
 
-export default { updateConfigs };
+const generateTokenConfig = `
+  mutation generateTokenConfig($key: String) {
+    generateTokenConfig(key: $key)
+  }
+`;
+
+export default { updateConfigs, generateTokenConfig };

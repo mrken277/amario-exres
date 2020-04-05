@@ -6,25 +6,26 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import ApiTokenConfig from '../components/ApiTokenConfigs';
 import { mutations, queries } from '../graphql';
-import { IConfigsMap } from '../types';
 
 type FinalProps = {
   fetchApiQuery;
-  updateConfigs: (configsMap: IConfigsMap) => Promise<void>;
+  generateConfigToken: (
+    params: { variables: { key: string } }
+  ) => Promise<void>;
 };
 
 class ConfigContainer extends React.Component<FinalProps> {
   render() {
-    const { updateConfigs, fetchApiQuery } = this.props;
+    const { generateConfigToken, fetchApiQuery } = this.props;
 
     if (fetchApiQuery.loading) {
       return <Spinner objective={true} />;
     }
 
     // create or update action
-    const save = (map: IConfigsMap) => {
-      updateConfigs({
-        variables: { configsMap: map }
+    const generate = (token: string) => {
+      generateConfigToken({
+        variables: { key: token }
       })
         .then(() => {
           fetchApiQuery.refetch();
@@ -36,18 +37,23 @@ class ConfigContainer extends React.Component<FinalProps> {
         });
     };
 
-    const configs = (fetchApiQuery.configs || []).filter(item =>
-      ['API_KEY', 'API_TOKEN'].includes(item.code)
-    );
+    const configs = fetchApiQuery.configs || [];
 
-    const configsMap = {};
+    const apiKeyConfig = configs.filter(item => item.code === 'API_KEY') || [];
+    const apiKey = apiKeyConfig.length > 0 ? apiKeyConfig[0].value : '';
 
-    for (const config of configs) {
-      configsMap[config.code] = config.value;
-    }
+    const apiTokensConfig =
+      configs.filter(item => item.code === 'API_TOKENS') || [];
+    const apiTokens =
+      apiTokensConfig.length > 0 ? apiTokensConfig[0].value : {};
 
     return (
-      <ApiTokenConfig {...this.props} configsMap={configsMap} save={save} />
+      <ApiTokenConfig
+        {...this.props}
+        apiKey={apiKey}
+        apiTokens={apiTokens}
+        generate={generate}
+      />
     );
   }
 }
@@ -63,8 +69,8 @@ export default withProps<{}>(
         }
       })
     }),
-    graphql<{}>(gql(mutations.updateConfigs), {
-      name: 'updateConfigs'
+    graphql<{}>(gql(mutations.generateTokenConfig), {
+      name: 'generateConfigToken'
     })
   )(ConfigContainer)
 );

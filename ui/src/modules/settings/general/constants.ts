@@ -121,13 +121,22 @@ export const KEY_LABELS = {
 
   CHAT_API_UID: 'Chat-API API key',
   CHAT_API_WEBHOOK_CALLBACK_URL: 'Chat-API Webhook Callback Url',
-  API_KEY: 'Api key'
+  API_KEY: 'Api key',
+  API_TOKENS: 'Api tokens by system'
 };
 
-export const API_TOKEN_SYSTEMS = [
-  { key: 'exa', name: 'erxes-automations' },
-  { key: 'n8n', name: 'n8n' }
-];
+export const API_TOKEN_SYSTEMS = {
+  exa: {
+    value: 'exa',
+    label: 'erxes-automations',
+    description: 'connect erxes-automations with token'
+  },
+  n8n: {
+    value: 'n8n',
+    label: 'n8n',
+    description: 'connect n8n with token'
+  }
+};
 
 export const FILE_MIME_TYPES = [
   // images

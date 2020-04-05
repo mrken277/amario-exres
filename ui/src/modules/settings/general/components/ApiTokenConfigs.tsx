@@ -5,91 +5,127 @@ import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
 import Info from 'modules/common/components/Info';
 import { ModalFooter, Title } from 'modules/common/styles/main';
-import { __ } from 'modules/common/utils';
+import { __, Alert } from 'modules/common/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
 import React from 'react';
 import { ContentBox } from '../../styles';
-import { KEY_LABELS } from '../constants';
-import { IConfigsMap } from '../types';
+import { API_TOKEN_SYSTEMS } from '../constants';
 import Header from './Header';
 import Sidebar from './Sidebar';
 
 type Props = {
-  save: (configsMap: IConfigsMap) => void;
-  configsMap: IConfigsMap;
+  generate: (token: string) => void;
+  apiKey: string;
+  apiTokens: any;
 };
 
 type State = {
-  configsMap: IConfigsMap;
+  key: string;
+  hasAdd: boolean;
 };
 
 class ApiTokenConfigs extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    const keys = Object.keys(this.props.apiTokens || {});
+
     this.state = {
-      configsMap: props.configsMap
+      key: '',
+      hasAdd: keys.length === 0 ? true : false
     };
   }
 
-  generate = e => {
-    e.preventDefault();
+  generate = () => {
+    const { key } = this.state;
 
-    const { configsMap } = this.state;
+    if (!key) {
+      Alert.warning('required key');
+      return;
+    }
 
-    this.props.save(configsMap);
+    this.props.generate(key);
+    this.setState({ hasAdd: false });
   };
 
-  onChangeConfig = (code: string, value) => {
-    const { configsMap } = this.state;
-
-    configsMap[code] = value;
-
-    this.setState({ configsMap });
+  setStateHasAdd = (value: boolean) => {
+    this.setState({ hasAdd: value });
   };
 
-  onChangeInput = (code: string, e) => {
-    this.onChangeConfig(code, e.target.value);
+  onChangeAddToken = e => {
+    this.setState({ key: (e.currentTarget as HTMLInputElement).value });
   };
 
-  renderItem(key: string, description?: string) {
-    const { configsMap } = this.state;
+  onAddButton = () => {
+    this.setState({ hasAdd: true });
+  };
+
+  renderAddToken = () => {
+    if (!this.state.hasAdd) {
+      return <></>;
+    }
 
     return (
-      <FormGroup>
-        <ControlLabel>{KEY_LABELS[key]}</ControlLabel>
-        {description && <p>{__(description)}</p>}
-        <FormControl
-          defaultValue={configsMap[key]}
-          onChange={this.onChangeInput.bind(this, key)}
-        />
-      </FormGroup>
+      <CollapseContent title={`new token`} open={true}>
+        <Info>{`new bla`}</Info>
+        <FormGroup>
+          <ControlLabel>{`choose system`}</ControlLabel>
+          <FormControl
+            componentClass="select"
+            value={this.state.key}
+            options={[{ value: '', label: '' }].concat(
+              Object.values(API_TOKEN_SYSTEMS)
+            )}
+            onChange={this.onChangeAddToken}
+          />
+        </FormGroup>
+        <ModalFooter>
+          <Button
+            btnStyle="primary"
+            icon="message"
+            onClick={this.generate}
+            uppercase={false}
+          >
+            Generate
+          </Button>
+        </ModalFooter>
+      </CollapseContent>
     );
-  }
+  };
+
+  renderPerToken = (key, value) => {
+    const info = API_TOKEN_SYSTEMS[key];
+    return (
+      <CollapseContent title={info.label} key={key}>
+        <Info>{info.description}</Info>
+        <FormGroup>
+          <ControlLabel>{`TOKEN`}</ControlLabel>
+          <FormControl defaultValue={value} />
+        </FormGroup>
+      </CollapseContent>
+    );
+  };
+
+  renderTokens = () => {
+    const { apiTokens } = this.props;
+
+    const keys = Object.keys(apiTokens || {});
+
+    return keys.map(key => this.renderPerToken(key, apiTokens[key]));
+  };
 
   renderContent = () => {
+    const { apiKey } = this.props;
+
     return (
       <ContentBox>
-        <CollapseContent title="MAIN">
-          <Info>
-            <a target="_blank" href="Variables" rel="noopener noreferrer">
-              {__('More: Understanding Facebook Integration Variables')}
-            </a>
-          </Info>
-          {this.renderItem('API_KEY')}
-          {this.renderItem('API_TOKEN')}
+        <FormGroup>
+          <ControlLabel>API KEY</ControlLabel>
+          <FormControl defaultValue={apiKey} disabled={true} />
+        </FormGroup>
 
-          <ModalFooter>
-            <Button
-              btnStyle="primary"
-              icon="message"
-              onClick={this.generate}
-              uppercase={false}
-            >
-              Generate
-            </Button>
-          </ModalFooter>
-        </CollapseContent>
+        {this.renderTokens()}
+        {this.renderAddToken()}
       </ContentBox>
     );
   };
@@ -99,6 +135,17 @@ class ApiTokenConfigs extends React.Component<Props, State> {
       { title: __('Settings'), link: '/settings' },
       { title: __('Api Auth Token Configs') }
     ];
+
+    const actionButtons = (
+      <Button
+        btnStyle="primary"
+        onClick={this.onAddButton}
+        icon="check-circle"
+        uppercase={false}
+      >
+        Add Token
+      </Button>
+    );
 
     return (
       <Wrapper
@@ -112,6 +159,7 @@ class ApiTokenConfigs extends React.Component<Props, State> {
         actionBar={
           <Wrapper.ActionBar
             left={<Title>{__('Api Auth Token Configs')}</Title>}
+            right={actionButtons}
           />
         }
         leftSidebar={<Sidebar />}
