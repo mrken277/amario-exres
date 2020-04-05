@@ -6,11 +6,12 @@ import {
 } from 'modules/common/types';
 import { ICustomer } from 'modules/customers/types';
 import React from 'react';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import CustomerForm from '../components/list/CustomerForm';
 import { mutations } from '../graphql';
 
 type Props = {
+  type?: string;
   customer: ICustomer;
   closeModal: () => void;
   getAssociatedCustomer?: (customerId: string) => void;
@@ -36,7 +37,7 @@ class CustomerFormContainer extends React.Component<FinalProps, State> {
   };
 
   render() {
-    const { closeModal, history, getAssociatedCustomer } = this.props;
+    const { closeModal, type, history, getAssociatedCustomer } = this.props;
     const { redirectType } = this.state;
 
     const renderButton = ({
@@ -60,7 +61,7 @@ class CustomerFormContainer extends React.Component<FinalProps, State> {
         }`;
 
         if (getAssociatedCustomer) {
-          getAssociatedCustomer(data.customersAdd._id);
+          getAssociatedCustomer(data.customersAdd);
         }
 
         if (redirectType === 'new') {
@@ -68,6 +69,8 @@ class CustomerFormContainer extends React.Component<FinalProps, State> {
           history.replace(`${currentLocation}#showCustomerModal=true`);
         }
       };
+
+      values.state = type || 'customer';
 
       return (
         <ButtonMutate
@@ -79,8 +82,9 @@ class CustomerFormContainer extends React.Component<FinalProps, State> {
           disableLoading={redirectType ? true : false}
           disabled={isSubmitted}
           type="submit"
-          icon="user-check"
+          icon="check-circle"
           resetSubmit={resetSubmit}
+          uppercase={false}
           successMessage={`You successfully ${
             object ? 'updated' : 'added'
           } a ${name}`}
@@ -99,12 +103,7 @@ class CustomerFormContainer extends React.Component<FinalProps, State> {
 }
 
 const getRefetchQueries = () => {
-  return [
-    'customersMain',
-    // customers for company detail associate customers
-    'customers',
-    'customerCounts'
-  ];
+  return ['customersMain', 'customers', 'customerCounts'];
 };
 
 export default withRouter<FinalProps>(CustomerFormContainer);

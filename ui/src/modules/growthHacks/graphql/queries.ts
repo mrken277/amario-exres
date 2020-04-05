@@ -212,6 +212,18 @@ const archivedGrowthHacks = `
   }
 `;
 
+const archivedGrowthHacksCount = `
+  query archivedGrowthHacksCount(
+    $pipelineId: String!,
+    $search: String
+  ) {
+    archivedGrowthHacksCount(
+      pipelineId: $pipelineId,
+      search: $search
+    )
+  }
+`;
+
 export default {
   growthHacks,
   growthHacksPriorityMatrix,
@@ -219,5 +231,6 @@ export default {
   growthHacksTotalCount,
   pipelineDetail,
   pipelineStateCount,
-  archivedGrowthHacks
+  archivedGrowthHacks,
+  archivedGrowthHacksCount
 };

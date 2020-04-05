@@ -9,23 +9,21 @@
 // site configuration options.
 
 // List of projects/orgs using your project for the users page.
-const users = [
-  {
-    caption: 'User1',
-    // You will need to prepend the image path with your baseUrl
-    // if it is not '/', like: '/test-site/img/docusaurus.svg'.
-    image: '/img/docusaurus.svg',
-    infoLink: 'https://www.facebook.com',
-    pinned: true,
-    docsSideNavCollapsible: true,
-    onPageNav: 'separate'
-  }
-];
+const users = [{
+  caption: 'User1',
+  // You will need to prepend the image path with your baseUrl
+  // if it is not '/', like: '/test-site/img/docusaurus.svg'.
+  image: '/img/docusaurus.svg',
+  infoLink: 'https://www.facebook.com',
+  pinned: true,
+  docsSideNavCollapsible: true,
+  onPageNav: 'separate'
+}];
 
 const siteConfig = {
   title: 'erxes', // Title for your website.
   tagline: 'Documentation',
-  url: 'https://docs.erxes.io', // Your website URL
+  url: 'https://erxes.io', // Your website URL
   baseUrl: '/', // Base URL for your project */
   editUrl: 'https://github.com/erxes/erxes/edit/develop/docs/docs/',
   cname: 'docs.erxes.io',
@@ -50,20 +48,14 @@ const siteConfig = {
   //   organizationName: 'JoelMarcey'
 
   // For no header links in the top nav bar -> headerLinks: [],
-  headerLinks: [
-    {
-      doc: 'overview/getting-started',
-      label: 'Docs'
-    },
-    {
-      href: 'https://erxes.io/pricing',
-      label: 'Pricing & Trial',
+  headerLinks: [{
+      href: 'https://erxes.io/signin',
+      label: 'Sign in',
       external: true
     },
-    { href: 'https://erxes.io/blog/', label: 'Blog', external: true },
     {
-      href: 'https://github.com/erxes/erxes',
-      label: 'GitHub',
+      href: 'https://erxes.io/create',
+      label: 'Get started',
       external: true
     },
   ],

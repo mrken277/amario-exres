@@ -84,6 +84,8 @@ export interface IEngageMessage extends IEngageMessageDoc {
   fromUser: IUser;
   tagIds: string[];
   getTags: ITag[];
+  totalCustomersCount?: number;
+  validCustomersCount?: number;
 
   stats?: IEngageStats;
   logs?: Array<{ message: string }>;
@@ -109,7 +111,7 @@ export type SetLiveMutationResponse = {
 
 export type SetLiveManualMutationResponse = {
   setLiveManualMutation: (
-    params: { vairables: MutationVariables }
+    params: { variables: MutationVariables }
   ) => Promise<void>;
 };
 
@@ -133,7 +135,7 @@ export type WithFormAddMutationResponse = {
 export type WithFormEditMutationResponse = {
   editMutation: (
     params: {
-      vairables: WithFormMutationVariables;
+      variables: WithFormMutationVariables;
     }
   ) => Promise<any>;
 };

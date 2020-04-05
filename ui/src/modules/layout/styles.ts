@@ -15,6 +15,16 @@ const UserHelper = styled.div`
   }
 `;
 
+const PageHeader = styled.div`
+  height: ${dimensions.headerSpacing}px;
+  position: fixed;
+  top: 0;
+  display: flex;
+  align-items: center;
+  z-index: 3;
+  padding-left: ${dimensions.coreSpacing * 1.5}px;
+`;
+
 const Layout = styledTS<{ isSqueezed?: boolean }>(styled.main)`
   height: ${props => (props.isSqueezed ? 'calc(100% - 36px)' : '100%')};
   display: flex;
@@ -22,6 +32,14 @@ const Layout = styledTS<{ isSqueezed?: boolean }>(styled.main)`
   max-width: 100%;
   position: relative;
   overflow: hidden;
+
+  ${props =>
+    props.isSqueezed &&
+    css`
+      ${PageHeader} {
+        top: 36px;
+      }
+    `};
 `;
 
 const MainWrapper = styled.div`
@@ -255,15 +273,15 @@ const HelperButtons = styledTS<{ isSidebarOpen?: boolean }>(styled.div)`
   position: absolute;
   right: ${dimensions.coreSpacing}px;
   top: ${props =>
-    props.isSidebarOpen ? `${dimensions.unitSpacing}px` : '15px'};
+    props.isSidebarOpen ? `${dimensions.unitSpacing - 2}px` : '15px'};
   color: ${colors.colorCoreLightGray};
-  padding-right: ${props => (props.isSidebarOpen ? '25px' : '0')};
+  padding-right: ${props => (props.isSidebarOpen ? '20px' : '0')};
 
   a, button {
     color: ${colors.colorCoreLightGray};
     text-transform: none;
     cursor: pointer;
-    margin-left: ${dimensions.unitSpacing}px;
+    margin-left: ${dimensions.unitSpacing - 2}px;
     font-size: ${typography.fontSizeHeading8}px;
     font-weight: ${typography.fontWeightLight};
     outline: 0;
@@ -272,7 +290,7 @@ const HelperButtons = styledTS<{ isSidebarOpen?: boolean }>(styled.div)`
     background: none;
 
     > i {
-      font-size: 14px;
+      font-size: 16px;
 
       &:hover {
         color: ${colors.colorCoreBlack};
@@ -564,6 +582,7 @@ const CenterContent = styled.div`
 
 export {
   Layout,
+  PageHeader,
   MainWrapper,
   VerticalContent,
   HeightedWrapper,
