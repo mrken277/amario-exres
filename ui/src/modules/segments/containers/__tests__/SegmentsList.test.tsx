@@ -2,28 +2,30 @@ import { MockedProvider } from '@apollo/react-testing';
 import { GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { segmentFactory } from 'modules/testing-utils/factories/segments';
+import { withRouter } from 'modules/testing-utils/withRouter';
 import * as React from 'react';
 import { create } from 'react-test-renderer';
 import wait from 'waait';
 import { mutations, queries } from '../../graphql';
 import SegmentListContainer from '../SegmentsList';
 
-const segmentVariables = { contentType: '' };
+const contentType = 'customer';
+const segmentVariables = { contentType };
 
 const segmentsErrorMock = {
   request: {
     query: gql(queries.segments),
-    variables: segmentVariables,
+    variables: segmentVariables
   },
   result: {
-    errors: [new GraphQLError('forced error')],
+    errors: [new GraphQLError('forced error')]
   }
 };
 
 const configQueryMock = {
   request: {
     query: gql(queries.segments),
-    variables: segmentVariables,
+    variables: segmentVariables
   },
   result: {
     data: {
@@ -33,63 +35,69 @@ const configQueryMock = {
           _id: 'id'
         })
       ]
-    },
-  },
+    }
+  }
 };
 
 const removeSegmentMutationMocks = {
   request: {
     query: gql(mutations.segmentsRemove),
-    variables: { _id: '' },
+    variables: { _id: '' }
   },
   result: {
     data: {
       _id: ''
     }
-  },
+  }
 };
 
 describe('SegmentsList', () => {
   it('should render loading state initially', () => {
-    const component = create(
+    const testRenderer = create(
       <MockedProvider mocks={[]}>
-        <SegmentListContainer contentType='' />
+        <SegmentListContainer contentType="" />
       </MockedProvider>
     );
 
-    const tree = component.toJSON();
-    expect(tree.children).toContain('Loading...');
+    const testInstance = testRenderer.root;
+    const loader = testInstance.findByProps({ objective: true }).type;
+
+    const spinner = loader({});
+
+    expect(spinner.props.objective).toEqual(false);
   });
 
   it('error', async () => {
-    const component = create(
-      <MockedProvider
-        mocks={[segmentsErrorMock]}
-        addTypename={false}
-      >
-        <SegmentListContainer contentType='' />
+    const testRenderer = create(
+      <MockedProvider mocks={[segmentsErrorMock]} addTypename={false}>
+        <SegmentListContainer contentType={contentType} />
       </MockedProvider>
     );
 
     await wait(0);
 
-    const tree = component.toJSON();
-    expect(tree.children).toContain('Error!')
+    const testInstance = testRenderer.root;
+    const span = testInstance.findByType('span');
+    expect(span.children).toContain('forced error');
   });
 
   it('should render content', async () => {
-    const component = create(
+    const testRenderer = create(
       <MockedProvider
         mocks={[configQueryMock, removeSegmentMutationMocks]}
         addTypename={false}
       >
-        <SegmentListContainer contentType='' />
+        {withRouter(<SegmentListContainer contentType={contentType} />)}
       </MockedProvider>
     );
 
     await wait(0); // wait for response
 
-    const tree = component.toJSON();
-    expect(tree).toBe(null);
+    const testInstance = testRenderer.root;
+    expect(testRenderer.toJSON()).toMatchSnapshot();
+
+    expect(
+      testInstance.findByType(SegmentListContainer).props.contentType
+    ).toBe(contentType);
   });
 });

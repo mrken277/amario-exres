@@ -1,8 +1,10 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import ErrorMsg from 'modules/common/components/ErrorMsg';
 import Spinner from 'modules/common/components/Spinner';
 import { Alert } from 'modules/common/utils';
 import { confirm } from 'modules/common/utils';
+import checkError from 'modules/common/utils/checkError';
 import React from 'react';
 import SegmentsList from '../components/SegmentsList';
 import { mutations, queries } from '../graphql';
@@ -27,14 +29,17 @@ const SegmentListContainer = (props: Props) => {
     }
   );
 
-  const [removeMutation, { error: segmentsRemoveMutationError }] =
-    useMutation<RemoveMutationResponse, { _id: string }>(
-      gql(mutations.segmentsRemove), {
-      refetchQueries: [{
+  const [removeMutation, { error: segmentsRemoveMutationError }] = useMutation<
+    RemoveMutationResponse,
+    { _id: string }
+  >(gql(mutations.segmentsRemove), {
+    refetchQueries: [
+      {
         query: gql(queries.segments),
         variables: { contentType }
-      }]
-    });
+      }
+    ]
+  });
 
   const removeSegment = segmentId => {
     confirm().then(() => {
@@ -51,11 +56,13 @@ const SegmentListContainer = (props: Props) => {
   };
 
   if (segmentsQueryError || segmentsRemoveMutationError) {
-    return <p>Error!</p>;
+    const error = checkError([segmentsQueryError, segmentsRemoveMutationError]);
+
+    return <ErrorMsg>{error.message}</ErrorMsg>;
   }
 
   if (segmentsQueryLoading) {
-    return <Spinner />;
+    return <Spinner objective={true} />;
   }
 
   const updatedProps = {
