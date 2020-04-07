@@ -7,13 +7,7 @@ import React from 'react';
 
 import List from 'modules/settings/common/components/List';
 import { ICommonListProps } from 'modules/settings/common/types';
-import {
-  Actions,
-  IframePreview,
-  Template,
-  TemplateBox,
-  Templates
-} from '../styles';
+import { Actions, Template, TemplateBox, Templates } from '../styles';
 import DashboardForm from './DashboardForm';
 
 type Props = {
@@ -51,9 +45,15 @@ class DashboardList extends React.Component<Props> {
     );
   };
 
+  onTrClick = object => {
+    const { history } = this.props;
+
+    history.push(`/dashboard/details/${object._id}`);
+  };
+
   renderRow({ objects }) {
     return objects.map((object, index) => (
-      <Template key={index}>
+      <Template key={index} onClick={() => this.onTrClick(object)}>
         <TemplateBox>
           <Actions>
             {this.renderEditAction(object)}
@@ -61,9 +61,6 @@ class DashboardList extends React.Component<Props> {
               <Icon icon="cancel-1" /> Delete
             </div>
           </Actions>
-          <IframePreview>
-            <iframe title="content-iframe" srcDoc={object.content} />
-          </IframePreview>
         </TemplateBox>
         <h5>{object.name}</h5>
       </Template>

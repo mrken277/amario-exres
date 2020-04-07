@@ -11,7 +11,7 @@ type Props = {
   object?: IDashboard;
 } & ICommonFormProps;
 
-class Form extends React.Component<Props & ICommonFormProps> {
+class DashboardForm extends React.Component<Props & ICommonFormProps> {
   generateDoc = (values: { _id?: string; name: string }) => {
     const { object } = this.props;
     const finalValues = values;
@@ -59,4 +59,4 @@ class Form extends React.Component<Props & ICommonFormProps> {
   }
 }
 
-export default Form;
+export default DashboardForm;

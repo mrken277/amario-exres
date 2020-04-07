@@ -5,7 +5,7 @@ import {
   CREATE_DASHBOARD_ITEM,
   UPDATE_DASHBOARD_ITEM
 } from '../graphql/mutations';
-import { GET_DASHBOARD_ITEMS } from '../graphql/queries';
+// import { GET_DASHBOARD_ITEMS } from '../graphql/queries';
 
 const TitleModal = ({
   history,
@@ -18,23 +18,23 @@ const TitleModal = ({
   finalTitle
 }) => {
   const [addDashboardItem] = useMutation(CREATE_DASHBOARD_ITEM, {
-    refetchQueries: [
-      {
-        query: GET_DASHBOARD_ITEMS
-      }
-    ]
+    // refetchQueries: [
+    //   {
+    //     query: GET_DASHBOARD_ITEMS
+    //   }
+    // ]
   });
   const [updateDashboardItem] = useMutation(UPDATE_DASHBOARD_ITEM, {
-    refetchQueries: [
-      {
-        query: GET_DASHBOARD_ITEMS
-      }
-    ]
+    // refetchQueries: [
+    //   {
+    //     query: GET_DASHBOARD_ITEMS
+    //   }
+    // ]
   });
   return (
     <Modal
-      key='modal'
-      title='Save Chart'
+      key="modal"
+      title="Save Chart"
       visible={titleModalVisible}
       onOk={async () => {
         setTitleModalVisible(false);
@@ -58,7 +58,7 @@ const TitleModal = ({
       onCancel={() => setTitleModalVisible(false)}
     >
       <Input
-        placeholder='Dashboard Item Name'
+        placeholder="Dashboard Item Name"
         value={finalTitle}
         onChange={e => setTitle(e.target.value)}
       />

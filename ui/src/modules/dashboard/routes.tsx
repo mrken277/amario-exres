@@ -9,22 +9,27 @@ const ExplorePage = asyncComponent(() =>
   import(/* webpackChunkName: "ExplorePage - Dashboard" */ './containers/ExplorePage')
 );
 
-const DashboardPage = asyncComponent(() =>
-  import(/* webpackChunkName: "DashboardPage - Dashboard" */ './containers/DashboardPage')
+const DashboardDetail = asyncComponent(() =>
+  import(/* webpackChunkName: "DashboardDetail - Dashboard" */ './containers/DashboardDetail')
 );
 
-const List = asyncComponent(() =>
-  import(/* webpackChunkName: "Settings - List EmailTemplate" */ './containers/DashboardList')
+const DashboardList = asyncComponent(() =>
+  import(/* webpackChunkName: "Dashboards" */ './containers/DashboardList')
 );
 
-const dashboards = ({ location }) => {
-  return <List queryParams={queryString.parse(location.search)} />;
+const dashboards = ({ location, history }) => {
+  return (
+    <DashboardList
+      history={history}
+      queryParams={queryString.parse(location.search)}
+    />
+  );
 };
 
 const dashboardDetail = ({ match, history }) => {
   const id = match.params.id;
 
-  return <DashboardPage history={history} id={id} />;
+  return <DashboardDetail history={history} id={id} />;
 };
 
 const explorePage = history => {
@@ -60,7 +65,7 @@ const routes = () => {
         <Route
           key="/dashboard/explore"
           exact={true}
-          path="/dashboard/explore"
+          path="/dashboard/explore/:id"
           component={explorePage}
         />
       </React.Fragment>

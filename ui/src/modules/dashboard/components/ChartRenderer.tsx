@@ -1,6 +1,6 @@
 import { useCubeQuery } from '@cubejs-client/react';
-import { Col, Row, Spin, Statistic, Table } from 'antd';
-import PropTypes from 'prop-types';
+import { Col, Row, Statistic, Table } from 'antd';
+import Spinner from 'modules/common/components/Spinner';
 import React from 'react';
 import {
   Area,
@@ -21,9 +21,9 @@ import {
 } from 'recharts';
 
 const CartesianChart = ({ resultSet, children, ChartComponent }) => (
-  <ResponsiveContainer width='100%' height={350}>
+  <ResponsiveContainer width="100%" height={350}>
     <ChartComponent data={resultSet.chartPivot()}>
-      <XAxis dataKey='x' />
+      <XAxis dataKey="x" />
       <YAxis />
       <CartesianGrid />
       {children}
@@ -41,7 +41,7 @@ const TypeToChartComponent = {
       {resultSet.seriesNames().map((series, i) => (
         <Line
           key={series.key}
-          stackId='a'
+          stackId="a"
           dataKey={series.key}
           name={series.title}
           stroke={colors[i]}
@@ -54,7 +54,7 @@ const TypeToChartComponent = {
       {resultSet.seriesNames().map((series, i) => (
         <Bar
           key={series.key}
-          stackId='a'
+          stackId="a"
           dataKey={series.key}
           name={series.title}
           fill={colors[i]}
@@ -67,7 +67,7 @@ const TypeToChartComponent = {
       {resultSet.seriesNames().map((series, i) => (
         <Area
           key={series.key}
-          stackId='a'
+          stackId="a"
           dataKey={series.key}
           name={series.title}
           stroke={colors[i]}
@@ -77,14 +77,14 @@ const TypeToChartComponent = {
     </CartesianChart>
   ),
   pie: ({ resultSet }) => (
-    <ResponsiveContainer width='100%' height={350}>
+    <ResponsiveContainer width="100%" height={350}>
       <PieChart>
         <Pie
           isAnimationActive={false}
           data={resultSet.chartPivot()}
-          nameKey='x'
+          nameKey="x"
           dataKey={resultSet.seriesNames()[0].key}
-          fill='#8884d8'
+          fill="#8884d8"
         >
           {resultSet.chartPivot().map((e, index) => (
             <Cell key={index} fill={colors[index % colors.length]} />
@@ -97,8 +97,8 @@ const TypeToChartComponent = {
   ),
   number: ({ resultSet }) => (
     <Row
-      justify='center'
-      align='middle'
+      justify="center"
+      align="middle"
       style={{
         height: '100%'
       }}
@@ -124,23 +124,16 @@ const TypeToMemoChartComponent = Object.keys(TypeToChartComponent)
   }))
   .reduce((a, b) => ({ ...a, ...b }));
 
-const renderChart = Component => ({ resultSet, error }) =>
-  (resultSet && <Component resultSet={resultSet} />) ||
-  (error && error.toString()) || <Spin />;
+const renderChart = Component => ({ resultSet, error, height }) =>
+  (resultSet && <Component height={height} resultSet={resultSet} />) ||
+  (error && error.toString()) || <Spinner />;
 
-const ChartRenderer = ({ vizState }) => {
+const ChartRenderer = ({ vizState, chartHeight }) => {
   const { query, chartType } = vizState;
   const component = TypeToMemoChartComponent[chartType];
   const renderProps = useCubeQuery(query);
-  return component && renderChart(component)(renderProps);
-};
-
-ChartRenderer.propTypes = {
-  vizState: PropTypes.object,
-  cubejsApi: PropTypes.object
-};
-ChartRenderer.defaultProps = {
-  vizState: {},
-  cubejsApi: null
+  return (
+    component && renderChart(component)({ height: chartHeight, ...renderProps })
+  );
 };
 export default ChartRenderer;

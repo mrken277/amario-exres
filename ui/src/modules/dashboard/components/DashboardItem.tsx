@@ -4,15 +4,15 @@ import { Button, Card, Dropdown, Menu, Modal } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { DELETE_DASHBOARD_ITEM } from '../graphql/mutations';
-import { GET_DASHBOARD_ITEMS } from '../graphql/queries';
+// import { GET_DASHBOARD_ITEMS } from '../graphql/queries';
 
 const DashboardItemDropdown = ({ itemId }) => {
   const [removeDashboardItem] = useMutation(DELETE_DASHBOARD_ITEM, {
-    refetchQueries: [
-      {
-        query: GET_DASHBOARD_ITEMS
-      }
-    ]
+    // refetchQueries: [
+    //   {
+    //     query: GET_DASHBOARD_ITEMS
+    //   }
+    // ]
   });
   const dashboardItemDropdownMenu = (
     <Menu>
@@ -44,10 +44,10 @@ const DashboardItemDropdown = ({ itemId }) => {
   return (
     <Dropdown
       overlay={dashboardItemDropdownMenu}
-      placement='bottomLeft'
+      placement="bottomLeft"
       trigger={['click']}
     >
-      <Button shape='circle' icon={<Icon type='menu' />} />
+      <Button shape="circle" icon={<Icon type="menu" />} />
     </Dropdown>
   );
 };

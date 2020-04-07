@@ -19,8 +19,18 @@ export const CREATE_DASHBOARD_ITEM = gql`
   }
 `;
 export const UPDATE_DASHBOARD_ITEM = gql`
-  mutation UpdateDashboardItem($id: String!, $input: DashboardItemInput) {
-    updateDashboardItem(id: $id, input: $input) {
+  mutation UpdateDashboardItem(
+    $id: String!
+    $layout: String
+    $vizState: String
+    $name: String
+  ) {
+    updateDashboardItem(
+      id: $id
+      layout: $layout
+      vizState: $vizState
+      name: $name
+    ) {
       id
       layout
       vizState
@@ -62,8 +72,32 @@ const dashboardRemove = `
 	}
 `;
 
+const dashboardItemEdit = `
+  mutation dashboardItemEdit($id: String!, $layout: String, $vizState: String, $name: String) {
+    dashboardItemEdit(id: $id, layout: $layout, vizState: $vizState, name: $name) {
+      id
+      layout
+      vizState
+      name
+    }
+  }
+`;
+
+const dashboardItemAdd = `
+  mutation dashboardItemAdd($id: String!, $dashboardId: String, $layout: String, $vizState: String, $name: String) {
+    dashboardItemAdd(id: $id, dashboardId: $dashboardId, layout: $layout, vizState: $vizState, name: $name) {
+      id
+      layout
+      vizState
+      name
+    }
+  }
+`;
+
 export default {
   dashboardAdd,
   dashboardEdit,
+  dashboardItemEdit,
+  dashboardItemAdd,
   dashboardRemove
 };
