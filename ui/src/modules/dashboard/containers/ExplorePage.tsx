@@ -3,7 +3,7 @@ import { isQueryPresent } from '@cubejs-client/react';
 import { Alert, Button, Spin, Typography } from 'antd';
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import PageHeader from '../components/PageHeader.js';
+import PageHeader from '../components/PageHeader';
 import ExploreQueryBuilder from '../components/QueryBuilder/ExploreQueryBuilder';
 import TitleModal from '../components/TitleModal.js';
 import { GET_DASHBOARD_ITEM } from '../graphql/queries';
