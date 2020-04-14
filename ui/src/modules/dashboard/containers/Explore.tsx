@@ -52,7 +52,7 @@ class DashboardContainer extends React.Component<FinalProps, {}> {
     return (
       <ChartDetail
         editDashboardItem={editDashboardItem}
-        dashboardItems={dashBoardItemDetailsQuery.dashboardItem || []}
+        dashboardItem={dashBoardItemDetailsQuery.dashboardItem || []}
       />
     );
   }
