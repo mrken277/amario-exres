@@ -107,12 +107,21 @@ export const KEY_LABELS = {
   GOOGLE_PROJECT_ID: 'Google Project Id',
   GOOGLE_GMAIL_TOPIC: 'Google Gmail Topic',
   GOOGLE_APPLICATION_CREDENTIALS: 'Google Application Credentials',
+  GOOGLE_APPLICATION_CREDENTIALS_JSON: 'Google Application Credentials JSON',
   GOOGLE_GMAIL_SUBSCRIPTION_NAME: 'Google Gmail Subscription Name',
-  GOOGLE_CLIENT_ID: 'Google Clien Id',
+  GOOGLE_CLIENT_ID: 'Google Client Id',
   GOOGLE_CLIENT_SECRET: 'Google Client Secret',
 
   DAILY_API_KEY: 'Daily api key',
-  DAILY_END_POINT: 'Daily end point'
+  DAILY_END_POINT: 'Daily end point',
+
+  SMOOCH_APP_KEY_ID: 'Smooch App Key Id',
+  SMOOCH_APP_KEY_SECRET: 'Smooch App Key Secret',
+  SMOOCH_APP_ID: 'Smooch App Id',
+  SMOOCH_WEBHOOK_CALLBACK_URL: 'Smooch Webhook Callback Url',
+
+  CHAT_API_UID: 'Chat-API API key',
+  CHAT_API_WEBHOOK_CALLBACK_URL: 'Chat-API Webhook Callback Url'
 };
 
 export const FILE_MIME_TYPES = [
@@ -181,18 +190,18 @@ export const FILE_MIME_TYPES = [
   {
     value:
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    label: 'Microsoft Word (OpenXML)	',
+    label: 'Microsoft Word (OpenXML)',
     extension: '.docx'
   },
   {
     value: 'application/vnd.ms-excel',
     label: 'Microsoft Excel',
-    extension: 'xls'
+    extension: '.xls'
   },
   {
     value: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     label: 'Microsoft Excel OpenXML',
-    extension: 'xlsx'
+    extension: '.xlsx'
   },
   {
     value: 'application/vnd.ms-powerpoint',
@@ -200,7 +209,8 @@ export const FILE_MIME_TYPES = [
     extension: '.ppt'
   },
   {
-    value: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    value:
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     label: 'Microsoft PowerPoint (OpenXML)',
     extension: '.pptx'
   },

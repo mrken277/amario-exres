@@ -25,6 +25,7 @@ title: Getting  Started
 - <a href="../user/popups">Popups</a>
 - <a href="../user/script-install">Script installation</a>
 - <a href="../user/contacts">Contacts</a>
+- <a href="../user/segments">Segments</a>
 - <a href="../user/sales-pipeline">Sales pipeline</a>
 - <a href="../user/engage">Engage</a>
 - <a href="../user/insights">Insights</a>
@@ -43,6 +44,7 @@ title: Getting  Started
 - <a href="../installation/docker">Docker</a>
 - <a href="../installation/heroku">Heroku</a>
 - <a href="../installation/aws">AWS Marketplace</a>
+- <a href="../installation/digitalocean">DigitalOcean Marketplace</a>
 - <a href="../installation/upgrade">Upgrade</a>
 
 ### Administrator's guide
@@ -60,6 +62,7 @@ title: Getting  Started
 - <a href="../developer/push-notifications">Push Notification</a>
 - <a href="../developer/android-sdk">Android SDK</a>
 - <a href="../developer/ios-sdk">iOS SDK</a>
+- <a href="../developer/troubleshooting">Troubleshooting</a>
 
     </div>
   </div>
