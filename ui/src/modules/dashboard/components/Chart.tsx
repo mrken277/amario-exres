@@ -1,12 +1,9 @@
 import React from 'react';
 
-import { Button, Typography } from 'antd';
-
 import { IDashboardItem } from '../types';
-import PageHeader from './PageHeader';
 
 type Props = {
-  dashboardItems: IDashboardItem[];
+  dashboardItem: IDashboardItem;
   editDashboardItem: (
     doc: {
       _id: string;
@@ -15,39 +12,15 @@ type Props = {
   ) => void;
 };
 class Dashboard extends React.Component<Props> {
+  constructor() {
+    state;
+  }
   render() {
-    const finalVizState =
-      vizState ||
-      (itemId && !loading && data && JSON.parse(data.dashboardItem.vizState)) ||
-      {};
+    const { dashboardItem } = this.props;
+    const finalVizState = vizState || JSON.parse(dashboardItem.vizState) || {};
 
     return (
       <div>
-        <TitleModal
-          history={history}
-          itemId={itemId}
-          titleModalVisible={titleModalVisible}
-          setTitleModalVisible={setTitleModalVisible}
-          setAddingToDashboard={setAddingToDashboard}
-          finalVizState={finalVizState}
-          setTitle={setTitle}
-          finalTitle={finalTitle}
-        />
-        <PageHeader
-          noBorder={true}
-          title={<Typography.Title level={4}>Chart</Typography.Title>}
-          button={
-            <Button
-              key="button"
-              type="primary"
-              loading={addingToDashboard}
-              disabled={!isQueryPresent(finalVizState.query || {})}
-              onClick={() => setTitleModalVisible(true)}
-            >
-              {itemId ? 'Update' : 'Add to Dashboard'}
-            </Button>
-          }
-        />
         <ExploreQueryBuilder
           vizState={finalVizState}
           setVizState={setVizState}

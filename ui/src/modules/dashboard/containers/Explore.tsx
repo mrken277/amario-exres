@@ -6,7 +6,6 @@ import { IButtonMutateProps } from 'modules/common/types';
 import { withProps } from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
-import Dashboard from '../components/Dashboard';
 import { mutations, queries } from '../graphql';
 import { DashboardItemDetailsQueryResponse } from '../types';
 
@@ -51,7 +50,7 @@ class DashboardContainer extends React.Component<FinalProps, {}> {
     };
     return (
       <ChartDetail
-        editDashboardItem={editDashboardItem}
+        renderButton={renderButton}
         dashboardItem={dashBoardItemDetailsQuery.dashboardItem || []}
       />
     );

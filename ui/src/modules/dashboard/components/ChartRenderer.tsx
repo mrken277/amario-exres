@@ -128,7 +128,13 @@ const renderChart = Component => ({ resultSet, error, height }) =>
   (resultSet && <Component height={height} resultSet={resultSet} />) ||
   (error && error.toString()) || <Spinner />;
 
-const ChartRenderer = ({ vizState, chartHeight }) => {
+const ChartRenderer = ({
+  vizState,
+  chartHeight
+}: {
+  vizState: any;
+  chartHeight?: string;
+}) => {
   const { query, chartType } = vizState;
   const component = TypeToMemoChartComponent[chartType];
   const renderProps = useCubeQuery(query);
