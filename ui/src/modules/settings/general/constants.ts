@@ -130,12 +130,20 @@ export const API_TOKEN_SYSTEMS = {
   exa: {
     value: 'exa',
     label: 'erxes-automations',
-    description: 'connect erxes-automations with token'
+    description: 'connect erxes-automations with token',
+    kind: 'static'
   },
   n8n: {
     value: 'n8n',
     label: 'n8n',
-    description: 'connect n8n with token'
+    description: 'connect n8n with token',
+    kind: 'static'
+  },
+  golomt: {
+    value: 'golomt',
+    label: 'golomt-chat',
+    description: '',
+    kind: 'expired'
   }
 };
 
