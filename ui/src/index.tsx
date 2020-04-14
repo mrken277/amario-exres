@@ -35,9 +35,18 @@ if (REACT_APP_SENTRY_DSN) {
 
 const target = document.querySelector('#root');
 
-render(
-  <ApolloProvider client={apolloClient}>
-    <Routes />
-  </ApolloProvider>,
-  target
-);
+const envs = getEnv();
+
+fetch(
+  `${envs.REACT_APP_API_URL}/set-frontend-cookies?envs=${JSON.stringify(envs)}`,
+  { credentials: 'include' }
+)
+  .then(response => response.text())
+  .then(() => {
+    render(
+      <ApolloProvider client={apolloClient}>
+        <Routes />
+      </ApolloProvider>,
+      target
+    );
+  });
