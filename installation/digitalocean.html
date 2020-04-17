@@ -97,19 +97,18 @@ The content of the file should be as follows:</p>
   <span class="hljs-attr">NODE_ENV</span>: <span class="hljs-string">"production"</span>,
   <span class="hljs-attr">REACT_APP_API_URL</span>: <span class="hljs-string">"http://your_domain/api"</span>,
   <span class="hljs-attr">REACT_APP_API_SUBSCRIPTION_URL</span>: <span class="hljs-string">"ws://your_domain/api/subscriptions"</span>,
-  <span class="hljs-attr">REACT_APP_CDN_HOST</span>: <span class="hljs-string">"http://your_domain/widgets"</span>
+  <span class="hljs-attr">REACT_APP_CDN_HOST</span>: <span class="hljs-string">"http://your_domain/widgets"</span>,
 };
 </code></pre></li>
 <li><p>Update all env vars with HTTP url in the <code>/home/erxes/ecosystem.json</code> file.</p></li>
 <li><p>Now, you need to restart pm2 erxes processes by running the following command:</p>
 <pre><code class="hljs css language-sh">pm2 restart ecosystem.json
 </code></pre></li>
-<li><p>Switch to <code>root</code> user and update your nginx config
-<code>server_name</code> with your domain.</p></li>
+<li><p>Switch to <code>root</code> user and edit your nginx config file located in <code>/etc/nginx/sites-available/default</code> and replace <code>server_name</code> with your domain.</p></li>
 <li><p>Lastly reload your nginx service by running <code>systemctl reload nginx</code></p></li>
 </ol>
 <p>Now you can use erxes with your own domain.</p>
-</span></div></article></div><div class="docLastUpdate"><em>Last updated on 4/15/2020 by Indra Ganzorig</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/installation/aws"><span class="arrow-prev">← </span><span>AWS Marketplace</span></a><a class="docs-next button" href="/installation/upgrade"><span>Upgrade</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#create-an-admin-user">Create an admin user</a></li><li><a href="#load-initial-data">Load initial data</a></li><li><a href="#use-your-own-domain">Use your own domain</a></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div></article></div><div class="docLastUpdate"><em>Last updated on 4/17/2020 by Batnasan Byambasuren</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/installation/aws"><span class="arrow-prev">← </span><span>AWS Marketplace</span></a><a class="docs-next button" href="/installation/upgrade"><span>Upgrade</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#create-an-admin-user">Create an admin user</a></li><li><a href="#load-initial-data">Load initial data</a></li><li><a href="#use-your-own-domain">Use your own domain</a></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
