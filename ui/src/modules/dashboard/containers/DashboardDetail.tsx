@@ -23,16 +23,17 @@ type FinalProps = {
 
 class DashboardContainer extends React.Component<FinalProps, {}> {
   render() {
-    const { dashboardItemsQuery, editDashboardItemMutation } = this.props;
+    const { dashboardItemsQuery, editDashboardItemMutation, id } = this.props;
 
     if (dashboardItemsQuery.loading) {
       return <Spinner objective={true} />;
     }
 
-    const editDashboardItem = variables => {
+    const editDashboardItem = params => {
       editDashboardItemMutation({
         variables: {
-          ...variables
+          _id: params._id,
+          layout: params.layout
         }
       });
     };
@@ -41,6 +42,7 @@ class DashboardContainer extends React.Component<FinalProps, {}> {
       <Dashboard
         editDashboardItem={editDashboardItem}
         dashboardItems={dashboardItemsQuery.dashboardItems || []}
+        dashboardId={id}
       />
     );
   }

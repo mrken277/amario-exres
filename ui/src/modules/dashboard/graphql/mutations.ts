@@ -73,9 +73,9 @@ const dashboardRemove = `
 `;
 
 const dashboardItemEdit = `
-  mutation dashboardItemEdit($id: String!, $layout: String, $vizState: String, $name: String) {
-    dashboardItemEdit(id: $id, layout: $layout, vizState: $vizState, name: $name) {
-      id
+  mutation dashboardItemEdit($_id: String!, $layout: String, $vizState: String, $name: String) {
+    dashboardItemEdit(_id: $_id, layout: $layout, vizState: $vizState, name: $name) {
+      _id
       layout
       vizState
       name
@@ -84,9 +84,9 @@ const dashboardItemEdit = `
 `;
 
 const dashboardItemAdd = `
-  mutation dashboardItemAdd($id: String!, $dashboardId: String, $layout: String, $vizState: String, $name: String) {
-    dashboardItemAdd(id: $id, dashboardId: $dashboardId, layout: $layout, vizState: $vizState, name: $name) {
-      id
+  mutation dashboardItemAdd($dashboardId: String, $layout: String, $vizState: String, $name: String) {
+    dashboardItemAdd(dashboardId: $dashboardId, layout: $layout, vizState: $vizState, name: $name) {
+      _id
       layout
       vizState
       name

@@ -1,16 +1,34 @@
 import React from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 
+import { Icon } from '@ant-design/compatible';
 import { Button, Typography } from 'antd';
 
-import { Icon } from '@ant-design/compatible';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import styledTS from 'styled-components-ts';
 import { IDashboardItem } from '../types';
 import ChartRenderer from './ChartRenderer';
 import DashboardItem from './DashboardItem';
+import dragBackground from './drag-background.svg';
 import PageHeader from './PageHeader';
 
 const ReactGridLayout = WidthProvider(RGL);
+
+const DragField = styledTS<any>(styled(ReactGridLayout))`
+  margin: 16px 28px 50px 28px;
+  ${props =>
+    props.isDragging
+      ? `
+    background: url(${dragBackground});
+    background-repeat: repeat-y;
+    background-position: 0px -4px;
+    background-size: 100% 52px;
+  `
+      : ''};
+`;
 
 const deserializeItem = i => ({
   ...i,
@@ -29,6 +47,7 @@ const defaultLayout = i => ({
 
 type Props = {
   dashboardItems: IDashboardItem[];
+  dashboardId: string;
   editDashboardItem: (
     doc: {
       _id: string;
@@ -36,7 +55,21 @@ type Props = {
     }
   ) => void;
 };
-class Dashboard extends React.Component<Props> {
+
+type State = {
+  isDragging: boolean;
+};
+class Dashboard extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = { isDragging: false };
+  }
+
+  setIsDragging = value => {
+    this.setState({ isDragging: value });
+  };
+
   onLayoutChange = newLayout => {
     const { dashboardItems, editDashboardItem } = this.props;
 
@@ -59,7 +92,7 @@ class Dashboard extends React.Component<Props> {
   };
 
   render() {
-    const { dashboardItems } = this.props;
+    const { dashboardItems, dashboardId } = this.props;
 
     if (dashboardItems.length === 0) {
       return (
@@ -70,7 +103,7 @@ class Dashboard extends React.Component<Props> {
           }}
         >
           <h2>There are no charts on this dashboard</h2>
-          <Link to="/explore">
+          <Link to={`/dashboard/explore?dashboardId=${dashboardId}`}>
             <Button type="primary" size="large" icon={<Icon type="plus" />}>
               Add chart
             </Button>
@@ -88,23 +121,31 @@ class Dashboard extends React.Component<Props> {
     );
 
     return (
-      <ReactGridLayout
-        cols={12}
-        rowHeight={50}
-        onLayoutChange={this.onLayoutChange}
-      >
+      <div>
         <PageHeader
           noBorder={true}
           title={<Typography.Title level={4}>Dashboard</Typography.Title>}
           button={
-            <Link to="/explore">
+            <Link to={`/dashboard/explore?dashboardId=${dashboardId}`}>
               <Button type="primary">Add chart</Button>
             </Link>
           }
         />
-
-        {dashboardItems.map(deserializeItem).map(dashboardItem)}
-      </ReactGridLayout>
+        <DragField
+          margin={[12, 12]}
+          containerPadding={[0, 0]}
+          onDragStart={() => this.setIsDragging(true)}
+          onDragStop={() => this.setIsDragging(false)}
+          onResizeStart={() => this.setIsDragging(true)}
+          onResizeStop={() => this.setIsDragging(false)}
+          cols={24}
+          rowHeight={40}
+          onLayoutChange={this.onLayoutChange}
+          isDragging={this.state.isDragging}
+        >
+          {dashboardItems.map(deserializeItem).map(dashboardItem)}
+        </DragField>
+      </div>
     );
   }
 }

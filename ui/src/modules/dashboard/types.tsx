@@ -24,9 +24,9 @@ export type DashboardItemDetailsQueryResponse = {
 export type EditDashboardItemMutationVariables = {
   _id: string;
   layout: string;
-  vizState: string;
-  name: string;
-  dashboardId: string;
+  vizState?: string;
+  name?: string;
+  dashboardId?: string;
 };
 
 export type AddDashboardItemMutationVariables = {

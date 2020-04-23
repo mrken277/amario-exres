@@ -6,7 +6,7 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 
 const ExplorePage = asyncComponent(() =>
-  import(/* webpackChunkName: "ExplorePage - Dashboard" */ './containers/ExplorePage')
+  import(/* webpackChunkName: "ExplorePage - Dashboard" */ './containers/Explore')
 );
 
 const DashboardDetail = asyncComponent(() =>
@@ -32,12 +32,14 @@ const dashboardDetail = ({ match, history }) => {
   return <DashboardDetail history={history} id={id} />;
 };
 
-const explorePage = history => {
-  return <ExplorePage history={history} />;
+const explorePage = ({ history, location }) => {
+  const queryParams = queryString.parse(location.search);
+
+  return <ExplorePage history={history} queryParams={queryParams} />;
 };
 
 const CUBEJS_TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1ODQ2MzI5ODcsImV4cCI6MTU4NDcxOTM4N30.HYBOZrBDOu-cx2xy_6bEqtY50ayjia7jP5NS2tyYP7c';
+  '74a71d4eb1c44e14d626a72f0f2c89d55d80173a6298d0495157634ea98b82fe6541372d615b2252007a446c423bbe2b66116b0831239088c6652ce014a3b8d';
 
 const API_URL = 'http://localhost:4000';
 
@@ -65,7 +67,7 @@ const routes = () => {
         <Route
           key="/dashboard/explore"
           exact={true}
-          path="/dashboard/explore/:id"
+          path="/dashboard/explore"
           component={explorePage}
         />
       </React.Fragment>

@@ -1,57 +1,88 @@
 import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
-import ButtonMutate from 'modules/common/components/ButtonMutate';
 import Spinner from 'modules/common/components/Spinner';
-import { IButtonMutateProps } from 'modules/common/types';
-import { withProps } from 'modules/common/utils';
+
+import { IRouterProps } from 'modules/common/types';
+import { Alert, withProps } from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
+import Chart from '../components/Chart';
 import { mutations, queries } from '../graphql';
 import { DashboardItemDetailsQueryResponse } from '../types';
 
 type Props = {
-  id: string;
+  queryParams: any;
 };
 
 type FinalProps = {
   dashBoardItemDetailsQuery: DashboardItemDetailsQueryResponse;
-} & Props;
+  addDashboardItemMutation: (params) => Promise<void>;
+  editDashboardItemMutation: (params) => Promise<void>;
+} & Props &
+  IRouterProps;
 
-class DashboardContainer extends React.Component<FinalProps, {}> {
+type State = {
+  isLoading: boolean;
+};
+
+class DashboardContainer extends React.Component<FinalProps, State> {
+  constructor(props: FinalProps) {
+    super(props);
+
+    this.state = { isLoading: false };
+  }
+
   render() {
-    const { dashBoardItemDetailsQuery } = this.props;
+    const {
+      dashBoardItemDetailsQuery,
+      addDashboardItemMutation,
+      editDashboardItemMutation,
+      history,
+      queryParams
+    } = this.props;
 
-    if (dashBoardItemDetailsQuery.loading) {
+    if (dashBoardItemDetailsQuery && dashBoardItemDetailsQuery.loading) {
       return <Spinner objective={true} />;
     }
 
-    const renderButton = ({
-      name,
-      values,
-      isSubmitted,
-      callback,
-      object
-    }: IButtonMutateProps) => {
-      return (
-        <ButtonMutate
-          mutation={
-            object ? mutations.dashboardEdit : mutations.dashboardItemAdd
-          }
-          variables={values}
-          callback={callback}
-          refetchQueries={['dashboardItemsQuery']}
-          isSubmitted={isSubmitted}
-          type="submit"
-          successMessage={`You successfully ${
-            object ? 'updated' : 'added'
-          } a ${name}`}
-        />
-      );
+    const dashboardId = queryParams.dashboardId;
+
+    const save = params => {
+      this.setState({ isLoading: true });
+
+      params.dashboardId = dashboardId;
+      params.vizState = JSON.stringify(params.vizState);
+
+      const mutation = params._id
+        ? editDashboardItemMutation
+        : addDashboardItemMutation;
+
+      return mutation({
+        variables: { ...params }
+      })
+        .then(() => {
+          Alert.success('Success');
+
+          history.goBack();
+        })
+
+        .catch(error => {
+          Alert.error(error.message);
+
+          this.setState({ isLoading: false });
+        });
     };
+
     return (
-      <ChartDetail
-        renderButton={renderButton}
-        dashboardItem={dashBoardItemDetailsQuery.dashboardItem || []}
+      <Chart
+        dashboardId={dashboardId}
+        save={save}
+        isActionLoading={this.state.isLoading}
+        dashboardItem={
+          dashBoardItemDetailsQuery
+            ? dashBoardItemDetailsQuery.dashboardItem
+            : undefined
+        }
       />
     );
   }
@@ -59,17 +90,29 @@ class DashboardContainer extends React.Component<FinalProps, {}> {
 
 export default withProps<Props>(
   compose(
-    graphql<Props, DashboardItemDetailsQueryResponse, { _id: string }>(
+    graphql<Props, DashboardItemDetailsQueryResponse>(
       gql(queries.dashboardItemDetail),
       {
         name: 'dashBoardItemDetailsQuery',
-        options: ({ id }: { id: string }) => ({
+        skip: ({ queryParams }) => !queryParams.itemId,
+        options: ({ queryParams }) => ({
           variables: {
-            _id: id
-          },
-          skip: !id
+            itemId: queryParams.itemId
+          }
         })
       }
-    )
+    ),
+    graphql(gql(mutations.dashboardItemAdd), {
+      name: 'addDashboardItemMutation',
+      options: () => ({
+        refetchQueries: ['dashboardItemsQuery']
+      })
+    }),
+    graphql(gql(mutations.dashboardItemEdit), {
+      name: 'editDashboardItemMutation',
+      options: () => ({
+        refetchQueries: ['dashboardItemsQuery']
+      })
+    })
   )(DashboardContainer)
 );

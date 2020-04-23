@@ -177,7 +177,6 @@ export function withProps<IProps>(
 ) {
   return class WithProps extends React.Component<IProps, {}> {
     render() {
-      console.log('xxaxa', this.props);
       return <Wrapped {...this.props} />;
     }
   };

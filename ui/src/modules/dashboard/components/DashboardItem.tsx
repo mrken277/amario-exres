@@ -1,25 +1,38 @@
+// import { useMutation } from '@apollo/react-hooks';
 import { Icon } from '@ant-design/compatible';
-import { useMutation } from '@apollo/react-hooks';
-import { Button, Card, Dropdown, Menu, Modal } from 'antd';
+import { Card, Dropdown, Menu } from 'antd';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { DELETE_DASHBOARD_ITEM } from '../graphql/mutations';
+import styled from 'styled-components';
+// import { DELETE_DASHBOARD_ITEM } from '../graphql/mutations';
 // import { GET_DASHBOARD_ITEMS } from '../graphql/queries';
 
+const StyledCard = styled(Card)`
+  box-shadow: 0px 2px 4px rgba(141, 149, 166, 0.1);
+  border-radius: 4px;
+
+  .ant-card-head {
+    border: none;
+  }
+  .ant-card-body {
+    padding-top: 12px;
+  }
+`;
+
 const DashboardItemDropdown = ({ itemId }) => {
-  const [removeDashboardItem] = useMutation(DELETE_DASHBOARD_ITEM, {
-    // refetchQueries: [
-    //   {
-    //     query: GET_DASHBOARD_ITEMS
-    //   }
-    // ]
-  });
+  // const [removeDashboardItem] = useMutation(DELETE_DASHBOARD_ITEM, {
+  //   refetchQueries: [
+  //     {
+  //       query: GET_DASHBOARD_ITEMS,
+  //     },
+  //   ],
+  // });
   const dashboardItemDropdownMenu = (
     <Menu>
       <Menu.Item>
         <Link to={`/explore?itemId=${itemId}`}>Edit</Link>
       </Menu.Item>
-      <Menu.Item
+      {/* <Menu.Item
         onClick={() =>
           Modal.confirm({
             title: 'Are you sure you want to delete this item?',
@@ -30,15 +43,15 @@ const DashboardItemDropdown = ({ itemId }) => {
             onOk() {
               removeDashboardItem({
                 variables: {
-                  id: itemId
-                }
+                  id: itemId,
+                },
               });
-            }
+            },
           })
         }
       >
         Delete
-      </Menu.Item>
+      </Menu.Item> */}
     </Menu>
   );
   return (
@@ -47,14 +60,15 @@ const DashboardItemDropdown = ({ itemId }) => {
       placement="bottomLeft"
       trigger={['click']}
     >
-      <Button shape="circle" icon={<Icon type="menu" />} />
+      <Icon type="menu" />
     </Dropdown>
   );
 };
 
 const DashboardItem = ({ itemId, children, title }) => (
-  <Card
+  <StyledCard
     title={title}
+    bordered={false}
     style={{
       height: '100%',
       width: '100%'
@@ -62,7 +76,7 @@ const DashboardItem = ({ itemId, children, title }) => (
     extra={<DashboardItemDropdown itemId={itemId} />}
   >
     {children}
-  </Card>
+  </StyledCard>
 );
 
 export default DashboardItem;

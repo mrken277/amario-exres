@@ -211,7 +211,7 @@ class Navigation extends React.Component<{
             'icon-book'
           )}
           {this.renderNavItem(
-            'showKnowledgeBase',
+            'showDashboards',
             __('Dashboard'),
             '/dashboard',
             'icon-dashboard'

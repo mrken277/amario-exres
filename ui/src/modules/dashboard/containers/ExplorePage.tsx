@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import ExploreQueryBuilder from '../components/QueryBuilder/ExploreQueryBuilder';
-import TitleModal from '../components/TitleModal.js';
+import TitleModal from '../components/TitleModal';
 import { GET_DASHBOARD_ITEM } from '../graphql/queries';
 
 const ExplorePage = withRouter(({ history, location }) => {
