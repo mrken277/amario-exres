@@ -20,18 +20,19 @@ import {
 } from 'recharts';
 import styled from 'styled-components';
 
-import moment from 'moment';
+import dayjs from 'dayjs';
 import numeral from 'numeral';
 import './recharts-theme.less';
 
 const numberFormatter = item => numeral(item).format('0,0');
-const dateFormatter = item => moment(item).format('MMM YY');
+const dateFormatter = item => dayjs(item).format('MMM');
+
 const colors = ['#7DB3FF', '#49457B', '#FF7C78'];
 const xAxisFormatter = item => {
-  if (moment(item).isValid()) {
+  if (dayjs(item).isValid()) {
     return dateFormatter(item);
   } else {
-    return item;
+    return numberFormatter(item);
   }
 };
 
@@ -187,6 +188,8 @@ const ChartRenderer = ({
   const { query, chartType } = vizState;
   const component = TypeToMemoChartComponent[chartType];
   const renderProps = useCubeQuery(query);
+
+  console.log(renderProps);
 
   return renderChart(component)({ height: chartHeight, ...renderProps });
 };
