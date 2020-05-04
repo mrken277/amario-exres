@@ -33,8 +33,7 @@ export const TUTORIALS = [
       },
       {
         name: 'Logs',
-        url: '',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/AHOtbefxwaw'
       }
     ]
   },
@@ -50,48 +49,39 @@ export const TUTORIALS = [
     videos: [
       {
         name: 'Brands',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/ri17N4J478E'
       },
       {
         name: 'Channels',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/OLGy8_0pNEE'
       },
       {
         name: 'App store',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/ZHdwkZSnkxU'
       },
       {
         name: 'Sales pipeline stage + Product service',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/QAMP5AOxnlI'
       },
       {
         name: 'Campaign & Projects',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/vhqnzeGZCTI'
       },
       {
         name: 'Growth hacking template',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/d-_ne4gwKGw'
       },
       {
         name: 'Task stage',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/HAmu8vEgpLQ'
       },
       {
         name: 'Tickets stage',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/-ftlUWsLDWc'
       },
       {
         name: 'Tags - inbox, customer, engage pop, up',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/5tGbsUsUiJ4'
       },
       {
         name: 'Segments - customer',
@@ -123,8 +113,7 @@ export const TUTORIALS = [
       },
       {
         name: 'Script Manager',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/Ky0IQ5UJ5xo'
       }
     ]
   },
@@ -140,43 +129,35 @@ export const TUTORIALS = [
     videos: [
       {
         name: 'Team inbox',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/eVcqpG0zsiY'
       },
       {
         name: 'Growth Hacking',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/lpOTx6t4JFA'
       },
       {
         name: 'Sales',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/yqc9l_1-qFA'
       },
       {
-        name: 'Database',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        name: 'Contacts',
+        url: 'https://www.youtube-nocookie.com/embed/S-dLvUPiaQI'
       },
       {
         name: 'Leads',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/7lz3mIbfIS4'
       },
       {
         name: 'Engage',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/06MmTqGkB3Y'
       },
       {
         name: 'Knowledge Base',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/r0s1aOUa0_c'
       },
       {
         name: 'Task',
-        url: 'https://www.youtube-nocookie.com/embed/hd07s0oZ83A',
-        isSoon: true
+        url: 'https://www.youtube-nocookie.com/embed/4rbO5I_Ezq0'
       }
     ]
   }
