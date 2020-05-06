@@ -10,5 +10,10 @@
   },
   "devDependencies": {
     "docusaurus": "^1.14.4"
+  },
+  "dependencies": {
+    "@docusaurus/core": "^2.0.0-alpha.54",
+    "@docusaurus/preset-classic": "^2.0.0-alpha.54",
+    "@docusaurus/theme-classic": "^2.0.0-alpha.37"
   }
 }

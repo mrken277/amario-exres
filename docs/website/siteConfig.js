@@ -23,7 +23,7 @@ const users = [{
 const siteConfig = {
   title: 'erxes', // Title for your website.
   tagline: 'Documentation',
-  url: 'https://erxes.io', // Your website URL
+  url: 'https://docs.erxes.io', // Your website URL
   baseUrl: '/', // Base URL for your project */
   editUrl: 'https://github.com/erxes/erxes/edit/develop/docs/docs/',
   cname: 'docs.erxes.io',
@@ -49,15 +49,15 @@ const siteConfig = {
 
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [{
-      href: 'https://erxes.io/signin',
-      label: 'Sign in',
-      external: true
-    },
-    {
-      href: 'https://erxes.io/create',
-      label: 'Get started',
-      external: true
-    },
+    href: 'https://erxes.io/signin',
+    label: 'Sign in',
+    external: true
+  },
+  {
+    href: 'https://erxes.io/create',
+    label: 'Get started',
+    external: true
+  },
   ],
 
   // If you have users set above, you add it here:
@@ -94,6 +94,11 @@ const siteConfig = {
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.
     theme: 'default'
+  },
+  themes: ['@docusaurus/theme-classic', '@docusaurus/theme-live-codeblock'],
+  themeConfig: {
+    // Add custom dark mode
+    defaultDarkMode: true,
   },
 
   // Add custom scripts here that would be placed in <script> tags.
