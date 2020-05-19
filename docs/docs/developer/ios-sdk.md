@@ -11,7 +11,7 @@ Learn how to install the iOS SDK.
 ## Requirement
 
 + Minimum deployment target : iOS 9.0
-+ Swift 4 compatible
++ Swift 5 compatible
 + Objective-C compatible
 
 brandCode - uniquely generated code for your brand which you can find in your messenger installation code
@@ -27,10 +27,7 @@ import ErxesSDK
 ### For Open Source Version:
 ```swift
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-    Erxes.setBrandCode(code: “brandCode”)
-    Erxes.setHosts(apiHost: "https://erxes-widgets-api/graphql",
-                  subsHost: "wss://erxes-api/subscriptions",
-                 uploadUrl: "https://erxes-api/upload-file")
+    Erxes.setup(erxesApiUrl: "erxesApiUrl", brandId: "brandCode" )
  return true
 }
 ```
@@ -38,10 +35,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 ### For SaaS Version:
 ```swift
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-    Erxes.setBrandCode(code: “brandCode”)
-    Erxes.setHosts(apiHost: "https://YourCompanyName.app.erxes.io/widgets-api/graphql",
-                  subsHost: "wss://YourCompanyName.app.erxes.io/api/subscriptions",
-                 uploadUrl: "https://YourCompanyName.app.erxes.io/api/upload-file")
+    Erxes.setupSaas(companyName: "companyName", brandId: "brandCode")
  return true
 }
 ```
@@ -60,24 +54,6 @@ import ErxesSDK
 }
 ```
 
-##### If your application has already registered users following function will authenticate them automatically(in-app messaging):
-
-##### By email address:
-```swift
-Erxes.startWithUserEmail(email: "email of user")
-```
-
-##### By phone number:
-```swift
-Erxes.startWithUserPhone(phone: "phone number of user")
-```
-
-##### If you intend to fetch some specific datas from users you can use following function:
-```swift
-var messengerData = [String:Any]()
-messengerData["user data key"] = "user data value"
-Erxes.start(email: "", phone: "", data: messengerData)
-```
 ##### To end current user session:
 ```swift
  Erxes.endSession(completionHandler: {
@@ -100,10 +76,7 @@ Following configuration should be made in your AppDelegate.m basic properties.
 ### For Open Source Version:
 ```smalltalk
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [Erxes setBrandCodeWithCode:@"brandCode"];
-    [Erxes setHostsWithApiHost:@"https://erxes-widgets-api/graphql/graphql"
-                      subsHost:@"wss://erxes-api/subscriptions" 
-                     uploadUrl:@"https://erxes-api/upload-file"];
+    [Erxes setupWithErxesApiUrl:@"erxesApiUrl" brandId:@"brandCode"];;
     return YES;
 }
 ```
@@ -111,10 +84,7 @@ Following configuration should be made in your AppDelegate.m basic properties.
 ### For SaaS Version:
 ```smalltalk
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [Erxes setBrandCodeWithCode:@"brandCode"];
-    [Erxes setHostsWithApiHost:@"https://YourCompanyName.app.erxes.io/widgets-api/graphql"
-                      subsHost:@"wss://YourCompanyName.app.erxes.io/api/subscriptions"
-                     uploadUrl:@"https://YourCompanyName.app.erxes.io/api/upload-file"];
+    [Erxes setupSaasWithCompanyName:@"comanyName" brandId:@"brandCode"];
     return YES;
 }
 ```
@@ -132,22 +102,6 @@ Following configuration should be made in your AppDelegate.m basic properties.
 }
 ```
 
-##### If your application has already registered users following function will authenticate them automatically(in-app messaging):
-##### By email address:
-```smalltalk
-[Erxes startWithUserEmailWithEmail:@"email of user"];
-```
-##### By phone number:
-```smalltalk
-[Erxes startWithUserPhoneWithPhone:@"phone of user"];
-```
-
-##### If you intend to fetch some specific datas from users include following function:
-```smalltalk
-NSMutableDictionary *messengerData = [[NSMutableDictionary alloc] init];
-[messengerData setObject:@"what ever you want" forKey:@"user data"];
-[Erxes startWithEmail:@"" phone:@"" data:messengerData];
-```
 
 ##### To end current user session: 
 ```smalltalk
