@@ -205,22 +205,12 @@ The latest version <a href="https://github.com/erxes/erxes/releases"><strong>rel
       <span class="hljs-comment"># erxes-api</span>
       <span class="hljs-attr">PORT:</span> <span class="hljs-string">"3300"</span>
       <span class="hljs-attr">NODE_ENV:</span> <span class="hljs-string">production</span>
-      <span class="hljs-attr">HTTPS:</span> <span class="hljs-string">"false"</span>
       <span class="hljs-attr">DEBUG:</span> <span class="hljs-string">"erxes-api:*"</span>
-      <span class="hljs-attr">PUBSUB_TYPE:</span> <span class="hljs-string">REDIS</span>
-      <span class="hljs-attr">UPLOAD_SERVICE_TYPE:</span> <span class="hljs-string">"AWS"</span>
-      <span class="hljs-attr">FILE_SYSTEM_PUBLIC:</span> <span class="hljs-string">"false"</span>
+      <span class="hljs-string">JWT_TOKEN_SECRET=token</span>
       <span class="hljs-comment"># public urls</span>
-      <span class="hljs-attr">DOMAIN:</span> <span class="hljs-string">http://localhost:3300</span>
       <span class="hljs-attr">MAIN_APP_DOMAIN:</span> <span class="hljs-string">http://localhost:3000</span>
       <span class="hljs-attr">WIDGETS_DOMAIN:</span> <span class="hljs-string">http://localhost:3200</span>
       <span class="hljs-attr">INTEGRATIONS_API_DOMAIN:</span> <span class="hljs-string">http://localhost:3400</span>
-      <span class="hljs-comment"># non public urls</span>
-      <span class="hljs-attr">WIDGETS_API_DOMAIN:</span> <span class="hljs-string">http://erxes-widgets-api:3100</span>
-      <span class="hljs-attr">CRONS_API_DOMAIN:</span> <span class="hljs-string">http://erxes-crons:3600</span>
-      <span class="hljs-attr">WORKERS_API_DOMAIN:</span> <span class="hljs-string">http://erxes-workers:3700</span>
-      <span class="hljs-attr">LOGS_API_DOMAIN:</span> <span class="hljs-string">http://erxes-logger:3800</span>
-      <span class="hljs-attr">ENGAGES_API_DOMAIN:</span> <span class="hljs-string">http://erxes-engages:3900</span>
       <span class="hljs-comment"># MongoDB</span>
       <span class="hljs-attr">MONGO_URL:</span> <span class="hljs-string">mongodb://mongo/erxes</span>
       <span class="hljs-comment"># Redis</span>
@@ -229,28 +219,6 @@ The latest version <a href="https://github.com/erxes/erxes/releases"><strong>rel
       <span class="hljs-attr">REDIS_PASSWORD:</span> <span class="hljs-string">""</span>
       <span class="hljs-comment"># RabbitMQ</span>
       <span class="hljs-attr">RABBITMQ_HOST:</span> <span class="hljs-string">"amqp://guest:guest@rabbitmq:5672/erxes"</span>
-      <span class="hljs-comment"># Email</span>
-      <span class="hljs-attr">COMPANY_EMAIL_FROM:</span> <span class="hljs-string">""</span>
-      <span class="hljs-comment"># Aws S3</span>
-      <span class="hljs-attr">AWS_ACCESS_KEY_ID:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">AWS_SECRET_ACCESS_KEY:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">AWS_BUCKET:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">AWS_PREFIX:</span> <span class="hljs-string">""</span>
-      <span class="hljs-comment"># Used when using s3 compatible service</span>
-      <span class="hljs-attr">AWS_COMPATIBLE_SERVICE_ENDPOINT:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">AWS_FORCE_PATH_STYLE:</span> <span class="hljs-string">"false"</span>
-      <span class="hljs-comment"># Used when using SES for transaction emails</span>
-      <span class="hljs-attr">AWS_SES_ACCESS_KEY_ID:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">AWS_SES_SECRET_ACCESS_KEY:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">AWS_REGION:</span> <span class="hljs-string">""</span>
-      <span class="hljs-comment"># Google Cloud Storage</span>
-      <span class="hljs-attr">GOOGLE_CLIENT_ID:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">GOOGLE_CLIENT_SECRET:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">GOOGLE_APPLICATION_CREDENTIALS:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">GOOGLE_TOPIC:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">GOOGLE_SUBSCRIPTION_NAME:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">GOOGLE_PROJECT_ID:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">GOOGLE_CLOUD_STORAGE_BUCKET:</span> <span class="hljs-string">""</span>
     <span class="hljs-attr">ports:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">"3300:3300"</span>
     <span class="hljs-attr">depends_on:</span>
@@ -276,6 +244,12 @@ The latest version <a href="https://github.com/erxes/erxes/releases"><strong>rel
       <span class="hljs-attr">DEBUG:</span> <span class="hljs-string">"erxes-crons:*"</span>
       <span class="hljs-comment"># MongoDB</span>
       <span class="hljs-attr">MONGO_URL:</span> <span class="hljs-string">mongodb://mongo/erxes</span>
+      <span class="hljs-comment"># Redis</span>
+      <span class="hljs-attr">REDIS_HOST:</span> <span class="hljs-string">redis</span>
+      <span class="hljs-attr">REDIS_PORT:</span> <span class="hljs-string">"6379"</span>
+      <span class="hljs-attr">REDIS_PASSWORD:</span> <span class="hljs-string">""</span>
+      <span class="hljs-comment"># RabbitMQ</span>
+      <span class="hljs-attr">RABBITMQ_HOST:</span> <span class="hljs-string">"amqp://guest:guest@rabbitmq:5672/erxes"</span>
     <span class="hljs-attr">depends_on:</span>
       <span class="hljs-attr">mongo:</span>
         <span class="hljs-attr">condition:</span> <span class="hljs-string">service_healthy</span>
@@ -292,6 +266,7 @@ The latest version <a href="https://github.com/erxes/erxes/releases"><strong>rel
     <span class="hljs-attr">environment:</span>
       <span class="hljs-comment"># erxes-workers</span>
       <span class="hljs-attr">PORT_WORKERS:</span> <span class="hljs-string">"3700"</span>
+      <span class="hljs-string">JWT_TOKEN_SECRET=token</span>
       <span class="hljs-attr">NODE_ENV:</span> <span class="hljs-string">production</span>
       <span class="hljs-attr">DEBUG:</span> <span class="hljs-string">"erxes-workers:*"</span>
       <span class="hljs-comment"># MongoDB</span>
@@ -300,6 +275,8 @@ The latest version <a href="https://github.com/erxes/erxes/releases"><strong>rel
       <span class="hljs-attr">REDIS_HOST:</span> <span class="hljs-string">redis</span>
       <span class="hljs-attr">REDIS_PORT:</span> <span class="hljs-string">"6379"</span>
       <span class="hljs-attr">REDIS_PASSWORD:</span> <span class="hljs-string">""</span>
+      <span class="hljs-comment"># RabbitMQ</span>
+      <span class="hljs-attr">RABBITMQ_HOST:</span> <span class="hljs-string">"amqp://guest:guest@rabbitmq:5672/erxes"</span>
     <span class="hljs-attr">depends_on:</span>
       <span class="hljs-attr">mongo:</span>
         <span class="hljs-attr">condition:</span> <span class="hljs-string">service_healthy</span>
@@ -318,41 +295,10 @@ The latest version <a href="https://github.com/erxes/erxes/releases"><strong>rel
       <span class="hljs-comment"># erxes-widgets</span>
       <span class="hljs-attr">PORT:</span> <span class="hljs-string">"3200"</span>
       <span class="hljs-attr">ROOT_URL:</span> <span class="hljs-string">http://localhost:3200</span>
-      <span class="hljs-attr">MAIN_API_URL:</span> <span class="hljs-string">http://localhost:3300</span>
-      <span class="hljs-attr">API_GRAPHQL_URL:</span> <span class="hljs-string">http://localhost:3100/graphql</span>
+      <span class="hljs-attr">API_URL:</span> <span class="hljs-string">http://localhost:3300</span>
       <span class="hljs-attr">API_SUBSCRIPTIONS_URL:</span> <span class="hljs-string">ws://localhost:3300/subscriptions</span>
     <span class="hljs-attr">ports:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">"3200:3200"</span>
-    <span class="hljs-attr">networks:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">erxes-net</span>
-
-  <span class="hljs-attr">erxes-widgets-api:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">erxes/erxes-widgets-api:0.10.1</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">erxes-widgets-api</span>
-    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
-    <span class="hljs-attr">environment:</span>
-      <span class="hljs-comment"># erxes-widgets-api</span>
-      <span class="hljs-attr">PORT:</span> <span class="hljs-string">"3100"</span>
-      <span class="hljs-attr">NODE_ENV:</span> <span class="hljs-string">production</span>
-      <span class="hljs-attr">PUBSUB_TYPE:</span> <span class="hljs-string">REDIS</span>
-      <span class="hljs-attr">WIDGET_URL:</span> <span class="hljs-string">http://localhost:3200</span>
-      <span class="hljs-comment"># MongoDB</span>
-      <span class="hljs-attr">MONGO_URL:</span> <span class="hljs-string">mongodb://mongo/erxes</span>
-      <span class="hljs-comment"># Redis</span>
-      <span class="hljs-attr">REDIS_HOST:</span> <span class="hljs-string">redis</span>
-      <span class="hljs-attr">REDIS_PORT:</span> <span class="hljs-string">"6379"</span>
-      <span class="hljs-attr">REDIS_PASSWORD:</span> <span class="hljs-string">""</span>
-      <span class="hljs-comment"># RabbitMQ</span>
-      <span class="hljs-attr">RABBITMQ_HOST:</span> <span class="hljs-string">"amqp://guest:guest@rabbitmq:5672/erxes"</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"3100:3100"</span>
-    <span class="hljs-attr">depends_on:</span>
-      <span class="hljs-attr">mongo:</span>
-        <span class="hljs-attr">condition:</span> <span class="hljs-string">service_healthy</span>
-      <span class="hljs-attr">rabbitmq:</span>
-        <span class="hljs-attr">condition:</span> <span class="hljs-string">service_healthy</span>
-      <span class="hljs-attr">redis:</span>
-        <span class="hljs-attr">condition:</span> <span class="hljs-string">service_healthy</span>
     <span class="hljs-attr">networks:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">erxes-net</span>
 
@@ -373,17 +319,10 @@ The latest version <a href="https://github.com/erxes/erxes/releases"><strong>rel
       <span class="hljs-attr">MONGO_URL:</span> <span class="hljs-string">mongodb://mongo/erxes_integrations</span>
       <span class="hljs-comment"># RabbitMQ</span>
       <span class="hljs-attr">RABBITMQ_HOST:</span> <span class="hljs-string">"amqp://guest:guest@rabbitmq:5672/erxes"</span>
-      <span class="hljs-comment"># Facebook</span>
-      <span class="hljs-attr">FACEBOOK_APP_ID:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">FACEBOOK_APP_SECRET:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">FACEBOOK_VERIFY_TOKEN:</span> <span class="hljs-string">""</span>
-      <span class="hljs-comment"># Gmail</span>
-      <span class="hljs-attr">GOOGLE_PROJECT_ID:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">GOOGLE_GMAIL_TOPIC:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">GOOGLE_APPLICATION_CREDENTIALS:</span> <span class="hljs-string">""</span>  <span class="hljs-comment"># path to .json file</span>
-      <span class="hljs-attr">GOOGLE_GMAIL_SUBSCRIPTION_NAME:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">GOOGLE_CLIENT_ID:</span> <span class="hljs-string">""</span>
-      <span class="hljs-attr">GOOGLE_CLIENT_SECRET:</span> <span class="hljs-string">""</span>
+      <span class="hljs-comment"># Redis</span>
+      <span class="hljs-attr">REDIS_HOST:</span> <span class="hljs-string">redis</span>
+      <span class="hljs-attr">REDIS_PORT:</span> <span class="hljs-string">"6379"</span>
+      <span class="hljs-attr">REDIS_PASSWORD:</span> <span class="hljs-string">""</span>
     <span class="hljs-attr">ports:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">"3400:3400"</span>
     <span class="hljs-attr">depends_on:</span>
@@ -403,6 +342,8 @@ The latest version <a href="https://github.com/erxes/erxes/releases"><strong>rel
       <span class="hljs-attr">DEBUG:</span> <span class="hljs-string">"erxes-logs:*"</span>
       <span class="hljs-comment"># MongoDB</span>
       <span class="hljs-attr">MONGO_URL:</span> <span class="hljs-string">mongodb://mongo/erxes_logs</span>
+      <span class="hljs-comment"># RabbitMQ</span>
+      <span class="hljs-attr">RABBITMQ_HOST:</span> <span class="hljs-string">"amqp://guest:guest@rabbitmq:5672/erxes"</span>
     <span class="hljs-attr">depends_on:</span>
       <span class="hljs-attr">mongo:</span>
         <span class="hljs-attr">condition:</span> <span class="hljs-string">service_healthy</span>
@@ -423,6 +364,10 @@ The latest version <a href="https://github.com/erxes/erxes/releases"><strong>rel
       <span class="hljs-attr">MONGO_URL:</span> <span class="hljs-string">mongodb://mongo/erxes_engages</span>
       <span class="hljs-comment"># RabbitMQ</span>
       <span class="hljs-attr">RABBITMQ_HOST:</span> <span class="hljs-string">"amqp://guest:guest@rabbitmq:5672/erxes"</span>
+      <span class="hljs-comment"># Redis</span>
+      <span class="hljs-attr">REDIS_HOST:</span> <span class="hljs-string">redis</span>
+      <span class="hljs-attr">REDIS_PORT:</span> <span class="hljs-string">"6379"</span>
+      <span class="hljs-attr">REDIS_PASSWORD:</span> <span class="hljs-string">""</span>
     <span class="hljs-attr">depends_on:</span>
       <span class="hljs-attr">mongo:</span>
         <span class="hljs-attr">condition:</span> <span class="hljs-string">service_healthy</span>
@@ -491,7 +436,7 @@ The latest version <a href="https://github.com/erxes/erxes/releases"><strong>rel
     <span class="hljs-attr">driver:</span> <span class="hljs-string">bridge</span>
 </code></pre>
 <p>If you have trouble running erxes docker images, feel free to open <a href="https://github.com/erxes/erxes/issues">issue</a>.</p>
-</span></div></article></div><div class="docLastUpdate"><em>Last updated on 5/16/2020 by BatAmar Battulga</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/installation/redhat8"><span class="arrow-prev">← </span><span>REHL 8</span></a><a class="docs-next button" href="/installation/heroku"><span>Heroku</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#prerequisites">Prerequisites</a><ul class="toc-headings"><li><a href="#install-docker">Install docker</a></li><li><a href="#install-docker-compose">Install docker compose</a></li></ul></li><li><a href="#install-erxes">Install erxes</a><ul class="toc-headings"><li><a href="#default-ports">Default ports</a></li><li><a href="#docker-composeyml-file">docker-compose.yml file</a></li></ul></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div></article></div><div class="docLastUpdate"><em>Last updated on 5/20/2020 by Battulga BatAmar</em></div><div class="docs-prevnext"><a class="docs-prev button" href="/installation/redhat8"><span class="arrow-prev">← </span><span>REHL 8</span></a><a class="docs-next button" href="/installation/heroku"><span>Heroku</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#prerequisites">Prerequisites</a><ul class="toc-headings"><li><a href="#install-docker">Install docker</a></li><li><a href="#install-docker-compose">Install docker compose</a></li></ul></li><li><a href="#install-erxes">Install erxes</a><ul class="toc-headings"><li><a href="#default-ports">Default ports</a></li><li><a href="#docker-composeyml-file">docker-compose.yml file</a></li></ul></li></ul></nav></div><footer class="footer"><hr/><p> © Copyright 2020 <a class="footerLink" href="https://erxes.io" target="_blank">erxes Inc</a> </p></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
