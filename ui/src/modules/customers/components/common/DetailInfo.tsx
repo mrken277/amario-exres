@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { __ } from 'modules/common/utils';
-import { GENDER_TYPES, LEAD_STATUS_TYPES } from 'modules/customers/constants';
+import { GENDER_TYPES } from 'modules/customers/constants';
 import { ICustomer } from 'modules/customers/types';
 import {
   FieldStyle,
@@ -9,6 +9,7 @@ import {
   SidebarList
 } from 'modules/layout/styles';
 import React from 'react';
+import PrimaryEmail from './PrimaryEmail';
 
 type Props = {
   customer: ICustomer;
@@ -27,16 +28,23 @@ class DetailInfo extends React.PureComponent<Props> {
     );
   }
 
+  renderEmail(status?: string, email?: string) {
+    return (
+      <li>
+        <FieldStyle>{__('Primary email')}:</FieldStyle>
+        <SidebarCounter>
+          <PrimaryEmail email={email} status={status} />
+        </SidebarCounter>
+      </li>
+    );
+  }
+
   renderPosition(customer) {
     if (!this.props.hasPosition) {
       return null;
     }
 
-    return (
-      <React.Fragment>
-        {this.renderRow('Position', customer.position)}
-      </React.Fragment>
-    );
+    return this.renderRow('Position', customer.position);
   }
 
   render() {
@@ -45,8 +53,10 @@ class DetailInfo extends React.PureComponent<Props> {
     return (
       <SidebarList className="no-link">
         {this.renderRow('Code', customer.code)}
-        {this.renderRow('Primary email', customer.primaryEmail)}
-        {this.renderRow('Primary email status', customer.emailValidationStatus)}
+        {this.renderEmail(
+          customer.emailValidationStatus,
+          customer.primaryEmail
+        )}
         {this.renderRow('Primary phone', customer.primaryPhone)}
         {this.renderPosition(customer)}
         {this.renderRow(
@@ -56,11 +66,7 @@ class DetailInfo extends React.PureComponent<Props> {
             : ''
         )}
         {this.renderRow('Department', customer.department)}
-        {this.renderRow(
-          'Pop Ups Status',
-          LEAD_STATUS_TYPES[customer.leadStatus || '']
-        )}
-        {this.renderRow('Gender', GENDER_TYPES[customer.sex])}
+        {this.renderRow('Gender', GENDER_TYPES[customer.sex || 0])}
         {this.renderRow(
           'Birthday',
           customer.birthDate && dayjs(customer.birthDate).format('MMM,DD YYYY')

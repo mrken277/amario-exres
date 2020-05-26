@@ -68,9 +68,7 @@ class SegmentsList extends React.Component<Props> {
               </td>
               <td>{segment.description}</td>
               <td>
-                <Label style={{ backgroundColor: segment.color }}>
-                  {segment.color}
-                </Label>
+                <Label lblColor={segment.color}>{segment.color}</Label>
               </td>
               <td>{this.renderActionButtons(segment)}</td>
             </tr>
@@ -88,7 +86,11 @@ class SegmentsList extends React.Component<Props> {
       { title: __('Segments') }
     ];
 
-    const title = <Title capitalize={true}>{contentType} {__('segments')}</Title>;
+    const title = (
+      <Title capitalize={true}>
+        {contentType} {__('segments')}
+      </Title>
+    );
 
     const actionBarRight = (
       <Link to={`/segments/new/${contentType}`}>

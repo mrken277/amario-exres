@@ -6,10 +6,7 @@ import Tip from 'modules/common/components/Tip';
 import { ButtonRelated } from 'modules/common/styles/main';
 import { __, urlParser } from 'modules/common/utils';
 import GetConformity from 'modules/conformity/containers/GetConformity';
-import {
-  SectionBody,
-  SectionBodyItem
-} from 'modules/layout/styles';
+import { SectionBody, SectionBodyItem } from 'modules/layout/styles';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CompanyChooser from '../../containers/CompanyChooser';
@@ -58,13 +55,13 @@ function Component(
 
   const companyTrigger = (
     <button>
-      <Icon icon="add" />
+      <Icon icon="plus-circle" />
     </button>
   );
 
   const relCompanyTrigger = (
     <ButtonRelated>
-      <button>{__('See related companies..')}</button>
+      <span>{__('See related companies..')}</span>
     </ButtonRelated>
   );
 
@@ -90,7 +87,7 @@ function Component(
     <SectionBody>
       {items.map((company, index) => (
         <SectionBodyItem key={index}>
-          <Link to={`/contacts/companies/details/${company._id}`}>
+          <Link to={`/companies/details/${company._id}`}>
             <Icon icon="arrow-to-right" />
           </Link>
           <span>{company.primaryName || 'Unknown'}</span>
@@ -101,7 +98,7 @@ function Component(
           </Tip>
         </SectionBodyItem>
       ))}
-      {items.length === 0 && <EmptyState icon="briefcase" text="No company" />}
+      {items.length === 0 && <EmptyState icon="building" text="No company" />}
       {mainTypeId && mainType && relQuickButtons}
     </SectionBody>
   );

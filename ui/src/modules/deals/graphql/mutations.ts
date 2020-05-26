@@ -45,16 +45,8 @@ const dealsRemove = `
 `;
 
 const dealsChange = `
-  mutation dealsChange($_id: String!, $destinationStageId: String!) {
-    dealsChange(_id: $_id, destinationStageId: $destinationStageId) {
-      _id
-    }
-  }
-`;
-
-const dealsUpdateOrder = `
-  mutation dealsUpdateOrder($stageId: String!, $orders: [OrderItem]) {
-    dealsUpdateOrder(stageId: $stageId, orders: $orders) {
+  mutation dealsChange($_id: String!, $destinationStageId: String!, $order: Float) {
+    dealsChange(_id: $_id, destinationStageId: $destinationStageId, order: $order) {
       _id
     }
   }
@@ -89,7 +81,6 @@ export default {
   dealsEdit,
   dealsRemove,
   dealsChange,
-  dealsUpdateOrder,
   dealsWatch,
   dealsArchive,
   dealsCopy

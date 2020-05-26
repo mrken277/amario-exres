@@ -29,6 +29,13 @@ export interface IImapForm {
   smtpPort: number;
 }
 
+export interface IExchangeForm {
+  email: string;
+  password: string;
+  host: number;
+  username?: string;
+}
+
 export interface ISelectMessengerApps {
   brand: IBrand;
   label: string;
@@ -114,11 +121,16 @@ export type IntegrationTypes =
   | 'facebook'
   | 'gmail'
   | 'nylas-gmail'
+  | 'nylas-exchange'
   | 'nylas-imap'
   | 'nylas-office365'
   | 'nylas-outlook'
   | 'nylas-yahoo'
-  | 'twitter';
+  | 'twitter'
+  | 'smooch-telegram'
+  | 'smooch-viber'
+  | 'smooch-line'
+  | 'smooch-twilio';
 
 export type IntegrationsQueryResponse = {
   integrations: IIntegration[];
@@ -145,6 +157,11 @@ export type ByKindTotalCount = {
   office365: number;
   outlook: number;
   yahoo: number;
+  telegram: number;
+  viber: number;
+  line: number;
+  twilio: number;
+  whatsapp: number;
 };
 
 type IntegrationsCount = {

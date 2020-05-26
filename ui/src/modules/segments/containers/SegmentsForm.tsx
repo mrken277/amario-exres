@@ -35,14 +35,14 @@ type FinalProps = {
 
 class SegmentsFormContainer extends React.Component<
   FinalProps,
-  { loading: boolean, count: number }
+  { loading: boolean; count: number }
 > {
   constructor(props) {
     super(props);
 
     this.state = {
       loading: false,
-      count: 0,
+      count: 0
     };
   }
 
@@ -79,7 +79,7 @@ class SegmentsFormContainer extends React.Component<
     );
   };
 
-  previewCount = (conditions: ISegmentCondition[]) => {
+  previewCount = (conditions: ISegmentCondition[], subOf?: string) => {
     const { contentType } = this.props;
 
     this.setState({ loading: true });
@@ -90,6 +90,7 @@ class SegmentsFormContainer extends React.Component<
         variables: {
           contentType,
           conditions,
+          subOf
         }
       })
       .then(({ data }) => {
@@ -97,7 +98,7 @@ class SegmentsFormContainer extends React.Component<
           count: data.segmentsPreviewCount,
           loading: false
         });
-      })
+      });
   };
 
   render() {
@@ -128,7 +129,7 @@ class SegmentsFormContainer extends React.Component<
       renderButton: this.renderButton,
       previewCount: this.previewCount,
       count: this.state.count,
-      counterLoading: this.state.loading,
+      counterLoading: this.state.loading
     };
 
     return <SegmentsForm {...updatedProps} />;
@@ -152,15 +153,12 @@ export default withProps<Props>(
         name: 'headSegmentsQuery'
       }
     ),
-    graphql<Props>(
-      gql(queries.events),
-      {
-        name: 'eventsQuery',
-        options: ({ contentType }) => ({
-          variables: { contentType }
-        })
-      }
-    ),
+    graphql<Props>(gql(queries.events), {
+      name: 'eventsQuery',
+      options: ({ contentType }) => ({
+        variables: { contentType }
+      })
+    }),
     graphql<Props>(gql(queries.combinedFields), {
       name: 'combinedFieldsQuery',
       options: ({ contentType }) => ({

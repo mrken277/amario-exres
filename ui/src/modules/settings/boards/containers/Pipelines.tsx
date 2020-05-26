@@ -1,6 +1,9 @@
 import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
-import { BoardDetailQueryResponse, PipelinesQueryResponse } from 'modules/boards/types';
+import {
+  BoardDetailQueryResponse,
+  PipelinesQueryResponse
+} from 'modules/boards/types';
 import ButtonMutate from 'modules/common/components/ButtonMutate';
 import Spinner from 'modules/common/components/Spinner';
 import { IButtonMutateProps } from 'modules/common/types';
@@ -8,6 +11,7 @@ import { __, Alert, confirm, withProps } from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import Pipelines from '../components/Pipelines';
+import { getWarningMessage } from '../constants';
 import { mutations, queries } from '../graphql';
 import {
   IOption,
@@ -48,23 +52,25 @@ class PipelinesContainer extends React.Component<FinalProps> {
 
     // remove action
     const remove = pipelineId => {
-      confirm().then(() => {
-        removePipelineMutation({
-          variables: { _id: pipelineId }
-        })
-          .then(() => {
-            pipelinesQuery.refetch({ boardId });
-
-            const msg = `${__(`You successfully deleted a`)} ${__(
-              'pipeline'
-            )}.`;
-
-            Alert.success(msg);
+      confirm(getWarningMessage('Pipeline'), { hasDeleteConfirm: true }).then(
+        () => {
+          removePipelineMutation({
+            variables: { _id: pipelineId }
           })
-          .catch(error => {
-            Alert.error(error.message);
-          });
-      });
+            .then(() => {
+              pipelinesQuery.refetch({ boardId });
+
+              const msg = `${__(`You successfully deleted a`)} ${__(
+                'pipeline'
+              )}.`;
+
+              Alert.success(msg);
+            })
+            .catch(error => {
+              Alert.error(error.message);
+            });
+        }
+      );
     };
 
     const renderButton = ({
@@ -72,13 +78,15 @@ class PipelinesContainer extends React.Component<FinalProps> {
       values,
       isSubmitted,
       callback,
-      object
+      object,
+      confirmationUpdate
     }: IButtonMutateProps) => {
       return (
         <ButtonMutate
           mutation={object ? mutations.pipelineEdit : mutations.pipelineAdd}
           variables={values}
           callback={callback}
+          confirmationUpdate={confirmationUpdate}
           refetchQueries={getRefetchQueries(boardId)}
           isSubmitted={isSubmitted}
           type="submit"
@@ -105,7 +113,7 @@ class PipelinesContainer extends React.Component<FinalProps> {
       remove,
       renderButton,
       updateOrder,
-      currentBoard: boardDetailQuery.boardDetail || {},
+      currentBoard: boardDetailQuery ? boardDetailQuery.boardDetail : undefined
     };
 
     return <Pipelines {...extendedProps} />;
@@ -124,22 +132,26 @@ export default withProps<Props>(
       gql(queries.pipelines),
       {
         name: 'pipelinesQuery',
-        options: ({ boardId = '' }: { boardId: string }) => ({
-          variables: { boardId },
+        options: ({
+          boardId = '',
+          type
+        }: {
+          boardId: string;
+          type: string;
+        }) => ({
+          variables: { boardId, type },
           fetchPolicy: 'network-only'
         })
       }
     ),
-    graphql<Props, BoardDetailQueryResponse>(
-      gql(queries.boardDetail),
-      {
-        name: 'boardDetailQuery',
-        options: ({ boardId }: { boardId?: string }) => ({
-          variables: { _id: boardId },
-          fetchPolicy: 'network-only'
-        })
-      }
-    ),
+    graphql<Props, BoardDetailQueryResponse>(gql(queries.boardDetail), {
+      name: 'boardDetailQuery',
+      skip: ({ boardId }: { boardId?: string }) => !boardId,
+      options: ({ boardId }: { boardId?: string }) => ({
+        variables: { _id: boardId },
+        fetchPolicy: 'network-only'
+      })
+    }),
     graphql<
       Props,
       RemovePipelineMutationResponse,

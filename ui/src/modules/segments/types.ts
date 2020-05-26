@@ -21,7 +21,7 @@ export interface ISegmentCondition {
   eventName?: string;
   eventOccurence?: string;
   eventOccurenceValue?: number;
-  eventAttributeFilters?: IConditionFilter[]
+  eventAttributeFilters?: IConditionFilter[];
 }
 export interface ISegmentWithConditionDoc {
   name: string;
@@ -65,7 +65,7 @@ export type HeadSegmentsQueryResponse = {
 };
 
 export type EventsQueryResponse = {
-  segmentsEvents: Array<{ name: string, attributeNames: string[] }>;
+  segmentsEvents: Array<{ name: string; attributeNames: string[] }>;
   loading: boolean;
 };
 
@@ -86,6 +86,8 @@ export type AddMutationVariables = {
 };
 
 export type IField = {
+  selectOptions?: Array<{ label: string; value: string | number }>;
+  type?: string;
   value: string;
   label: string;
 };

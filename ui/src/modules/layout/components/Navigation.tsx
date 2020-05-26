@@ -1,12 +1,14 @@
+import { getEnv } from 'apolloClient';
 import Label from 'modules/common/components/Label';
 import Tip from 'modules/common/components/Tip';
 import WithPermission from 'modules/common/components/WithPermission';
 import { colors, dimensions } from 'modules/common/styles';
 import { __, setBadge } from 'modules/common/utils';
-import Robot from 'modules/robot/containers/Robot';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+
+const { REACT_APP_DASHBOARD_URL } = getEnv();
 
 const LeftNavigation = styled.aside`
   width: ${dimensions.headerSpacingWide}px;
@@ -174,6 +176,14 @@ class Navigation extends React.Component<{
             'icon-chat',
             unreadIndicator
           )}
+          {REACT_APP_DASHBOARD_URL !== 'undefined'
+            ? this.renderNavItem(
+                'showDashboards',
+                __('Dashboard'),
+                '/dashboard',
+                'icon-dashboard'
+              )
+            : null}
           {this.renderNavItem(
             'showGrowthHacks',
             __('Growth Hacking'),
@@ -194,7 +204,7 @@ class Navigation extends React.Component<{
           )}
           {this.renderNavItem(
             'showForms',
-            __('Leads'),
+            __('Pop ups'),
             '/leads',
             'icon-laptop'
           )}
@@ -211,7 +221,6 @@ class Navigation extends React.Component<{
             'icon-book'
           )}
         </Nav>
-        <Robot />
       </LeftNavigation>
     );
   }

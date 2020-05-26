@@ -55,16 +55,8 @@ const growthHacksRemove = `
 `;
 
 const growthHacksChange = `
-  mutation growthHacksChange($_id: String!, $destinationStageId: String!) {
-    growthHacksChange(_id: $_id, destinationStageId: $destinationStageId) {
-      _id
-    }
-  }
-`;
-
-const growthHacksUpdateOrder = `
-  mutation growthHacksUpdateOrder($stageId: String!, $orders: [OrderItem]) {
-    growthHacksUpdateOrder(stageId: $stageId, orders: $orders) {
+  mutation growthHacksChange($_id: String!, $destinationStageId: String!, $order: Float) {
+    growthHacksChange(_id: $_id, destinationStageId: $destinationStageId, order: $order) {
       _id
     }
   }
@@ -106,7 +98,6 @@ export default {
   growthHacksEdit,
   growthHacksRemove,
   growthHacksChange,
-  growthHacksUpdateOrder,
   growthHacksWatch,
   growthHacksVote,
   growthHacksArchive,

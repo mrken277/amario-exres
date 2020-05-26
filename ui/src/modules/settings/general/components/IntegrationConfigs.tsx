@@ -56,7 +56,7 @@ class IntegrationConfigs extends React.Component<Props, State> {
     this.onChangeConfig(code, e.target.value);
   };
 
-  renderItem(key: string, description?: string) {
+  renderItem(key: string, description?: string, defaultValue?: string) {
     const { configsMap } = this.state;
 
     return (
@@ -64,7 +64,7 @@ class IntegrationConfigs extends React.Component<Props, State> {
         <ControlLabel>{KEY_LABELS[key]}</ControlLabel>
         {description && <p>{__(description)}</p>}
         <FormControl
-          defaultValue={configsMap[key]}
+          defaultValue={configsMap[key] || defaultValue}
           onChange={this.onChangeInput.bind(this, key)}
         />
       </FormGroup>
@@ -84,23 +84,32 @@ class IntegrationConfigs extends React.Component<Props, State> {
       <ContentBox>
         <CollapseContent title="Facebook">
           <Info>
-            <a target="_blank" href="Variables" rel="noopener noreferrer">
-              {__('More: Understanding Facebook Integration Variables')}
+            <a
+              target="_blank"
+              href="https://docs.erxes.io/administrator/system-config#facebook"
+              rel="noopener noreferrer"
+            >
+              {__('Learn how to set Facebook Integration Variables')}
             </a>
           </Info>
           {this.renderItem('FACEBOOK_APP_ID')}
           {this.renderItem('FACEBOOK_APP_SECRET')}
           {this.renderItem('FACEBOOK_VERIFY_TOKEN')}
+          {this.renderItem(
+            'FACEBOOK_PERMISSIONS',
+            '',
+            'manage_pages, pages_show_list, publish_pages, pages_messaging,pages_messaging_subscriptions'
+          )}
         </CollapseContent>
 
         <CollapseContent title="Twitter">
           <Info>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/environment-variables#twitter-settings"
+              href="https://docs.erxes.io/administrator/system-config#twitter"
               rel="noopener noreferrer"
             >
-              {__('More: Understanding Twitter Integration Variables')}
+              {__('Learn how to set Twitter Integration Variables')}
             </a>
           </Info>
           {this.renderItem('TWITTER_CONSUMER_KEY')}
@@ -114,10 +123,10 @@ class IntegrationConfigs extends React.Component<Props, State> {
           <Info>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/integrations#nylas-integration"
+              href="https://docs.erxes.io/administrator/system-config#nylas-integrations"
               rel="noopener noreferrer"
             >
-              {__('More: Understanding Nylas Integration')}
+              {__('Learn how to set Nylas Integration')}
             </a>
           </Info>
 
@@ -137,6 +146,15 @@ class IntegrationConfigs extends React.Component<Props, State> {
         </CollapseContent>
 
         <CollapseContent title="Video call">
+          <Info>
+            <a
+              target="_blank"
+              href="https://docs.erxes.io/administrator/system-config#video-calls"
+              rel="noopener noreferrer"
+            >
+              {__('Learn more about Video call configuration')}
+            </a>
+          </Info>
           <FormGroup>
             <ControlLabel>Video call type</ControlLabel>
             <FormControl
@@ -158,10 +176,10 @@ class IntegrationConfigs extends React.Component<Props, State> {
           <Info>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/integrations#gmail-integration"
+              href="https://docs.erxes.io/administrator/system-config#gmail"
               rel="noopener noreferrer"
             >
-              {__('More: Understanding Gmail Integration Variables')}
+              {__('Learn how to set Gmail Integration Variables')}
             </a>
           </Info>
           <FormGroup horizontal={true}>
@@ -178,6 +196,39 @@ class IntegrationConfigs extends React.Component<Props, State> {
             {this.renderItem('GOOGLE_GMAIL_TOPIC')}
             {this.renderItem('GOOGLE_GMAIL_SUBSCRIPTION_NAME')}
           </ContentDisabler>
+        </CollapseContent>
+
+        <CollapseContent title="Sunshine Conversations API">
+          <Info>
+            <a
+              target="_blank"
+              href="https://docs.erxes.io/administrator/system-config#sunshine-conversations-api-integration"
+              rel="noopener noreferrer"
+            >
+              {__('Learn how to set Smooch Integration Variables')}
+            </a>
+          </Info>
+          {this.renderItem('SMOOCH_APP_ID')}
+          {this.renderItem('SMOOCH_APP_KEY_ID')}
+          {this.renderItem('SMOOCH_APP_KEY_SECRET')}
+          {this.renderItem(
+            'SMOOCH_WEBHOOK_CALLBACK_URL',
+            'https://yourdomain/smooch/webhook'
+          )}
+        </CollapseContent>
+
+        <CollapseContent title="WhatsApp Chat-API">
+          <Info>
+            <a
+              target="_blank"
+              href="https://docs.erxes.io/administrator/system-config#whatsapp-integration"
+              rel="noopener noreferrer"
+            >
+              {__('Learn how to set WhatsApp Integration Variables')}
+            </a>
+          </Info>
+          {this.renderItem('CHAT_API_UID')}
+          {this.renderItem('CHAT_API_WEBHOOK_CALLBACK_URL')}
         </CollapseContent>
       </ContentBox>
     );

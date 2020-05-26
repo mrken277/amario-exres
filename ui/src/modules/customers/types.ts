@@ -19,15 +19,15 @@ export interface ICustomerLinks {
 }
 
 export interface ICustomerDoc {
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   phones?: string[];
-  sex: number;
+  sex?: number;
   primaryPhone?: string;
   primaryEmail?: string;
   emails?: string[];
   avatar?: string;
-  isUser?: boolean;
+  state?: string;
   ownerId?: string;
   position?: string;
   location?: {
@@ -40,7 +40,6 @@ export interface ICustomerDoc {
   };
   department?: string;
   leadStatus?: string;
-  lifecycleState?: string;
   hasAuthority?: string;
   description?: string;
   doNotDisturb?: string;
@@ -56,13 +55,20 @@ export interface ICustomerDoc {
   sessionCount?: number;
 }
 
+export interface IUrlVisits {
+  url: string;
+  count: number;
+  createdAt: string;
+}
+
 export interface ICustomer extends ICustomerDoc {
   _id: string;
   owner?: IUser;
   integration?: IIntegration;
-  getTrackedData?: any;
-  getTags: ITag[];
-  companies: ICompany[];
+  trackedData?: any[];
+  urlVisits?: IUrlVisits[];
+  getTags?: ITag[];
+  companies?: ICompany[];
 }
 
 // mutation types
@@ -100,6 +106,19 @@ export type MergeMutationResponse = {
   ) => Promise<any>;
 };
 
+export type ChangeStateMutationVariables = {
+  _id: string;
+  value: string;
+};
+
+export type ChangeStateMutationResponse = {
+  customersChangeState: (
+    doc: {
+      variables: ChangeStateMutationVariables;
+    }
+  ) => Promise<any>;
+};
+
 // query types
 
 export type ListQueryVariables = {
@@ -115,7 +134,6 @@ export type ListQueryVariables = {
   startDate?: string;
   endDate?: string;
   leadStatus?: string;
-  lifecycleState?: string;
   sortField?: string;
   sortDirection?: number;
 };
@@ -135,7 +153,6 @@ type CustomerCounts = {
   byForm: CountResponse;
   byIntegrationType: CountResponse;
   byLeadStatus: CountResponse;
-  byLifecycleState: CountResponse;
   bySegment: CountResponse;
   byTag: CountResponse;
 };

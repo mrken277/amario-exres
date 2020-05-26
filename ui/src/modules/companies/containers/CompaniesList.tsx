@@ -7,7 +7,7 @@ import { generatePaginationParams } from 'modules/common/utils/router';
 import queryString from 'query-string';
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import { IRouterProps } from '../../common/types';
 import { DefaultColumnsConfigQueryResponse } from '../../settings/properties/types';
 import CompaniesList from '../components/list/CompaniesList';
@@ -59,7 +59,7 @@ class CompanyListContainer extends React.Component<FinalProps, State> {
       companiesListConfigQuery.fieldsDefaultColumnsConfig || [];
 
     // load config from local storage
-    const localConfig = localStorage.getItem('erxes_company_columns_config');
+    const localConfig = localStorage.getItem('erxes_companies_columns_config');
 
     if (localConfig) {
       columnsConfig = JSON.parse(localConfig);
@@ -89,7 +89,7 @@ class CompanyListContainer extends React.Component<FinalProps, State> {
           Alert.success('You successfully merged companies');
           callback();
           history.push(
-            `/contacts/companies/details/${response.data.companiesMerge._id}`
+            `/companies/details/${response.data.companiesMerge._id}`
           );
         })
         .catch(e => {
@@ -154,8 +154,6 @@ const generateParams = ({ queryParams }) => ({
     brand: queryParams.brand,
     ids: queryParams.ids,
     searchValue: queryParams.searchValue,
-    leadStatus: queryParams.leadStatus,
-    lifecycleState: queryParams.lifecycleState,
     sortField: queryParams.sortField,
     sortDirection: queryParams.sortDirection
       ? parseInt(queryParams.sortDirection, 10)

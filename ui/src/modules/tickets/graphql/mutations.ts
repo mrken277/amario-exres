@@ -43,16 +43,8 @@ const ticketsRemove = `
 `;
 
 const ticketsChange = `
-  mutation ticketsChange($_id: String!, $destinationStageId: String!) {
-    ticketsChange(_id: $_id, destinationStageId: $destinationStageId) {
-      _id
-    }
-  }
-`;
-
-const ticketsUpdateOrder = `
-  mutation ticketsUpdateOrder($stageId: String!, $orders: [OrderItem]) {
-    ticketsUpdateOrder(stageId: $stageId, orders: $orders) {
+  mutation ticketsChange($_id: String!, $destinationStageId: String!, $order: Float) {
+    ticketsChange(_id: $_id, destinationStageId: $destinationStageId, order: $order) {
       _id
     }
   }
@@ -87,7 +79,6 @@ export default {
   ticketsEdit,
   ticketsRemove,
   ticketsChange,
-  ticketsUpdateOrder,
   ticketsWatch,
   ticketsArchive,
   ticketsCopy

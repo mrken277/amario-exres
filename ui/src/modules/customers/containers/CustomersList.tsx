@@ -3,11 +3,10 @@ import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import { Alert, withProps } from 'modules/common/utils';
 import { generatePaginationParams } from 'modules/common/utils/router';
-import { KIND_CHOICES } from 'modules/settings/integrations/constants';
 import queryString from 'query-string';
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import Bulk from '../../common/components/Bulk';
 import { IRouterProps } from '../../common/types';
 import { ListConfigQueryResponse } from '../../companies/types';
@@ -59,6 +58,7 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
       customersListConfigQuery,
       customersRemove,
       customersMerge,
+      type,
       history
     } = this.props;
 
@@ -66,7 +66,7 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
       customersListConfigQuery.fieldsDefaultColumnsConfig || [];
 
     // load config from local storage
-    const localConfig = localStorage.getItem('erxes_customer_columns_config');
+    const localConfig = localStorage.getItem(`erxes_${type}_columns_config`);
 
     if (localConfig) {
       columnsConfig = JSON.parse(localConfig);
@@ -98,9 +98,7 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
           callback();
           this.setState({ mergeCustomerLoading: false });
           Alert.success('You successfully merged a customer');
-          history.push(
-            `/contacts/customers/details/${result.data.customersMerge._id}`
-          );
+          history.push(`/contacts/details/${result.data.customersMerge._id}`);
         })
         .catch(e => {
           Alert.error(e.message);
@@ -108,7 +106,7 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
         });
     };
 
-    const exportData = (bulk: Array<{ _id: string }>, popupData: boolean) => {
+    const exportData = (bulk: Array<{ _id: string }>) => {
       const { REACT_APP_API_URL } = getEnv();
       const { queryParams } = this.props;
 
@@ -126,10 +124,6 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
         type: 'customer'
       };
 
-      if (popupData) {
-        exportQuery.popupData = true;
-      }
-
       const stringified = queryString.stringify(exportQuery);
 
       window.open(`${REACT_APP_API_URL}/file-export?${stringified}`, '_blank');
@@ -146,7 +140,6 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
       customers: list,
       totalCount,
       exportData,
-      integrations: KIND_CHOICES.ALL_LIST,
       searchValue,
       loading: customersMainQuery.loading || this.state.loading,
       mergeCustomers,
@@ -180,7 +173,6 @@ const generateParams = ({ queryParams, type }) => {
     startDate: queryParams.startDate,
     endDate: queryParams.endDate,
     leadStatus: queryParams.leadStatus,
-    lifecycleState: queryParams.lifecycleState,
     sortField: queryParams.sortField,
     type,
     sortDirection: queryParams.sortDirection

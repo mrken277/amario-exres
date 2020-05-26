@@ -61,7 +61,7 @@ export default class SimpleMessage extends React.Component<Props, {}> {
       <CallBox>
         <UserInfo>
           <strong>
-            <Icon icon="phone-slash" color="#EA475D" size={12} />{' '}
+            <Icon icon="exclamation-triangle" color="#EA475D" size={15} />{' '}
             {__('You have recieved a video call request')}
           </strong>
         </UserInfo>
@@ -120,7 +120,11 @@ export default class SimpleMessage extends React.Component<Props, {}> {
     }
 
     if (!message.content) {
-      return this.renderAttachment(hasAttachment);
+      return (
+        <MessageContent staff={isStaff} internal={message.internal}>
+          {this.renderAttachment(hasAttachment)}{' '}
+        </MessageContent>
+      );
     }
 
     return (

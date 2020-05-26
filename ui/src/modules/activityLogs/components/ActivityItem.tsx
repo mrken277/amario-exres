@@ -9,6 +9,7 @@ import InternalNote from '../containers/items/InternalNote';
 import { ActivityIcon, ActivityRow } from '../styles';
 import { IActivityLog } from '../types';
 import { formatText, getIconAndColor } from '../utils';
+import ArchiveLog from './items/archive/ArchiveLog';
 import AssigneeLog from './items/boardItems/AssigneeLog';
 import MovementLog from './items/boardItems/MovementLog';
 import ConvertLog from './items/ConvertLog';
@@ -32,7 +33,7 @@ class ActivityItem extends React.Component<Props> {
 
     return (
       <ActivityRow key={Math.random()}>
-        <Tip text={formatText(type)} placement='top'>
+        <Tip text={formatText(type)} placement="top">
           <ActivityIcon color={iconAndColor.color}>
             <Icon icon={iconAndColor.icon} />
           </ActivityIcon>
@@ -66,12 +67,12 @@ class ActivityItem extends React.Component<Props> {
       case 'engage-email':
         return this.renderDetail(
           'email',
-          <Email emailType='engage' emailId={_id} activity={activity} />
+          <Email emailType="engage" emailId={_id} activity={activity} />
         );
       case 'email':
         return this.renderDetail(
           'email',
-          <Email emailType='email' emailId={_id} activity={activity} />
+          <Email emailType="email" emailId={_id} activity={activity} />
         );
       case 'comment':
         return this.renderDetail(
@@ -113,6 +114,8 @@ class ActivityItem extends React.Component<Props> {
           'assignee',
           <AssigneeLog activity={activity} />
         );
+      case 'archive':
+        return this.renderDetail('archive', <ArchiveLog activity={activity} />);
       default:
         return <div />;
     }

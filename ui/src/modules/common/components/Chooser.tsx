@@ -20,14 +20,13 @@ export type CommonProps = {
   perPage: number;
   clearState: () => void;
   limit?: number;
-  add?: any;
   newItem?: string | ICompany | ICustomer;
   resetAssociatedItem?: () => void;
   closeModal: () => void;
+  onSelect: (datas: any[]) => void;
 };
 
 type Props = {
-  onSelect: (datas: any[]) => void;
   renderFilter?: () => any;
 } & CommonProps;
 
@@ -132,18 +131,46 @@ class CommonChooser extends React.Component<Props, State> {
       );
     }
 
-    return <EmptyState text='No items added' icon='list-2' />;
+    return <EmptyState text="No items added" icon="list-ul" />;
+  }
+
+  content() {
+    const { datas } = this.props;
+
+    if (datas.length === 0) {
+      return <EmptyState text="No matching items found" icon="list-ul" />;
+    }
+
+    return (
+      <ul>
+        {datas.map(dataItem => this.renderRow(dataItem, 'plus-1'))}
+        {this.state.loadmore && (
+          <CenterContent>
+            <Button
+              size="small"
+              btnStyle="primary"
+              onClick={this.loadMore}
+              icon="angle-double-down"
+            >
+              Load More
+            </Button>
+          </CenterContent>
+        )}
+      </ul>
+    );
+  }
+
+  renderSubFilter() {
+    const { renderFilter } = this.props;
+    if (!renderFilter) {
+      return;
+    }
+
+    return renderFilter();
   }
 
   render() {
-    const {
-      renderForm,
-      datas,
-      title,
-      data,
-      closeModal,
-      renderFilter
-    } = this.props;
+    const { renderForm, title, data, closeModal } = this.props;
     const selectedDatas = this.state.datas;
 
     const addTrigger = (
@@ -162,24 +189,9 @@ class CommonChooser extends React.Component<Props, State> {
                 placeholder={__('Type to search')}
                 onChange={this.search}
               />
-              {renderFilter && renderFilter()}
+              {this.renderSubFilter()}
             </ActionTop>
-
-            <ul>
-              {datas.map(dataItem => this.renderRow(dataItem, 'plus-1'))}
-              {this.state.loadmore && (
-                <CenterContent>
-                  <Button
-                    size='small'
-                    btnStyle='primary'
-                    onClick={this.loadMore}
-                    icon='angle-double-down'
-                  >
-                    Load More
-                  </Button>
-                </CenterContent>
-              )}
-            </ul>
+            {this.content()}
           </Column>
           <Column>
             <Title>
@@ -195,17 +207,17 @@ class CommonChooser extends React.Component<Props, State> {
             <ModalTrigger
               title={`New ${title}`}
               trigger={addTrigger}
-              size='lg'
+              size="lg"
               content={renderForm}
             />
             <div>
-              <Button btnStyle='simple' onClick={closeModal} icon='cancel-1'>
+              <Button btnStyle="simple" onClick={closeModal} icon="cancel-1">
                 Cancel
               </Button>
               <Button
-                btnStyle='success'
+                btnStyle="success"
                 onClick={this.onSelect}
-                icon='checked-1'
+                icon="checked-1"
               >
                 Select
               </Button>

@@ -6,6 +6,7 @@ import React from 'react';
 import { ICommonFormProps } from '../types';
 
 type Props = {
+  confirmationUpdate?: boolean;
   renderButton?: (props: IButtonMutateProps) => JSX.Element;
   generateDoc: (values: any) => any;
   object?: any;
@@ -19,6 +20,7 @@ class Form extends React.Component<Props & ICommonFormProps> {
       renderContent,
       renderButton,
       closeModal,
+      confirmationUpdate,
       object,
       name
     } = this.props;
@@ -32,8 +34,8 @@ class Form extends React.Component<Props & ICommonFormProps> {
           <Button
             btnStyle="simple"
             type="button"
+            uppercase={false}
             onClick={closeModal}
-            icon="cancel-1"
           >
             Cancel
           </Button>
@@ -44,7 +46,8 @@ class Form extends React.Component<Props & ICommonFormProps> {
               values: this.props.generateDoc(values),
               isSubmitted,
               callback: closeModal,
-              object
+              object,
+              confirmationUpdate
             })}
         </ModalFooter>
       </>

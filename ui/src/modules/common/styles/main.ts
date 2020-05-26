@@ -1,5 +1,6 @@
 import { colors, dimensions, typography } from 'modules/common/styles';
 import { rgba } from 'modules/common/styles/color';
+import { Actions } from 'modules/customers/styles';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 
@@ -74,20 +75,14 @@ const BoxRoot = styledTS<{ selected?: boolean }>(styled.div)`
 `;
 
 const InfoWrapper = styled.div`
-  padding: 20px;
+  padding: 20px 20px 30px 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
 
-  i {
-    transition: all 0.3s ease;
-    color: ${colors.colorCoreLightGray};
-
-    &:hover {
-      cursor: pointer;
-      color: ${colors.colorCoreGray};
-    }
+  ${Actions} {
+    padding: 0;
   }
 `;
 
@@ -129,15 +124,6 @@ const FormColumn = styled.div`
   }
 `;
 
-const ColumnTitle = styled.h4`
-  text-transform: uppercase;
-  font-weight: ${typography.fontWeightMedium};
-  border-bottom: 1px dotted ${colors.colorShadowGray};
-  padding: ${dimensions.unitSpacing}px 0;
-  font-size: 14px;
-  margin: ${dimensions.unitSpacing}px 0 ${dimensions.coreSpacing}px 0;
-`;
-
 const ModalFooter = styled.div`
   text-align: right;
   margin-top: 30px;
@@ -155,7 +141,7 @@ const ActivityContent = styledTS<{ isEmpty: boolean }>(styled.div)`
 
 const DropIcon = styledTS<{ isOpen: boolean }>(styled.span)`
   font-size: 18px;
-  line-height: 18px;
+  line-height: 22px;
 
   &:after {
     cursor: pointer;
@@ -163,7 +149,7 @@ const DropIcon = styledTS<{ isOpen: boolean }>(styled.span)`
     font-family: 'erxes';
     float: right;
     transition: all ease 0.3s;
-    margin-left: ${dimensions.unitSpacing}px;
+    margin-left: ${dimensions.unitSpacing - 2}px;
     transform: ${props => props.isOpen && `rotate(180deg)`};
   }
 `;
@@ -205,7 +191,10 @@ const ScrollWrapper = styledTS<{ calcHeight?: string }>(styled.div)`
       ? `calc(100vh - ${props.calcHeight}px)`
       : 'calc(100vh - 280px)'};
   overflow: auto;
-  padding-right: 10px;
+  padding: 5px 10px 0 20px;
+  margin-left: -20px;
+  margin-right: -10px;
+  margin-top: -5px;
 `;
 
 const DateContainer = styled.div`
@@ -231,16 +220,21 @@ const TabContent = styled.div`
 
 const ButtonRelated = styled.div`
   text-align: center;
-  
-  button {
-    background: rgba(0, 0, 0, 0.04);
-    margin: 10px auto;
-    color: #888;
-    border: 0;
+  padding: 10px 0 16px;
+  font-size: 12px;
+
+  span {
+    background: rgba(0, 0, 0, 0.06);
+    padding: 4px 16px;
+    color: ${colors.colorCoreGray};
     border-radius: 25px;
-    outline: none;
-    cursor: pointer;
-    font-size: 12px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      cursor: pointer;
+      background: rgba(0, 0, 0, 0.1);
+      color: ${colors.textSecondary};
+    }
   }
 `;
 
@@ -286,6 +280,12 @@ const Count = styled.div`
   color: #666;
 `;
 
+const Limited = styled.div`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+`;
+
 export {
   BoxRoot,
   FullContent,
@@ -294,7 +294,6 @@ export {
   Links,
   FormWrapper,
   FormColumn,
-  ColumnTitle,
   CenterContent,
   ActivityContent,
   DropIcon,
@@ -309,5 +308,6 @@ export {
   SimpleButton,
   TopHeader,
   Title,
-  Count
+  Count,
+  Limited
 };

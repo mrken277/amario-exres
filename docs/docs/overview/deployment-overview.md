@@ -15,13 +15,14 @@ We recommend to start with the [docker images](installation/docker.md) for the f
 
 ### Choose an installation method
 
-- [Ubuntu](installation/ubuntu.md)
+- [Ubuntu 18.04](installation/ubuntu.md)
 - [Debian 10](installation/debian10.md)
 - [CentOS 8](installation/centos8.md)
 - [RHEL 8](installation/redhat8.md)
 - [Docker](installation/docker.md)
 - [Heroku](installation/heroku.md)
 - [AWS Marketplace](installation/aws.md)
+- [DigitalOcean Marketplace](installation/digitalocean.md)
 
 ## Prerequisites
 

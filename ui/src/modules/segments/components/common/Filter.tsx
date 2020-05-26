@@ -1,12 +1,55 @@
-import Button from "modules/common/components/Button";
-import { FormControl } from "modules/common/components/form";
-import { __ } from "modules/common/utils";
-import { operators } from "modules/customers/constants";
-import { FlexRightItem } from "modules/layout/styles";
-import React from "react";
+import Button from 'modules/common/components/Button';
+import { FormControl } from 'modules/common/components/form';
+import { __ } from 'modules/common/utils';
+import { FlexRightItem } from 'modules/layout/styles';
+import React from 'react';
 import Select from 'react-select-plus';
-import { IConditionFilter, IField } from "../../types";
-import { ConditionItem, FilterProperty, FilterRow } from "../styles";
+import { IConditionFilter, IField } from '../../types';
+import { ConditionItem, FilterProperty, FilterRow } from '../styles';
+
+const operators = {
+  string: [
+    { name: 'equals', value: 'e' },
+    { name: 'is not equal to', value: 'dne' },
+    { name: 'contains', value: 'c' },
+    { name: 'does not contain', value: 'dnc' },
+    { name: 'is set', value: 'is', noInput: true },
+    { name: 'is not set', value: 'ins', noInput: true }
+  ],
+  boolean: [
+    { name: 'is true', value: 'it', noInput: true },
+    { name: 'is false', value: 'if', noInput: true },
+    { name: 'is set', value: 'is', noInput: true },
+    { name: 'is not set', value: 'ins', noInput: true }
+  ],
+  number: [
+    { name: 'number: equals', value: 'numbere' },
+    { name: 'number: is not equal to', value: 'numberdne' },
+    { name: 'number: is greater than', value: 'numberigt' },
+    { name: 'number: is less than', value: 'numberilt' },
+    { name: 'is set', value: 'is', noInput: true },
+    { name: 'is not set', value: 'ins', noInput: true }
+  ],
+  date: [
+    { name: 'date: is greater than', value: 'dateigt' },
+    { name: 'date: is less than', value: 'dateilt' },
+    { name: 'will occur before on following n-th minute', value: 'wobm' },
+    { name: 'will occur after on following n-th minute', value: 'woam' },
+    { name: 'will occur before on following n-th day', value: 'wobd' },
+    { name: 'will occur after on following n-th day', value: 'woad' },
+    { name: 'date relative less than', value: 'drlt' },
+    { name: 'date relative greater than', value: 'drgt' },
+    { name: 'is set', value: 'is', noInput: true },
+    { name: 'is not set', value: 'ins', noInput: true }
+  ]
+};
+
+const defaultOperators = [
+  ...operators.string,
+  ...operators.boolean,
+  ...operators.number,
+  ...operators.date
+];
 
 type Props = {
   fields: IField[];
@@ -33,7 +76,7 @@ class Filter extends React.Component<Props, State> {
       key: filter.key || '',
       currentName: filter.name,
       currentOperator: filter.operator,
-      currentValue: filter.value,
+      currentValue: filter.value
     };
   }
 
@@ -45,32 +88,52 @@ class Filter extends React.Component<Props, State> {
       key: filter.key,
       name: currentName,
       operator: currentOperator,
-      value: currentValue,
+      value: currentValue
     });
-  }
+  };
 
   onChangeValue = (e: React.FormEvent<HTMLElement>) => {
-    this.setState({ currentValue: (e.currentTarget as HTMLInputElement).value }, this.onChange);
-  }
+    this.setState(
+      { currentValue: (e.currentTarget as HTMLInputElement).value },
+      this.onChange
+    );
+  };
 
   onChangeNames = (e: React.FormEvent<HTMLElement>) => {
-    this.setState({ currentName: (e.currentTarget as HTMLInputElement).value }, this.onChange);
-  }
+    this.setState(
+      { currentName: (e.currentTarget as HTMLInputElement).value },
+      this.onChange
+    );
+  };
 
   onChangeOperators = (e: React.FormEvent<HTMLElement>) => {
-    this.setState({ currentOperator: (e.currentTarget as HTMLInputElement).value }, this.onChange);
-  }
+    this.setState(
+      { currentOperator: (e.currentTarget as HTMLInputElement).value },
+      this.onChange
+    );
+  };
 
-  onChangeField = ({ value }: { value: string }) => {
+  onChangeSelect = (option: { value: string }) => {
+    const value = !option ? '' : option.value.toString();
+
+    this.setState({ currentValue: value }, this.onChange);
+  };
+
+  onChangeField = (option: { value: string }) => {
+    const value = !option ? '' : option.value;
+
     this.setState({ currentName: value }, this.onChange);
-  }
+  };
 
   groupByType = () => {
     const { fields = [] } = this.props;
-    
+
     return fields.reduce((acc, field) => {
       const value = field.value;
-      const key = value.includes('.') ? value.substr(0, value.indexOf('.')) : 'general';
+      const key =
+        value && value.includes('.')
+          ? value.substr(0, value.indexOf('.'))
+          : 'general';
 
       if (!acc[key]) {
         acc[key] = [];
@@ -82,6 +145,15 @@ class Filter extends React.Component<Props, State> {
     }, {});
   };
 
+  getSelectedField(currentName: string) {
+    const { fields } = this.props;
+
+    const field =
+      fields.find(item => item.value === currentName) || ({} as IField);
+
+    return field;
+  }
+
   generateValues = () => {
     const objects = this.groupByType();
     const array = [] as any;
@@ -92,7 +164,7 @@ class Filter extends React.Component<Props, State> {
     });
 
     return array;
-  }
+  };
 
   renderNames() {
     const { fields, groupData } = this.props;
@@ -100,25 +172,36 @@ class Filter extends React.Component<Props, State> {
 
     return (
       <Select
+        key="propertyName"
         isRequired={true}
         options={groupData ? this.generateValues() : fields}
         clearable={false}
         value={currentName}
         onChange={this.onChangeField}
-        placeholder={__("Select property")}
+        placeholder={__('Select property')}
       />
     );
   }
 
   renderOperators() {
-    const { currentOperator } = this.state;
+    const { currentName, currentOperator } = this.state;
+
+    const field = this.getSelectedField(currentName);
+
+    const type = field.type || '';
+    const fieldOperator = operators[type] || defaultOperators;
 
     return (
-      <FormControl componentClass="select" onChange={this.onChangeOperators} value={currentOperator}>
-        <option value="">{__("Select operator")}...</option>
-        {operators.map(c => (
-          <option value={c.value} key={c.value}>
-            {c.name}
+      <FormControl
+        key={currentName}
+        componentClass="select"
+        onChange={this.onChangeOperators}
+        value={currentOperator}
+      >
+        <option value="">{__('Select operator')}...</option>
+        {fieldOperator.map((operator, index) => (
+          <option value={operator.value} key={`${index}-${operator.value}`}>
+            {operator.name}
           </option>
         ))}
       </FormControl>
@@ -140,36 +223,60 @@ class Filter extends React.Component<Props, State> {
       return;
     }
 
-    return <Button className="round" btnStyle="danger" uppercase={false} icon="times" onClick={this.onRemove} />;
+    return (
+      <Button
+        className="round"
+        btnStyle="danger"
+        uppercase={false}
+        icon="times"
+        onClick={this.onRemove}
+      />
+    );
+  };
+
+  renderSelect(
+    value: string | number,
+    options: Array<{ label: string; value: string | number }>
+  ) {
+    return (
+      <Select
+        placeholder={__('Select value')}
+        value={value}
+        options={options}
+        isRequired={true}
+        clearable={false}
+        onChange={this.onChangeSelect}
+      />
+    );
   }
 
-  renderValueInput = () => {
-    const { currentValue, currentOperator } = this.state;
+  renderPropertyComponent = () => {
+    const { currentName, currentValue, currentOperator } = this.state;
 
     if (['is', 'ins', 'it', 'if'].indexOf(currentOperator) >= 0) {
       return null;
     }
 
-    return (
-      <FormControl value={currentValue} onChange={this.onChangeValue} />
-    );
-  }
+    const field = this.getSelectedField(currentName);
+
+    const { selectOptions = [] } = field;
+
+    if (selectOptions.length > 0) {
+      return this.renderSelect(currentValue, selectOptions);
+    }
+
+    return <FormControl value={currentValue} onChange={this.onChangeValue} />;
+  };
 
   render() {
     return (
       <ConditionItem>
         <FilterRow>
-          <FilterProperty>
-            {this.renderNames()}
-          </FilterProperty>
-          <FilterProperty>
-            {this.renderOperators()}
-          </FilterProperty>
-          {this.renderValueInput()}
+          <FilterProperty>{this.renderNames()}</FilterProperty>
+          <FilterProperty>{this.renderOperators()}</FilterProperty>
+          <FilterProperty>{this.renderPropertyComponent()}</FilterProperty>
         </FilterRow>
-        <FlexRightItem>
-          {this.renderRemoveButton()}
-        </FlexRightItem>
+        <FlexRightItem>{this.renderRemoveButton()}</FlexRightItem>
       </ConditionItem>
     );
   }

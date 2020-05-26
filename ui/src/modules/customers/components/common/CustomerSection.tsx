@@ -6,10 +6,7 @@ import Spinner from 'modules/common/components/Spinner';
 import { ButtonRelated } from 'modules/common/styles/main';
 import { __, renderFullName } from 'modules/common/utils';
 import GetConformity from 'modules/conformity/containers/GetConformity';
-import {
-  SectionBody,
-  SectionBodyItem
-} from 'modules/layout/styles';
+import { SectionBody, SectionBodyItem } from 'modules/layout/styles';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CustomerChooser from '../../containers/CustomerChooser';
@@ -54,7 +51,7 @@ function Component({
 
   const relCustomerTrigger = (
     <ButtonRelated>
-      <button>{__('See related customers..')}</button>
+      <span>{__('See related customers..')}</span>
     </ButtonRelated>
   );
 
@@ -76,7 +73,7 @@ function Component({
       <SectionBody>
         {customersObj.map((customer, index) => (
           <SectionBodyItem key={index}>
-            <Link to={`/contacts/customers/details/${customer._id}`}>
+            <Link to={`/contacts/details/${customer._id}`}>
               <Icon icon="arrow-to-right" />
             </Link>
             <span>{renderFullName(customer)}</span>
@@ -85,7 +82,7 @@ function Component({
           </SectionBodyItem>
         ))}
         {customersObj.length === 0 && (
-          <EmptyState icon="user-5" text="No customer" />
+          <EmptyState icon="user-6" text="No customer" />
         )}
         {mainTypeId && mainType && relQuickButtons}
       </SectionBody>
@@ -108,7 +105,7 @@ function Component({
       size="lg"
       trigger={
         <button>
-          <Icon icon="add" />
+          <Icon icon="plus-circle" />
         </button>
       }
       content={customerChooser}

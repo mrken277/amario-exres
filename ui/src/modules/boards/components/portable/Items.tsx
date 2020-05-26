@@ -1,3 +1,4 @@
+import { ItemsWrapper } from 'modules/boards/styles/item';
 import Box from 'modules/common/components/Box';
 import EmptyState from 'modules/common/components/EmptyState';
 import Icon from 'modules/common/components/Icon';
@@ -42,25 +43,29 @@ class Items extends React.Component<Props, { openItemId?: string }> {
     const { onChangeItem, items, data } = this.props;
 
     if (items.length === 0) {
-      return <EmptyState icon="folder" text={`No ${data.options.type}`} />;
+      return <EmptyState icon="folder-2" text={`No ${data.options.type}`} />;
     }
 
     const Item = data.options.Item;
 
-    return items.map((item, index) => (
-      <Item
-        options={data.options}
-        key={index}
-        item={item}
-        beforePopupClose={this.beforePopupClose}
-        isFormVisible={item._id === openItemId}
-        onClick={this.onItemClick.bind(this, item)}
-        onAdd={onChangeItem}
-        onUpdate={onChangeItem}
-        onRemove={onChangeItem}
-        portable={true}
-      />
-    ));
+    return (
+      <ItemsWrapper>
+        {items.map((item, index) => (
+          <Item
+            options={data.options}
+            key={index}
+            item={item}
+            beforePopupClose={this.beforePopupClose}
+            isFormVisible={item._id === openItemId}
+            onClick={this.onItemClick.bind(this, item)}
+            onAdd={onChangeItem}
+            onUpdate={onChangeItem}
+            onRemove={onChangeItem}
+            portable={true}
+          />
+        ))}
+      </ItemsWrapper>
+    );
   };
 
   render() {
@@ -75,13 +80,13 @@ class Items extends React.Component<Props, { openItemId?: string }> {
 
     const trigger = (
       <button>
-        <Icon icon="add" />
+        <Icon icon="plus-circle" />
       </button>
     );
 
     const relTrigger = (
       <ButtonRelated>
-        <button>{__('See related ' + data.options.title + '..')}</button>
+        <span>{__('See related ' + data.options.title + '..')}</span>
       </ButtonRelated>
     );
 

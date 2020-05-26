@@ -32,16 +32,8 @@ const tasksRemove = `
 `;
 
 const tasksChange = `
-  mutation tasksChange($_id: String!, $destinationStageId: String!) {
-    tasksChange(_id: $_id, destinationStageId: $destinationStageId) {
-      _id
-    }
-  }
-`;
-
-const tasksUpdateOrder = `
-  mutation tasksUpdateOrder($stageId: String!, $orders: [OrderItem]) {
-    tasksUpdateOrder(stageId: $stageId, orders: $orders) {
+  mutation tasksChange($_id: String!, $destinationStageId: String!, $order: Float) {
+    tasksChange(_id: $_id, destinationStageId: $destinationStageId, order: $order) {
       _id
     }
   }
@@ -75,7 +67,6 @@ export default {
   tasksEdit,
   tasksRemove,
   tasksChange,
-  tasksUpdateOrder,
   tasksWatch,
   tasksArchive,
   tasksCopy
