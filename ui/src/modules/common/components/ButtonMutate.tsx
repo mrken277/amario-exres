@@ -127,7 +127,9 @@ class ButtonMutate extends React.Component<Props, { isLoading: boolean }> {
     if (confirmationUpdate) {
       return confirm(
         'Please make sure your changes, this action cannot be undone',
-        { hasUpdateConfirm: true }
+        {
+          hasUpdateConfirm: true
+        }
       )
         .then(() => {
           this.invokeMutate();
