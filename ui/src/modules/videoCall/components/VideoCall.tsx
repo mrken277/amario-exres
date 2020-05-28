@@ -106,7 +106,6 @@ class VideoCall extends React.Component<
   };
 
   startRecording = () => {
-    console.log('start');
     this.callFrame.startRecording();
   };
 
@@ -120,8 +119,6 @@ class VideoCall extends React.Component<
         <ControlBtn onClick={this.onDelete} disabled={this.state.loading}>
           {this.state.loading ? __('Please wait...') : __('End call')}
         </ControlBtn>
-        <ControlBtn onClick={this.startRecording}>Start recording</ControlBtn>
-        <ControlBtn onClick={this.stopRecording}>End recording</ControlBtn>
       </Control>
     );
   }
