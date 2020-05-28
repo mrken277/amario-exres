@@ -65,22 +65,9 @@ class VideoCall extends React.Component<
       {}
     );
 
-    this.callFrame
-      .on('error', e => {
-        this.setState({ errorMessage: e.errorMsg });
-      })
-      .on('recording-started', e => {
-        // tslint:disable-next-line: no-console
-        console.log('started: ', e);
-      })
-      .on('recording-stopped', e => {
-        // tslint:disable-next-line: no-console
-        console.log('stopped: ', e);
-      })
-      .on('recording-error', e => {
-        // tslint:disable-next-line: no-console
-        console.log('error: ', e);
-      });
+    this.callFrame.on('error', e => {
+      this.setState({ errorMessage: e.errorMsg });
+    });
 
     this.callFrame.join(owner);
   }
