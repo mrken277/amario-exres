@@ -4,8 +4,8 @@
   <ShortName>erxes</ShortName>
   <Description>Search erxes</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://docs.erxes.io/img/favicon.ico</Image>
-  <Url type="text/html" method="get" template="https://docs.erxes.io/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://docs.erxes.io/opensearch.xml" />
-  <moz:SearchForm>https://docs.erxes.io</moz:SearchForm>
+  <Image width="16" height="16" type="image/x-icon">https://www.erxes.org/img/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://www.erxes.org/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://www.erxes.org/opensearch.xml" />
+  <moz:SearchForm>https://www.erxes.org</moz:SearchForm>
 </OpenSearchDescription>
