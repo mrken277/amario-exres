@@ -49,6 +49,7 @@ export interface ICustomerDoc {
   code?: string;
   birthDate?: string;
   emailValidationStatus?: string;
+  phoneValidationStatus?: string;
 
   isOnline?: boolean;
   lastSeenAt?: number;
@@ -86,11 +87,9 @@ export type RemoveMutationVariables = {
 };
 
 export type RemoveMutationResponse = {
-  customersRemove: (
-    doc: {
-      variables: RemoveMutationVariables;
-    }
-  ) => Promise<any>;
+  customersRemove: (doc: {
+    variables: RemoveMutationVariables;
+  }) => Promise<any>;
 };
 
 export type MergeMutationVariables = {
@@ -99,11 +98,7 @@ export type MergeMutationVariables = {
 };
 
 export type MergeMutationResponse = {
-  customersMerge: (
-    doc: {
-      variables: MergeMutationVariables;
-    }
-  ) => Promise<any>;
+  customersMerge: (doc: { variables: MergeMutationVariables }) => Promise<any>;
 };
 
 export type ChangeStateMutationVariables = {
@@ -112,11 +107,9 @@ export type ChangeStateMutationVariables = {
 };
 
 export type ChangeStateMutationResponse = {
-  customersChangeState: (
-    doc: {
-      variables: ChangeStateMutationVariables;
-    }
-  ) => Promise<any>;
+  customersChangeState: (doc: {
+    variables: ChangeStateMutationVariables;
+  }) => Promise<any>;
 };
 
 // query types
