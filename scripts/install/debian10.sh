@@ -127,7 +127,7 @@ su $username -c "mkdir -p $erxes_dir $erxes_api_dir $erxes_integrations_dir"
 su $username -c "curl -L https://github.com/erxes/erxes/archive/0.14.1.tar.gz | tar --strip-components=1 -xz -C $erxes_root_dir"
 
 # download erxes-api
-su $username -c "curl -L https://github.com/erxes/erxes-api/archive/0.14.2.tar.gz | tar --strip-components=1 -xz -C $erxes_api_dir"
+su $username -c "curl -L https://github.com/erxes/erxes-api/archive/0.14.3.tar.gz | tar --strip-components=1 -xz -C $erxes_api_dir"
 
 # download integrations
 su $username -c "curl -L https://github.com/erxes/erxes-integrations/archive/0.14.1.tar.gz | tar --strip-components=1 -xz -C $erxes_integrations_dir"
@@ -454,9 +454,6 @@ echo 'y' | ufw enable
 ufw allow 22
 ufw allow 80
 ufw allow 443
-
-# run yarn initProject
-su $username -c "export MONGO_URL=$API_MONGO_URL && cd $erxes_api_dir && yarn initProject"
 
 echo
 echo -e "\e[32mInstallation complete\e[0m"
