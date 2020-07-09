@@ -13,9 +13,13 @@ import { List } from './styles';
 type Props = {
   user: IUser;
   channels: IChannel[];
-  renderEditForm: (
-    { closeModal, user }: { closeModal: () => void; user: IUser }
-  ) => React.ReactNode;
+  renderEditForm: ({
+    closeModal,
+    user,
+  }: {
+    closeModal: () => void;
+    user: IUser;
+  }) => React.ReactNode;
 };
 
 class LeftSidebar extends React.Component<Props> {
@@ -25,7 +29,7 @@ class LeftSidebar extends React.Component<Props> {
     }
 
     return (
-      <a href={link}>
+      <a href={link} target="_blank" rel="noopener noreferrer">
         <Icon icon={icon} />
       </a>
     );
@@ -93,7 +97,7 @@ class LeftSidebar extends React.Component<Props> {
         <Section>
           <Title>{__('Channels')}</Title>
           <List>
-            {channels.map(channel => {
+            {channels.map((channel) => {
               return (
                 <li key={channel._id}>
                   <Link to={`/settings/channels?id=${channel._id}`}>

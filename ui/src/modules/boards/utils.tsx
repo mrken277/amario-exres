@@ -5,7 +5,7 @@ import {
 import { Amount } from 'modules/boards/styles/stage';
 import React from 'react';
 import PriorityIndicator from './components/editForm/PriorityIndicator';
-import { IDraggableLocation, IItemMap } from './types';
+import { IDraggableLocation, IItem, IItemMap } from './types';
 
 type Options = {
   _id: string;
@@ -43,7 +43,7 @@ export const reorder = (
 
 type ReorderItemMap = {
   itemMap: IItemMap;
-  source: IDraggableLocation;
+  source: IDraggableLocation & { item?: IItem };
   destination: IDraggableLocation;
 };
 
@@ -55,30 +55,52 @@ export const reorderItemMap = ({
   const current = [...itemMap[source.droppableId]];
   const next = [...itemMap[destination.droppableId]];
 
-  const target = current[source.index];
+  let target = current[source.index];
+
+  if (!target && source.item) {
+    target = source.item;
+  }
+
   target.modifiedAt = new Date();
 
   // moving to same list
   if (source.droppableId === destination.droppableId) {
-    const reordered = reorder(current, source.index, destination.index);
+    // drag down, index -1
+    const specInd = source.index < destination.index ? 0 : 1;
+
+    const aboveItem = next[destination.index - specInd];
+
+    if (source.index !== undefined) {
+      current.splice(source.index, 1);
+    }
+
+    if (destination.index !== undefined) {
+      current.splice(destination.index, 0, target);
+    }
 
     const updateditemMap = {
       ...itemMap,
-      [source.droppableId]: reordered
+      [source.droppableId]: current
     };
 
     return {
-      itemMap: updateditemMap
+      itemMap: updateditemMap,
+      aboveItem,
+      target
     };
   }
 
   // moving to different list
 
   // remove from original
-  current.splice(source.index, 1);
+  if (source.index !== undefined) {
+    current.splice(source.index, 1);
+  }
 
   // insert into next
-  next.splice(destination.index, 0, target);
+  if (destination.index !== undefined && next.length >= destination.index) {
+    next.splice(destination.index, 0, target);
+  }
 
   const result = {
     ...itemMap,
@@ -87,7 +109,9 @@ export const reorderItemMap = ({
   };
 
   return {
-    itemMap: result
+    itemMap: result,
+    aboveItem: next[destination.index - 1],
+    target
   };
 };
 

@@ -6,12 +6,11 @@ import { ISegment, ISegmentCondition, ISegmentDoc } from '../segments/types';
 import { IBrand } from '../settings/brands/types';
 import { ITag } from '../tags/types';
 
-export interface IEngageScheduleDate {
+export type IEngageScheduleDate = {
   type: string;
   month: string;
   day: string;
-  time: Date;
-}
+} | null;
 
 export interface IEngageMessenger {
   brandId: string;
@@ -26,6 +25,11 @@ export interface IEngageEmail {
   subject: string;
   content: string;
   attachments?: IAttachment[];
+}
+
+export interface IEngageSms {
+  from: string;
+  content: string;
 }
 
 export interface IEngageStats {
@@ -72,6 +76,7 @@ export interface IEngageMessageDoc {
   email?: IEngageEmail;
   messenger?: IEngageMessenger;
   scheduleDate?: IEngageScheduleDate;
+  shortMessage?: IEngageSms;
 }
 
 export interface IEngageMessage extends IEngageMessageDoc {
@@ -209,7 +214,7 @@ export type TargetCount = {
 export type IEmailFormProps = {
   onChange: (
     name: 'email' | 'content' | 'fromUserId' | 'scheduleDate',
-    value: IEngageEmail | IEngageScheduleDate | string
+    value?: IEngageEmail | IEngageScheduleDate | string
   ) => void;
   message?: string;
   users: IUser[];

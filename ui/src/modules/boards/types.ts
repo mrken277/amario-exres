@@ -20,13 +20,9 @@ export interface IOptions {
     editMutation: string;
     removeMutation: string;
     changeMutation: string;
-    updateOrderMutation: string;
     watchMutation: string;
     copyMutation: string;
     archiveMutation: string;
-  };
-  subscriptionName: {
-    changeSubscription: string;
   };
   queries: {
     itemsQuery: string;
@@ -39,13 +35,9 @@ export interface IOptions {
     editMutation: string;
     removeMutation: string;
     changeMutation: string;
-    updateOrderMutation: string;
     watchMutation: string;
     archiveMutation: string;
     copyMutation: string;
-  };
-  subscriptions: {
-    changeSubscription: string;
   };
   texts: {
     addText: string;
@@ -80,9 +72,14 @@ export interface IItemParams {
   customerIds?: string[];
   sourceConversationId?: string;
   labelIds?: string[];
+  proccessId?: string;
+  aboveItemId?: string;
 }
 
 export type SaveItemMutation = ({ variables: IItemParams }) => Promise<any>;
+export type RemoveStageMutation = (
+  { variables }: { variables: { _id: string } }
+) => Promise<any>;
 
 export interface IPipeline {
   _id: string;
@@ -125,6 +122,7 @@ export interface IStage {
   formId: string;
   pipelineId: string;
   status: string;
+  order: number;
 }
 
 export interface IPipelineLabel {
@@ -261,7 +259,12 @@ export type RemoveVariables = {
 
 export type RemoveMutation = ({ variables: RemoveVariables }) => Promise<any>;
 
-export type CopyMutation = ({ variables: RemoveVariables }) => Promise<any>;
+export type CopyVariables = {
+  _id: string;
+  proccessId: string;
+};
+
+export type CopyMutation = ({ variables: CopyVariables }) => Promise<any>;
 
 export type ItemsQueryResponse = {
   loading: boolean;

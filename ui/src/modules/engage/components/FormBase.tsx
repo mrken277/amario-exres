@@ -61,22 +61,11 @@ class FormBase extends React.Component<Props> {
       }
     }
 
-    if (
-      this.props.kind !== 'manual' &&
-      (!doc.scheduleDate || !doc.scheduleDate.type)
-    ) {
-      return this.sendError(__('Choose a schedule'));
-    }
-
     if (doc.scheduleDate) {
-      const { time, type, day, month } = doc.scheduleDate;
+      const { type, day, month } = doc.scheduleDate;
 
-      if (!type && time) {
+      if (!type) {
         return this.sendError(__('Choose a schedule day'));
-      }
-
-      if (type && (!time || time.length === 0)) {
-        return this.sendError(__('Choose a schedule time'));
       }
 
       if ((type === 'year' || type === 'month') && !day) {
@@ -95,7 +84,7 @@ class FormBase extends React.Component<Props> {
       };
     }
 
-    if (docType === 'draft ') {
+    if (docType === 'draft') {
       return {
         status: 'ok',
         doc: { isLive: false, isDraft: true, ...doc }

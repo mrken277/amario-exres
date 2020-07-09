@@ -70,7 +70,8 @@ export const MESSENGER_KINDS = {
 export const METHODS = {
   MESSENGER: 'messenger',
   EMAIL: 'email',
-  ALL_LIST: ['messenger', 'email']
+  SMS: 'sms',
+  ALL_LIST: ['messenger', 'email', 'sms']
 };
 
 export const SENT_AS_CHOICES = {
@@ -125,6 +126,8 @@ export const RULE_CONDITIONS = {
 };
 
 export const SCHEDULE_TYPES = [
+  { value: 'minute', label: 'Every minute' },
+  { value: 'hour', label: 'Every hour' },
   { value: 'day', label: 'Every Day' },
   { value: 'month', label: 'Every Month' },
   { value: 'year', label: 'Every Year' },

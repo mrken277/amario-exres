@@ -63,16 +63,10 @@ const singlePageInstall = brandCode => {
   const { REACT_APP_CDN_HOST } = getEnv();
 
   return `
-    (window as any).erxesSettings = {
-      email: "<email>",
+    window.erxesSettings = {
       messenger: {
         brand_id: "${brandCode}",
       },
-      phone: "<phone>",
-      data: {
-         domain: "<website>",
-         ...
-      }
     };
     
     (() => {
@@ -80,7 +74,7 @@ const singlePageInstall = brandCode => {
       script.src = "${REACT_APP_CDN_HOST}/build/messengerWidget.bundle.js";
       script.async = true;
 
-      const entry = document.getElementsByTagName('script')[0] as any;
+      const entry = document.getElementsByTagName('script')[0];
       entry.parentNode.insertBefore(script, entry);
     })();
   `;
@@ -223,33 +217,16 @@ class InstallCode extends React.PureComponent<Props, State> {
     if (currentTab === 'googletag') {
       return (
         <div>
-          <b>
-            To install erxes on your website with Google Tag Manager, just
-            follow these steps.
-          </b>
+          <b>{__('gtm_b')}</b>
           <ol>
-            <li>
-              Navigate to the <b>Tags section</b> of your Google Tag Manager
-              account
-            </li>
-            <li>
-              Create a <b>new tag</b> and name it (for example: "erxes-chat")
-            </li>
-            <li>
-              Click the Tag Configuration section and choose <b>Custom HTML</b>{' '}
-              tag type
-            </li>
-            <li>Paste the code below </li>
-            <li>Next, click the Triggering section and choose “All Pages”</li>
-            <li>Click ‘Save’ button in the top-right corner of the page</li>
-            <li>
-              Next click ‘Submit’ button in the top-right corner of the page to
-              save the changes you made
-            </li>
-            <li>
-              Now, erxes chat will be installed using your Google Tag Manager
-              account. Just make sure you copy the gtm code to your web.
-            </li>
+            <li>{__('gtm_li_1')}</li>
+            <li>{__('gtm_li_2')}</li>
+            <li>{__('gtm_li_3')}</li>
+            <li>{__('gtm_li_4')}</li>
+            <li>{__('gtm_li_5')}</li>
+            <li>{__('gtm_li_6')}</li>
+            <li>{__('gtm_li_7')}</li>
+            <li>{__('gtm_li_8')}</li>
           </ol>
         </div>
       );
@@ -480,8 +457,9 @@ class InstallCode extends React.PureComponent<Props, State> {
     let action;
     switch (currentTab) {
       case 'basic':
-        description =
-          'For websites and web apps with full-page refreshes. Paste the code below before the body tag on every page you want erxes chat to appear';
+        description = __(
+          'For websites and web apps with full-page refreshes. Paste the code below before the body tag on every page you want erxes chat to appear'
+        );
         script = basicCode;
         action = copied;
         break;
@@ -492,8 +470,9 @@ class InstallCode extends React.PureComponent<Props, State> {
         action = singleCopied;
         break;
       case 'googletag':
-        description =
-          'To connect Google Tag Manager to erxes, you must have an active Google Tag Manager account with a published container';
+        description = __(
+          'To connect Google Tag Manager to erxes, you must have an active Google Tag Manager account with a published container'
+        );
         extraContent = true;
         script = basicCode;
         action = contentCopied;

@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import Chip from 'modules/common/components/Chip';
-import { router } from 'modules/common/utils';
+import { __, router } from 'modules/common/utils';
 import { cleanIntegrationKind } from 'modules/settings/integrations/containers/utils';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
@@ -32,7 +32,7 @@ function Filter({ queryParams = {}, history }: IProps) {
 
     return (
       <Chip capitalize={true} onClick={onClick}>
-        {bool ? paramKey : cleanIntegrationKind(queryParams[paramKey])}
+        {bool ? paramKey : __(cleanIntegrationKind(queryParams[paramKey]))}
       </Chip>
     );
   };

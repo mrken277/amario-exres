@@ -51,7 +51,7 @@ function Component({
 
   const relCustomerTrigger = (
     <ButtonRelated>
-      <button>{__('See related customers..')}</button>
+      <span>{__('See related customers..')}</span>
     </ButtonRelated>
   );
 
@@ -73,7 +73,7 @@ function Component({
       <SectionBody>
         {customersObj.map((customer, index) => (
           <SectionBodyItem key={index}>
-            <Link to={`/contacts/customers/details/${customer._id}`}>
+            <Link to={`/contacts/details/${customer._id}`}>
               <Icon icon="arrow-to-right" />
             </Link>
             <span>{renderFullName(customer)}</span>
@@ -128,6 +128,7 @@ type IProps = {
   mainType?: string;
   mainTypeId?: string;
   isOpen?: boolean;
+  customers?: ICustomer[];
   onSelect?: (datas: ICustomer[]) => void;
 };
 
@@ -139,6 +140,7 @@ export default (props: IProps) => {
       component={Component}
       queryName="customers"
       itemsQuery={queries.customers}
+      alreadyItems={props.customers}
     />
   );
 };

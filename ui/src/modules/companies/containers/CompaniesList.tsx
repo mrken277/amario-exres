@@ -59,10 +59,10 @@ class CompanyListContainer extends React.Component<FinalProps, State> {
       companiesListConfigQuery.fieldsDefaultColumnsConfig || [];
 
     // load config from local storage
-    const localConfig = localStorage.getItem('erxes_company_columns_config');
+    const localConfig = localStorage.getItem('erxes_companies_columns_config');
 
     if (localConfig) {
-      columnsConfig = JSON.parse(localConfig);
+      columnsConfig = JSON.parse(localConfig).filter(conf => conf.checked);
     }
 
     const removeCompanies = ({ companyIds }, emptyBulk) => {
@@ -89,7 +89,7 @@ class CompanyListContainer extends React.Component<FinalProps, State> {
           Alert.success('You successfully merged companies');
           callback();
           history.push(
-            `/contacts/companies/details/${response.data.companiesMerge._id}`
+            `/companies/details/${response.data.companiesMerge._id}`
           );
         })
         .catch(e => {

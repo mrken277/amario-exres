@@ -1,4 +1,6 @@
 export const commonMutationVariables = `
+  $proccessId: String,
+  $aboveItemId: String,
   $stageId: String,
   $closeDate: Date,
   $description: String,
@@ -13,6 +15,8 @@ export const commonMutationVariables = `
 `;
 
 export const commonMutationParams = `
+  proccessId: $proccessId,
+  aboveItemId: $aboveItemId,
   stageId: $stageId,
   closeDate: $closeDate,
   description: $description,
@@ -24,6 +28,22 @@ export const commonMutationParams = `
   status: $status,
   priority: $priority,
   sourceConversationId: $sourceConversationId,
+`;
+
+export const commonDragVariables = `
+  $itemId: String!,
+  $aboveItemId: String,
+  $destinationStageId: String!,
+  $sourceStageId: String,
+  $proccessId: String
+`;
+
+export const commonDragParams = `
+  itemId: $itemId,
+  aboveItemId: $aboveItemId,
+  destinationStageId: $destinationStageId,
+  sourceStageId: $sourceStageId,
+  proccessId: $proccessId
 `;
 
 export const commonFields = `
@@ -88,6 +108,7 @@ export const commonFields = `
       avatar
     }
   }
+  order
 `;
 
 const stagesUpdateOrder = `
@@ -125,7 +146,7 @@ const pipelineLabelsEdit = `
 
 const pipelineLabelsRemove = `
   mutation pipelineLabelsRemove($_id: String!) {
-    pipelineLabelsRemove(_id: $_id) 
+    pipelineLabelsRemove(_id: $_id)
   }
 `;
 

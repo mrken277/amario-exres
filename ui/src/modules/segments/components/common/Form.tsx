@@ -21,7 +21,7 @@ import { ColorPick, ColorPicker, ExpandWrapper } from 'modules/settings/styles';
 import React from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import ChromePicker from 'react-color/lib/Chrome';
+import TwitterPicker from 'react-color/lib/Twitter';
 import { Link } from 'react-router-dom';
 import { FilterBox, SegmentTitle, SegmentWrapper } from '../styles';
 import AddConditionButton from './AddConditionButton';
@@ -38,7 +38,7 @@ type Props = {
   headSegments: ISegment[];
   isForm?: boolean;
   afterSave?: () => void;
-  previewCount?: (conditions: ISegmentCondition[]) => void;
+  previewCount?: (conditions: ISegmentCondition[], subOf?: string) => void;
 };
 
 type State = {
@@ -278,7 +278,7 @@ class Form extends React.Component<Props, State> {
     } = this.props;
 
     const { values, isSubmitted } = formProps;
-    const { name, description, color, conditions } = this.state;
+    const { name, description, color, conditions, subOf } = this.state;
 
     const nameOnChange = (e: React.FormEvent) =>
       this.handleChange('name', (e.currentTarget as HTMLInputElement).value);
@@ -293,13 +293,13 @@ class Form extends React.Component<Props, State> {
 
     const onPreviewCount = () => {
       if (previewCount) {
-        previewCount(conditions);
+        previewCount(conditions, subOf);
       }
     };
 
     const popoverTop = (
       <Popover id="color-picker">
-        <ChromePicker color={color} onChange={colorOnChange} />
+        <TwitterPicker triangle="hide" color={color} onChange={colorOnChange} />
       </Popover>
     );
 

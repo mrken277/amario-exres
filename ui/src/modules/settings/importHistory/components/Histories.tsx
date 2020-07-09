@@ -10,6 +10,7 @@ import Wrapper from 'modules/layout/components/Wrapper';
 import { BarItems } from 'modules/layout/styles';
 import DataImporter from 'modules/settings/importHistory/containers/DataImporter';
 import React from 'react';
+import ExportPopupsData from '../containers/ExportPopupsData';
 import { IImportHistory } from '../types';
 import HistoryRow from './Row';
 import Sidebar from './Sidebar';
@@ -24,7 +25,14 @@ type Props = {
 };
 
 // currently support import data types
-const DATA_IMPORT_TYPES = ['customer', 'company', 'product'];
+const DATA_IMPORT_TYPES = [
+  'customer',
+  'company',
+  'product',
+  'deal',
+  'task',
+  'ticket'
+];
 
 class Histories extends React.Component<Props & IRouterProps> {
   renderHistories = () => {
@@ -58,6 +66,27 @@ class Histories extends React.Component<Props & IRouterProps> {
     );
   };
 
+  getButtonText() {
+    const { currentType } = this.props;
+    let buttonText = `${currentType}s`;
+
+    switch (currentType) {
+      case 'company':
+        buttonText = 'companies';
+        break;
+      case 'deal':
+        buttonText = 'sales pipelines';
+        break;
+      case 'user':
+        buttonText = 'team members';
+        break;
+      default:
+        break;
+    }
+
+    return buttonText;
+  }
+
   renderTemplateButton() {
     const { REACT_APP_API_URL } = getEnv();
     const { currentType } = this.props;
@@ -68,12 +97,20 @@ class Histories extends React.Component<Props & IRouterProps> {
 
     let name = 'company_template.xlsx';
 
-    if (currentType === 'customer') {
-      name = 'customer_template.xlsx';
-    }
-
-    if (currentType === 'product') {
-      name = 'product_template.xlsx';
+    switch (currentType) {
+      case 'customer':
+        name = 'customer_template.xlsx';
+        break;
+      case 'product':
+        name = 'product_template.xlsx';
+        break;
+      case 'deal':
+      case 'task':
+      case 'ticket':
+        name = 'board_item_template.xlsx';
+        break;
+      default:
+        break;
     }
 
     return (
@@ -98,7 +135,7 @@ class Histories extends React.Component<Props & IRouterProps> {
     return (
       <DataImporter
         type={currentType}
-        text={`${__('Import')} ${currentType}`}
+        text={`${__('Import')} ${this.getButtonText()}`}
       />
     );
   }
@@ -106,7 +143,6 @@ class Histories extends React.Component<Props & IRouterProps> {
   renderExportButton = () => {
     const { currentType } = this.props;
     const { REACT_APP_API_URL } = getEnv();
-    let buttonText = `${currentType}s`;
 
     if (currentType === 'product') {
       return null;
@@ -119,20 +155,6 @@ class Histories extends React.Component<Props & IRouterProps> {
       );
     };
 
-    switch (currentType) {
-      case 'company':
-        buttonText = 'companies';
-        break;
-      case 'deal':
-        buttonText = 'Sales pipelines';
-        break;
-      case 'user':
-        buttonText = 'Team members';
-        break;
-      default:
-        break;
-    }
-
     return (
       <Button
         icon="export"
@@ -140,10 +162,18 @@ class Histories extends React.Component<Props & IRouterProps> {
         size="small"
         onClick={exportData}
       >
-        {__(`Export ${buttonText}`)}
+        {__(`Export ${this.getButtonText()}`)}
       </Button>
     );
   };
+
+  renderExportPopupsData() {
+    if (this.props.currentType !== 'customer') {
+      return null;
+    }
+
+    return <ExportPopupsData />;
+  }
 
   renderImportButton = () => {
     return (
@@ -151,6 +181,7 @@ class Histories extends React.Component<Props & IRouterProps> {
         {this.renderTemplateButton()}
         {this.renderDataImporter()}
         {this.renderExportButton()}
+        {this.renderExportPopupsData()}
       </BarItems>
     );
   };

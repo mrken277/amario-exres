@@ -18,7 +18,9 @@ import {
   MergeMutationResponse,
   MergeMutationVariables,
   RemoveMutationResponse,
-  RemoveMutationVariables
+  RemoveMutationVariables,
+  VerifyMutationResponse,
+  VerifyMutationVariables
 } from '../types';
 
 type Props = {
@@ -33,6 +35,7 @@ type FinalProps = {
 } & Props &
   RemoveMutationResponse &
   MergeMutationResponse &
+  VerifyMutationResponse &
   IRouterProps;
 
 type State = {
@@ -58,6 +61,8 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
       customersListConfigQuery,
       customersRemove,
       customersMerge,
+      customersVerify,
+      type,
       history
     } = this.props;
 
@@ -65,10 +70,10 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
       customersListConfigQuery.fieldsDefaultColumnsConfig || [];
 
     // load config from local storage
-    const localConfig = localStorage.getItem('erxes_customer_columns_config');
+    const localConfig = localStorage.getItem(`erxes_${type}_columns_config`);
 
     if (localConfig) {
-      columnsConfig = JSON.parse(localConfig);
+      columnsConfig = JSON.parse(localConfig).filter(conf => conf.checked);
     }
 
     const removeCustomers = ({ customerIds }, emptyBulk) => {
@@ -97,9 +102,7 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
           callback();
           this.setState({ mergeCustomerLoading: false });
           Alert.success('You successfully merged a customer');
-          history.push(
-            `/contacts/customers/details/${result.data.customersMerge._id}`
-          );
+          history.push(`/contacts/details/${result.data.customersMerge._id}`);
         })
         .catch(e => {
           Alert.error(e.message);
@@ -107,7 +110,25 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
         });
     };
 
-    const exportData = (bulk: Array<{ _id: string }>, popupData: boolean) => {
+    const verifyCustomers = ({ verificationType }) => {
+      this.setState({ mergeCustomerLoading: true });
+
+      customersVerify({
+        variables: {
+          verificationType
+        }
+      })
+        .then(() => {
+          Alert.success(
+            'Your request has been successfully sent. Your contacts will be verified after a while'
+          );
+        })
+        .catch(e => {
+          Alert.error(e.message);
+        });
+    };
+
+    const exportData = (bulk: Array<{ _id: string }>) => {
       const { REACT_APP_API_URL } = getEnv();
       const { queryParams } = this.props;
 
@@ -124,10 +145,6 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
         ...queryParams,
         type: 'customer'
       };
-
-      if (popupData) {
-        exportQuery.popupData = true;
-      }
 
       const stringified = queryString.stringify(exportQuery);
 
@@ -150,6 +167,7 @@ class CustomerListContainer extends React.Component<FinalProps, State> {
       mergeCustomers,
       responseId: this.state.responseId,
       removeCustomers,
+      verifyCustomers,
       mergeCustomerLoading: this.state.mergeCustomerLoading
     };
 
@@ -217,6 +235,12 @@ export default withProps<Props>(
         options: {
           refetchQueries: ['customersMain', 'customerCounts']
         }
+      }
+    ),
+    graphql<Props, VerifyMutationResponse, VerifyMutationVariables>(
+      gql(mutations.customersVerify),
+      {
+        name: 'customersVerify'
       }
     )
   )(withRouter<IRouterProps>(CustomerListContainer))

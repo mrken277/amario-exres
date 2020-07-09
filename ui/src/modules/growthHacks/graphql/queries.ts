@@ -30,6 +30,9 @@ export const growthHackFields = `
       avatar
     }
   }
+  stage {
+    name
+  }
   voteCount
   priority
   hackStages
@@ -46,6 +49,7 @@ export const growthHackFields = `
   }
   status
   labelIds
+  order
 `;
 
 const growthHackDetailFields = `
@@ -161,10 +165,15 @@ const growthHacksTotalCount = `
 
 const growthHacksPriorityMatrix = `
   query growthHacksPriorityMatrix(
-    ${commonParams}
-  ) {
+    $pipelineId: String,
+    $search: String,
+    $assignedUserIds: [String],
+    $closeDateType: String) {
     growthHacksPriorityMatrix(
-      ${commonParamDefs}
+      pipelineId: $pipelineId,
+      search: $search,
+      assignedUserIds: $assignedUserIds,
+      closeDateType: $closeDateType
     )
   }
 `;
@@ -190,7 +199,7 @@ const pipelineDetail = `
 
 const pipelineStateCount = `
   query pipelineStateCount($boardId: String, $type: String) {
-    pipelineStateCount(boardId: $boardId, type: $type) 
+    pipelineStateCount(boardId: $boardId, type: $type)
   }
 `;
 

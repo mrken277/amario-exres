@@ -9,6 +9,7 @@ import InternalNote from '../containers/items/InternalNote';
 import { ActivityIcon, ActivityRow } from '../styles';
 import { IActivityLog } from '../types';
 import { formatText, getIconAndColor } from '../utils';
+import ArchiveLog from './items/archive/ArchiveLog';
 import AssigneeLog from './items/boardItems/AssigneeLog';
 import MovementLog from './items/boardItems/MovementLog';
 import ConvertLog from './items/ConvertLog';
@@ -19,7 +20,7 @@ import SegmentLog from './items/SegmentLog';
 
 type Props = {
   activity: IActivityLog;
-  currenUser: IUser;
+  currentUser: IUser;
 };
 
 class ActivityItem extends React.Component<Props> {
@@ -43,7 +44,7 @@ class ActivityItem extends React.Component<Props> {
   }
 
   render() {
-    const { activity, currenUser } = this.props;
+    const { activity, currentUser } = this.props;
     const { _id, contentType, action } = activity;
 
     switch ((action && action) || contentType) {
@@ -53,7 +54,7 @@ class ActivityItem extends React.Component<Props> {
           <InternalNote
             noteId={_id}
             activity={activity}
-            currenUser={currenUser}
+            currentUser={currentUser}
           />
         );
       case 'conversation':
@@ -113,6 +114,8 @@ class ActivityItem extends React.Component<Props> {
           'assignee',
           <AssigneeLog activity={activity} />
         );
+      case 'archive':
+        return this.renderDetail('archive', <ArchiveLog activity={activity} />);
       default:
         return <div />;
     }

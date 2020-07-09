@@ -1,20 +1,4 @@
-export const connectors = {
-  any: 'any',
-  all: 'all'
-};
-
-export const operators = [
-  { name: 'equals', value: 'e' },
-  { name: 'does not equal', value: 'dne' },
-  { name: 'contains', value: 'c' },
-  { name: 'does not contain', value: 'dnc' },
-  { name: 'is set', value: 'is', noInput: true },
-  { name: 'is not set', value: 'ins', noInput: true },
-  { name: 'is greater than', value: 'igt' },
-  { name: 'is less than', value: 'ilt' },
-  { name: 'is true', value: 'it', noInput: true },
-  { name: 'is false', value: 'if', noInput: true }
-];
+import { getConstantFromStore } from 'modules/common/utils';
 
 export const CUSTOMER_BASIC_INFO = {
   avatar: 'Avatar',
@@ -62,12 +46,7 @@ export const LEAD_STATUS_TYPES = {
   unqualified: 'Unqualified'
 };
 
-export const GENDER_TYPES = {
-  0: 'Not known',
-  1: 'Male',
-  2: 'Female',
-  9: 'Not applicable'
-};
+export const GENDER_TYPES = () => getConstantFromStore('sex_choices', true);
 
 export const CUSTOMER_LINKS = {
   linkedIn: 'LinkedIn',
@@ -91,6 +70,6 @@ export const LEAD_CHOICES = [
   { label: 'New', value: 'new' },
   { label: 'Contacted', value: 'attemptedToContact' },
   { label: 'Working', value: 'inProgress' },
-  { label: 'Bad timing', value: 'Bad timing' },
+  { label: 'Bad timing', value: 'badTiming' },
   { label: 'Unqualified', value: 'unqualified' }
 ];

@@ -51,10 +51,6 @@ class GenerateGroup extends React.Component<Props, State> {
     });
   };
 
-  toggleEditing = () => {
-    this.setState({ editing: true });
-  };
-
   cancelEditing = () => {
     this.setState({
       editing: false
@@ -64,8 +60,7 @@ class GenerateGroup extends React.Component<Props, State> {
   onChange = ({ _id, value }) => {
     const { data } = this.state;
 
-    this.setState({ data: { ...data, [_id]: value } });
-    this.toggleEditing();
+    this.setState({ data: { ...data, [_id]: value }, editing: true });
   };
 
   renderButtons() {
@@ -95,10 +90,6 @@ class GenerateGroup extends React.Component<Props, State> {
     );
   }
 
-  onValueChange = ({ _id, value }) => {
-    return this.onChange({ _id, value });
-  };
-
   renderContent() {
     const { fieldGroup } = this.props;
     const { data } = this.state;
@@ -118,7 +109,7 @@ class GenerateGroup extends React.Component<Props, State> {
             <GenerateField
               field={field}
               key={index}
-              onValueChange={this.onValueChange}
+              onValueChange={this.onChange}
               defaultValue={data[field._id] || ''}
             />
           );
@@ -154,12 +145,23 @@ class GenerateGroups extends React.Component<GroupsProps> {
   saveGroup = (groupData, callback) => {
     const { customFieldsData, save } = this.props;
 
+    const prevData = {};
+    (customFieldsData || []).forEach(cd => (prevData[cd.field] = cd.value));
+
     const updatedData = {
-      ...(customFieldsData || {}),
+      ...prevData,
       ...(groupData || {})
     };
 
-    save({ customFieldsData: updatedData }, callback);
+    save(
+      {
+        customFieldsData: Object.keys(updatedData).map(key => ({
+          field: key,
+          value: updatedData[key]
+        }))
+      },
+      callback
+    );
   };
 
   render() {
@@ -177,8 +179,8 @@ class GenerateGroups extends React.Component<GroupsProps> {
     return fieldsGroups.map(fieldGroup => {
       const data = {};
 
-      for (const field of fieldGroup.fields) {
-        data[field._id] = customFieldsData[field._id];
+      for (const customFieldData of customFieldsData || []) {
+        data[customFieldData.field] = customFieldData.value;
       }
 
       return (

@@ -1,7 +1,7 @@
 import { toArray } from 'modules/boards/utils';
 import DealEditForm from './components/DealEditForm';
 import DealItem from './components/DealItem';
-import { mutations, queries, subscriptions } from './graphql';
+import { mutations, queries } from './graphql';
 
 const options = {
   EditForm: DealEditForm,
@@ -19,13 +19,9 @@ const options = {
     editMutation: 'dealsEdit',
     removeMutation: 'dealsRemove',
     changeMutation: 'dealsChange',
-    updateOrderMutation: 'dealsUpdateOrder',
     watchMutation: 'dealsWatch',
     archiveMutation: 'dealsArchive',
     copyMutation: 'dealsCopy'
-  },
-  subscriptionName: {
-    changeSubscription: 'dealsChanged'
   },
   queries: {
     itemsQuery: queries.deals,
@@ -38,13 +34,9 @@ const options = {
     editMutation: mutations.dealsEdit,
     removeMutation: mutations.dealsRemove,
     changeMutation: mutations.dealsChange,
-    updateOrderMutation: mutations.dealsUpdateOrder,
     watchMutation: mutations.dealsWatch,
     archiveMutation: mutations.dealsArchive,
     copyMutation: mutations.dealsCopy
-  },
-  subscriptions: {
-    changeSubscription: subscriptions.dealsChanged
   },
   texts: {
     addText: 'Add a deal',

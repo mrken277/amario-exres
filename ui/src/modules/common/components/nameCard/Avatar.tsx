@@ -45,7 +45,7 @@ const AvatarStyled = styledTS<{ state?: string }>(styled.span)`
 
 const AvatarImage = styledTS<{ image?: string }>(styled.div)`
   background: url(${props =>
-    props.image ? props.image : '/images/avatar.svg'})
+    props.image ? `"${props.image}"` : '/images/avatar.svg'})
     center no-repeat;
   background-size: cover;
 `;
@@ -68,7 +68,7 @@ function Element({
 }) {
   if (customer) {
     return (
-      <Link to={customer && `/contacts/customers/details/${customer._id}`}>
+      <Link to={customer && `/contacts/details/${customer._id}`}>
         {children}
       </Link>
     );

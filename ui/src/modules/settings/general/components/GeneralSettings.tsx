@@ -28,6 +28,7 @@ type Props = {
   changeLanguage: (language: string) => void;
   save: (configsMap: IConfigsMap) => void;
   configsMap: IConfigsMap;
+  constants;
 };
 
 type State = {
@@ -100,6 +101,34 @@ class GeneralSettings extends React.Component<Props, State> {
     );
   };
 
+  renderConstant(kind: string) {
+    const { constants } = this.props;
+    const { configsMap } = this.state;
+    const allValues = constants.allValues || {};
+    const defaultValues = constants.defaultValues || {};
+
+    const constant = allValues[kind] || [];
+
+    let value = configsMap[kind];
+
+    if (!value || value.length === 0) {
+      value = defaultValues[kind] || '';
+    }
+
+    return (
+      <FormGroup>
+        <ControlLabel>{KEY_LABELS[kind]}</ControlLabel>
+
+        <Select
+          options={constant}
+          value={value}
+          onChange={this.onChangeMultiCombo.bind(this, kind)}
+          multi={true}
+        />
+      </FormGroup>
+    );
+  }
+
   render() {
     const { configsMap, language } = this.state;
 
@@ -168,7 +197,7 @@ class GeneralSettings extends React.Component<Props, State> {
               href="https://docs.erxes.io/administrator/system-config#file-upload"
               rel="noopener noreferrer"
             >
-              {__('More: Understanding file upload')}
+              {__('Learn how to set file uploading.')}
             </a>
           </Info>
           <FormGroup>
@@ -230,10 +259,12 @@ class GeneralSettings extends React.Component<Props, State> {
           <Info>
             <a
               target="_blank"
-              href="https://console.cloud.google.com/storage/browser"
+              href="https://docs.erxes.io/administrator/system-config#google-cloud-storage"
               rel="noopener noreferrer"
             >
-              {__('More: Create or find your Google Cloud Storage bucket')}
+              {__(
+                'Learn how to create or find your Google Cloud Storage bucket'
+              )}
             </a>
           </Info>
           <FormGroup>
@@ -246,10 +277,10 @@ class GeneralSettings extends React.Component<Props, State> {
           <Info>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/environment-variables#aws-s3"
+              href="https://docs.erxes.io/administrator/system-config#aws-s3"
               rel="noopener noreferrer"
             >
-              {__('More: Understanding AWS S3 Variables')}
+              {__('Learn how to set AWS S3 Variables')}
             </a>
           </Info>
           {this.renderItem('AWS_ACCESS_KEY_ID')}
@@ -265,13 +296,17 @@ class GeneralSettings extends React.Component<Props, State> {
 
         <CollapseContent title="AWS SES">
           <Info>
-            <p>{__('Used when using SES for transaction emails')}</p>
+            <p>
+              {__(
+                'In this field, the AWS SES configuration is dedicated to providing transaction emails.'
+              )}
+            </p>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/environment-variables#aws-ses"
+              href="https://docs.erxes.io/administrator/system-config#aws-ses"
               rel="noopener noreferrer"
             >
-              {__('More: Understanding AWS SES Variables')}
+              {__('Learn how to set Amazon SES variables')}
             </a>
           </Info>
           {this.renderItem('AWS_SES_ACCESS_KEY_ID')}
@@ -281,8 +316,18 @@ class GeneralSettings extends React.Component<Props, State> {
         </CollapseContent>
 
         <CollapseContent title="Google">
+          <Info>
+            <a
+              target="_blank"
+              href="https://docs.erxes.io/administrator/system-config#google"
+              rel="noopener noreferrer"
+            >
+              {__('Learn how to set Google variables')}
+            </a>
+          </Info>
           {this.renderItem('GOOGLE_PROJECT_ID')}
           {this.renderItem('GOOGLE_APPLICATION_CREDENTIALS')}
+          {this.renderItem('GOOGLE_APPLICATION_CREDENTIALS_JSON')}
           {this.renderItem('GOOGLE_CLIENT_ID')}
           {this.renderItem('GOOGLE_CLIENT_SECRET')}
         </CollapseContent>
@@ -291,10 +336,10 @@ class GeneralSettings extends React.Component<Props, State> {
           <Info>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/environment-variables#email-settings"
+              href="https://docs.erxes.io/administrator/system-config#common-mail-config"
               rel="noopener noreferrer"
             >
-              {__('More: Understanding Email Settings')}
+              {__('Learn more about Email Settings')}
             </a>
           </Info>
 
@@ -307,13 +352,25 @@ class GeneralSettings extends React.Component<Props, State> {
 
         <CollapseContent title={__('Custom mail service')}>
           <Info>
-            {__('Fill up these inputs if you are using custom email service')}
+            <a
+              target="_blank"
+              href="https://docs.erxes.io/administrator/system-config#custom-mail-service"
+              rel="noopener noreferrer"
+            >
+              {__('Learn the case of custom email service')}
+            </a>
           </Info>
           {this.renderItem('MAIL_SERVICE')}
           {this.renderItem('MAIL_PORT')}
           {this.renderItem('MAIL_USER')}
           {this.renderItem('MAIL_PASS')}
           {this.renderItem('MAIL_HOST')}
+        </CollapseContent>
+
+        <CollapseContent title={__('Constants')}>
+          {this.renderConstant('sex_choices')}
+          {this.renderConstant('company_industry_types')}
+          {this.renderConstant('social_links')}
         </CollapseContent>
       </ContentBox>
     );

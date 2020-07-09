@@ -1,4 +1,5 @@
 import { AuthBox } from 'modules/auth/styles';
+import { IUser } from 'modules/auth/types';
 import Button from 'modules/common/components/Button';
 import FormControl from 'modules/common/components/form/Control';
 import FormGroup from 'modules/common/components/form/Group';
@@ -21,6 +22,7 @@ class Confirmation extends React.Component<{
       username: string;
     }
   ) => void;
+  currentUser?: IUser;
 }> {
   onSubmit = e => {
     e.preventDefault();
@@ -52,19 +54,19 @@ class Confirmation extends React.Component<{
         <h2>{__('Set up your password')}</h2>
         <form onSubmit={this.onSubmit}>
           <FormGroup>
-            <ControlLabel>Full name</ControlLabel>
+            <ControlLabel>{__('Full name')}</ControlLabel>
             <FormControl id="fullName" />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Username</ControlLabel>
+            <ControlLabel>{__('Username')}</ControlLabel>
             <FormControl id="username" />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Password</ControlLabel>
+            <ControlLabel>{__('New Password')}</ControlLabel>
             <FormControl type="password" id="password" />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Password Confirmation</ControlLabel>
+            <ControlLabel>{__('Re-type Password to confirm')}</ControlLabel>
             <FormControl type="password" id="passwordConfirmation" />
           </FormGroup>
           <Button btnStyle="success" type="submit" block={true}>
@@ -76,6 +78,14 @@ class Confirmation extends React.Component<{
   }
 
   render() {
+    if (this.props.currentUser) {
+      return (
+        <div style={{ width: '50%', margin: 'auto' }}>
+          {this.renderContent()}
+        </div>
+      );
+    }
+
     return <AuthLayout content={this.renderContent()} />;
   }
 }

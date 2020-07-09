@@ -3,7 +3,7 @@ id: digitalocean
 title: DigitalOcean Marketplace
 ---
 
-Launch a Droplet selecting `erxes` in the DigitalOcean Marketplace.  
+Launch a Droplet using [erxes](https://marketplace.digitalocean.com/apps/erxes) in the DigitalOcean Marketplace.  
 Once you have created the Droplet, you will then have erxes up and running and it will be accessible by public IP address of the Droplet.
 
 ## Create an admin user
@@ -57,7 +57,7 @@ To be able to use your own domain with erxes, you will need to do a few steps.
      NODE_ENV: "production",
      REACT_APP_API_URL: "http://your_domain/api",
      REACT_APP_API_SUBSCRIPTION_URL: "ws://your_domain/api/subscriptions",
-     REACT_APP_CDN_HOST: "http://your_domain/widgets"
+     REACT_APP_CDN_HOST: "http://your_domain/widgets",
    };
    ```
 
@@ -69,8 +69,7 @@ To be able to use your own domain with erxes, you will need to do a few steps.
    pm2 restart ecosystem.json
    ```
 
-6. Switch to `root` user and update your nginx config
-   `server_name` with your domain.
+6. Switch to `root` user and edit your nginx config file located in `/etc/nginx/sites-available/default` and replace `server_name` with your domain.
 
 7. Lastly reload your nginx service by running `systemctl reload nginx`
 

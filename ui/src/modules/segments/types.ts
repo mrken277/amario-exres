@@ -62,6 +62,7 @@ export type SegmentsQueryResponse = {
 export type HeadSegmentsQueryResponse = {
   segmentsGetHeads: ISegment[];
   loading: boolean;
+  refetch: () => void;
 };
 
 export type EventsQueryResponse = {
@@ -86,6 +87,8 @@ export type AddMutationVariables = {
 };
 
 export type IField = {
+  selectOptions?: Array<{ label: string; value: string | number }>;
+  type?: string;
   value: string;
   label: string;
 };

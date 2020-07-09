@@ -168,7 +168,6 @@ const Recipient = styled.div`
 
 const Half = styled.div`
   width: 50%;
-  border-right: 1px solid ${colors.borderPrimary};
 
   &:last-of-type {
     border: none;
@@ -454,6 +453,21 @@ const Shell = styled.div`
   }
 `;
 
+const DesktopPreviewContent = styledTS<{ templateId?: string }>(styled.div)`
+  width: 70%;
+  margin: 0 auto;
+  background: ${props => !props.templateId && colors.colorWhite}
+  padding: ${props => !props.templateId && `${dimensions.coreSpacing}px`}
+`;
+
+const MobilePreviewContent = styledTS<{ templateId?: string }>(styled.div)`
+  height: 100%;
+  overflow: auto;
+  background: ${props => !props.templateId && colors.colorWhite}
+  padding: ${props => !props.templateId && `${dimensions.coreSpacing}px`}
+  overflow-x: hidden;
+`;
+
 export {
   RowTitle,
   HelperText,
@@ -488,5 +502,7 @@ export {
   VerifyCancel,
   VerifyCheck,
   RightSection,
+  DesktopPreviewContent,
+  MobilePreviewContent,
   Shell
 };

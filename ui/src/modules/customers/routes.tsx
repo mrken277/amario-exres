@@ -12,7 +12,13 @@ const CustomersList = asyncComponent(() =>
 );
 
 const contacts = () => {
-  return <Redirect to="/contacts/customers/customer" />;
+  const lastVisited = localStorage.getItem('erxes_contact_url') || 'visitor';
+
+  if (lastVisited === 'companies') {
+    return <Redirect to={lastVisited} />;
+  }
+
+  return <Redirect to={`/contacts/${lastVisited}`} />;
 };
 
 const detail = ({ match }) => {
@@ -25,6 +31,8 @@ const list = ({ match, location }) => {
   const queryParams = queryString.parse(location.search);
   const type = match.params.type;
 
+  localStorage.setItem('erxes_contact_url', type);
+
   return <CustomersList queryParams={queryParams} type={type} />;
 };
 
@@ -34,16 +42,16 @@ const routes = () => {
       <Route key="/contacts" exact={true} path="/contacts" render={contacts} />
 
       <Route
-        key="/contacts/customers/details/:id"
+        key="/contacts/details/:id"
         exact={true}
-        path="/contacts/customers/details/:id"
+        path="/contacts/details/:id"
         component={detail}
       />
 
       <Route
-        key="/contacts/customers/:type"
+        key="/contacts/:type"
         exact={true}
-        path="/contacts/customers/:type"
+        path="/contacts/:type"
         component={list}
       />
     </React.Fragment>

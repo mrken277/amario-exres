@@ -53,8 +53,9 @@ interface IProps extends IRouterProps {
       callback: () => void;
     }
   ) => Promise<void>;
+  verifyCustomers: (doc: { verificationType: string }) => void;
   queryParams: any;
-  exportData: (bulk: Array<{ _id: string }>, popupData: boolean) => void;
+  exportData: (bulk: Array<{ _id: string }>) => void;
   responseId: string;
 }
 
@@ -89,6 +90,12 @@ class CustomersList extends React.Component<IProps, State> {
     const { removeCustomers, emptyBulk } = this.props;
 
     removeCustomers({ customerIds }, emptyBulk);
+  };
+
+  verifyCustomers = (verificationType: string) => {
+    const { verifyCustomers } = this.props;
+
+    verifyCustomers({ verificationType });
   };
 
   renderContent() {
@@ -191,7 +198,7 @@ class CustomersList extends React.Component<IProps, State> {
       return (
         <ManageColumns
           {...props}
-          contentType="customer"
+          contentType={type}
           location={location}
           history={history}
         />
@@ -253,17 +260,26 @@ class CustomersList extends React.Component<IProps, State> {
               </Link>
             </li>
             <li>
-              <a href="#export" onClick={exportData.bind(this, bulk, false)}>
+              <a href="#export" onClick={exportData.bind(this, bulk)}>
                 {__('Export customers')}
               </a>
             </li>
-            {queryParams.form && (
-              <li>
-                <a href="#export" onClick={exportData.bind(this, bulk, true)}>
-                  {__('Export Pop-Ups data')}
-                </a>
-              </li>
-            )}
+            <li>
+              <a
+                href="#verifyEmail"
+                onClick={this.verifyCustomers.bind(this, 'email')}
+              >
+                {__('Verify emails')}
+              </a>
+            </li>
+            <li>
+              <a
+                href="#verifyPhone"
+                onClick={this.verifyCustomers.bind(this, 'phone')}
+              >
+                {__('Verify phone numbers')}
+              </a>
+            </li>
           </Dropdown.Menu>
         </Dropdown>
         <Link to="/settings/importHistories?type=customer">
@@ -271,14 +287,17 @@ class CustomersList extends React.Component<IProps, State> {
             {__('Go to import')}
           </Button>
         </Link>
-        <ModalTrigger
-          title="New customer"
-          autoOpenKey="showCustomerModal"
-          trigger={addTrigger}
-          size="lg"
-          content={customerForm}
-          backDrop="static"
-        />
+
+        {type === 'visitor' ? null : (
+          <ModalTrigger
+            title="New customer"
+            autoOpenKey="showCustomerModal"
+            trigger={addTrigger}
+            size="lg"
+            content={customerForm}
+            backDrop="static"
+          />
+        )}
       </BarItems>
     );
 
@@ -333,7 +352,7 @@ class CustomersList extends React.Component<IProps, State> {
           <Button
             btnStyle="danger"
             size="small"
-            icon="cancel-1"
+            icon="times-circle"
             onClick={onClick}
           >
             Remove
