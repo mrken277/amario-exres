@@ -26,7 +26,7 @@ import VideoCallRoutes from './modules/videoCall/routes';
 
 const MainLayout = asyncComponent(() =>
   import(
-    /* webpackChunkName: "Main Layout" */ 'modules/layout/containers/MainLayout'
+    /* webpackChunkName: "MainLayout" */ 'modules/layout/containers/MainLayout'
   ),
 );
 

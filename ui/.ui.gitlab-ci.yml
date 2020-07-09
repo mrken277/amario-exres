@@ -1,6 +1,6 @@
 ui:install_dependencies:
   stage: install_dependencies
-  image: node:12.16-alpine
+  image: node:10.16-alpine
   before_script:
     - cd ui
   script:
@@ -24,7 +24,7 @@ ui:install_dependencies:
 
 ui:test_and_build:
   stage: test_and_build
-  image: node:12.16-alpine
+  image: node:10.16-alpine
   before_script:
     - cd ui
     - yarn install # install dependencies again if cache is missing
@@ -41,11 +41,9 @@ ui:test_and_build:
     key:
       files:
         - ui/package.json
-        - ui/yarn.lock
       prefix: ui
     paths:
       - ui/node_modules/
-    policy: pull
   artifacts:
     expire_in: 1h
     paths:
@@ -53,18 +51,16 @@ ui:test_and_build:
 
 ui:build_docker_image:
   stage: build_docker_images
-  variables:
-    BASE_IMAGE: erxes/erxes:base-1.18-alpine
   before_script:
-    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME $DOCKER_REGISTRY --password-stdin
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
   script:
     - cd ui
-    - DOCKER_BUILDKIT=1 docker build --build-arg BASE_IMAGE=$BASE_IMAGE -t $DOCKER_REGISTRY/erxes/$CI_PROJECT_NAME:${CI_COMMIT_REF_NAME} -f ui.Dockerfile .
+    - docker build -t $DOCKER_REGISTRY/erxes/$CI_PROJECT_NAME:${CI_COMMIT_REF_NAME} -f Dockerfile .
     - docker push $DOCKER_REGISTRY/erxes/$CI_PROJECT_NAME:${CI_COMMIT_REF_NAME}
   rules:
     - changes:
         - ui/**/*
-      if: '$CI_COMMIT_BRANCH == "subscription" || $CI_COMMIT_BRANCH == "demo"'
+      if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "apm" || $CI_COMMIT_BRANCH == "demo"'
   needs:
     - job: ui:test_and_build
       artifacts: true
