@@ -97,6 +97,18 @@ export type MergeMutationVariables = {
   customerFields: ICustomer;
 };
 
+export type VerifyMutationVariables = {
+  verificationType: string;
+};
+
+export type VerifyMutationResponse = {
+  customersVerify: (
+    doc: {
+      variables: VerifyMutationVariables;
+    }
+  ) => Promise<any>;
+};
+
 export type MergeMutationResponse = {
   customersMerge: (doc: { variables: MergeMutationVariables }) => Promise<any>;
 };

@@ -23,8 +23,15 @@ export interface IEngageMessenger {
 export interface IEngageEmail {
   templateId?: string;
   subject: string;
+  sender?: string;
+  replyTo?: string;
   content: string;
   attachments?: IAttachment[];
+}
+
+export interface IEngageSms {
+  from: string;
+  content: string;
 }
 
 export interface IEngageStats {
@@ -71,6 +78,7 @@ export interface IEngageMessageDoc {
   email?: IEngageEmail;
   messenger?: IEngageMessenger;
   scheduleDate?: IEngageScheduleDate;
+  shortMessage?: IEngageSms;
 }
 
 export interface IEngageMessage extends IEngageMessageDoc {
