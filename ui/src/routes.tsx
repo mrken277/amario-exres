@@ -32,7 +32,7 @@ const MainLayout = asyncComponent(() =>
 
 const Unsubscribe = asyncComponent(() =>
   import(
-    /* webpackChunkName: "Unsubscribe" */ 'modules/auth/containers/Unsubscribe'
+    /* webpackChunkName: "Unsubscribee" */ 'modules/auth/containers/Unsubscribe'
   ),
 );
 
