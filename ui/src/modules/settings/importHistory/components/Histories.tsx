@@ -33,8 +33,11 @@ const DATA_IMPORT_TYPES = [
   'product',
   'deal',
   'task',
-  'ticket'
+  'ticket',
+  'lead'
 ];
+
+const DYNAMICLY_TEMPLATE_TYPES = ['customer', 'company', 'product', 'lead'];
 
 class Histories extends React.Component<Props & IRouterProps> {
   renderHistories = () => {
@@ -97,11 +100,7 @@ class Histories extends React.Component<Props & IRouterProps> {
       return null;
     }
 
-    if (
-      currentType === 'customer' ||
-      currentType === 'company' ||
-      currentType === 'product'
-    ) {
+    if (DYNAMICLY_TEMPLATE_TYPES.includes(currentType)) {
       const manageColumns = props => {
         return (
           <ManageColumns {...props} contentType={currentType} type="import" />
