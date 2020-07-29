@@ -13,7 +13,8 @@ const menuContacts = [
   { title: 'Visitors', link: '/contacts/visitor' },
   { title: 'Leads', link: '/contacts/lead' },
   { title: 'Customers', link: '/contacts/customer' },
-  { title: 'Companies', link: '/companies' }
+  { title: 'Companies', link: '/companies' },
+  { title: 'Cars', link: '/cars' }
 ];
 
 export { menuContacts, menuInbox, menuDeal };

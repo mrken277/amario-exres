@@ -3,6 +3,7 @@ export const TAG_TYPES = {
   CUSTOMER: 'customer',
   ENGAGE_MESSAGE: 'engageMessage',
   COMPANY: 'company',
+  CAR: 'car',
   INTEGRATION: 'integration',
   PRODUCT: 'product',
   ALL_LIST: [
@@ -10,6 +11,7 @@ export const TAG_TYPES = {
     'customer',
     'engageMessage',
     'company',
+    'car',
     'integration',
     'product'
   ]
