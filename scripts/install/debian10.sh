@@ -16,13 +16,16 @@ trap notify ERR
 function notify() {
   FAILED_COMMAND="Something went wrong on line $LINENO : Failed command: ${BASH_COMMAND}"
 
-  curl -s -X POST https://telemetry.erxes.io/events/ \
-    -H 'content-type: application/json' \
-    -d '[{
-          "eventType": "CLI_COMMAND_installation_status",
-          "message": "error",
-          "errorMessage": "$FAILED_COMMAND"
-  }]'
+   curl -X POST https://telemetry.erxes.io/events/ \
+        -H 'content-type: application/json' \
+        -d "$(cat <<EOF
+          [{
+                'eventType': 'CLI_COMMAND_installation_status',
+                'errorMessage': '$FAILED_COMMAND',
+                'message': 'error'
+          }]
+          EOF
+        )"
 }
 
 #
