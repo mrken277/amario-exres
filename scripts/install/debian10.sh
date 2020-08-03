@@ -15,7 +15,14 @@ trap notify ERR
 
 function notify() {
   FAILED_COMMAND="Something went wrong on line $LINENO : Failed command: ${BASH_COMMAND}"
-  # send data via curl
+
+  curl -s -X POST https://telemetry.erxes.io/events/ \
+    -H 'content-type: application/json' \
+    -d '[{
+          "eventType": "CLI_COMMAND_installation_status",
+          "message": "error",
+          "errorMessage": "$FAILED_COMMAND"
+  }]'
 }
 
 #
@@ -29,6 +36,13 @@ while true; do
         break
     fi
 done
+
+curl -s -X POST https://telemetry.erxes.io/events/ \
+  -H 'content-type: application/json' \
+  -d '[{
+        "eventType": "CLI_COMMAND_installation_status",
+        "message": "attempt"
+}]'
 
 #
 # Dependencies
@@ -462,7 +476,7 @@ ufw allow 22
 ufw allow 80
 ufw allow 443
 
-su $username -c "source ~/.nvm/nvm.sh && nvm use $NODE_VERSION && cd $erxes_api_dir && node ./dist/commands/trackTelemetry \"Installation completed successfully\""
+su $username -c "source ~/.nvm/nvm.sh && nvm use $NODE_VERSION && cd $erxes_api_dir && node ./dist/commands/trackTelemetry \"success\""
 
 echo
 echo -e "\e[32mInstallation complete\e[0m"
