@@ -45,7 +45,6 @@ class InfoSection extends React.Component<Props> {
 
   render() {
     const { car, children } = this.props;
-    const { links = {} } = car;
 
     const content = props => <CarForm {...props} car={car} />;
 
@@ -53,7 +52,7 @@ class InfoSection extends React.Component<Props> {
       <InfoWrapper>
         <NameContainer>
           <Name fontSize={16}>
-            {car.primaryName}
+            {car.plateNumber}
 
             <ModalTrigger
               title="Edit basic info"
@@ -62,7 +61,6 @@ class InfoSection extends React.Component<Props> {
               content={content}
             />
           </Name>
-          {this.renderLinks(links)}
         </NameContainer>
         {children}
       </InfoWrapper>

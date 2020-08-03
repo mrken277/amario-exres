@@ -1,49 +1,60 @@
 const commonFields = `
-  $names: [String],
-  $avatar: String,
-  $primaryName: String,
-  $size: Int,
-  $industry: String,
-  $parentCarId: String,
-  $emails: [String],
-  $primaryEmail: String,
   $ownerId: String,
-  $phones: [String],
-  $primaryPhone: String,
-  $businessType: String,
   $description: String,
   $doNotDisturb: String,
-  $links: JSON,
   $customFieldsData: JSON,
-  $code: String
+
+  $plateNumber: String,
+  $vinNumber: String,
+  $colorCode: String,
+
+  $manufactureBrand: String,
+  $bodyType: String,
+  $fuelType: String,
+  $modelsName: String,
+  $series: String,
+  $gearBox: String,
+
+  $vintageYear: Int,
+  $importYear: Int
 `;
 
 const commonVariables = `
-  names: $names,
-  avatar: $avatar,
-  primaryName: $primaryName,
-  size: $size,
-  industry: $industry,
-  parentCarId: $parentCarId,
-  emails: $emails,
-  primaryEmail: $primaryEmail,
   ownerId: $ownerId,
-  phones: $phones,
-  primaryPhone: $primaryPhone,
-  businessType: $businessType,
   description: $description,
   doNotDisturb: $doNotDisturb,
-  links: $links,
   customFieldsData: $customFieldsData,
-  code: $code
+
+  plateNumber: $plateNumber,
+  vinNumber: $vinNumber,
+  colorCode: $colorCode,
+
+  manufactureBrand: $manufactureBrand,
+  bodyType: $bodyType,
+  fuelType: $fuelType,
+  modelsName: $modelsName,
+  series: $series,
+  gearBox: $gearBox,
+
+  vintageYear: $vintageYear,
+  importYear: $importYear
 `;
 
 const carsAdd = `
   mutation carsAdd(${commonFields}) {
     carsAdd(${commonVariables}) {
       _id
-      primaryName
-      primaryEmail
+      plateNumber
+      vinNumber
+      colorCode
+      manufactureBrand
+      bodyType
+      fuelType
+      modelsName
+      series
+      gearBox
+      vintageYear
+      importYear
     }
   }
 `;
@@ -51,23 +62,20 @@ const carsAdd = `
 const carsEdit = `
   mutation carsEdit($_id: String!, ${commonFields}) {
     carsEdit(_id: $_id, ${commonVariables}) {
-      avatar
-      primaryName
-      names
-      size
-      industry
-      plan
-      parentCarId
-      emails
-      primaryEmail
-      ownerId
-      phones
-      primaryPhone
-      businessType
-      description
-      doNotDisturb
-      code
-      links
+      ownerId,
+      description,
+      doNotDisturb,
+      plateNumber,
+      vinNumber,
+      colorCode,
+      manufactureBrand,
+      bodyType,
+      fuelType,
+      modelsName,
+      series,
+      gearBox,
+      vintageYear,
+      importYear
     }
   }
 `;

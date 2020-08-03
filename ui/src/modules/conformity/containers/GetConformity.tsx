@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import { IItem } from 'modules/boards/types';
+import { ICar } from 'modules/cars/types';
 import { renderWithProps } from 'modules/common/utils';
 import { ICompany } from 'modules/companies/types';
 import { ICustomer } from 'modules/customers/types';
@@ -19,7 +20,7 @@ type IProps = {
   itemsQuery: string;
   data?: any;
   collapseCallback?: () => void;
-  alreadyItems?: ICompany[] | ICustomer[] | IDeal[] | IItem[] | ITicket[];
+  alreadyItems?: ICompany[] | ICustomer[] | IDeal[] | IItem[] | ITicket[] | ICar[];
 };
 
 type FinalProps = {

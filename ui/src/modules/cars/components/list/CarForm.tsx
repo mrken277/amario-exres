@@ -1,12 +1,11 @@
-import SelectCars from 'modules/cars/containers/SelectCars';
-import AvatarUpload from 'modules/common/components/AvatarUpload';
+import { ChooseColor } from 'modules/boards/styles/label';
 import Button from 'modules/common/components/Button';
 import CollapseContent from 'modules/common/components/CollapseContent';
 import FormControl from 'modules/common/components/form/Control';
 import Form from 'modules/common/components/form/Form';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
-import ModifiableSelect from 'modules/common/components/ModifiableSelect';
+import Icon from 'modules/common/components/Icon';
 import {
   FormColumn,
   FormWrapper,
@@ -14,15 +13,13 @@ import {
   ScrollWrapper
 } from 'modules/common/styles/main';
 import { IButtonMutateProps, IFormProps } from 'modules/common/types';
-import { __, getConstantFromStore } from 'modules/common/utils';
-import { isValidPhone } from 'modules/customers/utils';
+import { __ } from 'modules/common/utils';
+import { BackgroundSelector } from 'modules/leads/components/step/style';
 import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMembers';
 import React from 'react';
-import Select from 'react-select-plus';
-import validator from 'validator';
 import { IUser } from '../../../auth/types';
-import { CAR_BUSINESS_TYPES, CAR_INDUSTRY_TYPES } from '../../constants';
-import { ICar, ICarDoc, ICarLinks } from '../../types';
+import { ICar, ICarDoc } from '../../types';
+import { COLORS } from 'modules/boards/constants';
 
 type Props = {
   renderButton: (props: IButtonMutateProps) => JSX.Element;
@@ -31,21 +28,23 @@ type Props = {
 };
 
 type State = {
-  parentCarId?: string;
   ownerId?: string;
-  cars?: ICar[];
   doNotDisturb?: string;
   users?: IUser[];
-  avatar?: string;
 
-  names?: string[];
-  emails?: string[];
-  phones?: string[];
-  primaryName?: string;
-  primaryEmail?: string;
-  primaryPhone?: string;
-  industry?: string;
-  businessType?: string;
+  plateNumber: string;
+  vinNumber: string;
+  colorCode: string;
+
+  manufactureBrand: string;
+  bodyType: string;
+  fuelType: string;
+  modelsName: string;
+  series: string;
+  gearBox: string;
+
+  vintageYear: number;
+  importYear: number;
 };
 
 class CarForm extends React.Component<Props, State> {
@@ -53,21 +52,29 @@ class CarForm extends React.Component<Props, State> {
     super(props);
 
     const { car = {} } = props;
-    const cars: ICar[] = [];
 
     this.state = {
       ownerId: car.ownerId || '',
-      cars,
       doNotDisturb: car.doNotDisturb || 'No',
       users: [],
-      avatar: car.avatar,
-      industry: car.industry || '',
-      businessType: car.businessType || ''
+      plateNumber: car.plateNumber || '',
+      vinNumber: car.vinNumber || '',
+      colorCode: car.colorCode || '',
+
+      manufactureBrand: car.manufactureBrand || '',
+      bodyType: car.bodyType || '',
+      fuelType: car.fuelType || '',
+      modelsName: car.modelsName || '',
+      series: car.series || '',
+      gearBox: car.gearBox || '',
+
+      vintageYear: car.vintageYear || 2020,
+      importYear: car.importYear || 2020,
     };
   }
 
   generateDoc = (
-    values: { _id: string; size?: number } & ICarDoc & ICarLinks
+    values: { _id: string; size?: number } & ICarDoc
   ) => {
     const { car } = this.props;
 
@@ -77,24 +84,11 @@ class CarForm extends React.Component<Props, State> {
       finalValues._id = car._id;
     }
 
-    const links = {};
-
-    getConstantFromStore('social_links').forEach(link => {
-      links[link.value] = finalValues[link.value];
-    });
-
     return {
       _id: finalValues._id,
       ...this.state,
-      size: Number(finalValues.size),
       description: finalValues.description,
-      code: finalValues.code,
-      links
     };
-  };
-
-  onAvatarUpload = (url: string) => {
-    this.setState({ avatar: url });
   };
 
   generateConstantParams(constants) {
@@ -103,12 +97,6 @@ class CarForm extends React.Component<Props, State> {
       label: constant
     }));
   }
-
-  handleSelect = <T extends keyof State>(selectedOption: string, name: T) => {
-    this.setState({
-      [name]: selectedOption
-    } as Pick<State, keyof State>);
-  };
 
   renderFormGroup = (label, props) => {
     return (
@@ -119,56 +107,54 @@ class CarForm extends React.Component<Props, State> {
     );
   };
 
-  onIndustryChange = option => {
-    this.setState({ industry: option.value });
+  onBodyTypeChange = option => {
+    this.setState({ bodyType: option.value });
   };
 
-  onBusinessChange = option => {
-    this.setState({ businessType: option.value });
+  onFuelTypeChange = option => {
+    this.setState({ fuelType: option.value });
   };
 
-  onChange = (
-    optionsName: string,
-    optionName: string,
-    { options, selectedOption }: { options: string[]; selectedOption: string }
-  ) => {
-    this.setState({ [optionsName]: options, [optionName]: selectedOption });
+  onColorChange = e => {
+    this.setState({ colorCode: e.hex });
   };
 
-  renderLink(formProps, link) {
-    const { car } = this.props;
-    const links = (car ? car.links : {}) || {};
+  renderColors(colorCode: string) {
+    const onClick = () => this.onColorChange(colorCode);
 
-    return this.renderFormGroup(link.label, {
-      ...formProps,
-      name: link.value,
-      defaultValue: links[link.value] || '',
-      type: 'url'
-    });
+    return (
+      <BackgroundSelector
+        key={colorCode}
+        selected={this.state.colorCode === colorCode}
+        onClick={onClick}
+      >
+        <div style={{ backgroundColor: colorCode }}>
+          <Icon icon="check-1" />
+        </div>
+      </BackgroundSelector>
+    );
   }
+
+
+  // onChange = (
+  //   optionsName: string,
+  //   optionName: string,
+  //   { options, selectedOption }: { options: string[]; selectedOption: string }
+  // ) => {
+  //   this.setState({ [optionsName]: options, [optionName]: selectedOption });
+  // };
 
   renderContent = (formProps: IFormProps) => {
     const car = this.props.car || ({} as ICar);
     const { closeModal, renderButton } = this.props;
     const { values, isSubmitted } = formProps;
 
-    const {
-      primaryName,
-      names,
-      primaryPhone,
-      phones,
-      primaryEmail,
-      emails
-    } = car;
-
-    const { parentCarId, ownerId } = this.state;
+    const { ownerId } = this.state;
 
     const onSelectOwner = value => {
-      return this.handleSelect(value, 'ownerId');
-    };
-
-    const onSelectParentCar = value => {
-      return this.handleSelect(value, 'parentCarId');
+      this.setState({
+        'ownerId': value
+      } as Pick<State, keyof State>);
     };
 
     return (
@@ -181,19 +167,24 @@ class CarForm extends React.Component<Props, State> {
           >
             <FormWrapper>
               <FormColumn>
-                <AvatarUpload
-                  avatar={car.avatar}
-                  onAvatarUpload={this.onAvatarUpload}
-                  defaultAvatar="/images/integrations/car.png"
-                />
-              </FormColumn>
-
-              <FormColumn>
-                {this.renderFormGroup('Code', {
+                {this.renderFormGroup('Plate number', {
                   ...formProps,
-                  name: 'code',
-                  defaultValue: car.code || ''
+                  name: 'plateNumber',
+                  defaultValue: car.plateNumber || ''
                 })}
+
+                {this.renderFormGroup('VIN number', {
+                  ...formProps,
+                  name: 'vinNumber',
+                  defaultValue: car.vinNumber || ''
+                })}
+
+                <FormGroup>
+                  <ControlLabel required={true}>Select a color</ControlLabel>
+                  <ChooseColor>
+                    {COLORS.map(colorCode => this.renderColors(colorCode))}
+                  </ChooseColor>
+                </FormGroup>
 
                 <FormGroup>
                   <ControlLabel>Owner</ControlLabel>
@@ -210,42 +201,6 @@ class CarForm extends React.Component<Props, State> {
             <FormWrapper>
               <FormColumn>
                 <FormGroup>
-                  <ControlLabel required={true}>Name</ControlLabel>
-                  <ModifiableSelect
-                    value={primaryName}
-                    options={names || []}
-                    name="Name"
-                    required={true}
-                    onChange={this.onChange.bind(this, 'names', 'primaryName')}
-                  />
-                </FormGroup>
-
-                <FormGroup>
-                  <ControlLabel>Industry</ControlLabel>
-                  <Select
-                    value={this.state.industry}
-                    onChange={this.onIndustryChange}
-                    options={this.generateConstantParams(CAR_INDUSTRY_TYPES())}
-                    clearable={false}
-                  />
-                </FormGroup>
-
-                <FormGroup>
-                  <ControlLabel>Email</ControlLabel>
-                  <ModifiableSelect
-                    value={primaryEmail}
-                    options={emails || []}
-                    name="Email"
-                    onChange={this.onChange.bind(
-                      this,
-                      'emails',
-                      'primaryEmail'
-                    )}
-                    checkFormat={validator.isEmail}
-                  />
-                </FormGroup>
-
-                <FormGroup>
                   <ControlLabel>Description</ControlLabel>
                   <FormControl
                     {...formProps}
@@ -257,48 +212,6 @@ class CarForm extends React.Component<Props, State> {
                 </FormGroup>
               </FormColumn>
               <FormColumn>
-                <FormGroup>
-                  <ControlLabel>Parent Car</ControlLabel>
-                  <SelectCars
-                    label="Choose parent car"
-                    name="parentCarId"
-                    value={parentCarId}
-                    onSelect={onSelectParentCar}
-                    multi={false}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <ControlLabel>Business Type</ControlLabel>
-                  <Select
-                    value={this.state.businessType}
-                    onChange={this.onBusinessChange}
-                    options={this.generateConstantParams(CAR_BUSINESS_TYPES)}
-                    clearable={false}
-                  />
-                </FormGroup>
-
-                <FormGroup>
-                  <ControlLabel>Phone</ControlLabel>
-                  <ModifiableSelect
-                    value={primaryPhone}
-                    options={phones || []}
-                    name="Phone"
-                    onChange={this.onChange.bind(
-                      this,
-                      'phones',
-                      'primaryPhone'
-                    )}
-                    checkFormat={isValidPhone}
-                  />
-                </FormGroup>
-
-                {this.renderFormGroup('Size', {
-                  ...formProps,
-                  name: 'size',
-                  type: 'number',
-                  defaultValue: car.size || 0
-                })}
-
                 {this.renderFormGroup('Do not disturb', {
                   componentClass: 'radio',
                   options: [
@@ -318,15 +231,6 @@ class CarForm extends React.Component<Props, State> {
                     }
                   ]
                 })}
-              </FormColumn>
-            </FormWrapper>
-          </CollapseContent>
-          <CollapseContent title={__('Links')} compact={true} open={true}>
-            <FormWrapper>
-              <FormColumn>
-                {getConstantFromStore('social_links').map(link =>
-                  this.renderLink(formProps, link)
-                )}
               </FormColumn>
             </FormWrapper>
           </CollapseContent>

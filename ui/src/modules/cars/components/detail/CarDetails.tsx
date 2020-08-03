@@ -1,9 +1,9 @@
 import ActivityInputs from 'modules/activityLogs/components/ActivityInputs';
 import ActivityLogs from 'modules/activityLogs/containers/ActivityLogs';
 import { IUser } from 'modules/auth/types';
-import { __ } from 'modules/common/utils';
 import BasicInfo from 'modules/cars/containers/detail/BasicInfo';
 import { ICar } from 'modules/cars/types';
+import { __ } from 'modules/common/utils';
 import { UserHeader } from 'modules/customers/styles';
 import Wrapper from 'modules/layout/components/Wrapper';
 import React from 'react';
@@ -21,7 +21,7 @@ class CarDetails extends React.Component<Props> {
   render() {
     const { car, taggerRefetchQueries } = this.props;
 
-    const title = car.primaryName || 'Unknown';
+    const title = car.plateNumber || 'Unknown';
 
     const breadcrumb = [{ title: __('Cars'), link: '/cars' }, { title }];
 
@@ -30,11 +30,10 @@ class CarDetails extends React.Component<Props> {
         <ActivityInputs
           contentTypeId={car._id}
           contentType="car"
-          toEmails={car.emails}
           showEmail={false}
         />
         <ActivityLogs
-          target={car.primaryName || ''}
+          target={car.plateNumber || ''}
           contentId={car._id}
           contentType="car"
           extraTabs={[]}

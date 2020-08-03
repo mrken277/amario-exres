@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
+import { ICar } from 'modules/cars/types';
 import Box from 'modules/common/components/Box';
 import { __ } from 'modules/common/utils';
-import { ICar } from 'modules/cars/types';
+import CompanySection from 'modules/companies/components/common/CompanySection';
 import CustomerSection from 'modules/customers/components/common/CustomerSection';
 import PortableDeals from 'modules/deals/components/PortableDeals';
 import Sidebar from 'modules/layout/components/Sidebar';
@@ -34,6 +35,7 @@ export default class RightSidebar extends React.Component<Props> {
     return (
       <Sidebar>
         <CustomerSection mainType="car" mainTypeId={car._id} />
+        <CompanySection mainType="car" mainTypeId={car._id} />
         <PortableDeals mainType="car" mainTypeId={car._id} />
         <PortableTickets mainType="car" mainTypeId={car._id} />
         <PortableTasks mainType="car" mainTypeId={car._id} />

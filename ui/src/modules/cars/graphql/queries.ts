@@ -7,35 +7,22 @@ const carFields = `
   _id
   createdAt
   modifiedAt
-  avatar
-  primaryName
-  names
-  size
-  industry
-  plan
-
-  parentCarId
-  emails
-  primaryEmail
   ownerId
-  phones
-  primaryPhone
-  businessType
+  mergedIds
   description
   doNotDisturb
-  code
-  links
-  owner {
-    _id
-    details {
-      fullName
-    }
-  }
-  parentCar {
-    _id
-    primaryName
-  }
-
+  customFieldsData
+  plateNumber
+  vinNumber
+  colorCode
+  manufactureBrand
+  bodyType
+  fuelType
+  modelsName
+  series
+  gearBox
+  vintageYear
+  importYear
   customFieldsData
   tagIds
   getTags {
@@ -107,6 +94,11 @@ export const carDetail = `
         lastName
         primaryEmail
         primaryPhone
+      }
+      companies {
+        _id
+        primaryName
+        website
       }
     }
   }

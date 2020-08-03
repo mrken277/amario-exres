@@ -2,45 +2,32 @@ import { ITag } from 'modules/tags/types';
 import { IActivityLog, IActivityLogForMonth } from '../activityLogs/types';
 import { IUser } from '../auth/types';
 
-export interface ICarLinks {
-  linkedIn?: string;
-  twitter?: string;
-  facebook?: string;
-  github?: string;
-  youtube?: string;
-  website?: string;
-}
-
 export interface ICarDoc {
   createdAt?: Date;
   modifiedAt?: Date;
-  avatar?: string;
 
-  primaryName?: string;
-  names?: string[];
-  size?: number;
-  industry?: string;
-  website?: string;
-  plan?: string;
-  state?: string;
-  parentCarId?: string;
-
+  scopeBrandIds?: string[];
   ownerId?: string;
-
-  emails?: string[];
-  primaryEmail?: string;
-
-  primaryPhone?: string;
-  phones?: string[];
-
-  businessType?: string;
+  mergedIds?: string[];
+  status?: string;
   description?: string;
-  employees?: number;
   doNotDisturb?: string;
-  links: ICarLinks;
-  tagIds?: string[];
   customFieldsData?: any;
-  code?: string;
+  tagIds?: string[];
+
+  plateNumber?: string;
+  vinNumber?: string;
+  colorCode?: string;
+
+  manufactureBrand?: string;
+  bodyType?: string;
+  fuelType?: string;
+  modelsName?: string;
+  series?: string;
+  gearBox?: string;
+
+  vintageYear?: Date;
+  importYear?: Date;
 }
 
 export interface IActivityLogYearMonthDoc {

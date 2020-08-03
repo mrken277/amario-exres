@@ -27,17 +27,15 @@ class DetailInfo extends React.Component<Props> {
 
     return (
       <SidebarList className="no-link">
-        {this.renderRow('Code', car.code)}
-        {this.renderRow('Size', car.size)}
-        {this.renderRow('Industry', car.industry)}
-        {this.renderRow('Email', car.primaryEmail)}
+        {this.renderRow('Plate number', car.plateNumber)}
+        {this.renderRow('VIN number', car.vinNumber)}
+        {this.renderRow('Model', car.modelsName)}
+        {this.renderRow('Brand', car.manufactureBrand)}
         {this.renderRow(
           'Owner',
           car.owner && car.owner.details ? car.owner.details.fullName : '-'
         )}
-        {this.renderRow('Phone', car.primaryPhone)}
-        {this.renderRow('Business Type', car.businessType)}
-        {this.renderRow('Do not disturb', car.doNotDisturb)}
+        {this.renderRow('Series', car.series)}
         <SidebarFlexRow>
           {__(`Description`)}:<span>{car.description || '-'}</span>
         </SidebarFlexRow>

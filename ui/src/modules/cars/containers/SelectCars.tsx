@@ -11,8 +11,7 @@ export function generateCarOptions(array: ICar[] = []): IOption[] {
 
     return {
       value: car._id,
-      label: car.primaryName || '',
-      avatar: car.avatar
+      label: car.plateNumber || ''
     };
   });
 }

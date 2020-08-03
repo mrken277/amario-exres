@@ -2,9 +2,8 @@ import Box from 'modules/common/components/Box';
 import EmptyState from 'modules/common/components/EmptyState';
 import Icon from 'modules/common/components/Icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
-import Tip from 'modules/common/components/Tip';
 import { ButtonRelated } from 'modules/common/styles/main';
-import { __, urlParser } from 'modules/common/utils';
+import { __ } from 'modules/common/utils';
 import GetConformity from 'modules/conformity/containers/GetConformity';
 import { SectionBody, SectionBodyItem } from 'modules/layout/styles';
 import React from 'react';
@@ -90,12 +89,7 @@ function Component(
           <Link to={`/cars/details/${car._id}`}>
             <Icon icon="arrow-to-right" />
           </Link>
-          <span>{car.primaryName || 'Unknown'}</span>
-          <Tip text={car.website || ''}>
-            <a href={`//${car.website}`}>
-              {urlParser.extractRootDomain(car.website || '')}
-            </a>
-          </Tip>
+          <span>{car.plateNumber || 'Unknown'}</span>
         </SectionBodyItem>
       ))}
       {items.length === 0 && <EmptyState icon="building" text="No car" />}

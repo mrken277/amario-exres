@@ -1,3 +1,4 @@
+import CarSection from 'modules/cars/components/common/CarSection';
 import Box from 'modules/common/components/Box';
 import EmptyState from 'modules/common/components/EmptyState';
 import Icon from 'modules/common/components/Icon';
@@ -76,6 +77,7 @@ export default class RightSidebar extends React.Component<Props> {
     return (
       <Sidebar>
         <CompanySection mainType="customer" mainTypeId={customer._id} />
+        <CarSection mainType="customer" mainTypeId={customer._id} />
         <PortableDeals mainType="customer" mainTypeId={customer._id} />
         <PortableTickets mainType="customer" mainTypeId={customer._id} />
         <PortableTasks mainType="customer" mainTypeId={customer._id} />

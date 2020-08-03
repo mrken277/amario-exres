@@ -1,8 +1,8 @@
+import { CAR_DATAS, CAR_INFO } from 'modules/cars/constants';
 import Button from 'modules/common/components/Button';
 import Icon from 'modules/common/components/Icon';
 import { Column, Columns, Title } from 'modules/common/styles/chooser';
 import { ModalFooter } from 'modules/common/styles/main';
-import { CAR_DATAS, CAR_INFO, CAR_LINKS } from 'modules/cars/constants';
 import {
   Info,
   InfoAvatar,
@@ -10,7 +10,7 @@ import {
   InfoTitle
 } from 'modules/customers/styles';
 import React from 'react';
-import { ICar, ICarLinks } from '../../types';
+import { ICar } from '../../types';
 
 type Props = {
   objects: ICar[];
@@ -99,10 +99,6 @@ class CarsMerge extends React.Component<Props, State> {
               return null;
             }
 
-            if (info.field === 'links') {
-              return this.renderLinks(car[key], icon);
-            }
-
             return this.renderCarProperties(key, car[key], icon);
           })}
         </ul>
@@ -157,30 +153,6 @@ class CarsMerge extends React.Component<Props, State> {
         <InfoDetail>{data.primaryName}</InfoDetail>
       </Info>
     );
-  }
-
-  renderLinks(data: ICarLinks, icon: string) {
-    return CAR_LINKS.ALL.map(info => {
-      const field = info.field;
-      const value = data[field];
-
-      if (!data[field]) {
-        return null;
-      }
-
-      return (
-        <li
-          key={field}
-          onClick={this.handleChange.bind(this, icon, `links`, {
-            [field]: value
-          })}
-        >
-          <InfoTitle>{info.label}:</InfoTitle>
-          <InfoDetail>{value}</InfoDetail>
-          <Icon icon={icon} />
-        </li>
-      );
-    });
   }
 
   render() {

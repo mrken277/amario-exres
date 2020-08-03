@@ -5,6 +5,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import AuthRoutes from './modules/auth/routes';
 import { IUser } from './modules/auth/types';
+import CarsRoutes from './modules/cars/routes';
 import CompaniesRoutes from './modules/companies/routes';
 import CustomersRoutes from './modules/customers/routes';
 import DashboardRoutes from './modules/dashboard/routes';
@@ -60,6 +61,7 @@ const renderRoutes = currentUser => {
           <SegmentsRoutes />
           <CustomersRoutes />
           <CompaniesRoutes />
+          <CarsRoutes />
           <InsightsRoutes />
           <EngageRoutes />
           <KnowledgeBaseRoutes />
