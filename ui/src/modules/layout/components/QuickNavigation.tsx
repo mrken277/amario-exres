@@ -40,6 +40,10 @@ const NameCardWrapper = styled.div`
   padding: 10px 20px;
 `;
 
+const SubMenu = styled.div`
+  position: relative;
+`;
+
 const NavItem = styled.div`
   padding-left: 18px;
   display: table-cell;
@@ -53,6 +57,7 @@ const NavItem = styled.div`
 
   .dropdown-menu {
     min-width: 240px;
+    overflow: initial;
   }
 `;
 
@@ -87,6 +92,59 @@ const Round = styled(NavItem)`
     &.active,
     &:hover {
       background: ${lighten(colors.colorPrimary, 15)};
+    }
+  }
+`;
+
+const List = styled.ul`
+  list-style: none;
+  position: absolute;
+  padding: 10px 0;
+  right: 100%;
+  top: 0;
+  background: ${colors.colorWhite};
+  box-shadow: 0 5px 15px 1px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  visibility: hidden;
+  opacity: 0;
+  min-width: 240px;
+  max-width: 300px;
+  margin: 0;
+
+  > li > a {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  > li.active a {
+    color: ${colors.textPrimary};
+    position: relative;
+    padding-right: 40px;
+
+    i {
+      position: absolute;
+      right: 20px;
+      top: 0;
+    }
+
+    &:hover {
+      color: ${colors.colorPrimaryDark};
+    }
+  }
+`;
+
+const Container = styled.div`
+  padding: 4px 20px;
+  transition: background 0.3s ease;
+  margin-bottom: 5px;
+
+  &:hover {
+    background: ${colors.bgActive};
+    cursor: pointer;
+
+    ${List} {
+      visibility: visible;
+      opacity: 1;
     }
   }
 `;
@@ -173,40 +231,47 @@ const QuickNavigation = ({
             </NameCardWrapper>
             <Dropdown.Divider />
 
+            <SubMenu>
+              <Container>
+                <li>{__('Profile Settings')}</li>
+                <List>
+                  <ModalTrigger
+                    title="Change Password"
+                    trigger={
+                      <li>
+                        <a href="#change-password">{__('Change Password')}</a>
+                      </li>
+                    }
+                    content={passContent}
+                  />
+
+                  <ModalTrigger
+                    title="Email signatures"
+                    trigger={
+                      <li>
+                        <a href="#email">{__('Email signatures')}</a>
+                      </li>
+                    }
+                    enforceFocus={false}
+                    content={signatureContent}
+                  />
+
+                  <ModalTrigger
+                    title="Notification settings"
+                    trigger={
+                      <li>
+                        <a href="#notif">{__('Notification settings')}</a>
+                      </li>
+                    }
+                    content={notificationContent}
+                  />
+                </List>
+              </Container>
+            </SubMenu>
+
             <li>
               <Link to="/profile">{__('View Profile')}</Link>
             </li>
-
-            <ModalTrigger
-              title="Change Password"
-              trigger={
-                <li>
-                  <a href="#change-password">{__('Change Password')}</a>
-                </li>
-              }
-              content={passContent}
-            />
-
-            <ModalTrigger
-              title="Email signatures"
-              enforceFocus={false}
-              trigger={
-                <li>
-                  <a href="#email">{__('Email signatures')}</a>
-                </li>
-              }
-              content={signatureContent}
-            />
-
-            <ModalTrigger
-              title="Notification settings"
-              trigger={
-                <li>
-                  <a href="#notif">{__('Notification settings')}</a>
-                </li>
-              }
-              content={notificationContent}
-            />
 
             <Dropdown.Divider />
             <Dropdown.Item onClick={logout}>{__('Sign out')}</Dropdown.Item>
