@@ -25,6 +25,10 @@ const ChangePassword = asyncComponent(() =>
   import(/* webpackChunkName:"ChangePassword" */ 'modules/settings/profile/containers/ChangePassword')
 );
 
+const DataProcessingAgreement = asyncComponent(() =>
+  import(/* webpackChunkName:"GDPR" */ 'modules/settings/profile/components/DataProcessingAgreement')
+);
+
 const UserInfo = styled.div`
   display: flex;
   flex-direction: row;
@@ -163,6 +167,7 @@ const QuickNavigation = ({
   onChangeBrands: (value: string) => void;
 }) => {
   const passContent = props => <ChangePassword {...props} />;
+  const gdpr = props => <DataProcessingAgreement {...props} />;
   const signatureContent = props => <Signature {...props} />;
 
   const notificationContent = props => (
@@ -272,6 +277,20 @@ const QuickNavigation = ({
             <li>
               <Link to="/profile">{__('View Profile')}</Link>
             </li>
+
+            <ModalTrigger
+              title="Data Processing Agreement"
+              trigger={
+                <li>
+                  <a href="#gdpr-agreement">
+                    {__('Data Processing Agreement')}
+                  </a>
+                </li>
+              }
+              size="lg"
+              hideHeader={true}
+              content={gdpr}
+            />
 
             <Dropdown.Divider />
             <Dropdown.Item onClick={logout}>{__('Sign out')}</Dropdown.Item>
