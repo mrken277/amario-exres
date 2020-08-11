@@ -1,3 +1,4 @@
+import { CAR_INFO } from 'modules/cars/constants';
 import { COMPANY_INFO } from 'modules/companies/constants';
 import { CUSTOMER_BASIC_INFO } from 'modules/customers/constants';
 import { PRODUCT_INFO } from '../productService/constants';
@@ -63,4 +64,9 @@ const productBasicInfos = generateGroup(
   FIELDS_GROUPS_CONTENT_TYPES.PRODUCT
 );
 
-export { customerBasicInfos, companyBasicInfos, productBasicInfos };
+const carBasicInfos = generateGroup(
+  CAR_INFO.ALL,
+  FIELDS_GROUPS_CONTENT_TYPES.CAR
+);
+
+export { customerBasicInfos, companyBasicInfos, productBasicInfos, carBasicInfos };

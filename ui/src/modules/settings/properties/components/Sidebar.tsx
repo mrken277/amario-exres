@@ -55,6 +55,10 @@ class Sidebar extends React.Component<Props> {
               FIELDS_GROUPS_CONTENT_TYPES.PRODUCT,
               'Product & Service'
             )}
+            {this.renderListItem(
+              FIELDS_GROUPS_CONTENT_TYPES.CAR,
+              'Cars'
+            )}
           </List>
         </LeftSidebar.Section>
       </LeftSidebar>

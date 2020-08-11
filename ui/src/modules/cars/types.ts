@@ -2,6 +2,13 @@ import { ITag } from 'modules/tags/types';
 import { IActivityLog, IActivityLogForMonth } from '../activityLogs/types';
 import { IUser } from '../auth/types';
 
+export interface ICarCategoryDoc {
+  _id?: string;
+  name: string;
+  description?: string;
+  parentId?: string;
+}
+
 export interface ICarDoc {
   createdAt?: Date;
   modifiedAt?: Date;
@@ -18,17 +25,51 @@ export interface ICarDoc {
   plateNumber?: string;
   vinNumber?: string;
   colorCode?: string;
+  categoryId?: string;
 
-  manufactureBrand?: string;
   bodyType?: string;
   fuelType?: string;
-  modelsName?: string;
-  series?: string;
   gearBox?: string;
 
-  vintageYear?: Date;
-  importYear?: Date;
+  vintageYear?: number;
+  importYear?: number;
 }
+
+export interface ICarCategory {
+  _id: string;
+  name: string;
+  order: string;
+  code: string;
+  description?: string;
+  parentId?: string;
+  createdAt: Date;
+  carCount: number;
+  isRoot: boolean;
+}
+
+export type CarCategoriesQueryResponse = {
+  carCategories: ICarCategory[];
+  loading: boolean;
+  refetch: () => void;
+};
+
+export type CarCategoriesCountQueryResponse = {
+  carCategoriesTotalCount: number;
+  loading: boolean;
+  refetch: () => void;
+};
+
+
+export type CarCategoryRemoveMutationResponse = {
+  carCategoryRemove: (
+    mutation: { variables: { _id: string } }
+  ) => Promise<any>;
+};
+
+export type CategoryDetailQueryResponse = {
+  carCategoryDetail: ICarCategory;
+  loading: boolean;
+};
 
 export interface IActivityLogYearMonthDoc {
   year: number;
@@ -44,6 +85,7 @@ export interface ICar extends ICarDoc {
   _id: string;
   owner: IUser;
   getTags: ITag[];
+  category?: ICarCategory;
 }
 
 // mutation types
@@ -129,6 +171,7 @@ type CarCounts = {
   byTag: Count;
   byBrand: Count;
   byLeadStatus: Count;
+  byCategory: Count;
 };
 
 export type CountQueryResponse = {

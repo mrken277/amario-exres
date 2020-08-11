@@ -14,12 +14,14 @@ const carFields = `
   customFieldsData
   plateNumber
   vinNumber
+  categoryId
+  category {
+    code
+    name
+  }
   colorCode
-  manufactureBrand
   bodyType
   fuelType
-  modelsName
-  series
   gearBox
   vintageYear
   importYear
@@ -84,6 +86,38 @@ export const carCounts = `
   }
 `;
 
+const carCategories = `
+  query carCategories {
+    carCategories {
+      _id
+      name
+      order
+      code
+      parentId
+      description
+
+      isRoot
+      carCount
+    }
+  }
+`;
+
+const carCategoriesCount = `
+  query carCategoriesTotalCount {
+    carCategoriesTotalCount
+  }
+`;
+
+const carCategoryDetail = `
+  query carCategoryDetail($_id: String) {
+    carCategoryDetail(_id: $_id) {
+      _id
+      name
+      carCount
+    }
+  }
+`;
+
 export const carDetail = `
   query carDetail($_id: String!) {
     carDetail(_id: $_id) {
@@ -137,5 +171,8 @@ export default {
   carDetail,
   tags,
   carsListConfig,
-  carsExport
+  carsExport,
+  carCategories,
+  carCategoriesCount,
+  carCategoryDetail
 };

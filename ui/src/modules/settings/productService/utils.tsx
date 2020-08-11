@@ -1,9 +1,10 @@
+import { ICarCategory } from 'modules/cars/types';
 import React from 'react';
 import { PRODUCT_TYPE_CHOISES } from './constants';
 import { IProductCategory } from './types';
 
 export const generateCategoryOptions = (
-  categories: IProductCategory[],
+  categories: IProductCategory[] | ICarCategory[],
   currentCategoryId?: string
 ) => {
   const result: React.ReactNode[] = [];

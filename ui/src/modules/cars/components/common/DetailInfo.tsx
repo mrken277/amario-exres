@@ -22,6 +22,16 @@ class DetailInfo extends React.Component<Props> {
     );
   };
 
+  renderColor = (colorCode) => {
+    return (
+      <li>
+        <FieldStyle>{__(`Color`)}</FieldStyle>
+        <SidebarCounter style={{ backgroundColor: colorCode, width: 30, height: 15 }}/>
+      </li>
+
+    );
+  }
+
   render() {
     const { car } = this.props;
 
@@ -29,13 +39,17 @@ class DetailInfo extends React.Component<Props> {
       <SidebarList className="no-link">
         {this.renderRow('Plate number', car.plateNumber)}
         {this.renderRow('VIN number', car.vinNumber)}
-        {this.renderRow('Model', car.modelsName)}
-        {this.renderRow('Brand', car.manufactureBrand)}
+        {this.renderRow('Category', car.category ? car.category.name : 'Unknown')}
+        {this.renderColor(car.colorCode)}
+        {this.renderRow('Vintage Year', car.vintageYear)}
+        {this.renderRow('Import Year', car.importYear)}
+        {this.renderRow('Body Type', car.bodyType)}
+        {this.renderRow('Fuel Type', car.fuelType)}
+        {this.renderRow('Gear Box', car.gearBox)}
         {this.renderRow(
           'Owner',
           car.owner && car.owner.details ? car.owner.details.fullName : '-'
         )}
-        {this.renderRow('Series', car.series)}
         <SidebarFlexRow>
           {__(`Description`)}:<span>{car.description || '-'}</span>
         </SidebarFlexRow>

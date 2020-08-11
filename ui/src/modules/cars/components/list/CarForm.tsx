@@ -1,4 +1,6 @@
+import { COLORS } from 'modules/boards/constants';
 import { ChooseColor } from 'modules/boards/styles/label';
+import { CAR_BODY_TYPES, CAR_FUEL_TYPES, CAR_GEAR_BOXS } from 'modules/cars/constants';
 import Button from 'modules/common/components/Button';
 import CollapseContent from 'modules/common/components/CollapseContent';
 import FormControl from 'modules/common/components/form/Control';
@@ -15,16 +17,18 @@ import {
 import { IButtonMutateProps, IFormProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
 import { BackgroundSelector } from 'modules/leads/components/step/style';
+import { generateCategoryOptions } from 'modules/settings/productService/utils';
 import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMembers';
 import React from 'react';
+import Select from 'react-select-plus';
 import { IUser } from '../../../auth/types';
-import { ICar, ICarDoc } from '../../types';
-import { COLORS } from 'modules/boards/constants';
+import { ICar, ICarCategory, ICarDoc } from '../../types';
 
 type Props = {
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   car: ICar;
   closeModal: () => void;
+  carCategories: ICarCategory[]
 };
 
 type State = {
@@ -35,16 +39,16 @@ type State = {
   plateNumber: string;
   vinNumber: string;
   colorCode: string;
+  categoryId: string;
 
-  manufactureBrand: string;
   bodyType: string;
   fuelType: string;
-  modelsName: string;
-  series: string;
   gearBox: string;
 
   vintageYear: number;
   importYear: number;
+
+  nowYear: number;
 };
 
 class CarForm extends React.Component<Props, State> {
@@ -52,6 +56,7 @@ class CarForm extends React.Component<Props, State> {
     super(props);
 
     const { car = {} } = props;
+    const nowYear = new Date().getFullYear();
 
     this.state = {
       ownerId: car.ownerId || '',
@@ -60,21 +65,20 @@ class CarForm extends React.Component<Props, State> {
       plateNumber: car.plateNumber || '',
       vinNumber: car.vinNumber || '',
       colorCode: car.colorCode || '',
+      categoryId: car.categoryId || '',
 
-      manufactureBrand: car.manufactureBrand || '',
       bodyType: car.bodyType || '',
       fuelType: car.fuelType || '',
-      modelsName: car.modelsName || '',
-      series: car.series || '',
       gearBox: car.gearBox || '',
 
-      vintageYear: car.vintageYear || 2020,
-      importYear: car.importYear || 2020,
+      vintageYear: car.vintageYear || nowYear,
+      importYear: car.importYear || nowYear,
+      nowYear,
     };
   }
 
   generateDoc = (
-    values: { _id: string; size?: number } & ICarDoc
+    values: { _id: string; } & ICarDoc
   ) => {
     const { car } = this.props;
 
@@ -88,6 +92,11 @@ class CarForm extends React.Component<Props, State> {
       _id: finalValues._id,
       ...this.state,
       description: finalValues.description,
+      plateNumber: finalValues.plateNumber,
+      vinNumber: finalValues.vinNumber,
+      vintageYear: Number(finalValues.vintageYear),
+      importYear: Number(finalValues.importYear),
+      categoryId: finalValues.categoryId
     };
   };
 
@@ -115,8 +124,12 @@ class CarForm extends React.Component<Props, State> {
     this.setState({ fuelType: option.value });
   };
 
+  onGearBoxChange = option => {
+    this.setState({ gearBox: option.value });
+  };
+
   onColorChange = e => {
-    this.setState({ colorCode: e.hex });
+    this.setState({ colorCode: e });
   };
 
   renderColors(colorCode: string) {
@@ -146,10 +159,10 @@ class CarForm extends React.Component<Props, State> {
 
   renderContent = (formProps: IFormProps) => {
     const car = this.props.car || ({} as ICar);
-    const { closeModal, renderButton } = this.props;
+    const { closeModal, renderButton, carCategories } = this.props;
     const { values, isSubmitted } = formProps;
 
-    const { ownerId } = this.state;
+    const { ownerId, nowYear } = this.state;
 
     const onSelectOwner = value => {
       this.setState({
@@ -167,6 +180,19 @@ class CarForm extends React.Component<Props, State> {
           >
             <FormWrapper>
               <FormColumn>
+                <FormGroup>
+                  <ControlLabel>Category</ControlLabel>
+                  <FormControl
+                    {...formProps}
+                    name="categoryId"
+                    componentClass="select"
+                    defaultValue={car.categoryId}
+                    required={true}
+                  >
+                    {generateCategoryOptions(carCategories)}
+                  </FormControl>
+                </FormGroup>
+
                 {this.renderFormGroup('Plate number', {
                   ...formProps,
                   name: 'plateNumber',
@@ -196,6 +222,63 @@ class CarForm extends React.Component<Props, State> {
                     multi={false}
                   />
                 </FormGroup>
+              </FormColumn>
+
+              <FormColumn>
+                {this.renderFormGroup('Vintage Year', {
+                  ...formProps,
+                  name: 'vintageYear',
+                  defaultValue: car.vintageYear || nowYear,
+                  type: "number",
+                  min: '1950',
+                  max: nowYear
+                })}
+
+                {this.renderFormGroup('Import Year', {
+                  ...formProps,
+                  name: 'importYear',
+                  defaultValue: car.importYear || nowYear,
+                  type: "number",
+                  min: 1950,
+                  max: nowYear
+                })}
+
+                <FormGroup>
+                  <ControlLabel>Body Type</ControlLabel>
+                  <Select
+                    value={this.state.bodyType}
+                    onChange={this.onBodyTypeChange}
+                    options={this.generateConstantParams(
+                      CAR_BODY_TYPES()
+                    )}
+                    clearable={false}
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <ControlLabel>Fuel Type</ControlLabel>
+                  <Select
+                    value={this.state.fuelType}
+                    onChange={this.onFuelTypeChange}
+                    options={this.generateConstantParams(
+                      CAR_FUEL_TYPES()
+                    )}
+                    clearable={false}
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <ControlLabel>Gear Box</ControlLabel>
+                  <Select
+                    value={this.state.gearBox}
+                    onChange={this.onGearBoxChange}
+                    options={this.generateConstantParams(
+                      CAR_GEAR_BOXS()
+                    )}
+                    clearable={false}
+                  />
+                </FormGroup>
+
               </FormColumn>
             </FormWrapper>
             <FormWrapper>

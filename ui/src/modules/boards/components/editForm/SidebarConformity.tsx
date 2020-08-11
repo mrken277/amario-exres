@@ -1,3 +1,4 @@
+import CarSection from 'modules/cars/components/common/CarSection';
 import CompanySection from 'modules/companies/components/common/CompanySection';
 import CustomerSection from 'modules/customers/components/common/CustomerSection';
 import React from 'react';
@@ -24,6 +25,7 @@ class SidebarConformity extends React.Component<Props> {
 
     const cmpsChange = cmps => saveItem({ companies: cmps });
     const cmrsChange = cmrs => saveItem({ customers: cmrs });
+    const carsChange = cars => saveItem({ cars });
 
     return (
       <RightContent>
@@ -39,6 +41,12 @@ class SidebarConformity extends React.Component<Props> {
           mainTypeId={item._id}
           customers={item.customers}
           onSelect={cmrsChange}
+        />
+
+        <CarSection
+          mainType={options.type}
+          mainTypeId={item._id}
+          onSelect={carsChange}
         />
 
         {renderItems()}

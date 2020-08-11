@@ -7,16 +7,14 @@ const commonFields = `
   $plateNumber: String,
   $vinNumber: String,
   $colorCode: String,
+  $categoryId: String,
 
-  $manufactureBrand: String,
   $bodyType: String,
   $fuelType: String,
-  $modelsName: String,
-  $series: String,
   $gearBox: String,
 
-  $vintageYear: Int,
-  $importYear: Int
+  $vintageYear: Float,
+  $importYear: Float
 `;
 
 const commonVariables = `
@@ -28,12 +26,10 @@ const commonVariables = `
   plateNumber: $plateNumber,
   vinNumber: $vinNumber,
   colorCode: $colorCode,
+  categoryId: $categoryId
 
-  manufactureBrand: $manufactureBrand,
   bodyType: $bodyType,
   fuelType: $fuelType,
-  modelsName: $modelsName,
-  series: $series,
   gearBox: $gearBox,
 
   vintageYear: $vintageYear,
@@ -47,11 +43,8 @@ const carsAdd = `
       plateNumber
       vinNumber
       colorCode
-      manufactureBrand
       bodyType
       fuelType
-      modelsName
-      series
       gearBox
       vintageYear
       importYear
@@ -68,11 +61,8 @@ const carsEdit = `
       plateNumber,
       vinNumber,
       colorCode,
-      manufactureBrand,
       bodyType,
       fuelType,
-      modelsName,
-      series,
       gearBox,
       vintageYear,
       importYear
@@ -94,9 +84,48 @@ const carsMerge = `
   }
 `;
 
+const carCategoryParamsDef = `
+  $name: String!,
+  $code: String!,
+  $parentId: String,
+  $description: String,
+`;
+
+const carCategoryParams = `
+  name: $name,
+  code: $code,
+  parentId: $parentId,
+  description: $description,
+`;
+
+const carCategoryAdd = `
+  mutation carCategoriesAdd(${carCategoryParamsDef}) {
+    carCategoriesAdd(${carCategoryParams}) {
+      _id
+    }
+  }
+`;
+
+const carCategoryEdit = `
+  mutation carCategoriesEdit($_id: String!, ${carCategoryParamsDef}) {
+    carCategoriesEdit(_id: $_id, ${carCategoryParams}) {
+      _id
+    }
+  }
+`;
+
+const carCategoryRemove = `
+  mutation carCategoriesRemove($_id: String!) {
+    carCategoriesRemove(_id: $_id)
+  }
+`;
+
 export default {
   carsAdd,
   carsEdit,
   carsRemove,
-  carsMerge
+  carsMerge,
+  carCategoryAdd,
+  carCategoryEdit,
+  carCategoryRemove
 };

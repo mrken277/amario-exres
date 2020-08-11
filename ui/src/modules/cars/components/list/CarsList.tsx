@@ -1,3 +1,4 @@
+import { CarsTableWrapper } from 'modules/cars/styles';
 import Button from 'modules/common/components/Button';
 import DataWithLoader from 'modules/common/components/DataWithLoader';
 import DropdownToggle from 'modules/common/components/DropdownToggle';
@@ -9,7 +10,6 @@ import SortHandler from 'modules/common/components/SortHandler';
 import Table from 'modules/common/components/table';
 import { __, Alert, confirm, router } from 'modules/common/utils';
 import { menuContacts } from 'modules/common/utils/menus';
-import { CarsTableWrapper } from 'modules/cars/styles';
 import Wrapper from 'modules/layout/components/Wrapper';
 import { BarItems } from 'modules/layout/styles';
 import ManageColumns from 'modules/settings/properties/containers/ManageColumns';
