@@ -29,7 +29,7 @@ class SideBar extends React.Component<Props> {
           {INTEGRATION_FILTERS.map((data, index) => (
             <SidebarList key={index}>
               <h4>{__(data.name)}</h4>
-              {data.items.map((item) => this.renderCategory(__(item)))}
+              {data.items.map(item => this.renderCategory(__(item)))}
             </SidebarList>
           ))}
         </FixedSection>

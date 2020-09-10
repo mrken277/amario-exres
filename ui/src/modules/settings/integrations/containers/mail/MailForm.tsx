@@ -7,6 +7,8 @@ import Spinner from 'modules/common/components/Spinner';
 import { Alert, withProps } from 'modules/common/utils';
 import { queries as messageQueries } from 'modules/inbox/graphql';
 import { IMail } from 'modules/inbox/types';
+import { EmailTemplatesQueryResponse } from 'modules/settings/emailTemplates/containers/List';
+import { queries as templatesQuery } from 'modules/settings/emailTemplates/graphql';
 import { mutations, queries } from 'modules/settings/integrations/graphql';
 import * as React from 'react';
 import { graphql } from 'react-apollo';
@@ -15,7 +17,7 @@ import { IntegrationsQueryResponse } from '../../types';
 import {
   defaultCustomerFields,
   defaultMailFields,
-  defaultMessageFields,
+  defaultMessageFields
 } from './constants';
 
 type Props = {
@@ -37,6 +39,7 @@ type Props = {
 type FinalProps = {
   currentUser: IUser;
   sendMailMutation: any;
+  emailTemplatesQuery: EmailTemplatesQueryResponse;
   integrationsQuery: IntegrationsQueryResponse;
 } & Props;
 
@@ -48,8 +51,9 @@ const MailFormContainer = (props: FinalProps) => {
     isReply,
     closeModal,
     closeReply,
+    emailTemplatesQuery,
     sendMailMutation,
-    currentUser,
+    currentUser
   } = props;
 
   if (integrationsQuery.loading) {
@@ -61,7 +65,7 @@ const MailFormContainer = (props: FinalProps) => {
   const save = ({
     variables,
     optimisticResponse,
-    update,
+    update
   }: {
     variables: any;
     optimisticResponse?: any;
@@ -85,7 +89,7 @@ const MailFormContainer = (props: FinalProps) => {
           closeModal();
         }
       })
-      .catch((e) => {
+      .catch(e => {
         Alert.error(e.message);
 
         if (closeModal) {
@@ -111,7 +115,7 @@ const MailFormContainer = (props: FinalProps) => {
       customer: {
         ...defaultCustomerFields,
         firstName: email,
-        primaryEmail: email,
+        primaryEmail: email
       },
       mailData: {
         ...defaultMailFields,
@@ -122,16 +126,16 @@ const MailFormContainer = (props: FinalProps) => {
         body: variables.body,
         subject: variables.subject,
         attachments: variables.attachments,
-        integrationEmail: variables.from,
-      },
+        integrationEmail: variables.from
+      }
     };
 
     const optimisticResponse = { __typename: 'Mutation', integrationSendMail };
 
-    const update = (store) => {
+    const update = store => {
       const selector = {
         query: gql(messageQueries.conversationMessages),
-        variables: { conversationId, limit: 10, skip: 0 },
+        variables: { conversationId, limit: 10, skip: 0 }
       };
 
       // Read the data from our cache for this query.
@@ -162,7 +166,8 @@ const MailFormContainer = (props: FinalProps) => {
     sendMail,
     integrations,
     currentUser,
-    emailSignatures: currentUser.emailSignatures || [],
+    emailTemplates: emailTemplatesQuery.emailTemplates,
+    emailSignatures: currentUser.emailSignatures || []
   };
 
   return <MailForm {...updatedProps} />;
@@ -175,15 +180,21 @@ export default withProps<Props>(
       options: () => {
         return {
           variables: { kind: 'mail' },
-          fetchPolicy: 'network-only',
+          fetchPolicy: 'network-only'
         };
-      },
+      }
     }),
+    graphql<Props, EmailTemplatesQueryResponse>(
+      gql(templatesQuery.emailTemplates),
+      {
+        name: 'emailTemplatesQuery'
+      }
+    ),
     graphql<Props>(gql(mutations.integrationSendMail), {
       name: 'sendMailMutation',
       options: () => ({
-        refetchQueries: ['activityLogs'],
-      }),
+        refetchQueries: ['activityLogs']
+      })
     })
   )(withCurrentUser(MailFormContainer))
 );

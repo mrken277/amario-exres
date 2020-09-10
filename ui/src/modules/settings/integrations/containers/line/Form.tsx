@@ -31,7 +31,7 @@ class LineContainer extends React.Component<FinalProps, State> {
     name,
     values,
     isSubmitted,
-    callback,
+    callback
   }: IButtonMutateProps) => {
     return (
       <ButtonMutate
@@ -57,17 +57,17 @@ class LineContainer extends React.Component<FinalProps, State> {
       .query({
         query: gql(queries.integrationGetLineWebhookUrl),
         variables: {
-          id,
-        },
+          id
+        }
       })
       .then(({ data, loading }: any) => {
         if (!loading) {
           this.setState({
-            webhookUrl: data.integrationGetLineWebhookUrl,
+            webhookUrl: data.integrationGetLineWebhookUrl
           });
         }
       })
-      .catch((error) => {
+      .catch(error => {
         Alert.error(error.message);
       });
   };
@@ -79,7 +79,7 @@ class LineContainer extends React.Component<FinalProps, State> {
       closeModal,
       webhookUrl,
       onSave: this.onSave,
-      renderButton: this.renderButton,
+      renderButton: this.renderButton
     };
 
     return <Line {...updatedProps} />;

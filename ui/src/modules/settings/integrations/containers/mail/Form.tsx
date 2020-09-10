@@ -43,7 +43,7 @@ class FormContainer extends React.Component<FinalProps, State> {
     name,
     values,
     isSubmitted,
-    callback,
+    callback
   }: IButtonMutateProps) => {
     return (
       <ButtonMutate
@@ -69,7 +69,7 @@ class FormContainer extends React.Component<FinalProps, State> {
       accountId,
       onAccountSelect: this.onAccountSelect,
       onRemoveAccount: this.onRemoveAccount,
-      renderButton: this.renderButton,
+      renderButton: this.renderButton
     };
 
     return <Form {...updatedProps} />;

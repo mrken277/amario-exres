@@ -207,5 +207,5 @@ export default {
   tags,
   forms,
   fieldsCombinedByContentType,
-  fieldsDefaultColumnsConfig,
+  fieldsDefaultColumnsConfig
 };

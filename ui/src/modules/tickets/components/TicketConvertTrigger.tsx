@@ -21,7 +21,7 @@ export default (props: Props) => {
   const extendedProps = {
     ...props,
     options,
-    title,
+    title
   };
 
   return <ConvertTrigger {...extendedProps} />;
