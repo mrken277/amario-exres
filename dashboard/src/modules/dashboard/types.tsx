@@ -24,6 +24,12 @@ export type DashboardItemsQueryResponse = {
   refetch: () => void;
 };
 
+export type DashboardInitialDatasQueryResponse = {
+  dashboardInitialDatas: IDashboardItem[];
+  loading: boolean;
+  refetch: () => void;
+};
+
 export type DashboardItemDetailsQueryResponse = {
   dashboardItemDetail: IDashboardItem;
   loading: boolean;

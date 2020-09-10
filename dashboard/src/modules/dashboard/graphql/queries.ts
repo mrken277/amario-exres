@@ -30,6 +30,16 @@ const dashboards = `
   }
 `;
 
+const dashboardInitialDatas = `
+  query dashboardInitialDatas($type: String) {
+    dashboardInitialDatas(type: $type){
+      vizState
+      name
+      type
+    }
+  }
+`;
+
 const totalCount = `
   query dashboardsTotalCount {
 	  dashboardsTotalCount
@@ -40,5 +50,6 @@ export default {
   dashboardItemDetail,
   dashboardItems,
   totalCount,
-  dashboards
+  dashboards,
+  dashboardInitialDatas,
 };

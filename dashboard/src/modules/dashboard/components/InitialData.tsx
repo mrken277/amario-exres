@@ -51,7 +51,8 @@ type Props = {
 type State = {
   isDragging: boolean;
 };
-class Dashboard extends React.Component<Props, State> {
+
+class InitialData extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -140,4 +141,4 @@ class Dashboard extends React.Component<Props, State> {
   }
 }
 
-export default Dashboard;
+export default InitialData;

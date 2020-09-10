@@ -15,6 +15,10 @@ const DashboardItem = asyncComponent(() =>
   import(/* webpackChunkName: "Dashboards" */ './components/DashboardItem')
 );
 
+const InitialData = asyncComponent(() =>
+  import(/* webpackChunkName: "InitialData" */ './components/InitialData')
+);
+
 const Dashboards = ({ location, history }) => {
   return (
     <Dashboard
@@ -36,6 +40,18 @@ const dashboardItem = ({ match, history }) => {
   return <DashboardItem id={dashboardId} history={history} />;
 };
 
+const initialData = ({ location, match, history }) => {
+  const dashboardId = match.params.id;
+
+  return (
+    <InitialData
+      dashboardId={dashboardId}
+      history={history}
+      queryParams={queryString.parse(location.search)}
+    />
+  );
+};
+
 const routes = () => {
   return (
     <React.Fragment>
@@ -50,6 +66,12 @@ const routes = () => {
         exact={true}
         path="/dashboard/:id"
         component={dashboardDetail}
+      />
+      <Route
+        key="/dashboard/reports"
+        exact={true}
+        path="/dashboard/reports/:id"
+        component={initialData}
       />
       <Route
         key="/dashboard/explore"

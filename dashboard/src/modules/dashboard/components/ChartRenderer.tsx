@@ -154,7 +154,10 @@ const TypeToChartComponent = {
               fill="#8884d8"
             >
               {resultSet.chartPivot().map((e, index) => (
-                <Cell key={index} fill={chartColors[index % chartColors.length]} />
+                <Cell
+                  key={index}
+                  fill={chartColors[index % chartColors.length]}
+                />
               ))}
             </Pie>
             <Legend />

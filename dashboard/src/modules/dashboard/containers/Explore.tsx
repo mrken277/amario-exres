@@ -39,13 +39,17 @@ class DashboardContainer extends React.Component<FinalProps, State> {
       queryParams,
     } = this.props;
 
+    const { vizState, name, type } = queryParams;
+
     if (dashBoardItemDetailsQuery && dashBoardItemDetailsQuery.loading) {
       return <Spinner objective={true} />;
     }
 
+    let dashboardItem;
+
     const dashboardId = queryParams.dashboardId;
 
-    const save = params => {
+    const save = (params) => {
       this.setState({ isLoading: true });
 
       params.dashboardId = dashboardId;
@@ -63,22 +67,30 @@ class DashboardContainer extends React.Component<FinalProps, State> {
           history.goBack();
         })
 
-        .catch(error => {
+        .catch((error) => {
           this.setState({ isLoading: false });
           return Alert.error(error.message);
         });
     };
+
+    if (vizState) {
+      dashboardItem = {
+        vizState,
+        name,
+        type,
+      };
+    } else {
+      dashboardItem = dashBoardItemDetailsQuery
+        ? dashBoardItemDetailsQuery.dashboardItemDetail
+        : {};
+    }
 
     return (
       <Chart
         dashboardId={dashboardId}
         save={save}
         isActionLoading={this.state.isLoading}
-        dashboardItem={
-          dashBoardItemDetailsQuery
-            ? dashBoardItemDetailsQuery.dashboardItemDetail
-            : undefined
-        }
+        dashboardItem={dashboardItem}
       />
     );
   }

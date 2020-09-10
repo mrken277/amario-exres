@@ -27,7 +27,7 @@ class DashboardDetail extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      show: false
+      show: false,
     };
   }
 
@@ -35,7 +35,7 @@ class DashboardDetail extends React.Component<Props, State> {
     const { show } = this.state;
 
     this.setState({
-      show: show ? false : true
+      show: show ? false : true,
     });
   };
 
@@ -78,7 +78,7 @@ class DashboardDetail extends React.Component<Props, State> {
         >
           Remove
         </Button>
-        <Link to={`/dashboard/explore/${id}`}>
+        <Link to={`/dashboard/reports/${id}`}>
           <Button uppercase={false} btnStyle="primary" icon="plus-circle">
             Add chart
           </Button>

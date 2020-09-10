@@ -11,7 +11,7 @@ import {
   EditDashboardItemMutationResponse,
   EditDashboardItemMutationVariables,
   RemoveDashboardItemMutationResponse,
-  RemoveDashboardItemMutationVariables
+  RemoveDashboardItemMutationVariables,
 } from '../types';
 
 type Props = {
@@ -31,34 +31,34 @@ class DashboardContainer extends React.Component<FinalProps, {}> {
       dashboardItemsQuery,
       editDashboardItemMutation,
       id,
-      removeDashboardItemMutation
+      removeDashboardItemMutation,
     } = this.props;
 
     if (dashboardItemsQuery.loading) {
       return <Spinner objective={true} />;
     }
 
-    const editDashboardItem = params => {
+    const editDashboardItem = (params) => {
       editDashboardItemMutation({
         variables: {
           _id: params._id,
-          layout: params.layout
-        }
+          layout: params.layout,
+        },
       }).catch(() => {
         return;
       });
     };
 
-    const removeDashboardItem = itemId => {
+    const removeDashboardItem = (itemId) => {
       removeDashboardItemMutation({
         variables: {
-          _id: itemId
-        }
+          _id: itemId,
+        },
       })
         .then(() => {
           dashboardItemsQuery.refetch();
         })
-        .catch(error => {
+        .catch((error) => {
           Alert.error(error.message);
         });
     };
@@ -81,9 +81,9 @@ export default compose(
       name: 'dashboardItemsQuery',
       options: ({ id }: { id: string }) => ({
         variables: {
-          dashboardId: id
-        }
-      })
+          dashboardId: id,
+        },
+      }),
     }
   ),
   graphql<
@@ -93,8 +93,8 @@ export default compose(
   >(gql(mutations.dashboardItemRemove), {
     name: 'removeDashboardItemMutation',
     options: () => ({
-      refetchQueries: ['dashboardItemsQuery']
-    })
+      refetchQueries: ['dashboardItemsQuery'],
+    }),
   }),
   graphql<
     Props,
@@ -103,7 +103,7 @@ export default compose(
   >(gql(mutations.dashboardItemEdit), {
     name: 'editDashboardItemMutation',
     options: {
-      refetchQueries: ['dashboardItemsQuery']
-    }
+      refetchQueries: ['dashboardItemsQuery'],
+    },
   })
 )(DashboardContainer);

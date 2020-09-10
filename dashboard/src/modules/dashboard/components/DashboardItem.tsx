@@ -51,10 +51,10 @@ const DashboardItemDropdown = ({
   return (
     <Dropdown
       overlay={dashboardItemDropdownMenu}
-      placement='bottomLeft'
+      placement="bottomLeft"
       trigger={['click']}
     >
-      <Icon type='menu' />
+      <Icon type="menu" />
     </Dropdown>
   );
 };

@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import DashboardDetail from './containers/DashboardDetail';
 import ExplorePage from './containers/Explore';
+import InitialData from './containers/InitialDatas';
 
 const dashboardDetail = ({ match, history }) => {
   const id = match.params.id;
@@ -16,22 +17,38 @@ const explorePage = ({ location, history }) => {
   return <ExplorePage queryParams={queryParams} history={history} />;
 };
 
+const initialData = ({ location, history }) => {
+  return (
+    <InitialData
+      queryParams={queryString.parse(location.search)}
+      history={history}
+    />
+  );
+};
+
 const routes = () => {
   return (
     <BrowserRouter basename="/dashboard">
       <React.Fragment>
         <Route
-          key='/detail'
+          key="/detail"
           exact={true}
-          path='/details/:id'
+          path="/details/:id"
           component={dashboardDetail}
         />
 
         <Route
-          key='/explore'
+          key="/explore"
           exact={true}
-          path='/explore'
+          path="/explore"
           component={explorePage}
+        />
+
+        <Route
+          key="/reports"
+          exact={true}
+          path="/reports"
+          component={initialData}
         />
       </React.Fragment>
     </BrowserRouter>

@@ -36,7 +36,7 @@ function DashboardList(props: Props) {
         </ProjectItem>
       </div>
       {renderAddForm()}
-      {dashboards.map(dashboard => (
+      {dashboards.map((dashboard) => (
         <DashboardRow key={dashboard._id} dashboard={dashboard} />
       ))}
     </BoxContainer>
