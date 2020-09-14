@@ -6,7 +6,7 @@ const ChartWraper = styled.div`
 
 const FilterItem = styled.span`
   margin-bottom: 15px;
-  
+
   .ant-btn-group {
     margin-right: 10px;
 
@@ -20,9 +20,14 @@ const SelectType = styled.div`
   margin: 20px 0;
 `;
 
+const CopyText = styled.div`
+  margin: 20px;
+  display: flex;
+  justify-content: flex-end;
+`;
+
 const ShadowedHeader = styled.div`
-  box-shadow: 0px 3px 3px rgba(0,0,0,0.02);
-  
+  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.02);
 `;
 
 const EmptyWrapper = styled.div`
@@ -46,8 +51,17 @@ const Label = styled.label`
 const TimesWrapper = styled.span`
   strong {
     margin: 0 10px;
-    color: #555; 
+    color: #555;
   }
 `;
 
-export { ChartWraper, FilterItem, SelectType, EmptyWrapper, Label, TimesWrapper, ShadowedHeader }
+export {
+  ChartWraper,
+  FilterItem,
+  SelectType,
+  EmptyWrapper,
+  Label,
+  TimesWrapper,
+  ShadowedHeader,
+  CopyText,
+};

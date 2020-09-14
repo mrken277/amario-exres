@@ -1,7 +1,8 @@
 import React from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 
-import { Empty } from 'antd';
+import { Button, Empty } from 'antd';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import styled from 'styled-components';
@@ -9,7 +10,7 @@ import styledTS from 'styled-components-ts';
 import { IDashboardItem } from '../types';
 import ChartRenderer from './ChartRenderer';
 import DashboardItem from './DashboardItem';
-import { EmptyWrapper } from './styles';
+import { CopyText, EmptyWrapper } from './styles';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -122,20 +123,28 @@ class Dashboard extends React.Component<Props, State> {
     };
 
     return (
-      <DragField
-        margin={[20, 20]}
-        containerPadding={[0, 0]}
-        onDragStart={() => this.setIsDragging(true)}
-        onDragStop={() => this.setIsDragging(false)}
-        onResizeStart={() => this.setIsDragging(true)}
-        onResizeStop={() => this.setIsDragging(false)}
-        cols={24}
-        rowHeight={40}
-        onLayoutChange={this.onLayoutChange}
-        isDragging={this.state.isDragging}
-      >
-        {dashboardItems.map(deserializeItem).map(dashboardItem)}
-      </DragField>
+      <>
+        <CopyText>
+          <CopyToClipboard text={window.location.href}>
+            <Button shape="round">Copy url</Button>
+          </CopyToClipboard>
+        </CopyText>
+
+        <DragField
+          margin={[20, 20]}
+          containerPadding={[0, 0]}
+          onDragStart={() => this.setIsDragging(true)}
+          onDragStop={() => this.setIsDragging(false)}
+          onResizeStart={() => this.setIsDragging(true)}
+          onResizeStop={() => this.setIsDragging(false)}
+          cols={24}
+          rowHeight={40}
+          onLayoutChange={this.onLayoutChange}
+          isDragging={this.state.isDragging}
+        >
+          {dashboardItems.map(deserializeItem).map(dashboardItem)}
+        </DragField>
+      </>
     );
   }
 }
