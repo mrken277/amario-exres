@@ -4,8 +4,8 @@ import BrandFilter from 'modules/customers/components/list/BrandFilter';
 import { queries } from 'modules/settings/brands/graphql';
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { withProps } from '../../../common/utils';
-import { BrandsQueryResponse } from '../../../settings/brands/types';
+import { withProps } from 'modules/common/utils';
+import { BrandsQueryResponse } from 'modules/settings/brands/types';
 import { queries as carQueries } from '../../graphql';
 import { CountQueryResponse } from '../../types';
 

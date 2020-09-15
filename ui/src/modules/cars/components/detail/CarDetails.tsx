@@ -1,13 +1,11 @@
 import ActivityInputs from 'modules/activityLogs/components/ActivityInputs';
 import ActivityLogs from 'modules/activityLogs/containers/ActivityLogs';
 import { IUser } from 'modules/auth/types';
-import BasicInfo from 'modules/cars/containers/detail/BasicInfo';
+
 import { ICar } from 'modules/cars/types';
 import { __ } from 'modules/common/utils';
-import { UserHeader } from 'modules/customers/styles';
 import Wrapper from 'modules/layout/components/Wrapper';
 import React from 'react';
-import InfoSection from '../common/InfoSection';
 import LeftSidebar from './LeftSidebar';
 import RightSidebar from './RightSidebar';
 
@@ -44,13 +42,6 @@ class CarDetails extends React.Component<Props> {
     return (
       <Wrapper
         header={<Wrapper.Header title={title} breadcrumb={breadcrumb} />}
-        mainHead={
-          <UserHeader>
-            <InfoSection car={car}>
-              <BasicInfo car={car} />
-            </InfoSection>
-          </UserHeader>
-        }
         leftSidebar={
           <LeftSidebar
             {...this.props}

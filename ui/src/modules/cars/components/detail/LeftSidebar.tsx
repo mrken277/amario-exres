@@ -3,7 +3,7 @@ import { ICar } from 'modules/cars/types';
 import TaggerSection from 'modules/customers/components/common/TaggerSection';
 import Sidebar from 'modules/layout/components/Sidebar';
 import React from 'react';
-import BasicInfoSection from '../common/BasicInfoSection';
+import BasicInfo from 'modules/cars/containers/detail/BasicInfo';
 
 type Props = {
   car: ICar;
@@ -16,7 +16,7 @@ class LeftSidebar extends React.Component<Props> {
 
     return (
       <Sidebar wide={true}>
-        <BasicInfoSection car={car} />
+        <BasicInfo car={car} />
         <CustomFieldsSection car={car} />
         <TaggerSection
           data={car}

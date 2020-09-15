@@ -3,12 +3,12 @@ import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import { Alert, withProps } from 'modules/common/utils';
 import { mutations, queries } from 'modules/cars/graphql';
-import ActionSection from 'modules/customers/components/common/ActionSection';
+import BasicInfoSection from 'modules/cars/components/common/BasicInfoSection';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import { IUser } from '../../../auth/types';
-import { IRouterProps } from '../../../common/types';
+import { IUser } from 'modules/auth/types';
+import { IRouterProps } from 'modules/common/types';
 import {
   ICar,
   MergeMutationResponse,
@@ -85,11 +85,11 @@ const BasicInfoContainer = (props: FinalProps) => {
     search: searchCar
   };
 
-  return <ActionSection {...updatedProps} />;
+  return <BasicInfoSection {...updatedProps} />;
 };
 
 const generateOptions = () => ({
-  refetchQueries: ['companieMain', 'carCounts']
+  refetchQueries: ['carsMain', 'carCounts']
 });
 
 export default withProps<Props>(

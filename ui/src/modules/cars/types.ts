@@ -59,11 +59,8 @@ export type CarCategoriesCountQueryResponse = {
   refetch: () => void;
 };
 
-
 export type CarCategoryRemoveMutationResponse = {
-  carCategoryRemove: (
-    mutation: { variables: { _id: string } }
-  ) => Promise<any>;
+  carCategoryRemove: (mutation: { variables: { _id: string } }) => Promise<any>;
 };
 
 export type CategoryDetailQueryResponse = {

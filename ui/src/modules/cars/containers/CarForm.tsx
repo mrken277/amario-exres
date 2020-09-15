@@ -5,11 +5,11 @@ import { IButtonMutateProps } from 'modules/common/types';
 import { withProps } from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { IUser } from '../../auth/types';
-import { UsersQueryResponse } from '../../settings/team/types';
 import CarForm from '../components/list/CarForm';
 import { mutations, queries } from '../graphql';
 import { CarCategoriesQueryResponse, ICar } from '../types';
+import { UsersQueryResponse } from 'modules/settings/team/types';
+import { IUser } from 'modules/auth/types';
 
 type Props = {
   car: ICar;
@@ -72,7 +72,7 @@ class CarFromContainer extends React.Component<FinalProps> {
 
     return <CarForm {...updatedProps} />;
   }
-};
+}
 
 const getRefetchQueries = () => {
   return [
@@ -86,11 +86,8 @@ const getRefetchQueries = () => {
 
 export default withProps<Props>(
   compose(
-    graphql<Props, CarCategoriesQueryResponse>(
-      gql(queries.carCategories),
-      {
-        name: 'carCategoriesQuery'
-      }
-    )
+    graphql<Props, CarCategoriesQueryResponse>(gql(queries.carCategories), {
+      name: 'carCategoriesQuery'
+    })
   )(CarFromContainer)
 );

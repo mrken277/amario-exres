@@ -8,8 +8,8 @@ import queryString from 'query-string';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import { IRouterProps } from '../../common/types';
-import { DefaultColumnsConfigQueryResponse } from '../../settings/properties/types';
+import { IRouterProps } from 'modules/common/types';
+import { DefaultColumnsConfigQueryResponse } from 'modules/settings/properties/types';
 import CarsList from '../components/list/CarsList';
 import { mutations, queries } from '../graphql';
 import {

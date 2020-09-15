@@ -5,7 +5,7 @@ import Spinner from 'modules/common/components/Spinner';
 import { withProps } from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { IUser } from '../../../auth/types';
+import { IUser } from 'modules/auth/types';
 import CarDetails from '../../components/detail/CarDetails';
 import { queries } from '../../graphql';
 import { DetailQueryResponse } from '../../types';

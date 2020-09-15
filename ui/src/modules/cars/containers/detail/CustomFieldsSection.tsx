@@ -7,8 +7,8 @@ import { FIELDS_GROUPS_CONTENT_TYPES } from 'modules/settings/properties/constan
 import { queries as fieldQueries } from 'modules/settings/properties/graphql';
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { withProps } from '../../../common/utils';
-import { FieldsGroupsQueryResponse } from '../../../settings/properties/types';
+import { withProps } from 'modules/common/utils';
+import { FieldsGroupsQueryResponse } from 'modules/settings/properties/types';
 import { mutations } from '../../graphql';
 import { EditMutationResponse, ICar } from '../../types';
 

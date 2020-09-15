@@ -1,6 +1,10 @@
 import { COLORS } from 'modules/boards/constants';
 import { ChooseColor } from 'modules/boards/styles/label';
-import { CAR_BODY_TYPES, CAR_FUEL_TYPES, CAR_GEAR_BOXS } from 'modules/cars/constants';
+import {
+  CAR_BODY_TYPES,
+  CAR_FUEL_TYPES,
+  CAR_GEAR_BOXS
+} from 'modules/cars/constants';
 import Button from 'modules/common/components/Button';
 import CollapseContent from 'modules/common/components/CollapseContent';
 import FormControl from 'modules/common/components/form/Control';
@@ -21,14 +25,14 @@ import { generateCategoryOptions } from 'modules/settings/productService/utils';
 import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMembers';
 import React from 'react';
 import Select from 'react-select-plus';
-import { IUser } from '../../../auth/types';
+import { IUser } from 'modules/auth/types';
 import { ICar, ICarCategory, ICarDoc } from '../../types';
 
 type Props = {
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   car: ICar;
   closeModal: () => void;
-  carCategories: ICarCategory[]
+  carCategories: ICarCategory[];
 };
 
 type State = {
@@ -73,13 +77,11 @@ class CarForm extends React.Component<Props, State> {
 
       vintageYear: car.vintageYear || nowYear,
       importYear: car.importYear || nowYear,
-      nowYear,
+      nowYear
     };
   }
 
-  generateDoc = (
-    values: { _id: string; } & ICarDoc
-  ) => {
+  generateDoc = (values: { _id: string } & ICarDoc) => {
     const { car } = this.props;
 
     const finalValues = values;
@@ -148,7 +150,6 @@ class CarForm extends React.Component<Props, State> {
     );
   }
 
-
   // onChange = (
   //   optionsName: string,
   //   optionName: string,
@@ -166,7 +167,7 @@ class CarForm extends React.Component<Props, State> {
 
     const onSelectOwner = value => {
       this.setState({
-        'ownerId': value
+        ownerId: value
       } as Pick<State, keyof State>);
     };
 
@@ -229,7 +230,7 @@ class CarForm extends React.Component<Props, State> {
                   ...formProps,
                   name: 'vintageYear',
                   defaultValue: car.vintageYear || nowYear,
-                  type: "number",
+                  type: 'number',
                   min: '1950',
                   max: nowYear
                 })}
@@ -238,7 +239,7 @@ class CarForm extends React.Component<Props, State> {
                   ...formProps,
                   name: 'importYear',
                   defaultValue: car.importYear || nowYear,
-                  type: "number",
+                  type: 'number',
                   min: 1950,
                   max: nowYear
                 })}
@@ -248,9 +249,7 @@ class CarForm extends React.Component<Props, State> {
                   <Select
                     value={this.state.bodyType}
                     onChange={this.onBodyTypeChange}
-                    options={this.generateConstantParams(
-                      CAR_BODY_TYPES()
-                    )}
+                    options={this.generateConstantParams(CAR_BODY_TYPES())}
                     clearable={false}
                   />
                 </FormGroup>
@@ -260,9 +259,7 @@ class CarForm extends React.Component<Props, State> {
                   <Select
                     value={this.state.fuelType}
                     onChange={this.onFuelTypeChange}
-                    options={this.generateConstantParams(
-                      CAR_FUEL_TYPES()
-                    )}
+                    options={this.generateConstantParams(CAR_FUEL_TYPES())}
                     clearable={false}
                   />
                 </FormGroup>
@@ -272,13 +269,10 @@ class CarForm extends React.Component<Props, State> {
                   <Select
                     value={this.state.gearBox}
                     onChange={this.onGearBoxChange}
-                    options={this.generateConstantParams(
-                      CAR_GEAR_BOXS()
-                    )}
+                    options={this.generateConstantParams(CAR_GEAR_BOXS())}
                     clearable={false}
                   />
                 </FormGroup>
-
               </FormColumn>
             </FormWrapper>
             <FormWrapper>
