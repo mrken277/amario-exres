@@ -44,7 +44,7 @@ class CarChooser extends React.Component<
     const { data, carsQuery, search } = this.props;
 
     const renderName = car => {
-      return car.primaryName || car.website || 'Unknown';
+      return car.plateNumber || car.vinNumber || 'Unknown';
     };
 
     const getAssociatedCar = (newCar: ICar) => {

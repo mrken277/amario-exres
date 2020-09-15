@@ -38,6 +38,7 @@ const listParamsDef = `
   $page: Int
   $perPage: Int
   $segment: String
+  $categoryId: String
   $tag: String
   $ids: [String]
   $searchValue: String
@@ -51,6 +52,7 @@ const listParamsValue = `
   page: $page
   perPage: $perPage
   segment: $segment
+  categoryId: $categoryId
   tag: $tag
   ids: $ids
   searchValue: $searchValue

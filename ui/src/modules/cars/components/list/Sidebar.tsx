@@ -5,10 +5,18 @@ import BrandFilter from '../../containers/filters/BrandFilter';
 import SegmentFilter from '../../containers/filters/SegmentFilter';
 import TagFilter from '../../containers/filters/TagFilter';
 
-function Sidebar({ loadingMainQuery }: { loadingMainQuery: boolean }) {
+function Sidebar({
+  loadingMainQuery,
+  history,
+  queryParams
+}: {
+  loadingMainQuery: boolean;
+  history: any;
+  queryParams: any;
+}) {
   return (
     <Wrapper.Sidebar>
-      <CategoryList queryParams={loadingMainQuery} history={true} />
+      <CategoryList queryParams={queryParams} history={history} />
       <SegmentFilter loadingMainQuery={loadingMainQuery} />
       <TagFilter loadingMainQuery={loadingMainQuery} />
       <BrandFilter loadingMainQuery={loadingMainQuery} />

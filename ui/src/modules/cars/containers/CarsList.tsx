@@ -23,7 +23,8 @@ import {
 } from '../types';
 
 type Props = {
-  queryParams?: any;
+  queryParams: any;
+  history: any;
 };
 
 type FinalProps = {
@@ -149,6 +150,7 @@ const generateParams = ({ queryParams }) => ({
     tag: queryParams.tag,
     brand: queryParams.brand,
     ids: queryParams.ids,
+    categoryId: queryParams.categoryId,
     searchValue: queryParams.searchValue,
     sortField: queryParams.sortField,
     sortDirection: queryParams.sortDirection

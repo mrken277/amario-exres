@@ -40,6 +40,7 @@ interface IProps extends IRouterProps {
   emptyBulk: () => void;
   removeCars: (doc: { carIds: string[] }, emptyBulk: () => void) => void;
   mergeCars: () => void;
+  history: any;
   queryParams: any;
   exportCars: (bulk: string[]) => void;
 }
@@ -295,7 +296,13 @@ class CarsList extends React.Component<IProps, State> {
         }
         actionBar={actionBar}
         footer={<Pagination count={totalCount} />}
-        leftSidebar={<Sidebar loadingMainQuery={loading} />}
+        leftSidebar={
+          <Sidebar
+            loadingMainQuery={loading}
+            queryParams={queryParams}
+            history={history}
+          />
+        }
         content={
           <DataWithLoader
             data={mainContent}

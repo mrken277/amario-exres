@@ -17,12 +17,15 @@ const details = ({ match }) => {
   return <CarDetails id={id} />;
 };
 
-const list = ({ location }) => {
-  const queryParams = queryString.parse(location.search);
-
+const list = ({ location, history }) => {
   localStorage.setItem('erxes_contact_url', 'cars');
 
-  return <CarsList queryParams={queryParams} />;
+  return (
+    <CarsList
+      queryParams={queryString.parse(location.search)}
+      history={history}
+    />
+  );
 };
 
 const routes = () => {
