@@ -1,10 +1,8 @@
-import { getEnv } from 'apolloClient';
 import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import Bulk from 'modules/common/components/Bulk';
 import { Alert, withProps } from 'modules/common/utils';
 import { generatePaginationParams } from 'modules/common/utils/router';
-import queryString from 'query-string';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
@@ -98,27 +96,6 @@ class CarListContainer extends React.Component<FinalProps, State> {
     const searchValue = this.props.queryParams.searchValue || '';
     const { list = [], totalCount = 0 } = carsMainQuery.carsMain || {};
 
-    const exportCars = bulk => {
-      const { REACT_APP_API_URL } = getEnv();
-      const { queryParams } = this.props;
-
-      // queryParams page parameter needs convert to int.
-      if (queryParams.page) {
-        queryParams.page = parseInt(queryParams.page, 10);
-      }
-
-      if (bulk.length > 0) {
-        queryParams.ids = bulk.map(car => car._id);
-      }
-
-      const stringified = queryString.stringify({
-        ...queryParams,
-        type: 'car'
-      });
-
-      window.open(`${REACT_APP_API_URL}/file-export?${stringified}`, '_blank');
-    };
-
     const updatedProps = {
       ...this.props,
       columnsConfig,
@@ -126,7 +103,6 @@ class CarListContainer extends React.Component<FinalProps, State> {
       searchValue,
       cars: list,
       loading: carsMainQuery.loading || this.state.loading,
-      exportCars,
       removeCars,
       mergeCars
     };

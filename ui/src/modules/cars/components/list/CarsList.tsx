@@ -42,7 +42,6 @@ interface IProps extends IRouterProps {
   mergeCars: () => void;
   history: any;
   queryParams: any;
-  exportCars: (bulk: string[]) => void;
 }
 
 type State = {
@@ -109,8 +108,7 @@ class CarsList extends React.Component<IProps, State> {
       emptyBulk,
       totalCount,
       mergeCars,
-      queryParams,
-      exportCars
+      queryParams
     } = this.props;
 
     const mainContent = (
@@ -257,11 +255,6 @@ class CarsList extends React.Component<IProps, State> {
             </li>
             <li>
               <Link to="/settings/properties?type=car">{__('Properties')}</Link>
-            </li>
-            <li>
-              <a href="#export" onClick={exportCars.bind(this, bulk)}>
-                {__('Export cars')}
-              </a>
             </li>
           </Dropdown.Menu>
         </Dropdown>
