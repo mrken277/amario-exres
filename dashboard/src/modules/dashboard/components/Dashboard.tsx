@@ -2,6 +2,7 @@ import React from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 
 import { Button, Empty } from 'antd';
+import queryString from 'query-string';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -84,6 +85,19 @@ class Dashboard extends React.Component<Props, State> {
     });
   };
 
+  printDashboard = () => {
+    const stringified = queryString.stringify({
+      dashboardId: 'cKzqNWo9nbnRhNzyo',
+    });
+
+    console.log('sdajkdjklj');
+
+    window.open(
+      `http://localhost:3300/print-dashboard?${stringified}`,
+      '_blank'
+    );
+  };
+
   render() {
     const { dashboardItems, dashboardId, removeDashboardItem } = this.props;
 
@@ -128,6 +142,9 @@ class Dashboard extends React.Component<Props, State> {
           <CopyToClipboard text={window.location.href}>
             <Button shape="round">Copy url</Button>
           </CopyToClipboard>
+
+          <Button shape="round">Download as PDF</Button>
+          <Button onClick={this.printDashboard}>Email this dashboard</Button>
         </CopyText>
 
         <DragField
