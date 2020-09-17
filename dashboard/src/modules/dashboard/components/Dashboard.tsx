@@ -90,8 +90,6 @@ class Dashboard extends React.Component<Props, State> {
       dashboardId: 'cKzqNWo9nbnRhNzyo',
     });
 
-    console.log('sdajkdjklj');
-
     window.open(
       `http://localhost:3300/print-dashboard?${stringified}`,
       '_blank'
@@ -143,8 +141,10 @@ class Dashboard extends React.Component<Props, State> {
             <Button shape="round">Copy url</Button>
           </CopyToClipboard>
 
-          <Button shape="round">Download as PDF</Button>
-          <Button onClick={this.printDashboard}>Email this dashboard</Button>
+          <Button onClick={this.printDashboard} shape="round">
+            Download as PDF
+          </Button>
+          <Button shape="round">Email this dashboard</Button>
         </CopyText>
 
         <DragField
