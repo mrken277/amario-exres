@@ -5,7 +5,7 @@ import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { ButtonRelated } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';
 import GetConformity from 'modules/conformity/containers/GetConformity';
-import { SectionBody, SectionBodyItem } from 'modules/layout/styles';
+import { SectionBodyItem } from 'modules/layout/styles';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CarChooser from '../../containers/CarChooser';
@@ -83,7 +83,7 @@ function Component(
   );
 
   const content = (
-    <SectionBody>
+    <>
       {items.map((car, index) => (
         <SectionBodyItem key={index}>
           <Link to={`/cars/details/${car._id}`}>
@@ -94,7 +94,7 @@ function Component(
       ))}
       {items.length === 0 && <EmptyState icon="building" text="No car" />}
       {mainTypeId && mainType && relQuickButtons}
-    </SectionBody>
+    </>
   );
 
   return (
