@@ -88,7 +88,7 @@ class Chart extends React.Component<Props, State> {
       this.onChange('name', (e.currentTarget as HTMLInputElement).value);
 
     return (
-      <div>
+      <>
         <ShadowedHeader>
           <PageHeader
             title={<h4>Explore chart</h4>}
@@ -111,6 +111,8 @@ class Chart extends React.Component<Props, State> {
               this.onChange('visible', false);
               this.handleSubmit();
             }}
+            okButtonProps={{shape: "round"}}
+            cancelButtonProps={{shape: "round"}}
             onCancel={() => this.setTitleModalVisible(false)}
           >
             <Input
@@ -127,7 +129,7 @@ class Chart extends React.Component<Props, State> {
           type={type}
           setType={this.setType}
         />
-      </div>
+      </>
     );
   }
 }

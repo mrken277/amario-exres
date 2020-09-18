@@ -1,4 +1,3 @@
-import { Icon } from '@ant-design/compatible';
 import { Select } from 'antd';
 import * as PropTypes from 'prop-types';
 import React from 'react';
@@ -64,7 +63,7 @@ const FilterGroup = ({
       }
       availableMembers={availableMembers}
       type='dashed'
-      icon={<Icon type='plus' />}
+      icon={<Icon icon="plus-1" />}
     >
       {addMemberName}
     </MemberDropdown>

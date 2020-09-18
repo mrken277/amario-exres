@@ -11,7 +11,7 @@ import styledTS from 'styled-components-ts';
 import { IDashboardItem } from '../types';
 import ChartRenderer from './ChartRenderer';
 import DashboardItem from './DashboardItem';
-import { CopyText, EmptyWrapper } from './styles';
+import { Actions, EmptyWrapper, ShadowedHeader } from './styles';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -52,12 +52,16 @@ type Props = {
 
 type State = {
   isDragging: boolean;
+  copied: boolean;
 };
 class Dashboard extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    this.state = { isDragging: false };
+    this.state = { 
+      isDragging: false,
+      copied: false
+    };
   }
 
   setIsDragging = (value) => {
@@ -98,6 +102,7 @@ class Dashboard extends React.Component<Props, State> {
 
   render() {
     const { dashboardItems, dashboardId, removeDashboardItem } = this.props;
+    const onCopy = () => this.setState({ copied: true });
 
     if (dashboardItems.length === 0) {
       return (
@@ -136,16 +141,20 @@ class Dashboard extends React.Component<Props, State> {
 
     return (
       <>
-        <CopyText>
-          <CopyToClipboard text={window.location.href}>
-            <Button shape="round">Copy url</Button>
-          </CopyToClipboard>
+        <ShadowedHeader>
+          <Actions>
+            <CopyToClipboard text={window.location.href}>
+              <Button type={this.state.copied ? 'primary' : 'default'} shape="round" onClick={onCopy}>
+                {this.state.copied ? 'Copied' : 'Copy Dashboard public url'}
+              </Button>
+            </CopyToClipboard>
 
-          <Button onClick={this.printDashboard} shape="round">
-            Download as PDF
-          </Button>
-          <Button shape="round">Email this dashboard</Button>
-        </CopyText>
+            <Button onClick={this.printDashboard} shape="round">
+              Download as PDF
+            </Button>
+            <Button shape="round">Email this Dashboard</Button>
+          </Actions>
+        </ShadowedHeader>
 
         <DragField
           margin={[20, 20]}

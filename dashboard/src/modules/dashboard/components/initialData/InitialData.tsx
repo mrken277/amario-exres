@@ -16,7 +16,8 @@ type Props = {
 };
 
 const Datas = styled.div`
-  margin: 20px;
+  padding: 20px;
+  background: #fff;
 `;
 
 class InitialData extends React.Component<Props, {}> {
@@ -34,6 +35,7 @@ class InitialData extends React.Component<Props, {}> {
                 item={item}
                 title={item.name}
                 save={save}
+                bordered={true}
               >
                 <ChartRenderer
                   key={Math.random()}

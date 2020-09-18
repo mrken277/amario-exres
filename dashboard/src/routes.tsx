@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 const Routes = () => {
   return (
-    <Layout style={{ height: '100%' }}>
+    <Layout style={{ minHeight: '100%' }}>
       <Layout.Content>
         <Router>
           <DashboardRoutes />

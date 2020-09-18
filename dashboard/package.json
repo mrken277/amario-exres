@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ant-design/compatible": "^1.0.2",
     "@cubejs-client/core": "^0.19.14",
     "@cubejs-client/react": "^0.19.13",
     "@testing-library/jest-dom": "^4.2.4",
@@ -23,6 +22,7 @@
     "apollo-link-ws": "^1.0.8",
     "apollo-utilities": "^1.0.5",
     "dayjs": "^1.8.25",
+    "erxes-icon": "^1.2.1",
     "graphql": "^15.0.0",
     "graphql-tag": "^2.10.3",
     "i18n-react": "^0.7.0",

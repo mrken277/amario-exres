@@ -4,22 +4,22 @@ export const chartTypes = [
 	{
 		name: 'line',
 		title: 'Line',
-		icon: 'line-chart',
+		icon: 'chart-line',
 	},
 	{
 		name: 'area',
 		title: 'Area',
-		icon: 'area-chart',
+		icon: 'arrow-growth',
 	},
 	{
 		name: 'bar',
 		title: 'Bar',
-		icon: 'bar-chart',
+		icon: 'chart-bar',
 	},
 	{
 		name: 'pie',
 		title: 'Pie',
-		icon: 'pie-chart',
+		icon: 'chart-pie',
 	},
 	{
 		name: 'table',

@@ -1,3 +1,4 @@
+import Card from 'antd/lib/card';
 import styled from 'styled-components';
 
 const ChartWraper = styled.div`
@@ -17,13 +18,18 @@ const FilterItem = styled.span`
 `;
 
 const SelectType = styled.div`
-  margin: 20px 0;
+  margin: 10px 0 20px 0;
 `;
 
-const CopyText = styled.div`
-  margin: 20px;
+const Actions = styled.div`
   display: flex;
   justify-content: flex-end;
+  background: #fff;
+  padding: 16px 20px 8px 20px;
+
+  > button {
+    margin: 0 0 8px 10px;
+  }
 `;
 
 const ShadowedHeader = styled.div`
@@ -31,7 +37,11 @@ const ShadowedHeader = styled.div`
 `;
 
 const EmptyWrapper = styled.div`
-  margin-top: 60px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
 
   .ant-empty-description {
     margin-top: 20px;
@@ -55,6 +65,27 @@ const TimesWrapper = styled.span`
   }
 `;
 
+const StyledCard = styled(Card)`
+  box-shadow: 0px 2px 4px rgba(141, 149, 166, 0.1);
+  border-radius: 4px;
+  height: 100%;
+  width: 100%;
+
+  .ant-card-head {
+    position: relative;
+    z-index: 2;
+  }
+
+  .ant-card-body {
+    max-height: calc(100% - 57px);
+    overflow-y: auto;
+
+    .ant-table-pagination.ant-pagination {
+      margin-bottom: 0;
+    }
+  }
+`;
+
 export {
   ChartWraper,
   FilterItem,
@@ -63,5 +94,6 @@ export {
   Label,
   TimesWrapper,
   ShadowedHeader,
-  CopyText,
+  Actions,
+  StyledCard
 };
