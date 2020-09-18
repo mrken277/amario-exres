@@ -45,6 +45,11 @@ body {
   color: #fff;
 }
 
+.ant-modal-body label {
+  margin-bottom: 5px;
+  display: inline-flex;
+}
+
 
 /* recharts */
 .recharts-cartesian-grid-horizontal line {
@@ -77,4 +82,19 @@ body {
 
 .react-grid-placeholder {
   border-radius: 4px;
+}
+
+
+.ant-form-item-control-input-content .react-multi-email {
+  border-radius: 0;
+  padding: 3px 11px;
+}
+
+.ant-form-item-control-input-content .react-multi-email > span[data-placeholder] {
+  padding: 4px;
+  font-weight: normal;
+}
+
+.ant-form-item-control-input-content .react-multi-email [data-tag] {
+  font-weight: normal;
 }

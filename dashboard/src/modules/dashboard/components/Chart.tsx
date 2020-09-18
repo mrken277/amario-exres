@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Button, Input, Modal } from 'antd';
+import Icon from 'modules/common/components/Icon';
 import { IDashboardItem } from '../types';
 import PageHeader from './PageHeader';
 import ExploreQueryBuilder from './QueryBuilder/ExploreQueryBuilder';
@@ -97,6 +98,7 @@ class Chart extends React.Component<Props, State> {
                 type="primary"
                 shape="round"
                 onClick={() => this.onChange('visible', true)}
+                icon={<Icon icon="check-circle" />}
               >
                 Add to dashboard
               </Button>
@@ -105,18 +107,19 @@ class Chart extends React.Component<Props, State> {
 
           <Modal
             key="modal"
-            title="Save Chart"
+            title="Add to Dashboard"
             visible={visible}
             onOk={async () => {
               this.onChange('visible', false);
               this.handleSubmit();
             }}
-            okButtonProps={{shape: "round"}}
-            cancelButtonProps={{shape: "round"}}
+            okButtonProps={{shape: "round", icon: <Icon icon="check-circle" />}}
+            cancelButtonProps={{shape: "round", icon: <Icon icon="times-circle" />}}
             onCancel={() => this.setTitleModalVisible(false)}
           >
+            <label>Dashboard Item Name</label>
             <Input
-              placeholder="Dashboard Item Name"
+              placeholder="Write here..."
               value={name}
               onChange={(e) => onChange(e)}
             />
