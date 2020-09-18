@@ -5,10 +5,13 @@ import DashboardDetail from './containers/DashboardDetail';
 import ExplorePage from './containers/Explore';
 import InitialData from './containers/InitialDatas';
 
-const dashboardDetail = ({ match, history }) => {
+const dashboardDetail = ({ match, history, location }) => {
   const id = match.params.id;
+  const queryParams = queryString.parse(location.search);
 
-  return <DashboardDetail id={id} history={history} />;
+  return (
+    <DashboardDetail id={id} history={history} queryParams={queryParams} />
+  );
 };
 
 const explorePage = ({ location, history }) => {

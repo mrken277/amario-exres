@@ -19,6 +19,7 @@ import {
 type Props = {
   id: string;
   history: any;
+  queryParams: any;
 };
 
 type FinalProps = {
@@ -36,6 +37,7 @@ class DashboardContainer extends React.Component<FinalProps, {}> {
       id,
       removeDashboardItemMutation,
       sendEmailMutation,
+      queryParams,
     } = this.props;
 
     if (dashboardItemsQuery.loading) {
@@ -73,6 +75,7 @@ class DashboardContainer extends React.Component<FinalProps, {}> {
 
     return (
       <Dashboard
+        queryParams={queryParams}
         editDashboardItem={editDashboardItem}
         removeDashboardItem={removeDashboardItem}
         dashboardItems={dashboardItemsQuery.dashboardItems || []}
