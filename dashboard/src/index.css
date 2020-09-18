@@ -50,6 +50,15 @@ body {
   display: inline-flex;
 }
 
+.ant-modal-confirm-confirm .ant-modal-confirm-body>i, 
+.ant-modal-confirm-warning .ant-modal-confirm-body>i {
+  color: #faad14;
+  float: left;
+  margin-right: 16px;
+  font-size: 22px;
+  line-height: 1;
+}
+
 
 /* recharts */
 .recharts-cartesian-grid-horizontal line {

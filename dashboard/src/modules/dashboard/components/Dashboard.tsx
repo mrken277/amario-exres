@@ -1,7 +1,7 @@
 import React from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 
-import { Button, Checkbox, Empty, Form, Input, Modal, Switch } from 'antd';
+import { Button, Empty, Form, Input, Modal, Switch } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import Icon from 'modules/common/components/Icon';
 import queryString from 'query-string';

@@ -21,9 +21,11 @@ const DashboardItemDropdown = ({
         onClick={() =>
           Modal.confirm({
             title: 'Are you sure you want to delete this item?',
+            icon: <Icon icon="exclamation-circle" />,
             okText: 'Yes',
             cancelText: 'No',
-
+            okButtonProps: { shape: "round", icon: <Icon icon="check-circle" /> },
+            cancelButtonProps: { shape: "round", icon: <Icon icon="times-circle" /> },
             onOk() {
               removeDashboardItem(itemId);
             },
