@@ -3,6 +3,7 @@ import RGL, { WidthProvider } from 'react-grid-layout';
 
 import { Button, Empty, Form, Input, Modal } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
+import { getEnv } from 'apolloClient';
 import queryString from 'query-string';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import 'react-grid-layout/css/styles.css';
@@ -47,6 +48,7 @@ const defaultLayout = (i) => ({
 });
 
 type Props = {
+  queryParams: any;
   dashboardItems: IDashboardItem[];
   dashboardId: string;
   editDashboardItem: (doc: { _id: string; layout: string }) => void;
@@ -67,6 +69,8 @@ type State = {
   content: string;
   copied: boolean;
 };
+
+const { REACT_APP_API_URL } = getEnv();
 class Dashboard extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -112,7 +116,7 @@ class Dashboard extends React.Component<Props, State> {
     });
 
     window.open(
-      `http://localhost:3300/print-dashboard?${stringified}`,
+      `${REACT_APP_API_URL}/print-dashboard?${stringified}`,
       '_blank'
     );
   };
@@ -140,7 +144,12 @@ class Dashboard extends React.Component<Props, State> {
   };
 
   render() {
-    const { dashboardItems, dashboardId, removeDashboardItem } = this.props;
+    const {
+      dashboardItems,
+      dashboardId,
+      removeDashboardItem,
+      queryParams,
+    } = this.props;
     const { visible, toEmails } = this.state;
     const onCopy = () => this.setState({ copied: true });
 
@@ -188,29 +197,31 @@ class Dashboard extends React.Component<Props, State> {
 
     return (
       <>
-        <ShadowedHeader>
-          <Actions>
-            <CopyToClipboard text={window.location.href}>
-              <Button
-                type={this.state.copied ? 'primary' : 'default'}
-                shape="round"
-                onClick={onCopy}
-              >
-                {this.state.copied ? 'Copied' : 'Copy Dashboard public url'}
-              </Button>
-            </CopyToClipboard>
+        {queryParams && queryParams.public === 'true' ? null : (
+          <ShadowedHeader>
+            <Actions>
+              <CopyToClipboard text={`${window.location.href}?public=true`}>
+                <Button
+                  type={this.state.copied ? 'primary' : 'default'}
+                  shape="round"
+                  onClick={onCopy}
+                >
+                  {this.state.copied ? 'Copied' : 'Copy Dashboard public url'}
+                </Button>
+              </CopyToClipboard>
 
-            <Button onClick={this.printDashboard} shape="round">
-              Download as PDF
-            </Button>
-            <Button
-              shape="round"
-              onClick={() => this.setTitleModalVisible(true)}
-            >
-              Email this Dashboard
-            </Button>
-          </Actions>
-        </ShadowedHeader>
+              <Button onClick={this.printDashboard} shape="round">
+                Download as PDF
+              </Button>
+              <Button
+                shape="round"
+                onClick={() => this.setTitleModalVisible(true)}
+              >
+                Email this Dashboard
+              </Button>
+            </Actions>
+          </ShadowedHeader>
+        )}
 
         <Modal
           key="modal"
