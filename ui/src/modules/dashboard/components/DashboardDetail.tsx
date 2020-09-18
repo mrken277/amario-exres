@@ -23,22 +23,6 @@ type State = {
 };
 
 class DashboardDetail extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      show: false,
-    };
-  }
-
-  showPopup = () => {
-    const { show } = this.state;
-
-    this.setState({
-      show: show ? false : true,
-    });
-  };
-
   remove = () => {
     const { removeDashboard } = this.props;
 
@@ -49,24 +33,22 @@ class DashboardDetail extends React.Component<Props, State> {
 
   render() {
     const { id, dashboard } = this.props;
-    const { show } = this.state;
 
-    const renderAddForm = () => {
-      return (
-        <DashbaordForm
-          show={show}
-          closeModal={this.showPopup}
-          dashboard={dashboard}
-        />
-      );
-    };
-
-    const leftActionBar = (
-      <Title onClick={this.showPopup}>
+    const trigger = (
+      <Title>
         {dashboard.name}
         <Icon icon="pen-1" />
       </Title>
     );
+
+    const renderAddForm = () => {
+      return (
+        <DashbaordForm
+          dashboard={dashboard}
+          trigger={trigger}
+        />
+      );
+    };
 
     const rightActionBar = (
       <RightActions>
@@ -88,7 +70,6 @@ class DashboardDetail extends React.Component<Props, State> {
 
     return (
       <BoardContainer>
-        {renderAddForm()}
         <Header
           title={`${'Dashboard' || ''}`}
           breadcrumb={[{ title: __('Dashboard'), link: '/dashboard' }]}
@@ -96,7 +77,7 @@ class DashboardDetail extends React.Component<Props, State> {
 
         <BoardContent transparent={true} bgColor="transparent">
           <PageHeader>
-            {leftActionBar}
+            {renderAddForm()}
             {rightActionBar}
           </PageHeader>
           <iframe

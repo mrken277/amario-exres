@@ -1,5 +1,7 @@
-import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
-import React, { useEffect, useState } from 'react';
+import EmptyState from 'modules/common/components/EmptyState';
+import Spinner from 'modules/common/components/Spinner';
+import { IRouterProps } from 'modules/common/types';
+import React from 'react';
 import DashbaordForm from '../containers/DashboardForm';
 import { BoxContainer, ProjectItem } from '../styles';
 import { IDashboard } from '../types';
@@ -7,35 +9,35 @@ import DashboardRow from './DashboardRow';
 
 type Props = {
   dashboards: IDashboard[];
-  renderAddButton: (props: IButtonMutateProps) => JSX.Element;
+  loading: boolean;
 };
 
 type FinalProps = {} & Props & IRouterProps;
 
 function DashboardList(props: FinalProps) {
-  const [showPopup, setVisibility] = useState(false);
-
-  const toggleVisibility = () => {
-    setVisibility(!showPopup);
-  };
-
-  const renderAddForm = () => {
-    return <DashbaordForm show={showPopup} closeModal={toggleVisibility} />;
-  };
-
-  useEffect(() => {
-    if(dashboards.length > 0) {
-      props.history.replace(`/dashboard/${dashboards[0]._id}`);
-    }
-  });
-
-  const { dashboards } = props;
+  const { dashboards, loading } = props;
   
+  if (loading) {
+    return (<Spinner />)
+  }
+
+  if (dashboards.length === 0) {
+    return (
+      <>
+        <EmptyState
+          image="/images/actions/8.svg"
+          text="There is no Dashboard"
+          size="full"
+          extra={<DashbaordForm />}
+        />
+      </>
+    ) 
+  }
 
   return (
     <BoxContainer>
       <div>
-        <ProjectItem new={true} onClick={toggleVisibility}>
+        <ProjectItem new={true} >
           <h5>
             +<br />
             Create <br />
@@ -44,7 +46,7 @@ function DashboardList(props: FinalProps) {
           </h5>
         </ProjectItem>
       </div>
-      {renderAddForm()}
+      
       {dashboards.map((dashboard) => (
         <DashboardRow key={dashboard._id} dashboard={dashboard} />
       ))}
