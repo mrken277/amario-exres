@@ -1,9 +1,10 @@
 import React from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 
-import { Button, Empty, Form, Input, Modal } from 'antd';
+import { Button, Empty, Form, Input, Modal, Switch } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import { getEnv } from 'apolloClient';
+import Icon from 'modules/common/components/Icon';
 import queryString from 'query-string';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import 'react-grid-layout/css/styles.css';
@@ -58,6 +59,7 @@ type Props = {
     toEmails: string[];
     subject: string;
     content: string;
+    sendUrl?: boolean;
   }) => void;
 };
 
@@ -68,6 +70,7 @@ type State = {
   subject: string;
   content: string;
   copied: boolean;
+  sendUrl: boolean;
 };
 
 const { REACT_APP_API_URL } = getEnv();
@@ -82,6 +85,7 @@ class Dashboard extends React.Component<Props, State> {
       subject: '',
       content: '',
       copied: false,
+      sendUrl: false,
     };
   }
 
@@ -125,6 +129,10 @@ class Dashboard extends React.Component<Props, State> {
     this.setState({ [key]: value } as any);
   };
 
+  onSwitchChange = (checked: boolean) => {
+    this.setState({ sendUrl: checked });
+  };
+
   setTitleModalVisible = (value) => {
     this.setState({
       visible: value,
@@ -133,13 +141,15 @@ class Dashboard extends React.Component<Props, State> {
 
   handleSubmit = () => {
     const { dashboardId, sendEmail } = this.props;
-    const { subject, toEmails, content } = this.state;
+    const { subject, toEmails, content, sendUrl } = this.state;
+    this.setState({ visible: false });
 
     return sendEmail({
       dashboardId,
       subject,
       toEmails,
       content,
+      sendUrl,
     });
   };
 
@@ -205,17 +215,23 @@ class Dashboard extends React.Component<Props, State> {
                   type={this.state.copied ? 'primary' : 'default'}
                   shape="round"
                   onClick={onCopy}
+                  icon={<Icon icon="copy-1" />}
                 >
                   {this.state.copied ? 'Copied' : 'Copy Dashboard public url'}
                 </Button>
               </CopyToClipboard>
 
-              <Button onClick={this.printDashboard} shape="round">
+              <Button
+                onClick={this.printDashboard}
+                shape="round"
+                icon={<Icon icon="pdf" />}
+              >
                 Download as PDF
               </Button>
               <Button
                 shape="round"
                 onClick={() => this.setTitleModalVisible(true)}
+                icon={<Icon icon="envelope-upload" />}
               >
                 Email this Dashboard
               </Button>
@@ -225,14 +241,20 @@ class Dashboard extends React.Component<Props, State> {
 
         <Modal
           key="modal"
-          title="Email this dashboard"
+          title="Email this Dashboard"
           visible={visible}
           onOk={async () => {
             this.handleSubmit();
           }}
+          okText="Send"
+          okButtonProps={{ shape: 'round', icon: <Icon icon="check-circle" /> }}
+          cancelButtonProps={{
+            shape: 'round',
+            icon: <Icon icon="times-circle" />,
+          }}
           onCancel={() => this.setTitleModalVisible(false)}
         >
-          <Form>
+          <Form layout="vertical">
             <Form.Item label="Recipents">
               <ReactMultiEmail
                 placeholder="Recipents"
@@ -260,17 +282,20 @@ class Dashboard extends React.Component<Props, State> {
                 }}
               />
             </Form.Item>
-            <Form.Item label="Subject">
+            <Form.Item label="Email Subject">
               <Input
-                placeholder="Subject"
+                placeholder="Email Subject"
                 onChange={(e) => onChange(e, 'subject')}
               />
             </Form.Item>
-            <Form.Item label="Content">
+            <Form.Item label="Message">
               <TextArea
-                placeholder="Content"
+                placeholder="Message"
                 onChange={(e) => onChange(e, 'content')}
               />
+            </Form.Item>
+            <Form.Item label="Include Shareable link">
+              <Switch onChange={this.onSwitchChange} />
             </Form.Item>
           </Form>
         </Modal>

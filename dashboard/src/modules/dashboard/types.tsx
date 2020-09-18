@@ -48,6 +48,7 @@ export type SendEmailMutationVariables = {
   subject: string;
   toEmails: string[];
   content: string;
+  sendUrl?: boolean;
 };
 
 export type AddDashboardItemMutationVariables = {
