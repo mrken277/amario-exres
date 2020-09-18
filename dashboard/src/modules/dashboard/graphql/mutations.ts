@@ -59,8 +59,8 @@ const dashboardItemRemove = `
 `;
 
 const dashboardSendEmail = `
-  mutation dashboardSendEmail($dashboardId: String!, $toEmails: [String]!, $subject: String, $content: String){
-    dashboardSendEmail(dashboardId: $dashboardId, toEmails: $toEmails, subject: $subject, content: $content)
+  mutation dashboardSendEmail($dashboardId: String!, $toEmails: [String]!, $subject: String, $content: String, $sendUrl:Boolean){
+    dashboardSendEmail(dashboardId: $dashboardId, toEmails: $toEmails, subject: $subject, content: $content, sendUrl: $sendUrl)
   }
 `;
 
