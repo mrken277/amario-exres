@@ -1,10 +1,13 @@
 import React from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 
-import { Button, Empty } from 'antd';
+import { Button, Empty, Form, Input, Modal } from 'antd';
+import TextArea from 'antd/lib/input/TextArea';
 import queryString from 'query-string';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import 'react-grid-layout/css/styles.css';
+import { isEmail, ReactMultiEmail } from 'react-multi-email';
+import 'react-multi-email/style.css';
 import 'react-resizable/css/styles.css';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
@@ -48,16 +51,32 @@ type Props = {
   dashboardId: string;
   editDashboardItem: (doc: { _id: string; layout: string }) => void;
   removeDashboardItem: (itemId: string) => void;
+  sendEmail: (doc: {
+    dashboardId: string;
+    toEmails: string[];
+    subject: string;
+    content: string;
+  }) => void;
 };
 
 type State = {
   isDragging: boolean;
+  visible: boolean;
+  toEmails: string[];
+  subject: string;
+  content: string;
 };
 class Dashboard extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    this.state = { isDragging: false };
+    this.state = {
+      isDragging: false,
+      visible: false,
+      toEmails: [],
+      subject: '',
+      content: '',
+    };
   }
 
   setIsDragging = (value) => {
@@ -96,8 +115,31 @@ class Dashboard extends React.Component<Props, State> {
     );
   };
 
+  onChange = (key: string, value: any) => {
+    this.setState({ [key]: value } as any);
+  };
+
+  setTitleModalVisible = (value) => {
+    this.setState({
+      visible: value,
+    });
+  };
+
+  handleSubmit = () => {
+    const { dashboardId, sendEmail } = this.props;
+    const { subject, toEmails, content } = this.state;
+
+    return sendEmail({
+      dashboardId,
+      subject,
+      toEmails,
+      content,
+    });
+  };
+
   render() {
     const { dashboardItems, dashboardId, removeDashboardItem } = this.props;
+    const { visible, toEmails } = this.state;
 
     if (dashboardItems.length === 0) {
       return (
@@ -134,6 +176,13 @@ class Dashboard extends React.Component<Props, State> {
       return;
     };
 
+    const onChange = (e, type) =>
+      this.onChange(type, (e.currentTarget as HTMLInputElement).value);
+
+    const validateEmail = (email) => {
+      return isEmail(email);
+    };
+
     return (
       <>
         <CopyText>
@@ -144,8 +193,62 @@ class Dashboard extends React.Component<Props, State> {
           <Button onClick={this.printDashboard} shape="round">
             Download as PDF
           </Button>
-          <Button shape="round">Email this dashboard</Button>
+          <Button onClick={() => this.onChange('visible', true)} shape="round">
+            Email this dashboard
+          </Button>
         </CopyText>
+
+        <Modal
+          key="modal"
+          title="Email this dashboard"
+          visible={visible}
+          onOk={async () => {
+            this.handleSubmit();
+          }}
+          onCancel={() => this.setTitleModalVisible(false)}
+        >
+          <Form>
+            <Form.Item label="Recipents">
+              <ReactMultiEmail
+                placeholder="Recipents"
+                emails={toEmails}
+                onChange={(email: string[]) => {
+                  this.setState({ toEmails: email });
+                }}
+                validateEmail={(email) => validateEmail(email)}
+                getLabel={(
+                  email: string,
+                  index: number,
+                  removeEmail: (index: number) => void
+                ) => {
+                  return (
+                    <div data-tag={true} key={index}>
+                      {email}
+                      <span
+                        data-tag-handle={true}
+                        onClick={() => removeEmail(index)}
+                      >
+                        ×
+                      </span>
+                    </div>
+                  );
+                }}
+              />
+            </Form.Item>
+            <Form.Item label="Subject">
+              <Input
+                placeholder="Subject"
+                onChange={(e) => onChange(e, 'subject')}
+              />
+            </Form.Item>
+            <Form.Item label="Content">
+              <TextArea
+                placeholder="Content"
+                onChange={(e) => onChange(e, 'content')}
+              />
+            </Form.Item>
+          </Form>
+        </Modal>
 
         <DragField
           margin={[20, 20]}

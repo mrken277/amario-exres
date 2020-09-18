@@ -41,11 +41,11 @@ class Chart extends React.Component<Props, State> {
     };
   }
 
-  setVizState = vizState => {
+  setVizState = (vizState) => {
     this.setState({ vizState });
   };
 
-  setType = type => {
+  setType = (type) => {
     this.setState({ type });
   };
 
@@ -71,7 +71,7 @@ class Chart extends React.Component<Props, State> {
     this.props.save(doc);
   };
 
-  setTitleModalVisible = value => {
+  setTitleModalVisible = (value) => {
     this.setState({
       visible: value,
     });
@@ -84,7 +84,7 @@ class Chart extends React.Component<Props, State> {
   render() {
     const { vizState, type, visible, name } = this.state;
 
-    const onChange = e =>
+    const onChange = (e) =>
       this.onChange('name', (e.currentTarget as HTMLInputElement).value);
 
     return (
@@ -94,7 +94,7 @@ class Chart extends React.Component<Props, State> {
             title={<h4>Explore chart</h4>}
             button={
               <Button
-                type='primary'
+                type="primary"
                 shape="round"
                 onClick={() => this.onChange('visible', true)}
               >
@@ -104,8 +104,8 @@ class Chart extends React.Component<Props, State> {
           />
 
           <Modal
-            key='modal'
-            title='Save Chart'
+            key="modal"
+            title="Save Chart"
             visible={visible}
             onOk={async () => {
               this.onChange('visible', false);
@@ -114,13 +114,13 @@ class Chart extends React.Component<Props, State> {
             onCancel={() => this.setTitleModalVisible(false)}
           >
             <Input
-              placeholder='Dashboard Item Name'
+              placeholder="Dashboard Item Name"
               value={name}
-              onChange={e => onChange(e)}
+              onChange={(e) => onChange(e)}
             />
           </Modal>
         </ShadowedHeader>
-        
+
         <ExploreQueryBuilder
           vizState={vizState}
           setVizState={this.setVizState}

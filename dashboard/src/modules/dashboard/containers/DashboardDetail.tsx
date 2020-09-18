@@ -12,6 +12,8 @@ import {
   EditDashboardItemMutationVariables,
   RemoveDashboardItemMutationResponse,
   RemoveDashboardItemMutationVariables,
+  SendEmailMutationResponse,
+  SendEmailMutationVariables,
 } from '../types';
 
 type Props = {
@@ -23,7 +25,8 @@ type FinalProps = {
   dashboardItemsQuery: DashboardItemsQueryResponse;
 } & Props &
   EditDashboardItemMutationResponse &
-  RemoveDashboardItemMutationResponse;
+  RemoveDashboardItemMutationResponse &
+  SendEmailMutationResponse;
 
 class DashboardContainer extends React.Component<FinalProps, {}> {
   render() {
@@ -32,6 +35,7 @@ class DashboardContainer extends React.Component<FinalProps, {}> {
       editDashboardItemMutation,
       id,
       removeDashboardItemMutation,
+      sendEmailMutation,
     } = this.props;
 
     if (dashboardItemsQuery.loading) {
@@ -63,12 +67,17 @@ class DashboardContainer extends React.Component<FinalProps, {}> {
         });
     };
 
+    const sendEmail = (params) => {
+      sendEmailMutation({ variables: { ...params } });
+    };
+
     return (
       <Dashboard
         editDashboardItem={editDashboardItem}
         removeDashboardItem={removeDashboardItem}
         dashboardItems={dashboardItemsQuery.dashboardItems || []}
         dashboardId={id}
+        sendEmail={sendEmail}
       />
     );
   }
@@ -96,6 +105,12 @@ export default compose(
       refetchQueries: ['dashboardItemsQuery'],
     }),
   }),
+  graphql<Props, SendEmailMutationResponse, SendEmailMutationVariables>(
+    gql(mutations.dashboardSendEmail),
+    {
+      name: 'sendEmailMutation',
+    }
+  ),
   graphql<
     Props,
     EditDashboardItemMutationResponse,

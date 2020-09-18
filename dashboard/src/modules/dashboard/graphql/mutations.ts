@@ -58,6 +58,12 @@ const dashboardItemRemove = `
 	}
 `;
 
+const dashboardSendEmail = `
+  mutation dashboardSendEmail($dashboardId: String!, $toEmails: [String]!, $subject: String, $content: String){
+    dashboardSendEmail(dashboardId: $dashboardId, toEmails: $toEmails, subject: $subject, content: $content)
+  }
+`;
+
 export default {
   dashboardAdd,
   dashboardEdit,
@@ -65,4 +71,5 @@ export default {
   dashboardItemEdit,
   dashboardItemAdd,
   dashboardItemRemove,
+  dashboardSendEmail,
 };

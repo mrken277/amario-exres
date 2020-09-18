@@ -43,6 +43,13 @@ export type EditDashboardItemMutationVariables = {
   dashboardId?: string;
 };
 
+export type SendEmailMutationVariables = {
+  dashboardId: string;
+  subject: string;
+  toEmails: string[];
+  content: string;
+};
+
 export type AddDashboardItemMutationVariables = {
   layout: string;
   vizState: string;
@@ -69,5 +76,11 @@ export type EditDashboardItemMutationResponse = {
 export type RemoveDashboardItemMutationResponse = {
   removeDashboardItemMutation: (params: {
     variables: RemoveDashboardItemMutationVariables;
+  }) => Promise<void>;
+};
+
+export type SendEmailMutationResponse = {
+  sendEmailMutation: (params: {
+    variables: SendEmailMutationVariables;
   }) => Promise<void>;
 };
