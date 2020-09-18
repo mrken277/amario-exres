@@ -14,7 +14,7 @@ import styledTS from 'styled-components-ts';
 import { IDashboardItem } from '../types';
 import ChartRenderer from './ChartRenderer';
 import DashboardItem from './DashboardItem';
-import { CopyText, EmptyWrapper } from './styles';
+import { Actions, EmptyWrapper, ShadowedHeader } from './styles';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -65,6 +65,7 @@ type State = {
   toEmails: string[];
   subject: string;
   content: string;
+  copied: boolean;
 };
 class Dashboard extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -76,6 +77,7 @@ class Dashboard extends React.Component<Props, State> {
       toEmails: [],
       subject: '',
       content: '',
+      copied: false,
     };
   }
 
@@ -140,6 +142,7 @@ class Dashboard extends React.Component<Props, State> {
   render() {
     const { dashboardItems, dashboardId, removeDashboardItem } = this.props;
     const { visible, toEmails } = this.state;
+    const onCopy = () => this.setState({ copied: true });
 
     if (dashboardItems.length === 0) {
       return (
@@ -185,18 +188,29 @@ class Dashboard extends React.Component<Props, State> {
 
     return (
       <>
-        <CopyText>
-          <CopyToClipboard text={window.location.href}>
-            <Button shape="round">Copy url</Button>
-          </CopyToClipboard>
+        <ShadowedHeader>
+          <Actions>
+            <CopyToClipboard text={window.location.href}>
+              <Button
+                type={this.state.copied ? 'primary' : 'default'}
+                shape="round"
+                onClick={onCopy}
+              >
+                {this.state.copied ? 'Copied' : 'Copy Dashboard public url'}
+              </Button>
+            </CopyToClipboard>
 
-          <Button onClick={this.printDashboard} shape="round">
-            Download as PDF
-          </Button>
-          <Button onClick={() => this.onChange('visible', true)} shape="round">
-            Email this dashboard
-          </Button>
-        </CopyText>
+            <Button onClick={this.printDashboard} shape="round">
+              Download as PDF
+            </Button>
+            <Button
+              shape="round"
+              onClick={() => this.setTitleModalVisible(true)}
+            >
+              Email this Dashboard
+            </Button>
+          </Actions>
+        </ShadowedHeader>
 
         <Modal
           key="modal"

@@ -1,80 +1,79 @@
 export const schemaTypes = ['Customers', 'Deals', 'Conversations'];
 
 export const chartTypes = [
-	{
-		name: 'line',
-		title: 'Line',
-		icon: 'line-chart',
-	},
-	{
-		name: 'area',
-		title: 'Area',
-		icon: 'area-chart',
-	},
-	{
-		name: 'bar',
-		title: 'Bar',
-		icon: 'bar-chart',
-	},
-	{
-		name: 'pie',
-		title: 'Pie',
-		icon: 'pie-chart',
-	},
-	{
-		name: 'table',
-		title: 'Table',
-		icon: 'table',
-	},
-	{
-		name: 'number',
-		title: 'Number',
-		icon: 'info-circle',
-	},
+  {
+    name: 'line',
+    title: 'Line',
+    icon: 'chart-line',
+  },
+  {
+    name: 'area',
+    title: 'Area',
+    icon: 'arrow-growth',
+  },
+  {
+    name: 'bar',
+    title: 'Bar',
+    icon: 'chart-bar',
+  },
+  {
+    name: 'pie',
+    title: 'Pie',
+    icon: 'chart-pie',
+  },
+  {
+    name: 'table',
+    title: 'Table',
+    icon: 'table',
+  },
+  {
+    name: 'number',
+    title: 'Number',
+    icon: 'info-circle',
+  },
 ];
-
 
 export const dateRanges = [
   {
     title: 'All time',
-    value: undefined
+    value: undefined,
   },
   {
-    value: 'Today'
+    value: 'Today',
   },
   {
-    value: 'Yesterday'
+    value: 'Yesterday',
   },
   {
-    value: 'This week'
+    value: 'This week',
   },
   {
-    value: 'This month'
+    value: 'This month',
   },
   {
-    value: 'This quarter'
+    value: 'This quarter',
   },
   {
-    value: 'This year'
+    value: 'This year',
   },
   {
-    value: 'Last 7 days'
+    value: 'Last 7 days',
   },
   {
-    value: 'Last 30 days'
+    value: 'Last 30 days',
   },
   {
-    value: 'Last week'
+    value: 'Last week',
   },
   {
-    value: 'Last month'
+    value: 'Last month',
   },
   {
-    value: 'Last quarter'
+    value: 'Last quarter',
   },
   {
-    value: 'Last year'
-  }
+    value: 'Last year',
+  },
 ];
 
 export const chartColors = [

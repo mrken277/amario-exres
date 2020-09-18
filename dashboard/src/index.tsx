@@ -1,6 +1,7 @@
 import cubejs from '@cubejs-client/core';
 import { CubeProvider } from '@cubejs-client/react';
 import 'antd/dist/antd.min.css';
+import 'erxes-icon/css/erxes.min.css';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { render } from 'react-dom';

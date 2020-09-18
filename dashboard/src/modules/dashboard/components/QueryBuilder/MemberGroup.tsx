@@ -1,4 +1,4 @@
-import { Icon } from '@ant-design/compatible';
+import Icon from 'modules/common/components/Icon';
 import React from 'react';
 import MemberDropdown from './MemberDropdown';
 import RemoveButtonGroup from './RemoveButtonGroup';
@@ -32,7 +32,7 @@ class MemberGroup extends React.Component<Props> {
         availableMembers={availableMembers}
         type="dashed"
         schemaType={type}
-        icon={<Icon type="plus" />}
+        icon={<Icon icon="plus-1" />}
       >
         {addMemberName}
       </MemberDropdown>

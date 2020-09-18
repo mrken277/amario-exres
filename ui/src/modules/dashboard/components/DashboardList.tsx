@@ -1,5 +1,5 @@
-import { IButtonMutateProps } from 'modules/common/types';
-import React, { useState } from 'react';
+import { IButtonMutateProps, IRouterProps } from 'modules/common/types';
+import React, { useEffect, useState } from 'react';
 import DashbaordForm from '../containers/DashboardForm';
 import { BoxContainer, ProjectItem } from '../styles';
 import { IDashboard } from '../types';
@@ -10,7 +10,9 @@ type Props = {
   renderAddButton: (props: IButtonMutateProps) => JSX.Element;
 };
 
-function DashboardList(props: Props) {
+type FinalProps = {} & Props & IRouterProps;
+
+function DashboardList(props: FinalProps) {
   const [showPopup, setVisibility] = useState(false);
 
   const toggleVisibility = () => {
@@ -21,7 +23,14 @@ function DashboardList(props: Props) {
     return <DashbaordForm show={showPopup} closeModal={toggleVisibility} />;
   };
 
+  useEffect(() => {
+    if(dashboards.length > 0) {
+      props.history.replace(`/dashboard/${dashboards[0]._id}`);
+    }
+  });
+
   const { dashboards } = props;
+  
 
   return (
     <BoxContainer>

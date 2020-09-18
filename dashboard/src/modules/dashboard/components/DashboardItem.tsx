@@ -1,23 +1,9 @@
-import { Icon } from '@ant-design/compatible';
-import { Card, Dropdown, Menu, Modal } from 'antd';
+import { Dropdown, Menu, Modal } from 'antd';
+import Icon from 'modules/common/components/Icon';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { StyledCard } from './styles';
 
-const StyledCard = styled(Card)`
-  box-shadow: 0px 2px 4px rgba(141, 149, 166, 0.1);
-  border-radius: 4px;
-  height: 100%;
-  width: 100%;
-
-  .ant-card-head {
-    border: none;
-  }
-
-  .ant-card-body {
-    padding-top: 10px;
-  }
-`;
 
 const DashboardItemDropdown = ({
   itemId,
@@ -54,7 +40,7 @@ const DashboardItemDropdown = ({
       placement="bottomLeft"
       trigger={['click']}
     >
-      <Icon type="menu" />
+      <Icon icon="bars" />
     </Dropdown>
   );
 };

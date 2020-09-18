@@ -1,5 +1,5 @@
-import { Icon } from '@ant-design/compatible';
 import { Button } from 'antd';
+import Icon from 'modules/common/components/Icon';
 import React from 'react';
 
 const RemoveButtonGroup = ({ onRemoveClick, children, ...props }) => (
@@ -8,7 +8,7 @@ const RemoveButtonGroup = ({ onRemoveClick, children, ...props }) => (
   >
     {children}
     <Button type="dashed" onClick={onRemoveClick} shape="round">
-      <Icon type="close" />
+      <Icon icon="times" />
     </Button>
   </Button.Group>
 );

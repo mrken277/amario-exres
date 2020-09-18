@@ -58,6 +58,7 @@ class DashboardListContainer extends React.Component<FinalProps> {
 
     return (
       <DashboardList
+        {...this.props}
         renderAddButton={renderAddButton}
         dashboards={dashboards}
       />

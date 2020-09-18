@@ -1,5 +1,5 @@
-import { Icon } from '@ant-design/compatible';
 import { Menu } from 'antd';
+import Icon from 'modules/common/components/Icon';
 import { dateRanges } from 'modules/dashboard/constants';
 import React from 'react';
 import { TimesWrapper } from '../styles';
@@ -85,7 +85,7 @@ const TimeGroup = ({
           }
           availableMembers={availableMembers}
           type="dashed"
-          icon={<Icon type="plus" />}
+          icon={<Icon icon="plus-1" />}
           schemaType={type}
         >
           {addMemberName}

@@ -171,6 +171,8 @@ const TypeToChartComponent = {
   table: ({ resultSet }) => {
     return (
       <Table
+        bordered={true}
+        size="middle"
         columns={resultSet
           .tableColumns()
           .map((c) => ({ ...c, dataIndex: c.key }))}

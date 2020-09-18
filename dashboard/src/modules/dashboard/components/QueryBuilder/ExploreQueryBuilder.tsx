@@ -13,9 +13,8 @@ import TimeGroup from './TimeGroup';
 
 const ControlsRow = styled(Row)`
   background: #fff;
-  margin-bottom: 12px;
   padding: 20px 20px 10px 20px;
-  margin: 0 0 12px;
+  margin: 0;
 `;
 
 const StyledDivider = styled(Divider)`
@@ -145,39 +144,37 @@ class ExploreQueryBuilder extends React.Component<Props> {
                   </Col>
                 </ControlsRow>
               </ShadowedHeader>
-              <ChartWraper>
-                {isQueryPresent ? (
-                  <>
-                    <SelectType>
-                      <SelectChartType
-                        chartType={chartType}
-                        updateChartType={updateChartType}
-                      />
-                    </SelectType>
-                    <ChartCard>
-                      <ChartRenderer
-                        vizState={{ query: validatedQuery, chartType }}
-                        chartHeight={400}
-                      />
-                    </ChartCard>
-                  </>
-                ) : (
-                  <EmptyWrapper>
-                    <Empty
-                      image="/images/empty.svg"
-                      imageStyle={{
-                        height: 200,
-                      }}
-                      description={
-                        <>
-                          <h2>Build Your Query</h2>
-                          <p>Choose a measure or dimension to get started</p>
-                        </>
-                      }
+              {isQueryPresent ? (
+                <ChartWraper>
+                  <SelectType>
+                    <SelectChartType
+                      chartType={chartType}
+                      updateChartType={updateChartType}
                     />
-                  </EmptyWrapper>
-                )}
-              </ChartWraper>
+                  </SelectType>
+                  <ChartCard>
+                    <ChartRenderer
+                      vizState={{ query: validatedQuery, chartType }}
+                      chartHeight={400}
+                    />
+                  </ChartCard>
+                </ChartWraper>
+              ) : (
+                <EmptyWrapper>
+                  <Empty
+                    image="/images/empty.svg"
+                    imageStyle={{
+                      height: 200,
+                    }}
+                    description={
+                      <>
+                        <strong>Build Your Query</strong>
+                        <p>Choose a measure or dimension to get started</p>
+                      </>
+                    }
+                  />
+                </EmptyWrapper>
+              )}
             </>
           );
         }}

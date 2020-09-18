@@ -1,7 +1,10 @@
+import Button from 'modules/common/components/Button';
+import { TopHeader } from 'modules/common/styles/main';
 import LeftSidebar from 'modules/layout/components/Sidebar';
 import { SidebarList as List } from 'modules/layout/styles';
 import React from 'react';
 import { Link } from 'react-router-dom';
+
 type Props = {
   dashboardId: string;
 };
@@ -34,10 +37,22 @@ class Sidebar extends React.Component<Props> {
   }
 
   renderSidebarHeader() {
-    const { Header } = LeftSidebar;
-
-    return <Header uppercase={true}>Categories</Header>;
+    return (
+      <TopHeader>
+        <Link to="/dashboard">
+          <Button
+            btnStyle="simple"
+            icon="arrow-circle-left"
+            block={true}
+            uppercase={false}
+          >
+            Back to Dashboard
+          </Button>
+        </Link>
+      </TopHeader>
+    );
   }
+
 
   render() {
     const { dashboardId } = this.props;

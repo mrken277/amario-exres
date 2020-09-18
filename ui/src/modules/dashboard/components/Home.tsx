@@ -10,11 +10,7 @@ type Props = {
 
 class Home extends React.Component<Props> {
   renderContent = () => {
-    return (
-      <>
-        <DashboardList queryParams={this.props.queryParams} />
-      </>
-    );
+    return <DashboardList queryParams={this.props.queryParams} />;
   };
 
   render() {

@@ -1,12 +1,11 @@
-import Wrapper from 'modules/layout/components/Wrapper';
-
 import { getEnv } from 'apolloClient';
-import { PageHeader } from 'modules/boards/styles/header';
 import Button from 'modules/common/components/Button';
+import { Title } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';
+import Wrapper from 'modules/layout/components/Wrapper';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { RightActions, Title } from '../styles';
+import { RightActions } from '../styles';
 import SideBar from './SideBar';
 
 const { REACT_APP_DASHBOARD_URL } = getEnv();
@@ -20,7 +19,23 @@ class InitialData extends React.Component<Props> {
   renderContent = () => {
     const { dashboardId, queryParams } = this.props;
     const { type } = queryParams;
+    
+    return (
+      <iframe
+        title="dashboard"
+        width="100%"
+        height="100%"
+        style={{position: 'absolute'}}
+        src={`${REACT_APP_DASHBOARD_URL}/reports/?dashboardId=${dashboardId}&type=${type}`}
+        frameBorder="0"
+        allowFullScreen={true}
+      />
+    );
+  };
 
+  render() {
+    const { dashboardId } = this.props;
+    
     const leftActionBar = <Title>Reports library</Title>;
 
     const rightActionBar = (
@@ -32,26 +47,7 @@ class InitialData extends React.Component<Props> {
         </Link>
       </RightActions>
     );
-
-    return (
-      <>
-        <PageHeader>
-          {leftActionBar}
-          {rightActionBar}
-        </PageHeader>
-        <iframe
-          title="dashboard"
-          width="100%"
-          height="100%"
-          src={`${REACT_APP_DASHBOARD_URL}/reports/?dashboardId=${dashboardId}&type=${type}`}
-          frameBorder="0"
-          allowFullScreen={true}
-        />
-      </>
-    );
-  };
-
-  render() {
+    
     return (
       <Wrapper
         header={
@@ -59,6 +55,9 @@ class InitialData extends React.Component<Props> {
             title={`${'Dashboard' || ''}`}
             breadcrumb={[{ title: __('Dashboard'), link: '/dashboard' }]}
           />
+        }
+        actionBar={
+          <Wrapper.ActionBar left={leftActionBar} right={rightActionBar} />
         }
         leftSidebar={<SideBar dashboardId={this.props.dashboardId} />}
         content={this.renderContent()}
