@@ -32,6 +32,10 @@ export type DashboardDetailsQueryResponse = {
   loading: boolean;
 };
 
+export type DashboardRemoveMutationVariables = {
+  _id: string;
+};
+
 export type EditDashboardItemMutationVariables = {
   _id: string;
   layout: string;
@@ -64,5 +68,9 @@ export type EditDashboardItemMutationResponse = {
 };
 
 export type RemoveDashboardMutationResponse = {
-  removeDashboardMutation: () => Promise<any>;
+  removeDashboardMutation: (
+    params: {
+      variables: DashboardRemoveMutationVariables;
+    }
+  ) => Promise<any>;
 };

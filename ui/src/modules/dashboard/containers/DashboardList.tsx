@@ -1,31 +1,57 @@
 import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
+import debounce from 'lodash/debounce';
 import { IRouterProps } from 'modules/common/types';
-import { withProps } from 'modules/common/utils';
+import { Alert, confirm, withProps } from 'modules/common/utils';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import DashboardList from '../components/DashboardList';
-import { queries } from '../graphql';
-import { DashboardsQueryResponse } from '../types';
+import { mutations, queries } from '../graphql';
+import { DashboardsQueryResponse, RemoveDashboardMutationResponse } from '../types';
 
-type Props = { queryParams: any } & IRouterProps;
+type Props = {
+  currentDashboard?: string;
+} & IRouterProps;
 
 type FinalProps = {
   dashboardsQuery: DashboardsQueryResponse;
-} & Props;
+} & Props & IRouterProps &  RemoveDashboardMutationResponse;
 
 class DashboardListContainer extends React.Component<FinalProps> {
   render() {
-    const { dashboardsQuery } = this.props;
+    const { dashboardsQuery, removeDashboardMutation, history, currentDashboard } = this.props;
 
     const dashboards = dashboardsQuery ? dashboardsQuery.dashboards || [] : [];
+    
+    const remove = id => {
+      confirm().then(() => {
+        removeDashboardMutation({
+          variables: { _id: id }
+        })
+          .then(() => {
+            Alert.success('You successfully deleted a dashboard.');
+
+            if(localStorage.getItem('erxes_recent_dashboard') === id) {
+              localStorage.setItem('erxes_recent_dashboard', '')
+            }
+
+            if(currentDashboard === id) {
+              debounce(() => history.push('/dashboard'), 300)();
+            }
+          })
+          .catch(error => {
+            Alert.error(error.message);
+          });
+      });
+    };
 
     return (
       <DashboardList
         {...this.props}
         dashboards={dashboards}
         loading={dashboardsQuery.loading}
+        removeDashboard={remove}
       />
     );
   }
@@ -36,7 +62,16 @@ export default withRouter(
     compose(
       graphql<Props, DashboardsQueryResponse>(gql(queries.dashboards), {
         name: 'dashboardsQuery'
-      })
+      }),
+      graphql<Props, RemoveDashboardMutationResponse>(
+        gql(mutations.dashboardRemove),
+        {
+          name: 'removeDashboardMutation',
+          options: () => ({
+            refetchQueries: ['dashboards'],
+          })
+        }
+      )
     )(DashboardListContainer)
   )
 );

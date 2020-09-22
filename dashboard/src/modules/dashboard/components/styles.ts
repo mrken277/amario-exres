@@ -25,10 +25,10 @@ const Actions = styled.div`
   display: flex;
   justify-content: flex-end;
   background: #fff;
-  padding: 16px 20px 8px 20px;
+  padding: 10px 20px 5px 20px;
 
   > button {
-    margin: 0 0 8px 10px;
+    margin: 0 0 5px 10px;
   }
 `;
 

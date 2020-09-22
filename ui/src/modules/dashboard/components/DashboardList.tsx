@@ -1,56 +1,46 @@
-import EmptyState from 'modules/common/components/EmptyState';
 import Spinner from 'modules/common/components/Spinner';
-import { IRouterProps } from 'modules/common/types';
 import React from 'react';
 import DashbaordForm from '../containers/DashboardForm';
-import { BoxContainer, ProjectItem } from '../styles';
+import { Create, Dashboards } from '../styles';
 import { IDashboard } from '../types';
 import DashboardRow from './DashboardRow';
 
 type Props = {
   dashboards: IDashboard[];
   loading: boolean;
+  currentDashboard?: string;
+  removeDashboard: (id: string) => void;
 };
 
-type FinalProps = {} & Props & IRouterProps;
+function DashboardList(props: Props) {
+  const { dashboards, loading, currentDashboard, removeDashboard } = props;
 
-function DashboardList(props: FinalProps) {
-  const { dashboards, loading } = props;
-  
-  if (loading) {
-    return (<Spinner />)
-  }
+  const renderContent = () => {
+    if (loading) {
+      return (<Spinner objective={true} />)
+    }
 
-  if (dashboards.length === 0) {
     return (
-      <>
-        <EmptyState
-          image="/images/actions/8.svg"
-          text="There is no Dashboard"
-          size="full"
-          extra={<DashbaordForm />}
+      dashboards.map(dashboard => (
+        <DashboardRow 
+          isActive={currentDashboard === dashboard._id} 
+          key={dashboard._id} 
+          dashboard={dashboard}
+          removeDashboard={removeDashboard}
         />
-      </>
-    ) 
+      ))
+    )
   }
+
+  const triggerCreate = <Create>Create a Dashboard</Create>;
 
   return (
-    <BoxContainer>
-      <div>
-        <ProjectItem new={true} >
-          <h5>
-            +<br />
-            Create <br />
-            New <br />
-            Dashboard
-          </h5>
-        </ProjectItem>
-      </div>
-      
-      {dashboards.map((dashboard) => (
-        <DashboardRow key={dashboard._id} dashboard={dashboard} />
-      ))}
-    </BoxContainer>
+    <>
+      <Dashboards>
+        {renderContent()}
+      </Dashboards>
+      <DashbaordForm trigger={triggerCreate} />
+    </>
   );
 }
 

@@ -276,8 +276,7 @@ a:hover {
   display: block;
 }
 
-.dropdown-menu li a,
-.dropdown-menu li button {
+.dropdown-menu li a {
   display: block;
   padding: 3px 20px;
   color: ${colors.textPrimary};
@@ -294,9 +293,7 @@ a:hover {
 .dropdown-menu > li > a:focus,
 .dropdown-menu > li > a:hover,
 .dropdown-menu li a:focus,
-.dropdown-menu li a:hover,
-.dropdown-menu li button:focus,
-.dropdown-menu li button:hover {
+.dropdown-menu li a:hover{
   color: ${colors.colorCoreDarkGray};
   background: ${colors.bgActive};
   outline: 0;

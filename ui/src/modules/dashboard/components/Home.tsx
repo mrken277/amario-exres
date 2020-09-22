@@ -1,17 +1,47 @@
+import EmptyState from 'modules/common/components/EmptyState';
+import Spinner from 'modules/common/components/Spinner';
+import { IRouterProps } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
-import React from 'react';
-import DashboardList from '../containers/DashboardList';
+import React, { useEffect } from 'react';
+import DashbaordForm from '../containers/DashboardForm';
+import { IDashboard } from '../types';
 
 type Props = {
   queryParams: any;
+  dashboards: IDashboard[];
+  loading: boolean;
 };
 
-const Home = (props: Props) => {
-  const renderContent = () => {
-    return <DashboardList queryParams={props.queryParams} />;
-  };
+type FinalProps = {} & Props & IRouterProps;
 
+const Home = (props: FinalProps) => {
+  useEffect(() => {
+    if (localStorage.getItem('erxes_recent_dashboard')) {
+      return props.history.replace(`/dashboard/${localStorage.getItem('erxes_recent_dashboard')}`);
+    }
+
+    if(!props.loading && props.dashboards.length > 0) {
+      props.history.replace(`/dashboard/${props.dashboards[0]._id}`);
+    }
+  });
+  
+  if (props.loading) {
+    return (<Spinner />)
+  }
+
+  if (props.dashboards.length === 0) {
+    return (
+      <>
+        <EmptyState
+          image="/images/actions/8.svg"
+          text="There is no Dashboard"
+          size="full"
+          extra={<DashbaordForm />}
+        />
+      </>
+    ) 
+  }
   return (
     <Wrapper
       header={
@@ -20,7 +50,7 @@ const Home = (props: Props) => {
           breadcrumb={[{ title: __('Dashboard'), link: '/dashboard' }]}
         />
       }
-      content={renderContent()}
+      content={null}
     />
   );
 }

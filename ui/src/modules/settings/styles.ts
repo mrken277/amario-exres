@@ -8,6 +8,7 @@ const unitSpace = `${dimensions.unitSpacing}px`;
 
 const ActionButtons = styled.div`
   display: flex;
+  justify-content: space-between;
   overflow: hidden;
   align-items: center;
   transition: all 0.3s ease;
@@ -15,11 +16,7 @@ const ActionButtons = styled.div`
 
   * {
     padding: 0;
-    margin-left: ${dimensions.unitSpacing}px;
-
-    &:first-child {
-      margin-left: 0;
-    }
+    margin-left: 0 !important;
   }
 `;
 

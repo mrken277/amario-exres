@@ -99,8 +99,7 @@ const DashbaordForm = (props: Props) => {
     return <DashbaordFormContent {...updatedProps}/>;
   }
 
-  return <ModalTrigger title={dashboard ? `Edit dashboard` : `Add dashboard`} trigger={trigger} content={content} />;
-  
+  return <ModalTrigger title={dashboard ? `Edit dashboard` : `Add dashboard`} trigger={trigger} content={content} />; 
 }
 
 export default DashbaordForm;

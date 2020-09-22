@@ -100,14 +100,14 @@ class Chart extends React.Component<Props, State> {
                 onClick={() => this.onChange('visible', true)}
                 icon={<Icon icon="check-circle" />}
               >
-                Add to dashboard
+                Save to selected Dashboard
               </Button>
             }
           />
 
           <Modal
             key="modal"
-            title="Add to Dashboard"
+            title="Add to selected Dashboard"
             visible={visible}
             onOk={async () => {
               this.onChange('visible', false);
@@ -117,7 +117,7 @@ class Chart extends React.Component<Props, State> {
             cancelButtonProps={{shape: "round", icon: <Icon icon="times-circle" />}}
             onCancel={() => this.setTitleModalVisible(false)}
           >
-            <label>Dashboard Item Name</label>
+            <label>Dashboard Item Title</label>
             <Input
               placeholder="Write here..."
               value={name}
