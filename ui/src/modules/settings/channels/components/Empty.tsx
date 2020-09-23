@@ -14,7 +14,7 @@ class Empty extends React.Component<Props, {}> {
 
     const breadcrumb = [
       { title: __('Settings'), link: '/settings' },
-      { title: __('Channels'), link: '/settings/channels' }
+      { title: __('Channels'), link: '/settings/channels' },
     ];
 
     const content = (
