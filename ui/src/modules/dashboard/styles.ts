@@ -4,7 +4,7 @@ import { rgba } from 'modules/common/styles/color';
 import styled from 'styled-components';
 
 const Header = styled(PageHeader)`
-  min-height: auto; 
+  min-height: auto;
 `;
 
 const Title = styled.div`
@@ -44,7 +44,7 @@ const Dashboards = styled.ul`
   margin: -8px 0 0 0;
 
   > li {
-    border-color: rgba(0, 0, 0, 0.06);  
+    border-color: rgba(0, 0, 0, 0.06);
 
     button {
       font-size: 14px;

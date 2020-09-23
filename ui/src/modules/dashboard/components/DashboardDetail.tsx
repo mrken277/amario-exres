@@ -26,7 +26,7 @@ type State = {
 
 class DashboardDetail extends React.Component<Props, State> {
   componentDidMount() {
-    if(this.props.dashboard) {
+    if (this.props.dashboard) {
       localStorage.setItem('erxes_recent_dashboard', this.props.dashboard._id);
     }
   }
@@ -34,7 +34,7 @@ class DashboardDetail extends React.Component<Props, State> {
   renderContent = () => {
     const { id, isExplore } = this.props;
 
-    if(isExplore) {
+    if (isExplore) {
       return (
         <iframe
           title="dashboard"
@@ -44,8 +44,8 @@ class DashboardDetail extends React.Component<Props, State> {
           frameBorder="0"
           allowFullScreen={true}
         />
-      )
-    } 
+      );
+    }
 
     return (
       <iframe
@@ -56,9 +56,9 @@ class DashboardDetail extends React.Component<Props, State> {
         frameBorder="0"
         allowFullScreen={true}
       />
-    )
-  }
-  
+    );
+  };
+
   render() {
     const { id, dashboard, isExplore } = this.props;
 
@@ -79,7 +79,7 @@ class DashboardDetail extends React.Component<Props, State> {
             <DashboardList currentDashboard={dashboard._id} />
           </Dropdown.Menu>
         </Dropdown>
-      )
+      );
     };
 
     const rightActionBar = (
@@ -89,12 +89,13 @@ class DashboardDetail extends React.Component<Props, State> {
             Add chart from Library
           </Button>
         </Link>
-        {!isExplore &&
+        {!isExplore && (
           <Link to={`/dashboard/explore/${id}`}>
             <Button uppercase={false} btnStyle="success" icon="plus-circle">
               Create a new chart
             </Button>
-          </Link>}
+          </Link>
+        )}
       </RightActions>
     );
 
@@ -103,8 +104,8 @@ class DashboardDetail extends React.Component<Props, State> {
         <Header
           title={`${'Dashboard' || ''}`}
           breadcrumb={[
-            { title: __('Dashboard'), link: '/dashboard' }, 
-            { title: dashboard.name || '' }
+            { title: __('Dashboard'), link: '/dashboard' },
+            { title: dashboard.name || '' },
           ]}
         />
 

@@ -31,5 +31,5 @@ const dashboardRemove = `
 export default {
   dashboardRemove,
   dashboardAdd,
-  dashboardEdit
+  dashboardEdit,
 };
