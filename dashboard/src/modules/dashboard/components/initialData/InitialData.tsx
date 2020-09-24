@@ -24,6 +24,9 @@ class InitialData extends React.Component<Props, {}> {
   render() {
     const { items, dashboardId, save } = this.props;
 
+    console.log('sdjakdjkl');
+    console.log(items);
+
     return (
       <Datas>
         <Row gutter={[20, 20]}>

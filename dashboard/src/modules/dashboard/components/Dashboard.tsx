@@ -116,7 +116,7 @@ class Dashboard extends React.Component<Props, State> {
 
   printDashboard = () => {
     const stringified = queryString.stringify({
-      dashboardId: 'cKzqNWo9nbnRhNzyo',
+      dashboardId: this.props.dashboardId,
     });
 
     window.open(
