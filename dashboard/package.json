@@ -1,6 +1,7 @@
 {
   "name": "dashboard",
   "version": "0.1.0",
+  "homepage": "/dashboard/front",
   "private": true,
   "dependencies": {
     "@cubejs-client/core": "^0.19.14",
