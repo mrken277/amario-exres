@@ -5,6 +5,7 @@ import Alert from 'modules/common/utils/Alert';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import Dashboard from '../components/Dashboard';
+import PdfData from '../components/pdf/PdfData';
 import { mutations, queries } from '../graphql';
 import {
   DashboardItemsQueryResponse,
@@ -13,7 +14,7 @@ import {
   RemoveDashboardItemMutationResponse,
   RemoveDashboardItemMutationVariables,
   SendEmailMutationResponse,
-  SendEmailMutationVariables,
+  SendEmailMutationVariables
 } from '../types';
 
 type Props = {
@@ -37,41 +38,50 @@ class DashboardContainer extends React.Component<FinalProps, {}> {
       id,
       removeDashboardItemMutation,
       sendEmailMutation,
-      queryParams,
+      queryParams
     } = this.props;
 
     if (dashboardItemsQuery.loading) {
       return <Spinner objective={true} />;
     }
 
-    const editDashboardItem = (params) => {
+    const editDashboardItem = params => {
       editDashboardItemMutation({
         variables: {
           _id: params._id,
-          layout: params.layout,
-        },
+          layout: params.layout
+        }
       }).catch(() => {
         return;
       });
     };
 
-    const removeDashboardItem = (itemId) => {
+    const removeDashboardItem = itemId => {
       removeDashboardItemMutation({
         variables: {
-          _id: itemId,
-        },
+          _id: itemId
+        }
       })
         .then(() => {
           dashboardItemsQuery.refetch();
         })
-        .catch((error) => {
+        .catch(error => {
           Alert.error(error.message);
         });
     };
 
-    const sendEmail = (params) => {
+    const sendEmail = params => {
       sendEmailMutation({ variables: { ...params } });
     };
+
+    if (queryParams && queryParams.pdf) {
+      return (
+        <PdfData
+          items={dashboardItemsQuery.dashboardItems || []}
+          dashboardId={id}
+        />
+      );
+    }
 
     return (
       <Dashboard
@@ -93,9 +103,9 @@ export default compose(
       name: 'dashboardItemsQuery',
       options: ({ id }: { id: string }) => ({
         variables: {
-          dashboardId: id,
-        },
-      }),
+          dashboardId: id
+        }
+      })
     }
   ),
   graphql<
@@ -105,13 +115,13 @@ export default compose(
   >(gql(mutations.dashboardItemRemove), {
     name: 'removeDashboardItemMutation',
     options: () => ({
-      refetchQueries: ['dashboardItemsQuery'],
-    }),
+      refetchQueries: ['dashboardItemsQuery']
+    })
   }),
   graphql<Props, SendEmailMutationResponse, SendEmailMutationVariables>(
     gql(mutations.dashboardSendEmail),
     {
-      name: 'sendEmailMutation',
+      name: 'sendEmailMutation'
     }
   ),
   graphql<
@@ -121,7 +131,7 @@ export default compose(
   >(gql(mutations.dashboardItemEdit), {
     name: 'editDashboardItemMutation',
     options: {
-      refetchQueries: ['dashboardItemsQuery'],
-    },
+      refetchQueries: ['dashboardItemsQuery']
+    }
   })
 )(DashboardContainer);
