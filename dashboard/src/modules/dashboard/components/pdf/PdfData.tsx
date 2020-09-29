@@ -32,7 +32,7 @@ class PdfData extends React.Component<Props, {}> {
                 <ChartRenderer
                   key={Math.random()}
                   vizState={JSON.parse(item.vizState)}
-                  chartHeight={500}
+                  chartHeight={300}
                 />
               </PdfDataItem>
             </Col>
