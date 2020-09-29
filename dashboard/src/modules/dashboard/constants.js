@@ -86,4 +86,11 @@ export const chartColors = [
   '#503b2c'
 ];
 
-export const replaceTexts = [{ name: 'nylas-gmail', value: 'gmail' }];
+export const replaceTexts = [
+  { name: 'nylas-gmail', value: 'gmail' },
+  { name: 'nylas-imap', value: 'imap' },
+  { name: 'nylas-exchange', value: 'exchange' },
+  { name: 'nylas-outlook', value: 'outlook' },
+  { name: 'nylas-yahoo', value: 'yahoo' },
+  { name: 'smooch-twilio', value: 'twilio' }
+];

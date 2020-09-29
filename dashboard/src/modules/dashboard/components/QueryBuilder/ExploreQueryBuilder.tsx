@@ -137,7 +137,6 @@ class ExploreQueryBuilder extends React.Component<Props> {
                               updateMethods={updateSegments}
                             />
                           </FilterItem>
-                          <StyledDivider type="vertical" />
 
                           <StyledDivider type="vertical" />
                           <FilterItem>

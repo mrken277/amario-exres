@@ -54,18 +54,19 @@ function decamelize(str, separator) {
     return replace.value;
   }
 
-  return str
+  str = str
     .replace(/([a-z\d])([A-Z])/g, '$1' + separator + '$2')
     .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + separator + '$2')
-    .replace('-', ' ')
-    .toLowerCase();
+    .replace('-', ' ');
+
+  return str.toLowerCase();
 }
 
 const xAxisFormatter = (item, dateType) => {
   if (dateType) {
     return dateFormatter(item, dateType);
   } else {
-    return item.toString();
+    return decamelize(item.toString(), ' ');
   }
 };
 
@@ -113,7 +114,7 @@ const TypeToChartComponent = {
         <Line
           key={series.key}
           dataKey={series.key}
-          name={series.title}
+          name={decamelize(series.title, ' ')}
           stroke={chartColors[i]}
         />
       ))}
@@ -132,7 +133,7 @@ const TypeToChartComponent = {
             key={series.key}
             stackId="a"
             dataKey={series.key}
-            name={series.title}
+            name={decamelize(series.title, ' ')}
             fill={chartColors[i]}
           />
         ))}
@@ -152,7 +153,7 @@ const TypeToChartComponent = {
             key={series.key}
             stackId="a"
             dataKey={series.key}
-            name={series.title}
+            name={decamelize(series.title, ' ')}
             stroke={chartColors[i]}
             fill={chartColors[i]}
           />
@@ -162,12 +163,22 @@ const TypeToChartComponent = {
   },
   pie: ({ resultSet, height }) => {
     if (resultSet.seriesNames()[0]) {
+      const renderData = result => {
+        for (const res of result) {
+          if (typeof res.x === 'string') {
+            res.x = decamelize(res.x, ' ');
+          }
+        }
+
+        return result;
+      };
+
       return (
         <ResponsiveContainer width="100%" height={height}>
           <PieChart>
             <Pie
               isAnimationActive={false}
-              data={resultSet.chartPivot()}
+              data={renderData(resultSet.chartPivot())}
               nameKey="x"
               dataKey={resultSet.seriesNames()[0].key}
               fill="#8884d8"
