@@ -4,76 +4,76 @@ export const chartTypes = [
   {
     name: 'line',
     title: 'Line',
-    icon: 'chart-line',
+    icon: 'chart-line'
   },
   {
     name: 'area',
     title: 'Area',
-    icon: 'arrow-growth',
+    icon: 'arrow-growth'
   },
   {
     name: 'bar',
     title: 'Bar',
-    icon: 'chart-bar',
+    icon: 'chart-bar'
   },
   {
     name: 'pie',
     title: 'Pie',
-    icon: 'chart-pie',
+    icon: 'chart-pie'
   },
   {
     name: 'table',
     title: 'Table',
-    icon: 'table',
+    icon: 'table'
   },
   {
     name: 'number',
     title: 'Number',
-    icon: 'info-circle',
-  },
+    icon: 'info-circle'
+  }
 ];
 
 export const dateRanges = [
   {
     title: 'All time',
-    value: undefined,
+    value: undefined
   },
   {
-    value: 'Today',
+    value: 'Today'
   },
   {
-    value: 'Yesterday',
+    value: 'Yesterday'
   },
   {
-    value: 'This week',
+    value: 'This week'
   },
   {
-    value: 'This month',
+    value: 'This month'
   },
   {
-    value: 'This quarter',
+    value: 'This quarter'
   },
   {
-    value: 'This year',
+    value: 'This year'
   },
   {
-    value: 'Last 7 days',
+    value: 'Last 7 days'
   },
   {
-    value: 'Last 30 days',
+    value: 'Last 30 days'
   },
   {
-    value: 'Last week',
+    value: 'Last week'
   },
   {
-    value: 'Last month',
+    value: 'Last month'
   },
   {
-    value: 'Last quarter',
+    value: 'Last quarter'
   },
   {
-    value: 'Last year',
-  },
+    value: 'Last year'
+  }
 ];
 
 export const chartColors = [
@@ -83,5 +83,7 @@ export const chartColors = [
   '#81CC49',
   '#7c2bba',
   '#d1a924',
-  '#503b2c',
+  '#503b2c'
 ];
+
+export const replaceTexts = [{ name: 'nylas-gmail', value: 'gmail' }];

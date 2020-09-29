@@ -22,7 +22,7 @@ import {
   XAxis,
   YAxis
 } from 'recharts';
-import { chartColors } from '../constants';
+import { chartColors, replaceTexts } from '../constants';
 
 const numberFormatter = item => numeral(item).format('0,0');
 
@@ -46,9 +46,18 @@ const dateFormatter = (item, dateType) => {
 function decamelize(str, separator) {
   separator = typeof separator === 'undefined' ? ' ' : separator;
 
+  const replace = replaceTexts.find(value => {
+    return value.name === str;
+  });
+
+  if (replace) {
+    return replace.value;
+  }
+
   return str
     .replace(/([a-z\d])([A-Z])/g, '$1' + separator + '$2')
     .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + separator + '$2')
+    .replace('-', ' ')
     .toLowerCase();
 }
 
