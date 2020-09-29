@@ -9,7 +9,8 @@ const FilterGroup = ({
   members,
   availableMembers,
   addMemberName,
-  updateMethods
+  updateMethods,
+  schemaType
 }) => (
   <span>
     {members.map(m => (
@@ -50,7 +51,7 @@ const FilterGroup = ({
         </Select>
         <FilterInput
           member={m}
-          key='filterInput'
+          key="filterInput"
           updateMethods={updateMethods}
         />
       </div>
@@ -62,8 +63,8 @@ const FilterGroup = ({
         })
       }
       availableMembers={availableMembers}
-      type='dashed'
-      icon={<Icon icon="plus-1" />}
+      type="dashed"
+      schemaType={schemaType}
     >
       {addMemberName}
     </MemberDropdown>

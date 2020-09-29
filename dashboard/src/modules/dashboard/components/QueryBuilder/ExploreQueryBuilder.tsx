@@ -4,8 +4,16 @@ import { schemaTypes } from 'modules/dashboard/constants';
 import React from 'react';
 import styled from 'styled-components';
 import ChartRenderer from '../ChartRenderer';
-import { ChartWraper, EmptyWrapper, FilterItem, Label, SelectType, ShadowedHeader } from '../styles';
+import {
+  ChartWraper,
+  EmptyWrapper,
+  FilterItem,
+  Label,
+  SelectType,
+  ShadowedHeader
+} from '../styles';
 import ButtonDropdown from './ButtonDropdown';
+// import FilterGroup from './FilterGroup';
 import MemberGroup from './MemberGroup';
 import SelectChartType from './SelectChartType';
 import stateChangeHeuristics from './stateChangeHeuristics.js';
@@ -43,7 +51,7 @@ class ExploreQueryBuilder extends React.Component<Props> {
 
     const menu = (
       <Menu>
-        {schemaTypes.map((schemaType) => (
+        {schemaTypes.map(schemaType => (
           <Menu.Item key={schemaType} onClick={() => setType(schemaType)}>
             {schemaType}
           </Menu.Item>
@@ -75,6 +83,8 @@ class ExploreQueryBuilder extends React.Component<Props> {
           chartType,
           updateChartType,
           validatedQuery,
+          filters,
+          updateFilters
         }) => {
           return (
             <>
@@ -127,6 +137,17 @@ class ExploreQueryBuilder extends React.Component<Props> {
                               updateMethods={updateSegments}
                             />
                           </FilterItem>
+                          {/* <StyledDivider type="vertical" />
+                          <FilterItem>
+                            <Label>Filters</Label>
+                            <FilterGroup
+                              members={filters}
+                              availableMembers={availableDimensions}
+                              addMemberName="Filter"
+                              updateMethods={updateFilters}
+                              schemaType={type}
+                            />
+                          </FilterItem> */}
                           <StyledDivider type="vertical" />
                           <FilterItem>
                             <Label>Time</Label>
@@ -164,7 +185,7 @@ class ExploreQueryBuilder extends React.Component<Props> {
                   <Empty
                     image="/images/empty.svg"
                     imageStyle={{
-                      height: 200,
+                      height: 200
                     }}
                     description={
                       <>

@@ -19,11 +19,11 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis,
+  YAxis
 } from 'recharts';
 import { chartColors } from '../constants';
 
-const numberFormatter = (item) => numeral(item).format('0,0');
+const numberFormatter = item => numeral(item).format('0,0');
 
 const dateFormatter = (item, dateType) => {
   switch (dateType) {
@@ -55,14 +55,14 @@ const CartesianChart = ({
   children,
   ChartComponent,
   height,
-  dateType,
+  dateType
 }) => (
   <ResponsiveContainer width="100%" height={height}>
     <ChartComponent margin={{ left: -10 }} data={resultSet.chartPivot()}>
       <XAxis
         axisLine={false}
         tickLine={false}
-        tickFormatter={(item) => xAxisFormatter(item, dateType)}
+        tickFormatter={item => xAxisFormatter(item, dateType)}
         dataKey="x"
         minTickGap={20}
       />
@@ -75,7 +75,7 @@ const CartesianChart = ({
       {children}
       <Legend />
       <Tooltip
-        labelFormatter={(item) => xAxisFormatter(item, dateType)}
+        labelFormatter={item => xAxisFormatter(item, dateType)}
         formatter={numberFormatter}
       />
     </ChartComponent>
@@ -168,17 +168,29 @@ const TypeToChartComponent = {
     }
     return <></>;
   },
+
   table: ({ resultSet }) => {
+    const columns = resultSet.tableColumns();
+    const renderResult = result => {
+      for (const [key, value] of Object.entries(result)) {
+        if (typeof value === 'number') {
+          result[key] = result[key]
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+      }
+
+      return result;
+    };
+
     return (
       <Table
         bordered={true}
         size="middle"
-        columns={resultSet
-          .tableColumns()
-          .map((c) => ({ ...c, dataIndex: c.key }))}
+        columns={columns.map(c => ({ ...c, dataIndex: c.key }))}
         dataSource={resultSet.tablePivot().map((result, index) => ({
-          ...result,
-          key: `${index}+${result.value}`,
+          ...renderResult(result),
+          key: `${index}+${result.value}`
         }))}
       />
     );
@@ -189,24 +201,24 @@ const TypeToChartComponent = {
       justify="center"
       align="middle"
       style={{
-        height: '100%',
+        height: '100%'
       }}
     >
       <Col>
-        {resultSet.seriesNames().map((s) => (
+        {resultSet.seriesNames().map(s => (
           <Statistic key={s.key} value={resultSet.totalRow()[s.key]} />
         ))}
       </Col>
     </Row>
-  ),
+  )
 };
 const TypeToMemoChartComponent = Object.keys(TypeToChartComponent)
-  .map((key) => ({
-    [key]: React.memo(TypeToChartComponent[key]),
+  .map(key => ({
+    [key]: React.memo(TypeToChartComponent[key])
   }))
   .reduce((a, b) => ({ ...a, ...b }));
 
-const renderChart = (Component) => ({ resultSet, dateType, error, height }) => {
+const renderChart = Component => ({ resultSet, dateType, error, height }) => {
   return (
     (resultSet && (
       <Component height={height} resultSet={resultSet} dateType={dateType} />
@@ -217,7 +229,7 @@ const renderChart = (Component) => ({ resultSet, dateType, error, height }) => {
 
 const ChartRenderer = ({
   vizState,
-  chartHeight = 300,
+  chartHeight = 300
 }: {
   vizState?: any;
   chartHeight?: any;
@@ -236,7 +248,7 @@ const ChartRenderer = ({
     return renderChart(component)({
       height: chartHeight,
       ...renderProps,
-      dateType,
+      dateType
     });
   }
 
