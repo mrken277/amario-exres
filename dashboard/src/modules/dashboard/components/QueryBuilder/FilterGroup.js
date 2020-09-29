@@ -26,11 +26,6 @@ const FilterGroup = ({
               updateMethods.update(m, { ...m, dimension: updateWith })
             }
             availableMembers={availableMembers}
-            style={{
-              width: 150,
-              textOverflow: 'ellipsis',
-              overflow: 'hidden'
-            }}
           >
             {m.dimension.title}
           </MemberDropdown>

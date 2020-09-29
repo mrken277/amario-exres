@@ -13,7 +13,7 @@ import {
   ShadowedHeader
 } from '../styles';
 import ButtonDropdown from './ButtonDropdown';
-// import FilterGroup from './FilterGroup';
+import FilterGroup from './FilterGroup';
 import MemberGroup from './MemberGroup';
 import SelectChartType from './SelectChartType';
 import stateChangeHeuristics from './stateChangeHeuristics.js';
@@ -137,17 +137,8 @@ class ExploreQueryBuilder extends React.Component<Props> {
                               updateMethods={updateSegments}
                             />
                           </FilterItem>
-                          {/* <StyledDivider type="vertical" />
-                          <FilterItem>
-                            <Label>Filters</Label>
-                            <FilterGroup
-                              members={filters}
-                              availableMembers={availableDimensions}
-                              addMemberName="Filter"
-                              updateMethods={updateFilters}
-                              schemaType={type}
-                            />
-                          </FilterItem> */}
+                          <StyledDivider type="vertical" />
+
                           <StyledDivider type="vertical" />
                           <FilterItem>
                             <Label>Time</Label>
@@ -162,9 +153,28 @@ class ExploreQueryBuilder extends React.Component<Props> {
                         </>
                       ) : null}
                     </Row>
+                    <Row
+                      justify="space-around"
+                      align="top"
+                      gutter={24}
+                      style={{
+                        marginBottom: 12
+                      }}
+                    >
+                      <Col span={24}>
+                        <FilterGroup
+                          members={filters}
+                          availableMembers={availableDimensions}
+                          addMemberName="Filter"
+                          updateMethods={updateFilters}
+                          schemaType={type}
+                        />
+                      </Col>
+                    </Row>
                   </Col>
                 </ControlsRow>
               </ShadowedHeader>
+
               {isQueryPresent ? (
                 <ChartWraper>
                   <SelectType>
