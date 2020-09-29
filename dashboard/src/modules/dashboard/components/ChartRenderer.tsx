@@ -3,6 +3,7 @@ import { Col, Row, Statistic, Table } from 'antd';
 import dayjs from 'dayjs';
 import Spinner from 'modules/common/components/Spinner';
 import numeral from 'numeral';
+
 import React from 'react';
 import {
   Area,
@@ -41,6 +42,15 @@ const dateFormatter = (item, dateType) => {
       return dayjs(item).format('YYYY');
   }
 };
+
+function decamelize(str, separator) {
+  separator = typeof separator === 'undefined' ? ' ' : separator;
+
+  return str
+    .replace(/([a-z\d])([A-Z])/g, '$1' + separator + '$2')
+    .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + separator + '$2')
+    .toLowerCase();
+}
 
 const xAxisFormatter = (item, dateType) => {
   if (dateType) {
@@ -177,6 +187,10 @@ const TypeToChartComponent = {
           result[key] = result[key]
             .toString()
             .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        if (typeof value === 'string') {
+          result[key] = decamelize(result[key], ' ');
         }
       }
 
