@@ -1,7 +1,10 @@
 import { Dropdown, Menu } from 'antd';
 import Icon from 'modules/common/components/Icon';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { StyledCard } from '../styles';
+
+// const domain = document.domain;
 
 const DashboardItemDropdown = ({ item, dashboardId, save }) => {
   const saveChart = () => {
@@ -9,7 +12,7 @@ const DashboardItemDropdown = ({ item, dashboardId, save }) => {
       name: item.name,
       dashboardId,
       vizState: item.vizState,
-      type: item.type,
+      type: item.type
     };
 
     return save(doc);
@@ -19,11 +22,11 @@ const DashboardItemDropdown = ({ item, dashboardId, save }) => {
     <Menu>
       <Menu.Item onClick={() => saveChart()}>Save to dashboard</Menu.Item>
       <Menu.Item>
-        <a
-          href={`/explore?itemName=${item.name}&dashboardId=${dashboardId}&vizState=${item.vizState}&type=${item.type}`}
+        <Link
+          to={`/explore?itemName=${item.name}&dashboardId=${dashboardId}&vizState=${item.vizState}&type=${item.type}`}
         >
           Edit in builder
-        </a>
+        </Link>
       </Menu.Item>
     </Menu>
   );
@@ -45,7 +48,7 @@ const InitialDataItem = ({
   children,
   title,
   save,
-  bordered,
+  bordered
 }) => (
   <StyledCard
     title={title}
