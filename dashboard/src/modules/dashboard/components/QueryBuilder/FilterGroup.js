@@ -35,7 +35,8 @@ const FilterGroup = ({
           onChange={operator => updateMethods.update(m, { ...m, operator })}
           style={{
             width: 200,
-            marginRight: 8
+            marginRight: 8,
+            marginLeft: 8
           }}
         >
           {m.operators.map(operator => (
