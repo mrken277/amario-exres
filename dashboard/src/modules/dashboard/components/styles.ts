@@ -86,6 +86,28 @@ const StyledCard = styled(Card)`
   }
 `;
 
+const StyledCardPdf = styled(Card)`
+  box-shadow: 0px 2px 4px rgba(141, 149, 166, 0.1);
+  border-radius: 4px;
+  height: 100%;
+  width: 100%;
+  margin-bottom: 20px;
+
+  .ant-card-head {
+    position: relative;
+    z-index: 2;
+  }
+
+  .ant-card-body {
+    max-height: calc(100% - 57px);
+    overflow-y: auto;
+
+    .ant-table-pagination.ant-pagination {
+      margin-bottom: 0;
+    }
+  }
+`;
+
 export {
   ChartWraper,
   FilterItem,
@@ -96,4 +118,5 @@ export {
   ShadowedHeader,
   Actions,
   StyledCard,
+  StyledCardPdf
 };
