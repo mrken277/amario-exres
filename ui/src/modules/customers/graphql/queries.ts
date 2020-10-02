@@ -42,6 +42,7 @@ const basicFields = `
       fullName
     }
   }
+  loyalty
 `;
 
 const customerFields = `

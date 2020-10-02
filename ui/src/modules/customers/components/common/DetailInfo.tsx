@@ -73,6 +73,7 @@ class DetailInfo extends React.PureComponent<Props> {
           customer.phoneValidationStatus,
           customer.primaryPhone
         )}
+        {this.renderRow('Loyalty', customer.loyalty)}
         {this.renderPosition(customer)}
         {this.renderRow(
           'Owner',
