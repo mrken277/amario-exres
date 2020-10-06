@@ -6,5 +6,6 @@ export const PAYMENT_TYPES = [
   { name: 'wallet', title: 'Wallet' },
   { name: 'barter', title: 'Barter' },
   { name: 'after', title: 'Receivable' },
-  { name: 'other', title: 'Other' }
+  { name: 'other', title: 'Other' },
+  { name: 'loyalty', title: 'Use Loyalty' }
 ];

@@ -136,7 +136,10 @@ export const KEY_LABELS = {
   company_industry_types: 'Company industry types',
   social_links: 'Social links',
 
-  PRODUCT_BOARD_TOKEN: 'Product Board Access token'
+  PRODUCT_BOARD_TOKEN: 'Product Board Access token',
+
+  LOYALTY_PERCENT_OF_DEAL: 'percent for deal amount',
+  LOYALTY_RATIO_CURRENCY: 'Ratio Of loyalty for currency /MNT/'
 };
 
 export const FILE_MIME_TYPES = [

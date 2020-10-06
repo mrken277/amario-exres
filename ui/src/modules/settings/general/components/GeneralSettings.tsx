@@ -381,6 +381,11 @@ class GeneralSettings extends React.Component<Props, State> {
           {this.renderConstant('company_industry_types')}
           {this.renderConstant('social_links')}
         </CollapseContent>
+
+        <CollapseContent title={__('Loyalty')}>
+          {this.renderItem('LOYALTY_PERCENT_OF_DEAL')}
+          {this.renderItem('LOYALTY_RATIO_CURRENCY')}
+        </CollapseContent>
       </ContentBox>
     );
 
