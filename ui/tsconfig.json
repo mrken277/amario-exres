@@ -13,7 +13,6 @@
     ],
     "sourceMap": true,
     "jsx": "preserve",
-    "rootDir": "src",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
