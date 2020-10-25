@@ -5,10 +5,10 @@ import React from 'react';
 
 var Filter = require('bad-words'),
     filter = new Filter();
- 
-console.log(filter.clean("Don't be an ash0le"));
 
 const App = (props) => {
+    console.log(filter.clean("Don't be an ash0le"), props.myPluginQuery.myPluginQ1);
+
     return (
         <div>
             My plugin
