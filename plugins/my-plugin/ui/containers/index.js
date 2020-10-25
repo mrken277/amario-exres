@@ -1,3 +1,6 @@
+import * as compose from 'lodash.flowright';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
 import React from 'react';
 
 var Filter = require('bad-words'),
@@ -5,7 +8,7 @@ var Filter = require('bad-words'),
  
 console.log(filter.clean("Don't be an ash0le"));
 
-const App = () => {
+const App = (props) => {
     return (
         <div>
             My plugin
@@ -13,4 +16,17 @@ const App = () => {
     )
 }
 
-export default App;
+export default compose(
+    graphql(
+      gql(`
+        query myPluginQ1 {
+            myPluginQ1 {
+                name
+            }
+        }
+      `),
+      {
+        name: 'myPluginQuery'
+      }
+    ),
+  )(App)

@@ -1,5 +1,3 @@
-import { gql } from 'apollo-server-express';
-
 import { types as CommonTypes } from './common';
 
 import { mutations as UserMutations, queries as UserQueries, types as UserTypes } from './user';
@@ -125,7 +123,7 @@ import {
 import { mutations as WebhookMutations, queries as WebhookQueries, types as WebhookTypes } from './webhook';
 import { mutations as WidgetMutations, queries as WidgetQueries, types as WidgetTypes } from './widget';
 
-export const types = `
+export let types = `
   scalar JSON
   scalar Date
   ${CommonTypes}
@@ -171,8 +169,7 @@ export const types = `
   ${WebhookTypes}
 `;
 
-export const queries = `
-  type Query {
+export let queries = `
     ${UserQueries}
     ${ChannelQueries}
     ${BrandQueries}
@@ -211,11 +208,9 @@ export const queries = `
     ${PipelineLabelQueries}
     ${WidgetQueries}
     ${WebhookQueries}
-  }
 `;
 
-export const mutations = `
-  type Mutation {
+export let mutations = `
     ${UserMutations}
     ${CompanyMutations}
     ${ConversationMutations}
@@ -252,7 +247,6 @@ export const mutations = `
     ${PipelineLabelMutations}
     ${WidgetMutations}
     ${WebhookMutations}
-  }
 `;
 
 export const subscriptions = `
@@ -277,6 +271,4 @@ export const subscriptions = `
   }
 `;
 
-const typeDefs = gql(`${types} ${queries} ${mutations} ${subscriptions}`);
-
-export default typeDefs;
+export default { types, queries, mutations, subscriptions } ;

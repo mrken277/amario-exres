@@ -18,3 +18,4 @@ package-lock.json
 dump.rdb
 /ui/cypress/videos
 /ui/cypress/screenshots
+plugins
