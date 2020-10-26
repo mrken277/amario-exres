@@ -12,6 +12,8 @@ for (const packageName of packageNames) {
 
         fs.copy(path.resolve(pkgFilePath), path.resolve(__dirname, '../plugins', packageName))
 
+        fs.remove(path.resolve(__dirname, '../plugins/.DS_Store'));
+
         // creating plugin.js
         const pluginsPath = path.resolve(__dirname, '../plugins');
 
