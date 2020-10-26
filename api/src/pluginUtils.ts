@@ -64,7 +64,7 @@ export const execInEveryPlugin = (callback) => {
                     graphqlSchema,
                     graphqlQueries,
                     graphqlMutations,
-                    models 
+                    models
                 })
             })
         })
