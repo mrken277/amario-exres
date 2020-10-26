@@ -53,6 +53,7 @@
     "draft-js-plugins-editor": "^2.0.3",
     "draft-js-static-toolbar-plugin": "^3.0.0",
     "erxes-icon": "^1.2.1",
+    "erxes-npm-plugin": "^0.0.1",
     "eslint": "^5.16.0",
     "eslint-config-react-app": "^4.0.1",
     "eslint-loader": "2.1.2",

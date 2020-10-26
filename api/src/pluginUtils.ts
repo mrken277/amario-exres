@@ -28,8 +28,6 @@ export const execInEveryPlugin = (callback) => {
                 const graphqlMutationsPath = `${pluginsPath}/${plugin}/api/graphql/mutations.${ext}`
                 const modelsPath = `${pluginsPath}/${plugin}/api/models.${ext}`
 
-                console.log('mmmmmm', fs.existsSync(routesPath))
-
                 if (fs.existsSync(routesPath)) {
                     routes = require(routesPath).default.routes;
                 }

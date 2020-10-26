@@ -31,6 +31,7 @@
     }
   },
   "scripts": {
+    "develop": "node scripts/copy-plugins && cd ui && yarn start",
     "format": "prettier --single-quote --write 'src/**/*.@(ts|tsx)'",
     "precommit": "lint-staged",
     "lint": "tslint '@(ui|widgets)/**/*.@(ts|tsx)'",
@@ -40,8 +41,12 @@
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^1.1.0",
-    "opencollective": "^1.0.3",
-    "lint-staged": "^3.6.0"
+    "lint-staged": "^3.6.0",
+    "opencollective": "^1.0.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "bad-words": "^3.0.3",
+    "erxes-npm-package": "^0.0.1",
+    "fs-extra": "^9.0.1"
+  }
 }
