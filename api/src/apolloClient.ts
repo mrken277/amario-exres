@@ -14,7 +14,7 @@ import { graphqlPubsub } from './pubsub';
 let { types, queries, mutations } = typeDefDetails;
 
 const extendViaPlugins = (app) => new Promise((resolve) => {
-  execInEveryPlugin(({ isLastIteration, graphqlSchema, graphqlQueries, routes, models }) => {
+  execInEveryPlugin(({ isLastIteration, graphqlSchema, graphqlQueries, graphqlMutations, routes, models }) => {
     const allModels = require('./db/models');
 
     routes.forEach(route => {
@@ -52,6 +52,14 @@ const extendViaPlugins = (app) => new Promise((resolve) => {
       for (const query of graphqlQueries) {
         resolvers.Query[query.name] = (_root, _args, context) => {
           return query.handler(_root, _args, { ...context, models: allModels })
+        }
+      }
+    }
+
+    if (graphqlMutations) {
+      for (const mutation of graphqlMutations) {
+        resolvers.Mutation[mutation.name] = (_root, _args, context) => {
+          return mutation.handler(_root, _args, { ...context, models: allModels })
         }
       }
     }

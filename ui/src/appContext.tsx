@@ -13,6 +13,7 @@ interface IState {
 
 interface IStore extends IState {
   currentUser?: IUser;
+  plugins?;
   changeLanguage: (languageCode: string) => void;
   closeLoadingBar: () => void;
   doneIndicatorAction: () => void;
@@ -24,7 +25,7 @@ const AppContext = React.createContext({} as IStore);
 export const AppConsumer = AppContext.Consumer;
 
 export class AppProvider extends React.Component<
-  { currentUser?: IUser },
+  { currentUser?: IUser, plugins? },
   IState
 > {
   constructor(props) {
@@ -114,6 +115,7 @@ export class AppProvider extends React.Component<
       <AppContext.Provider
         value={{
           currentUser,
+          plugins: this.props.plugins,
           currentLanguage,
           changeLanguage: this.changeLanguage,
           closeLoadingBar: this.closeLoadingBar,

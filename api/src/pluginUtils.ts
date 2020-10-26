@@ -12,6 +12,7 @@ export const execInEveryPlugin = (callback) => {
                 let routes = [];
                 let models = [];
                 let graphqlQueries = [];
+                let graphqlMutations = [];
 
                 const graphqlSchema = {
                     types: '',
@@ -19,10 +20,11 @@ export const execInEveryPlugin = (callback) => {
                     mutations: '',
                 }
 
-                const routesPath = `${pluginsPath}/${plugin}/routes.js`
-                const graphqlSchemaPath = `${pluginsPath}/${plugin}/graphql/schema.js`
-                const graphqlQueriesPath = `${pluginsPath}/${plugin}/graphql/queries.js`
-                const modelsPath = `${pluginsPath}/${plugin}/models.js`
+                const routesPath = `${pluginsPath}/${plugin}/api/routes.js`
+                const graphqlSchemaPath = `${pluginsPath}/${plugin}/api/graphql/schema.js`
+                const graphqlQueriesPath = `${pluginsPath}/${plugin}/api/graphql/queries.js`
+                const graphqlMutationsPath = `${pluginsPath}/${plugin}/api/graphql/mutations.js`
+                const modelsPath = `${pluginsPath}/${plugin}/api/models.js`
 
                 if (fs.existsSync(routesPath)) {
                     routes = require(routesPath).default.routes;
@@ -34,6 +36,10 @@ export const execInEveryPlugin = (callback) => {
 
                 if (fs.existsSync(graphqlQueriesPath)) {
                     graphqlQueries = require(graphqlQueriesPath).default;
+                }
+
+                if (fs.existsSync(graphqlMutationsPath)) {
+                    graphqlMutations = require(graphqlMutationsPath).default;
                 }
 
                 if (fs.existsSync(graphqlSchemaPath)) {
@@ -52,8 +58,14 @@ export const execInEveryPlugin = (callback) => {
                     }
                 }
                 
-
-                callback({ isLastIteration: pluginsCount === index + 1,  routes, graphqlSchema, graphqlQueries, models })
+                callback({
+                    isLastIteration: pluginsCount === index + 1,
+                    routes,
+                    graphqlSchema,
+                    graphqlQueries,
+                    graphqlMutations,
+                    models 
+                })
             })
         })
     }
