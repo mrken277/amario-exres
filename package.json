@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "bad-words": "^3.0.3",
-    "erxes-npm-package": "^0.0.1",
+    "erxes-npm-package": "^0.0.2",
     "fs-extra": "^9.0.1"
   }
 }

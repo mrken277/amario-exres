@@ -1027,10 +1027,10 @@ error-ex@^1.2.0, error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
-erxes-npm-package@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/erxes-npm-package/-/erxes-npm-package-0.0.1.tgz#4dc791ea4ae10486615211f30c0c484f1616d950"
-  integrity sha512-1UG5ufArfi34SoJa3UTsXtFkm5U0O3RfePHfkE6FIBjv4YS5NE6h9gxO+ZK0e5ExgTVAVelWE6/4T/Bp3xAjWQ==
+erxes-npm-package@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/erxes-npm-package/-/erxes-npm-package-0.0.2.tgz#8a39ae515518c92131989b39911a443818f14690"
+  integrity sha512-aeFDbObu6wYZ2FTMK2xLEswyvppkUMotktaXtpkuRUstv4Riy/qHOz6RMCUh7kvbr8aCQk6nmrh8MZZRLiU4rQ==
   dependencies:
     bad-words "^3.0.3"
     chalk "^4.1.0"
