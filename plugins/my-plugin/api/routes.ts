@@ -3,7 +3,7 @@ export default {
         {
             method: "POST",
             path: "/test",
-            handler: async ({ req, models }) => {
+            handler: async ({ _req, models }) => {
                 console.log('sssss', await models.MyPlugin.find());
             }
         }

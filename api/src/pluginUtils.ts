@@ -20,11 +20,15 @@ export const execInEveryPlugin = (callback) => {
                     mutations: '',
                 }
 
-                const routesPath = `${pluginsPath}/${plugin}/api/routes.js`
-                const graphqlSchemaPath = `${pluginsPath}/${plugin}/api/graphql/schema.js`
-                const graphqlQueriesPath = `${pluginsPath}/${plugin}/api/graphql/queries.js`
-                const graphqlMutationsPath = `${pluginsPath}/${plugin}/api/graphql/mutations.js`
-                const modelsPath = `${pluginsPath}/${plugin}/api/models.js`
+                const ext = process.env.NODE_ENV === 'production' ? 'js' : 'ts';
+
+                const routesPath = `${pluginsPath}/${plugin}/api/routes.${ext}`
+                const graphqlSchemaPath = `${pluginsPath}/${plugin}/api/graphql/schema.${ext}`
+                const graphqlQueriesPath = `${pluginsPath}/${plugin}/api/graphql/queries.${ext}`
+                const graphqlMutationsPath = `${pluginsPath}/${plugin}/api/graphql/mutations.${ext}`
+                const modelsPath = `${pluginsPath}/${plugin}/api/models.${ext}`
+
+                console.log('mmmmmm', fs.existsSync(routesPath))
 
                 if (fs.existsSync(routesPath)) {
                     routes = require(routesPath).default.routes;

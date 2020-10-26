@@ -6,7 +6,6 @@ const myPluginSchema = {
     optional: true,
     label: "Description",
   },
-  integrationIds: { type: [String], label: "Integrations" },
   memberIds: { type: [String], label: "Members" },
   userId: { type: String, label: "Created by" },
 };

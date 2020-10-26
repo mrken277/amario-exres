@@ -5,6 +5,6 @@
     "inlineSourceMap": false,
     "inlineSources": false
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*.ts", "../plugins/**/*.ts"],
   "exclude": ["node_modules", "dist", "src/__tests__"]
 }
