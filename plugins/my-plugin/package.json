@@ -1,0 +1,7 @@
+{
+  "name": "myplugin",
+  "dependencies": {
+    "bad-words": "^3.0.3",
+    "chalk": "^4.1.0"
+  }
+}

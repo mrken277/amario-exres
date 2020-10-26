@@ -3,12 +3,8 @@ import { checkPermission, moduleRequireLogin } from '../../permissions/wrappers'
 import { IContext } from '../../types';
 import { IListParams } from './boards';
 import {
-  archivedItems,
-  archivedItemsCount,
-  checkItemPermByUser,
-  generateSort,
-  generateTaskCommonFilters,
-  IArchiveArgs,
+    archivedItems, archivedItemsCount, checkItemPermByUser, generateSort, generateTaskCommonFilters,
+    IArchiveArgs
 } from './boardUtils';
 
 const taskQueries = {
