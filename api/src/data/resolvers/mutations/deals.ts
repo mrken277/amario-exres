@@ -1,11 +1,14 @@
-import * as _ from 'underscore';
+
+
 import { Deals } from '../../../db/models';
 import { IItemDragCommonFields } from '../../../db/models/definitions/boards';
 import { IDeal } from '../../../db/models/definitions/deals';
 import { checkPermission } from '../../permissions/wrappers';
 import { IContext } from '../../types';
 import { checkUserIds } from '../../utils';
-import { itemsAdd, itemsArchive, itemsChange, itemsCopy, itemsEdit, itemsRemove } from './boardUtils';
+import {
+    itemsAdd, itemsArchive, itemsChange, itemsCopy, itemsEdit, itemsRemove
+} from './boardUtils';
 
 interface IDealsEdit extends IDeal {
   _id: string;
