@@ -170,7 +170,7 @@ class Navigation extends React.Component<{
       if (menu) {
         pluginMenus.push(
           this.renderNavItem(
-            menu.label,
+            menu.permission,
             menu.label,
             `/${plugin.name}${menu.link}`,
             menu.icon,
