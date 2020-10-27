@@ -71,7 +71,7 @@ export interface IItemParams {
   reminderMinute?: number;
   companyIds?: string[];
   customerIds?: string[];
-  sourceConversationId?: string;
+  sourceConversationIds?: string[];
   labelIds?: string[];
   proccessId?: string;
   aboveItemId?: string;
@@ -121,6 +121,30 @@ export interface IStage {
   pipelineId: string;
   status: string;
   order: number;
+}
+
+export interface ITask {
+  _id: string;
+  name: string;
+  customers?: ICustomer[];
+  companies?: ICompany[];
+  assignedUserIds?: string[];
+}
+
+export interface IDeal {
+  _id: string;
+  name: string;
+  customers?: ICustomer[];
+  companies?: ICompany[];
+  assignedUserIds?: string[];
+}
+
+export interface ITicket {
+  _id: string;
+  name: string;
+  customers?: ICustomer[];
+  companies?: ICompany[];
+  assignedUserIds?: string[];
 }
 
 export interface IConversionStage extends IStage {
@@ -233,6 +257,24 @@ export type StagesQueryResponse = {
   refetch: ({ pipelineId }: { pipelineId?: string }) => Promise<any>;
 };
 
+export type TasksQueryResponse = {
+  tasks: ITask[];
+  loading: boolean;
+  refetch: ({ stageId }: { stageId?: string }) => Promise<any>;
+};
+
+export type DealsQueryResponse = {
+  deals: IDeal[];
+  loading: boolean;
+  refetch: ({ stageId }: { stageId?: string }) => Promise<any>;
+};
+
+export type TicketsQueryResponse = {
+  tickets: ITicket[];
+  loading: boolean;
+  refetch: ({ stageId }: { stageId?: string }) => Promise<any>;
+};
+
 export type ConversionStagesQueryResponse = {
   stages: IConversionStage[];
   loading: boolean;
@@ -261,9 +303,16 @@ export type WatchVariables = {
   type?: string;
 };
 
+
+
 export type SaveMutation = ({ variables: IItemParams }) => Promise<any>;
 
+export type UpdateMutation = ({ variables: IItemParams }) => Promise<any>;
+
 export type WatchMutation = ({ variables: WatchVariables }) => Promise<any>;
+
+
+
 
 export type RemoveVariables = {
   _id: string;
@@ -334,7 +383,6 @@ export type RemovePipelineLabelMutationResponse = {
 
 export type PipelineLabelMutationVariables = {
   pipelineId: string;
-  targetId: string;
   labelIds: string[];
 };
 
@@ -371,3 +419,20 @@ export interface IEditFormContent {
   copy: () => void;
   remove: (id: string) => void;
 }
+
+
+export type ConvertToMutationVariables = {
+  type: string;
+  _id: string;
+  itemId?: string;
+  itemName?: string;
+  stageId?: string
+};
+
+export type ConvertToMutationResponse = {
+  conversationConvertToCard: (
+    doc: {
+      variables: ConvertToMutationVariables;
+    }
+  ) => Promise<any>;
+};

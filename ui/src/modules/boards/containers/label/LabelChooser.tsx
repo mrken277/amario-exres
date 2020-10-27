@@ -63,7 +63,7 @@ class LabelChooserContainer extends React.Component<
       const variables = {
         pipelineId,
         targetId: item._id,
-        labelIds: selectedLabelIds
+        labelIds: selectedLabelIds,
       };
 
       pipelineLabelMutation({ variables })

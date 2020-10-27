@@ -13,6 +13,7 @@ type Props = {
   boardId?: string;
   pipelineId?: string;
   stageId?: string;
+  cardId?: string;
   saveItem: (doc: IItemParams, callback: (item: IItem) => void) => void;
   showSelect?: boolean;
   closeModal: () => void;
@@ -25,6 +26,9 @@ type State = {
   disabled: boolean;
   boardId: string;
   pipelineId: string;
+  cardId: string;
+  customers?: string[];
+  companies?: string[];
 };
 
 class AddForm extends React.Component<Props, State> {
@@ -36,6 +40,7 @@ class AddForm extends React.Component<Props, State> {
       boardId: props.boardId || '',
       pipelineId: props.pipelineId || '',
       stageId: props.stageId || '',
+      cardId: props.cardId || '',
       name: localStorage.getItem(`${props.options.type}Name`) || ''
     };
   }
@@ -44,23 +49,27 @@ class AddForm extends React.Component<Props, State> {
     this.setState(({ [name]: value } as unknown) as Pick<State, keyof State>);
   };
 
+
+  
+
   save = e => {
     e.preventDefault();
 
-    const { stageId, name } = this.state;
+    const { stageId, name, cardId } = this.state;
     const { saveItem, closeModal, callback } = this.props;
 
     if (!stageId) {
       return Alert.error('No stage');
     }
 
-    if (!name) {
-      return Alert.error('Enter name');
+    if (!name && !cardId) {
+      return Alert.error('Please enter name or select card');
     }
 
     const doc = {
       name,
-      stageId
+      stageId,
+      _id: cardId
     };
 
     // before save, disable save button
@@ -89,11 +98,14 @@ class AddForm extends React.Component<Props, State> {
       return null;
     }
 
-    const { stageId, pipelineId, boardId } = this.state;
+    const { stageId, pipelineId, boardId, cardId} = this.state;
 
     const stgIdOnChange = stgId => this.onChangeField('stageId', stgId);
     const plIdOnChange = plId => this.onChangeField('pipelineId', plId);
     const brIdOnChange = brId => this.onChangeField('boardId', brId);
+    const cdIdOnChange = cdId => this.onChangeField('cardId', cdId);
+
+  
 
     return (
       <BoardSelect
@@ -101,9 +113,12 @@ class AddForm extends React.Component<Props, State> {
         stageId={stageId}
         pipelineId={pipelineId}
         boardId={boardId}
+        cardId={cardId}
+        autoSelectCard={false}
         onChangeStage={stgIdOnChange}
         onChangePipeline={plIdOnChange}
         onChangeBoard={brIdOnChange}
+        onChangeCard={cdIdOnChange}
       />
     );
   }
@@ -123,7 +138,7 @@ class AddForm extends React.Component<Props, State> {
 
         <HeaderRow>
           <HeaderContent>
-            <ControlLabel required={true}>Name</ControlLabel>
+            <ControlLabel required={false}>Name</ControlLabel>
             <FormControl
               value={this.state.name}
               autoFocus={true}

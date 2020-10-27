@@ -4,19 +4,22 @@ import { __ } from 'modules/common/utils';
 import React from 'react';
 import Select from 'react-select-plus';
 import { FormContainer } from '../styles/common';
-import { IBoard, IPipeline, IStage } from '../types';
+import { IBoard, IPipeline ,IStage} from '../types';
 import { selectOptions } from '../utils';
 
 type Props = {
   boards: IBoard[];
   pipelines: IPipeline[];
   stages: IStage[];
+  cards: any[];
   boardId?: string;
   pipelineId?: string;
   stageId?: string;
+  cardId?: string;
   onChangeBoard: (value: string) => void;
   onChangePipeline: (value: string) => void;
   onChangeStage: (value: string, callback?: () => void) => void;
+  onChangeCard: (value: string) => void;
   callback?: () => void;
 };
 
@@ -48,14 +51,19 @@ class BoardSelect extends React.Component<Props> {
       boards,
       pipelines,
       stages,
+      cards,
       boardId,
       pipelineId,
       stageId,
+      cardId,
       onChangeBoard,
       onChangePipeline,
       onChangeStage,
+      onChangeCard,
       callback
     } = this.props;
+
+    console.log('cards = ',cards )
 
     return (
       <>
@@ -86,6 +94,16 @@ class BoardSelect extends React.Component<Props> {
             stageId,
             stage => onChangeStage(stage.value, callback),
             selectOptions(stages)
+          )}
+        </FormGroup>
+
+        <FormGroup>
+          <ControlLabel>Card</ControlLabel>
+          {this.renderSelect(
+            __('Attach to an existing card'),
+            cardId,
+            card => onChangeCard(card.value),
+            selectOptions(cards)
           )}
         </FormGroup>
       </>
