@@ -63,8 +63,6 @@ class BoardSelect extends React.Component<Props> {
       callback
     } = this.props;
 
-    console.log('cards = ',cards )
-
     return (
       <>
         <FormGroup>
