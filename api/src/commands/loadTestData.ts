@@ -4,7 +4,6 @@ import * as fs from 'fs';
 import { disconnect } from 'mongoose';
 import * as shelljs from 'shelljs';
 import * as XlsxStreamReader from 'xlsx-stream-reader';
-
 import { checkFieldNames } from '../data/modules/fields/utils';
 import widgetMutations from '../data/resolvers/mutations/widgets';
 import { getEnv } from '../data/utils';
@@ -379,7 +378,7 @@ const main = async () => {
     name: faker.random.word(),
     userId: admin._id,
     initialStageId: selectedTicketStage?._id,
-    sourceConversationId: randomConversation?._id,
+    sourceConversationIds: [randomConversation?._id || ''],
     stageId: selectedTicketStage?._id || '',
   });
 
