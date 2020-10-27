@@ -16,5 +16,5 @@ static
 .env.production.local
 package-lock.json
 dump.rdb
-plugins
+/plugins
 ui/src/plugins.ts
