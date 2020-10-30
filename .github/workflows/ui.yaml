@@ -55,16 +55,6 @@ jobs:
         cd ui
         yarn install
 
-    - name: Lint
-      run: |
-        cd ui
-        yarn lint
-
-    - name: Tsc
-      run: |
-        cd ui
-        yarn tsc
-
     - name: Build
       run: |
         cd ui
