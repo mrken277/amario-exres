@@ -1,4 +1,7 @@
 {
+  "compilerOptions": {
+    "outDir": "../build/engages",
+  },
   "extends": "./tsconfig.json",
   "exclude": ["node_modules", "dist", "src/__tests__"]
 }
