@@ -5,6 +5,7 @@
   "homepage": "https://erxes.io",
   "repository": "https://github.com/erxes/erxes",
   "bugs": "https://github.com/erxes/erxes/issues",
+  "license": "GNU General Public License v3.0 with Commons Clause",
   "keywords": [
     "node",
     "graphql",
