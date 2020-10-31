@@ -6,7 +6,8 @@ const _ = require('lodash');
 const program = require('commander');
 const packageJSON = require('../package.json');
 const buildCmd = require('../ commands/build');
-const developCmd = require('../ commands/develop');
+const startUICmd = require('../ commands/start-ui');
+const startAPICmd = require('../ commands/start-api');
 
 /**
  * Normalize version argument
@@ -35,11 +36,17 @@ program
     console.log(packageJSON.version);
   });
 
-// `$ erxes develop`
+// `$ start erxes ui`
 program
-  .command('develop')
-  .description('Run your Erxes application in development mode')
-  .action(developCmd);
+  .command('start-ui')
+  .description('Run your Erxes ui in development mode')
+  .action(startUICmd);
+
+// `$ start erxes api`
+program
+  .command('start-api')
+  .description('Run your Erxes api in development mode')
+  .action(startAPICmd);
 
 // `$ erxes build`
 program

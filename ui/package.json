@@ -1,6 +1,7 @@
 {
   "name": "erxes",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "@daily-co/daily-js": "^0.9.991",
     "@nateradebaugh/react-datetime": "^4.0.0-rc.10",
