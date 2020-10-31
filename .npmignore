@@ -11,6 +11,5 @@ build
 config.gypi
 CVS
 npm-debug.log
-node_modules
 __tests__
 .github
