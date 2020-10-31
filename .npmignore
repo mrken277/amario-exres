@@ -13,3 +13,4 @@ CVS
 npm-debug.log
 __tests__
 .github
+node_modules
