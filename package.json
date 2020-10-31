@@ -12,7 +12,6 @@
     "react"
   ],
   "license": "GNU General Public License v3.0 with Commons Clause",
-  "private": true,
   "collective": {
     "type": "opencollective",
     "url": "https://opencollective.com/erxes",
