@@ -1,5 +1,5 @@
 const fse = require("fs-extra");
-const { filePath, downloadLatesVersion, startApi, startUI } = require('./utils');
+const { filePath, downloadLatesVersion, startApi, startUI, log } = require('./utils');
 
 module.exports = async function() {
   try {
@@ -11,6 +11,8 @@ module.exports = async function() {
 
     startApi(configs);
     startUI(configs);
+
+    log('Done  ...');
   } catch (e) {
     console.log(e);
   }

@@ -92,6 +92,7 @@ const generate = async () => {
       "version": '0.1.0',
       "scripts": {
         "start": 'erxes start',
+        "update": 'erxes update'
       },
       "dependencies": {
         "erxes": "^0.1.5",
