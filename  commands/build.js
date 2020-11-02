@@ -8,27 +8,32 @@ module.exports = async function() {
   await shell.exec('yarn install');
   await shell.exec('yarn build');
   await shell.exec('cp -rf src/private ../build/api');
+  await shell.exec('cp -rf node_modules ../build/api');
   await shell.exec('mkdir -p .../build/api/src/ && cp -rf src/initialData ../build/api/src/');
 
   // build integrations
   process.chdir(path.resolve(__dirname, '..', 'integrations'));
   await shell.exec('yarn install');
   await shell.exec('yarn build');
+  await shell.exec('cp -rf node_modules ../build/integrations');
 
   // build engages
   process.chdir(path.resolve(__dirname, '..', 'engages-email-sender'));
   await shell.exec('yarn install');
   await shell.exec('yarn build');
+  await shell.exec('cp -rf node_modules ../build/engages');
 
   // build email verifier
   process.chdir(path.resolve(__dirname, '..', 'email-verifier'));
   await shell.exec('yarn install');
   await shell.exec('yarn build');
+  await shell.exec('cp -rf node_modules ../build/email-verifier');
 
   // build logger
   process.chdir(path.resolve(__dirname, '..', 'logger'));
   await shell.exec('yarn install');
   await shell.exec('yarn build');
+  await shell.exec('cp -rf node_modules ../build/logger');
 
   // build ui
   process.chdir(path.resolve(__dirname, '..', 'ui'));
