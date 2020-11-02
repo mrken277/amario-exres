@@ -6,6 +6,7 @@ const _ = require('lodash');
 const program = require('commander');
 const packageJSON = require('../package.json');
 const startCmd = require('../ commands/start');
+const updateCmd = require('../ commands/update');
 
 /**
  * Normalize version argument
@@ -39,5 +40,11 @@ program
   .command('start')
   .description('Run erxes')
   .action(startCmd);
+
+// `$ update erxes`
+program
+  .command('update')
+  .description('Download the latest changes of erxes')
+  .action(updateCmd);
 
 program.parse(process.argv);
