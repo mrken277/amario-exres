@@ -2,7 +2,7 @@ const path = require('path');
 const shell = require('shelljs');
 const fs = require('fs-extra');
 
-module.exports = async function() {
+const build = async function() {
   // build api
   process.chdir(path.resolve(__dirname, '..', 'api'));
   await shell.exec('yarn install');
@@ -42,3 +42,7 @@ module.exports = async function() {
 
   fs.move(path.resolve(__dirname, '..', 'ui/build'), path.resolve(__dirname, '..', 'build/ui'));
 };
+
+build().catch((e) => {
+  console.log(e.message)
+});

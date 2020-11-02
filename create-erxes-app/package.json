@@ -1,0 +1,32 @@
+{
+  "name": "create-erxes-app",
+  "version": "0.0.1",
+  "description": "Generate a new Erxes application.",
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://erxes.io",
+  "keywords": [
+    "create-erxes-app",
+    "create",
+    "new",
+    "generate",
+    "erxes"
+  ],
+  "main": "./index.js",
+  "bin": {
+    "create-erxes-app": "./index.js"
+  },
+  "files": [
+    "create-erxes-app.js",
+    "index.js"
+  ],
+  "dependencies": {
+    "commander": "6.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/erxes/erxes.git"
+  },
+  "bugs": {
+    "url": "https://github.com/erxes/erxes/issues"
+  }
+}
