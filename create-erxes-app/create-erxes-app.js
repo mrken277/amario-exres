@@ -40,9 +40,9 @@ const stopProcess = (message) => {
   process.exit(1);
 };
 
-const generate = async () => {
-  const rootPath = resolve(projectName);
+const rootPath = resolve(projectName);
 
+const generate = async () => {
   if (await fse.exists(rootPath)) {
     const stat = await fse.stat(rootPath);
 
@@ -139,6 +139,8 @@ const generate = async () => {
     }
   );
 
+  await generateNginxConf({ DOMAIN: maindomain });
+
   execa('yarn', ['install'], { cwd: rootPath}).stdout.pipe(process.stdout);
 }
 
@@ -233,3 +235,55 @@ module.exports = async function() {
 
   await generate();
 }();
+
+const generateNginxConf = async ({ DOMAIN }) => {
+  const commonConfig = `
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_http_version 1.1;
+  `
+
+  await fs.promises.writeFile(
+    join(rootPath, 'nginx.conf'),
+    `
+    server {
+            listen 80;
+
+            server_name ${DOMAIN.replace('https', '').replace('http', '')};
+
+            # erxes build path
+            root ${join(rootPath, 'build/ui')};
+            index index.html;
+
+            error_log /var/log/nginx/erxes.error.log;
+            access_log /var/log/nginx/erxes.access.log;
+
+            location / {
+                    root ${join(rootPath, 'build/ui')};
+                    index index.html;
+                    try_files $uri /index.html;
+            }
+
+            # widgets is running on 3200 port.
+            location /widgets/ {
+                    proxy_pass http://127.0.0.1:3200/;
+                    ${commonConfig}
+            }
+
+            # api project is running on 3300 port.
+            location /api/ {
+                    proxy_pass http://127.0.0.1:3300/;
+                    ${commonConfig}
+            }
+            # erxes integrations project is running on 3400 port.
+            location /integrations/ {
+                    proxy_pass http://127.0.0.1:3400/;
+                    ${commonConfig}
+            }
+    }
+  `);
+}
