@@ -46,17 +46,21 @@ const runCommand = (command, args, options) => {
 }
 
 module.exports.startApi = (configs) => {
-  log('Starting main api, workers, crons using pm2 ...');
+  log('Starting backend services using pm2 ...');
+
+  const { JWT_TOKEN_SECRET, DOMAIN, API_DOMAIN, WIDGETS_DOMAIN, MONGO_URL, INTEGRATIONS_API_DOMAIN } = configs;
 
   const commonEnv = {
     NODE_ENV: 'production',
-    JWT_TOKEN_SECRET: configs.JWT_TOKEN_SECRET || '',
-    MONGO_URL: `${configs.MONGO_URL || ''}/erxes`,
-    MAIN_APP_DOMAIN: configs.DOMAIN,
-    WIDGETS_DOMAIN: configs.WIDGETS_DOMAIN,
-    INTEGRATIONS_API_DOMAIN: configs.INTEGRATIONS_API_DOMAIN,
+    JWT_TOKEN_SECRET: JWT_TOKEN_SECRET || '',
+    MONGO_URL: `${MONGO_URL || ''}/erxes`,
+    MAIN_APP_DOMAIN: DOMAIN,
+    WIDGETS_DOMAIN: WIDGETS_DOMAIN,
+    INTEGRATIONS_API_DOMAIN: INTEGRATIONS_API_DOMAIN,
     ...configs.API || {}
   }
+
+  log('Starting main api ...');
 
   runCommand("pm2", ["start", filePath('build/api')], {
     env: {
@@ -64,6 +68,8 @@ module.exports.startApi = (configs) => {
       DEBUG: 'erxes-api:*', 
     }
   });
+
+  log('Starting crons ...');
 
   runCommand("pm2", ["start", filePath('build/api/cronJobs')], {
     env: {
@@ -73,10 +79,26 @@ module.exports.startApi = (configs) => {
     }
   });
 
+  log('Starting workers ...');
+
   runCommand("pm2", ["start", filePath('build/api/workers')], {
     env: {
       ...commonEnv,
       DEBUG: 'erxes-workers:*', 
+    }
+  });
+
+  log('Starting integrations ...');
+
+  runCommand("pm2", ["start", filePath('build/integrations')], {
+    env: {
+      NODE_ENV: 'production',
+      DEBUG: 'erxes-integrations:*',
+      DOMAIN: INTEGRATIONS_API_DOMAIN,
+      MAIN_APP_DOMAIN: DOMAIN,
+      MAIN_API_DOMAIN: API_DOMAIN,
+      MONGO_URL: `${MONGO_URL || ''}/erxes_integrations`,
+      ...configs.INTEGRATIONS || {}
     }
   });
 }
@@ -91,15 +113,28 @@ module.exports.startUI = async (configs) => {
   log('Starting ui using serve ...');
 
   const { API_DOMAIN, WIDGETS_DOMAIN } = configs;
+  const subscriptionsUrl = `${API_DOMAIN.includes('https') ? 'wss' : 'ws'}//${API_DOMAIN}/subscriptions`;
 
   await fs.promises.writeFile(filePath('build/ui/js/env.js'), `
     window.env = {
       NODE_ENV: "production",
       REACT_APP_API_URL: "${API_DOMAIN}",
-      REACT_APP_API_SUBSCRIPTION_URL: "${API_DOMAIN.includes('https') ? 'wss' : 'ws'}//${API_DOMAIN}/subscriptions",
+      REACT_APP_API_SUBSCRIPTION_URL: "${subscriptionsUrl}",
       REACT_APP_CDN_HOST: "${WIDGETS_DOMAIN}"
     }
   `);
 
-  return execa("serve", ['-s', '-p', uiConfigs.PORT, filePath('build/ui')]).stdout.pipe(process.stdout);
+  runCommand("serve", ['-s', '-p', uiConfigs.PORT, filePath('build/ui')]);
+
+  log('Starting widgets ...');
+
+  runCommand("pm2", ["start", filePath('build/widgets')], {
+    env: {
+      ...configs.WIDGETS || {},
+      NODE_ENV: 'production',
+      ROOT_URL: WIDGETS_DOMAIN,
+      API_URL: API_DOMAIN,
+      API_SUBSCRIPTIONS_URL: subscriptionsUrl,
+    }
+  });
 }

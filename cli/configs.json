@@ -8,9 +8,15 @@
     "UI": {
         "PORT": 3000
     },
+    "WIDGETS": {
+        "PORT": 3200
+    },
     "API": {
         "PORT": 3300,
         "PORT_WORKERS": 3700,
         "PORT_CRONS": 3600
+    },
+    "INTEGRATIONS": {
+        "PORT": 3400
     }
 }
