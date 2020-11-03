@@ -12,8 +12,8 @@ const filePath = (pathName) => {
   return resolve(process.cwd());
 }
 
-const log = (msg) => {
-  console.log(chalk.green(msg));
+const log = (msg, color='green') => {
+  console.log(chalk[color](msg));
 }
 
 module.exports.log = log;
@@ -54,9 +54,13 @@ module.exports.startApi = (configs) => {
 }
 
 module.exports.startUI = (configs) => {
-  log('Starting ui using serve ...');
-
   const uiConfigs = configs.UI || {};
+
+  if (uiConfigs.disableServe) {
+    return log('Default serve is disabled. Please serve using services like nginx, aws s3 ...', 'yellow');
+  }
+
+  log('Starting ui using serve ...');
 
   return execa("serve", ['-s', '-p', uiConfigs.PORT, filePath('build/ui')]).stdout.pipe(process.stdout);
 }

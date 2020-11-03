@@ -95,7 +95,7 @@ const generate = async () => {
         "update": 'erxes update'
       },
       "dependencies": {
-        "erxes": "^0.1.5",
+        "erxes": "0.1.10"
       },
     },
     {
