@@ -2,6 +2,8 @@
     "JWT_TOKEN_SECRET": "token",
     "MONGO_URL": "mongodb://localhost",
     "DOMAIN": "http://localhost:3000",
+    "API_DOMAIN": "http://localhost:3300",
+    "WIDGETS_DOMAIN": "http://localhost:3400",
     "UI": {
         "PORT": 3000
     },

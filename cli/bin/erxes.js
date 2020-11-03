@@ -5,8 +5,8 @@ const _ = require('lodash');
 
 const program = require('commander');
 const packageJSON = require('../package.json');
-const startCmd = require('../ commands/start');
-const updateCmd = require('../ commands/update');
+const startCmd = require('../commands/start');
+const updateCmd = require('../commands/update');
 
 /**
  * Normalize version argument
