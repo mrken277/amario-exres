@@ -2,6 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../build/email-verifier",
+    "sourceMap": false,
+    "inlineSourceMap": false,
+    "inlineSources": false
   },
   "exclude": ["node_modules", "dist", "src/__tests__"]
 }

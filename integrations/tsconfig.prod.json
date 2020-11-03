@@ -2,6 +2,8 @@
   "compilerOptions": {
     "outDir": "../build/integrations",
     "sourceMap": false,
+    "inlineSourceMap": false,
+    "inlineSources": false
   },
   "extends": "./tsconfig.json",
   "include": ["./src/**/*.ts"],
