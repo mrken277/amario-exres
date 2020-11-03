@@ -101,6 +101,43 @@ module.exports.startApi = (configs) => {
       ...configs.INTEGRATIONS || {}
     }
   });
+
+  log('Starting engages ...');
+
+  runCommand("pm2", ["start", filePath('build/engages')], {
+    env: {
+      NODE_ENV: 'production',
+      DEBUG: 'erxes-engages:*',
+      DOMAIN: INTEGRATIONS_API_DOMAIN,
+      MAIN_API_DOMAIN: API_DOMAIN,
+      MONGO_URL: `${MONGO_URL || ''}/erxes_engages`,
+      ...configs.ENGAGES || {}
+    }
+  });
+
+  log('Starting logger ...');
+
+  runCommand("pm2", ["start", filePath('build/logger')], {
+    env: {
+      NODE_ENV: 'production',
+      DEBUG: 'erxes-logs:*',
+      DOMAIN: INTEGRATIONS_API_DOMAIN,
+      MAIN_API_DOMAIN: API_DOMAIN,
+      MONGO_URL: `${MONGO_URL || ''}/erxes_logger`,
+      ...configs.LOGGER || {}
+    }
+  });
+
+  log('Starting email verifier ...');
+
+  runCommand("pm2", ["start", filePath('build/email-verifier')], {
+    env: {
+      NODE_ENV: 'production',
+      DEBUG: 'erxes-email-verifier:*',
+      MONGO_URL: `${MONGO_URL || ''}/erxes_email_verifier`,
+      ...configs.EMAIL_VERIFIER || {}
+    }
+  });
 }
 
 module.exports.startUI = async (configs) => {

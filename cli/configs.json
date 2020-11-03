@@ -5,18 +5,15 @@
     "API_DOMAIN": "http://localhost:3300",
     "INTEGRATIONS_API_DOMAIN": "http://localhost:3300",
     "WIDGETS_DOMAIN": "http://localhost:3400",
-    "UI": {
-        "PORT": 3000
-    },
-    "WIDGETS": {
-        "PORT": 3200
-    },
+    "UI": { "PORT": 3000 },
     "API": {
         "PORT": 3300,
         "PORT_WORKERS": 3700,
         "PORT_CRONS": 3600
     },
-    "INTEGRATIONS": {
-        "PORT": 3400
-    }
+    "WIDGETS": { "PORT": 3200 },
+    "INTEGRATIONS": { "PORT": 3400 },
+    "LOGGER": { "PORT": 3800 },
+    "ENGAGES": { "PORT": 3900 },
+    "EMAIL_VERIFIER": { "PORT": 4100 }
 }
