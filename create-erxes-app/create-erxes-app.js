@@ -3,6 +3,7 @@
 const { resolve, join } = require('path');
 const { createInterface } = require('readline');
 
+const inquirer = require('inquirer');
 const chalk = require('chalk');
 const fs = require('fs');
 const fse = require('fs-extra');
@@ -80,6 +81,7 @@ const generate = async () => {
   const configs = {
     "JWT_TOKEN_SECRET": Math.random().toString(),
     "MONGO_URL": "mongodb://localhost",
+    "ELASTICSEARCH_URL": elasticsearchUrl,
     "DOMAIN": maindomain,
     "API_DOMAIN": apiDomain,
     "INTEGRATIONS_API_DOMAIN": integrationsApiDomain,
@@ -144,6 +146,7 @@ let rabbitmqHost;
 let redisHost;
 let redisPort=6379;
 let redisPassword='';
+let elasticsearchUrl='http:/localhost:9200';
 
 const readline = createInterface({
   input: process.stdin,
@@ -159,6 +162,7 @@ const askQuestion = (question) => {
 }
 
 module.exports = async function() {
+
   const inputDomain = await askQuestion('Please enter your domain (localhost): ')
 
   if (inputDomain) {
@@ -187,6 +191,37 @@ module.exports = async function() {
     if (redisPasswordInput) {
       redisPassword = redisPasswordInput;
     }
+  }
+
+  const answers = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'elasticsearch',
+      message: 'Elasticsearch url ?',
+      choices: [
+        'http://localhost:9200 (on development mode)',
+        'https://elasticsearch.erxes.io (limited erxes.io offering)',
+        'enter your elasticsearch url',
+      ],
+    },
+  ])
+
+  if (answers.elasticsearch.includes('http://localhost:9200')) {
+    elasticsearchUrl = 'http://localhost:9200';
+  }
+
+  if (answers.elasticsearch.includes('https://elasticsearch.erxes.io')) {
+    elasticsearchUrl = 'https://elasticsearch.erxes.io';
+  }
+
+  if (answers.elasticsearch.includes('enter')) {
+    const answer = await inquirer.prompt({
+      type: 'input',
+      name: 'customElasticsearchUrl',
+      message: 'Please enter your elasticsearch url ?'
+    });
+
+    elasticsearchUrl = answer.customElasticsearchUrl;
   }
 
   readline.close();
