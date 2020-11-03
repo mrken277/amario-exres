@@ -35,6 +35,10 @@ const build = async function() {
   await shell.exec('yarn build');
   await shell.exec('cp -rf node_modules ../build/logger');
 
+  // copy elkSyncer
+  process.chdir(path.resolve(__dirname, '..'));
+  await shell.exec('cp -rf elkSyncer build');
+
   // build ui
   process.chdir(path.resolve(__dirname, '..', 'ui'));
   await shell.exec('yarn install --production');
