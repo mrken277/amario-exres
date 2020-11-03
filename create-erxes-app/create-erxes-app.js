@@ -20,6 +20,7 @@ program
   .version(packageJson.version)
   .arguments('<directory>')
   .option('--debug', 'Display database connection error')
+  .option('--quickStart', 'Not going to ask a lot of configurations')
   .description('create a new application')
   .action(directory => {
     projectName = directory;
@@ -162,11 +163,15 @@ const askQuestion = (question) => {
 }
 
 module.exports = async function() {
-
   const inputDomain = await askQuestion('Please enter your domain (localhost): ')
 
   if (inputDomain) {
     domain = inputDomain;
+  }
+
+  if (program.quickStart) {
+    await generate();
+    return readline.close();
   }
 
   const rabbitmqHostInput = await askQuestion('Are you using rabbitmq then enter rabbitmq host (optional): ')
