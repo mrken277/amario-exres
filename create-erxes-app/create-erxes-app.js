@@ -77,28 +77,40 @@ const generate = async () => {
     widgetsDomain = `${domain}/widgets`;
   }
 
+  const configs = {
+    "JWT_TOKEN_SECRET": Math.random().toString(),
+    "MONGO_URL": "mongodb://localhost",
+    "DOMAIN": maindomain,
+    "API_DOMAIN": apiDomain,
+    "INTEGRATIONS_API_DOMAIN": integrationsApiDomain,
+    "WIDGETS_DOMAIN": widgetsDomain,
+    "UI": { "PORT": 3000 },
+    "API": {
+        "PORT": 3300,
+        "PORT_WORKERS": 3700,
+        "PORT_CRONS": 3600
+    },
+    "WIDGETS": { "PORT": 3200 },
+    "INTEGRATIONS": { "PORT": 3400 },
+    "LOGGER": { "PORT": 3800 },
+    "ENGAGES": { "PORT": 3900 },
+    "EMAIL_VERIFIER": { "PORT": 4100 }
+  };
+
+  if (rabbitmqHost) {
+    configs.RABBITMQ_HOST = rabbitmqHost;
+  }
+
+  if (redisHost) {
+    configs.REDIS_HOST = redisHost;
+    configs.REDIS_PORT = redisPort;
+    configs.REDIS_PASSWORD = redisPassword;
+  }
+
   // create configs.json
   await fse.writeJSON(
     join(rootPath, 'configs.json'),
-    {
-      "JWT_TOKEN_SECRET": Math.random().toString(),
-      "MONGO_URL": "mongodb://localhost",
-      "DOMAIN": maindomain,
-      "API_DOMAIN": apiDomain,
-      "INTEGRATIONS_API_DOMAIN": integrationsApiDomain,
-      "WIDGETS_DOMAIN": widgetsDomain,
-      "UI": { "PORT": 3000 },
-      "API": {
-          "PORT": 3300,
-          "PORT_WORKERS": 3700,
-          "PORT_CRONS": 3600
-      },
-      "WIDGETS": { "PORT": 3200 },
-      "INTEGRATIONS": { "PORT": 3400 },
-      "LOGGER": { "PORT": 3800 },
-      "ENGAGES": { "PORT": 3900 },
-      "EMAIL_VERIFIER": { "PORT": 4100 }
-    },
+    configs,
     {
       spaces: 2,
     }
@@ -128,18 +140,56 @@ const generate = async () => {
 }
 
 let domain = 'localhost';
+let rabbitmqHost;
+let redisHost;
+let redisPort=6379;
+let redisPassword='';
 
 const readline = createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-readline.question(`Please enter your domain (localhost): `, async (inputDomain) => {
+const askQuestion = (question) => {
+  return new Promise((resolve) => {
+    readline.question(question, (answer) => {
+      return resolve(answer);
+    });
+  });
+}
+
+module.exports = async function() {
+  const inputDomain = await askQuestion('Please enter your domain (localhost): ')
+
   if (inputDomain) {
     domain = inputDomain;
+  }
+
+  const rabbitmqHostInput = await askQuestion('Are you using rabbitmq then enter rabbitmq host (optional): ')
+
+  if (rabbitmqHostInput) {
+    rabbitmqHost = rabbitmqHostInput;
+  }
+
+  const redisHostInput = await askQuestion('Are you using redis then enter redis host (optional): ')
+
+  if (redisHostInput) {
+    redisHost = redisHostInput;
+
+    const redisPortInput = await askQuestion('Redis port (6379): ')
+
+    if (redisPortInput) {
+      redisPort = redisPortInput;
+    }
+
+    const redisPasswordInput = await askQuestion('Redis password (optional): ')
+
+    if (redisPasswordInput) {
+      redisPassword = redisPasswordInput;
+    }
   }
 
   readline.close();
 
   await generate();
-});
+}();
