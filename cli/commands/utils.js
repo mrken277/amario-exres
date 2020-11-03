@@ -195,7 +195,7 @@ module.exports.startUI = async (configs) => {
 
   log('Starting widgets ...');
 
-  runCommand("pm2", ["start", filePath('build/widgets')], {
+  runCommand("pm2", ["--name", "widgets", "start", filePath('build/widgets/dist')], {
     env: {
       ...configs.WIDGETS || {},
       NODE_ENV: 'production',
