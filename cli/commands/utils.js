@@ -41,17 +41,44 @@ module.exports.downloadLatesVersion = async () => {
   await fse.remove(filePath('build.tar'));
 }
 
-module.exports.startApi = (configs) => {
-  log('Starting api using pm2 ...');
+const runCommand = (command, args, options) => {
+  return execa(command, args, options).stdout.pipe(process.stdout);
+}
 
-  return execa("pm2", ["start", filePath('build/api')], {
+module.exports.startApi = (configs) => {
+  log('Starting main api, workers, crons using pm2 ...');
+
+  const commonEnv = {
+    NODE_ENV: 'production',
+    JWT_TOKEN_SECRET: configs.JWT_TOKEN_SECRET || '',
+    MONGO_URL: `${configs.MONGO_URL || ''}/erxes`,
+    MAIN_APP_DOMAIN: configs.DOMAIN,
+    WIDGETS_DOMAIN: configs.WIDGETS_DOMAIN,
+    INTEGRATIONS_API_DOMAIN: configs.INTEGRATIONS_API_DOMAIN,
+    ...configs.API || {}
+  }
+
+  runCommand("pm2", ["start", filePath('build/api')], {
     env: {
-      JWT_TOKEN_SECRET: configs.JWT_TOKEN_SECRET || '',
-      MONGO_URL: `${configs.MONGO_URL || ''}/erxes`,
-      MAIN_APP_DOMAIN: configs.DOMAIN,
-      ...configs.API || {}
+      ...commonEnv,
+      DEBUG: 'erxes-api:*', 
     }
-  }).stdout.pipe(process.stdout);
+  });
+
+  runCommand("pm2", ["start", filePath('build/api/cronJobs')], {
+    env: {
+      ...commonEnv,
+      PROCESS_NAME: 'crons',
+      DEBUG: 'erxes-crons:*', 
+    }
+  });
+
+  runCommand("pm2", ["start", filePath('build/api/workers')], {
+    env: {
+      ...commonEnv,
+      DEBUG: 'erxes-workers:*', 
+    }
+  });
 }
 
 module.exports.startUI = async (configs) => {
