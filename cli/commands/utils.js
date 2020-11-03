@@ -45,10 +45,34 @@ const runCommand = (command, args, options) => {
   return execa(command, args, options).stdout.pipe(process.stdout);
 }
 
-module.exports.startApi = (configs) => {
+module.exports.startBackendServices = (configs) => {
   log('Starting backend services using pm2 ...');
 
-  const { JWT_TOKEN_SECRET, DOMAIN, API_DOMAIN, WIDGETS_DOMAIN, MONGO_URL, INTEGRATIONS_API_DOMAIN } = configs;
+  const {
+    JWT_TOKEN_SECRET,
+    DOMAIN,
+    API_DOMAIN,
+    WIDGETS_DOMAIN,
+    INTEGRATIONS_API_DOMAIN,
+    MONGO_URL,
+
+    RABBITMQ_HOST,
+    REDIS_HOST,
+    REDIS_PORT,
+    REDIS_PASSWORD
+  } = configs;
+
+  const optionalDbConfigs = {};
+
+  if (RABBITMQ_HOST) {
+    optionalDbConfigs.RABBITMQ_HOST = RABBITMQ_HOST;
+  }
+
+  if (REDIS_HOST) {
+    optionalDbConfigs.REDIS_HOST = REDIS_HOST;
+    optionalDbConfigs.REDIS_PORT = REDIS_PORT;
+    optionalDbConfigs.REDIS_PASSWORD = REDIS_PASSWORD;
+  }
 
   const commonEnv = {
     NODE_ENV: 'production',
@@ -65,6 +89,7 @@ module.exports.startApi = (configs) => {
   runCommand("pm2", ["start", filePath('build/api')], {
     env: {
       ...commonEnv,
+      ...optionalDbConfigs,
       DEBUG: 'erxes-api:*', 
     }
   });
@@ -75,6 +100,7 @@ module.exports.startApi = (configs) => {
     env: {
       ...commonEnv,
       PROCESS_NAME: 'crons',
+      ...optionalDbConfigs,
       DEBUG: 'erxes-crons:*', 
     }
   });
@@ -84,6 +110,7 @@ module.exports.startApi = (configs) => {
   runCommand("pm2", ["start", filePath('build/api/workers')], {
     env: {
       ...commonEnv,
+      ...optionalDbConfigs,
       DEBUG: 'erxes-workers:*', 
     }
   });
@@ -98,6 +125,7 @@ module.exports.startApi = (configs) => {
       MAIN_APP_DOMAIN: DOMAIN,
       MAIN_API_DOMAIN: API_DOMAIN,
       MONGO_URL: `${MONGO_URL || ''}/erxes_integrations`,
+      ...optionalDbConfigs,
       ...configs.INTEGRATIONS || {}
     }
   });
@@ -111,6 +139,7 @@ module.exports.startApi = (configs) => {
       DOMAIN: INTEGRATIONS_API_DOMAIN,
       MAIN_API_DOMAIN: API_DOMAIN,
       MONGO_URL: `${MONGO_URL || ''}/erxes_engages`,
+      ...optionalDbConfigs,
       ...configs.ENGAGES || {}
     }
   });
@@ -124,6 +153,7 @@ module.exports.startApi = (configs) => {
       DOMAIN: INTEGRATIONS_API_DOMAIN,
       MAIN_API_DOMAIN: API_DOMAIN,
       MONGO_URL: `${MONGO_URL || ''}/erxes_logger`,
+      ...optionalDbConfigs,
       ...configs.LOGGER || {}
     }
   });
