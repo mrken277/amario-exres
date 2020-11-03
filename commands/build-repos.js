@@ -41,6 +41,13 @@ const build = async function() {
   await shell.exec('yarn build');
 
   fs.move(path.resolve(__dirname, '..', 'ui/build'), path.resolve(__dirname, '..', 'build/ui'));
+
+  // build widgets
+  process.chdir(path.resolve(__dirname, '..', 'widgets'));
+  await shell.exec('yarn install');
+  await shell.exec('yarn build');
+
+  fs.copy(path.resolve(__dirname, '..', 'widgets'), path.resolve(__dirname, '..', 'build/widgets'));
 };
 
 build().catch((e) => {
