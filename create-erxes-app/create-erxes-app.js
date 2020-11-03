@@ -1,6 +1,7 @@
 'use strict';
 
 const { resolve, join } = require('path');
+const { createInterface } = require('readline');
 
 const chalk = require('chalk');
 const fs = require('fs');
@@ -64,19 +65,39 @@ const generate = async () => {
 
   await fs.promises.mkdir(rootPath);
 
+  let maindomain = 'http://localhost:3000';
+  let apiDomain = 'http://localhost:3300';
+  let integrationsApiDomain = 'http://localhost:3300';
+  let widgetsDomain = 'http://localhost:3400';
+
+  if (domain !== 'localhost') {
+    maindomain = domain;
+    apiDomain = `${domain}/api`;
+    integrationsApiDomain = `${domain}/integrations`;
+    widgetsDomain = `${domain}/widgets`;
+  }
+
   // create configs.json
   await fse.writeJSON(
     join(rootPath, 'configs.json'),
     {
-      "JWT_TOKEN_SECRET": "token",
+      "JWT_TOKEN_SECRET": Math.random().toString(),
       "MONGO_URL": "mongodb://localhost",
-      "DOMAIN": "http://localhost:3000",
-      "UI": {
-          "PORT": 3000
-      },
+      "DOMAIN": maindomain,
+      "API_DOMAIN": apiDomain,
+      "INTEGRATIONS_API_DOMAIN": integrationsApiDomain,
+      "WIDGETS_DOMAIN": widgetsDomain,
+      "UI": { "PORT": 3000 },
       "API": {
-          "PORT": 3300
-      }
+          "PORT": 3300,
+          "PORT_WORKERS": 3700,
+          "PORT_CRONS": 3600
+      },
+      "WIDGETS": { "PORT": 3200 },
+      "INTEGRATIONS": { "PORT": 3400 },
+      "LOGGER": { "PORT": 3800 },
+      "ENGAGES": { "PORT": 3900 },
+      "EMAIL_VERIFIER": { "PORT": 4100 }
     },
     {
       spaces: 2,
@@ -106,6 +127,19 @@ const generate = async () => {
   execa('yarn', ['install'], { cwd: rootPath}).stdout.pipe(process.stdout);
 }
 
-generate().catch((e) => {
-  console.log(e)
+let domain = 'localhost';
+
+const readline = createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+readline.question(`Please enter your domain (localhost): `, async (inputDomain) => {
+  if (inputDomain) {
+    domain = inputDomain;
+  }
+
+  readline.close();
+
+  await generate();
 });
