@@ -83,6 +83,7 @@ const generate = async () => {
     "JWT_TOKEN_SECRET": Math.random().toString(),
     "MONGO_URL": "mongodb://localhost",
     "ELASTICSEARCH_URL": elasticsearchUrl,
+    "ELK_SYNCER": elkSyncer,
     "DOMAIN": maindomain,
     "API_DOMAIN": apiDomain,
     "INTEGRATIONS_API_DOMAIN": integrationsApiDomain,
@@ -131,7 +132,7 @@ const generate = async () => {
         "update": 'erxes update'
       },
       "dependencies": {
-        "erxes": "0.1.10"
+        "erxes": "0.1.11"
       },
     },
     {
@@ -150,6 +151,7 @@ let redisHost;
 let redisPort=6379;
 let redisPassword='';
 let elasticsearchUrl='http:/localhost:9200';
+let elkSyncer=false;
 
 const readline = createInterface({
   input: process.stdin,
@@ -200,13 +202,14 @@ module.exports = async function() {
     }
   }
 
-  const answers = await inquirer.prompt([
+  let answer;
+  let answers = await inquirer.prompt([
     {
       type: 'list',
       name: 'elasticsearch',
       message: 'Elasticsearch url ?',
       choices: [
-        'http://localhost:9200 (on development mode)',
+        'http://localhost:9200 (on local)',
         'https://elasticsearch.erxes.io (limited erxes.io offering)',
         'enter your elasticsearch url',
       ],
@@ -222,13 +225,31 @@ module.exports = async function() {
   }
 
   if (answers.elasticsearch.includes('enter')) {
-    const answer = await inquirer.prompt({
+    answer = await inquirer.prompt({
       type: 'input',
       name: 'customElasticsearchUrl',
       message: 'Please enter your elasticsearch url ?'
     });
 
     elasticsearchUrl = answer.customElasticsearchUrl;
+  }
+
+  if (elasticsearchUrl !== 'https://elasticsearch.erxes.io') {
+    answers = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'elkSyncer',
+        message: 'How do you want to sync mongo to elasticsearch ?',
+        choices: [
+          'Using mongo change stream',
+          'Using seperate process written in python which requires specs and dependencies'
+        ],
+      },
+    ]);
+
+    if (answers.elkSyncer.includes('python')) {
+      elkSyncer = true;
+    }
   }
 
   readline.close();

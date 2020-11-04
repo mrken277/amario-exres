@@ -4,6 +4,7 @@ const tar = require("tar");
 const fs = require('fs');
 const fse = require("fs-extra");
 const { resolve } = require("path");
+const { config } = require('process');
 
 const filePath = (pathName) => {
   if (pathName) {
@@ -55,6 +56,8 @@ module.exports.startBackendServices = (configs) => {
     WIDGETS_DOMAIN,
     INTEGRATIONS_API_DOMAIN,
     MONGO_URL,
+    ELASTICSEARCH_URL,
+    ELK_SYNCER,
 
     RABBITMQ_HOST,
     REDIS_HOST,
@@ -168,6 +171,17 @@ module.exports.startBackendServices = (configs) => {
       ...configs.EMAIL_VERIFIER || {}
     }
   });
+
+  if (ELK_SYNCER) {
+    runCommand('pip', ['install', '-r', 'build/elkSyncer/requirements.txt']);
+
+    runCommand("pm2", ["start", filePath('build/elkSyncer/main.py'), '--interpreter', '/usr/bin/python3'], {
+      env: {
+        MONGO_URL,
+        ELASTICSEARCH_URL
+      }
+    });
+  }
 }
 
 module.exports.startUI = async (configs) => {
