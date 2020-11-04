@@ -1,4 +1,5 @@
 import withCurrentUser from 'modules/auth/containers/withCurrentUser';
+import AutomationResponse from 'modules/automations/containers/Response';
 import asyncComponent from 'modules/common/components/AsyncComponent';
 import queryString from 'query-string';
 import React from 'react';
@@ -54,6 +55,7 @@ const renderRoutes = (currentUser) => {
   if (currentUser) {
     return (
       <>
+        <AutomationResponse currentUser={currentUser} />
         <MainLayout currentUser={currentUser}>
           <NotificationRoutes />
           <InboxRoutes />

@@ -7,7 +7,7 @@ const WebsiteAppDetailContainer = () => {
     <AppConsumer>
       {({ changeRoute, getMessengerData, currentWebsiteApp }) => {
         const websiteApp = (getMessengerData().websiteApps || []).find(
-          app => app._id === currentWebsiteApp
+          app => app.name === currentWebsiteApp
         );
 
         if (!websiteApp) {
