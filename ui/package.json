@@ -95,6 +95,7 @@
     "record-cypress": "cypress run --record --key fd048d49-6b4c-4e6b-885f-819a533c2fc4"
   },
   "devDependencies": {
+    "cypress": "^4.9.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "lint-staged": "^5.0.0",
@@ -103,8 +104,7 @@
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^4.0.0",
-    "typescript": "^3.0.3",
-    "cypress": "^4.9.0"
+    "typescript": "^3.0.3"
   },
   "browserslist": [
     ">0.2%",
