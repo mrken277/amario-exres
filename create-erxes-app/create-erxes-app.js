@@ -132,7 +132,7 @@ const generate = async () => {
         "update": 'erxes update'
       },
       "dependencies": {
-        "erxes": "0.1.11"
+        "erxes": "0.1.12"
       },
     },
     {
@@ -242,7 +242,7 @@ module.exports = async function() {
         message: 'How do you want to sync mongo to elasticsearch ?',
         choices: [
           'Using mongo change stream',
-          'Using seperate process written in python which requires specs and dependencies'
+          'Using seperate process written in python which requires more specs and more dependencies'
         ],
       },
     ]);
