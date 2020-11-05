@@ -38,6 +38,7 @@ program
 // `$ start erxes`
 program
   .command('start')
+  .option('--ignoreDownload', 'Ingore latest updates download')
   .description('Run erxes')
   .action(startCmd);
 

@@ -129,6 +129,7 @@ const generate = async () => {
       "version": '0.1.0',
       "scripts": {
         "start": 'erxes start',
+        "reconfigure": 'erxes start --ignoreDownload',
         "update": 'erxes update'
       },
       "dependencies": {
