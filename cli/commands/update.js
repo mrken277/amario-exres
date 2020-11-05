@@ -8,7 +8,7 @@ module.exports = async function() {
     log('Stopping pm2 processes ...');
 
     // stop services
-    execa("pm2", ["delete", 'all']).stdout.pipe(process.stdout);
+    await execa("pm2", ["delete", 'all']).stdout.pipe(process.stdout);
 
     log('Removing old build ...');
 

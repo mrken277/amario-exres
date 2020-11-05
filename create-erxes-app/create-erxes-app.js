@@ -275,10 +275,9 @@ const generateNginxConf = async ({ DOMAIN }) => {
     server {
             listen 80;
 
-            server_name ${DOMAIN.replace('https', '').replace('http', '')};
+            server_name ${DOMAIN.replace('https://', '').replace('http://', '')};
 
             # erxes build path
-            root ${join(rootPath, 'build/ui')};
             index index.html;
 
             error_log /var/log/nginx/erxes.error.log;

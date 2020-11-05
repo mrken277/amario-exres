@@ -11,8 +11,8 @@ module.exports = async function(program) {
     // create configs file
     const configs = await fse.readJSON(filePath('configs.json'));
 
-    startBackendServices(configs);
-    startUI(configs);
+    await startBackendServices(configs);
+    await startUI(configs);
 
     log('Done  ...');
   } catch (e) {

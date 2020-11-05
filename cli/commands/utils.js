@@ -65,7 +65,7 @@ const runCommand = (command, args, options) => {
   return execa(command, args, options).stdout.pipe(process.stdout);
 }
 
-module.exports.startBackendServices = (configs) => {
+module.exports.startBackendServices = async (configs) => {
   log('Starting backend services using pm2 ...');
 
   const {
@@ -108,7 +108,7 @@ module.exports.startBackendServices = (configs) => {
 
   log('Starting main api ...');
 
-  runCommand("pm2", ["start", filePath('build/api')], {
+  await runCommand("pm2", ["start", filePath('build/api')], {
     env: {
       ...commonEnv,
       ...optionalDbConfigs,
@@ -118,7 +118,7 @@ module.exports.startBackendServices = (configs) => {
 
   log('Starting crons ...');
 
-  runCommand("pm2", ["start", filePath('build/api/cronJobs')], {
+  await runCommand("pm2", ["start", filePath('build/api/cronJobs')], {
     env: {
       ...commonEnv,
       PROCESS_NAME: 'crons',
@@ -129,7 +129,7 @@ module.exports.startBackendServices = (configs) => {
 
   log('Starting workers ...');
 
-  runCommand("pm2", ["start", filePath('build/api/workers')], {
+  await runCommand("pm2", ["start", filePath('build/api/workers')], {
     env: {
       ...commonEnv,
       ...optionalDbConfigs,
@@ -139,7 +139,7 @@ module.exports.startBackendServices = (configs) => {
 
   log('Starting integrations ...');
 
-  runCommand("pm2", ["start", filePath('build/integrations')], {
+  await runCommand("pm2", ["start", filePath('build/integrations')], {
     env: {
       NODE_ENV: 'production',
       DEBUG: 'erxes-integrations:*',
@@ -154,7 +154,7 @@ module.exports.startBackendServices = (configs) => {
 
   log('Starting engages ...');
 
-  runCommand("pm2", ["start", filePath('build/engages')], {
+  await runCommand("pm2", ["start", filePath('build/engages')], {
     env: {
       NODE_ENV: 'production',
       DEBUG: 'erxes-engages:*',
@@ -168,7 +168,7 @@ module.exports.startBackendServices = (configs) => {
 
   log('Starting logger ...');
 
-  runCommand("pm2", ["start", filePath('build/logger')], {
+  await runCommand("pm2", ["start", filePath('build/logger')], {
     env: {
       NODE_ENV: 'production',
       DEBUG: 'erxes-logs:*',
@@ -182,7 +182,7 @@ module.exports.startBackendServices = (configs) => {
 
   log('Starting email verifier ...');
 
-  runCommand("pm2", ["start", filePath('build/email-verifier')], {
+  await runCommand("pm2", ["start", filePath('build/email-verifier')], {
     env: {
       NODE_ENV: 'production',
       DEBUG: 'erxes-email-verifier:*',
@@ -192,9 +192,12 @@ module.exports.startBackendServices = (configs) => {
   });
 
   if (ELK_SYNCER) {
-    runCommand('pip', ['install', '-r', 'build/elkSyncer/requirements.txt']);
+    log('Starting elkSyncer ...');
 
-    runCommand("pm2", ["start", filePath('build/elkSyncer/main.py'), '--interpreter', '/usr/bin/python3'], {
+    await runCommand('apt', ['install', '-y', 'python3-pip']);
+    await runCommand('pip3', ['install', '-y', '-r', 'build/elkSyncer/requirements.txt']);
+
+    await runCommand("pm2", ["start", filePath('build/elkSyncer/main.py'), '--interpreter', '/usr/bin/python3'], {
       env: {
         MONGO_URL,
         ELASTICSEARCH_URL
