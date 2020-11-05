@@ -207,7 +207,7 @@ module.exports.startUI = async (configs) => {
     return log('Default serve is disabled. Please serve using services like nginx, aws s3 ...', 'yellow');
   }
 
-  log('Starting ui using serve ...');
+  log('Serving ui...');
 
   const { API_DOMAIN, WIDGETS_DOMAIN } = configs;
   const subscriptionsUrl = `${API_DOMAIN.includes('https') ? 'wss' : 'ws'}//${API_DOMAIN}/subscriptions`;
@@ -221,7 +221,7 @@ module.exports.startUI = async (configs) => {
     }
   `);
 
-  runCommand("serve", ['-s', '-p', uiConfigs.PORT, filePath('build/ui')]);
+  runCommand("pm2", ["serve", "--name", "ui", "--spa", filePath('build/ui'), uiConfigs.PORT]);
 
   log('Starting widgets ...');
 
