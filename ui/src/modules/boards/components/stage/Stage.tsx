@@ -14,7 +14,7 @@ import {
   StageTitle
 } from 'modules/boards/styles/stage';
 import EmptyState from 'modules/common/components/EmptyState';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { __ } from 'modules/common/utils';
 import React from 'react';

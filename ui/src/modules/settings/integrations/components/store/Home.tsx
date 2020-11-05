@@ -1,7 +1,7 @@
 import EmptyState from 'modules/common/components/EmptyState';
 import FormControl from 'modules/common/components/form/Control';
 import HeaderDescription from 'modules/common/components/HeaderDescription';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { __ } from 'modules/common/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
 import { INTEGRATIONS } from 'modules/settings/integrations/constants';

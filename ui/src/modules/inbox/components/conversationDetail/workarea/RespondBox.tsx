@@ -2,7 +2,7 @@ import asyncComponent from 'modules/common/components/AsyncComponent';
 import Button from 'modules/common/components/Button';
 import { SmallLoader } from 'modules/common/components/ButtonMutate';
 import FormControl from 'modules/common/components/form/Control';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import NameCard from 'modules/common/components/nameCard/NameCard';
 import Tip from 'modules/common/components/Tip';
 import { IAttachmentPreview } from 'modules/common/types';

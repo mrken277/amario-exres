@@ -1,6 +1,6 @@
 import { IStage } from 'modules/boards/types';
 import Button from 'modules/common/components/Button';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { CloseModal, ModalFooter } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';
 import CreateForm from 'modules/forms/containers/CreateForm';

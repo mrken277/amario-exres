@@ -1,6 +1,6 @@
 import { ColorButton } from 'modules/boards/styles/common';
 import { IItem } from 'modules/boards/types';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import colors from 'modules/common/styles/colors';
 import { __ } from 'modules/common/utils';
 import React from 'react';

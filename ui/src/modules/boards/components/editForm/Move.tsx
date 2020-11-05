@@ -8,7 +8,7 @@ import {
   Stages
 } from 'modules/boards/styles/item';
 import { IStage } from 'modules/boards/types';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import React from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';

@@ -1,5 +1,5 @@
 import Button from 'modules/common/components/Button';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import { IAttachment } from 'modules/common/types';
 import { __ } from 'modules/common/utils';

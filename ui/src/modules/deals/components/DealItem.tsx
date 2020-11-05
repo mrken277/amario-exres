@@ -14,7 +14,7 @@ import {
 import { Content } from 'modules/boards/styles/stage';
 import { IOptions } from 'modules/boards/types';
 import { renderAmount, renderPriority } from 'modules/boards/utils';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { colors } from 'modules/common/styles';
 import { __ } from 'modules/common/utils';
 import React from 'react';

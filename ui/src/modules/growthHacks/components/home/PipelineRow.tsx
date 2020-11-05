@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { IPipeline } from 'modules/boards/types';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Label from 'modules/common/components/Label';
 import React from 'react';
 import { Link } from 'react-router-dom';

@@ -1,7 +1,7 @@
 import { formatText } from 'modules/activityLogs/utils';
 import Button from 'modules/common/components/Button';
 import FormControl from 'modules/common/components/form/Control';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import IntegrationIcon from 'modules/common/components/IntegrationIcon';
 import Tip from 'modules/common/components/Tip';
 import { Column, Columns, Title } from 'modules/common/styles/chooser';

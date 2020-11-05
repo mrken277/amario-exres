@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import AsyncComponent from 'modules/common/components/AsyncComponent';
 import Button from 'modules/common/components/Button';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import TextInfo from 'modules/common/components/TextInfo';
 import { __ } from 'modules/common/utils';

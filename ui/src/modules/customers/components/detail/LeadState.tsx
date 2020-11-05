@@ -1,5 +1,5 @@
 import Button from 'modules/common/components/Button';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { LEAD_CHOICES } from 'modules/customers/constants';
 import { LeadStateWrapper, StateItem } from 'modules/customers/styles';
 import { ICustomer } from 'modules/customers/types';

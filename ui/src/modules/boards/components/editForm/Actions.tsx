@@ -6,7 +6,7 @@ import { ColorButton } from 'modules/boards/styles/common';
 import { ActionContainer } from 'modules/boards/styles/item';
 import { IItem, IOptions } from 'modules/boards/types';
 import ChecklistAdd from 'modules/checklists/components/AddButton';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { __ } from 'modules/common/utils';
 import React from 'react';
 import { ArchiveBtn } from './ArchiveBtn';

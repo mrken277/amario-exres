@@ -1,5 +1,5 @@
 import { IUser } from 'modules/auth/types';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import React from 'react';
 import Task from '../containers/items/boardItems/Task';

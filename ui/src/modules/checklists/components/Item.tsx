@@ -2,7 +2,7 @@ import debounce from 'lodash/debounce';
 import Button from 'modules/common/components/Button';
 import DropdownToggle from 'modules/common/components/DropdownToggle';
 import { FormControl } from 'modules/common/components/form';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { isEmptyContent } from 'modules/common/utils';
 import React, { useEffect, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';

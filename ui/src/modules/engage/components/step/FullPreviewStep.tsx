@@ -1,4 +1,4 @@
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { Tabs, TabTitle } from 'modules/common/components/tabs';
 
 import { __ } from 'modules/common/utils';

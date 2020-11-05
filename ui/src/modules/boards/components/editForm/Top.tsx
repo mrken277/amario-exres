@@ -1,6 +1,6 @@
 import { HeaderContent, HeaderRow, TitleRow } from 'modules/boards/styles/item';
 import FormControl from 'modules/common/components/form/Control';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import React, { useEffect, useState } from 'react';
 import Move from '../../containers/editForm/Move';
 import { IItem, IOptions } from '../../types';

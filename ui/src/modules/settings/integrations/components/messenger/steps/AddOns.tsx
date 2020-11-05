@@ -4,7 +4,7 @@ import {
   FormControl,
   FormGroup
 } from 'modules/common/components/form';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { FlexItem, LeftItem } from 'modules/common/components/step/styles';
 import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';

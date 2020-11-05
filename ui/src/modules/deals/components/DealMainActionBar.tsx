@@ -1,7 +1,7 @@
 import MainActionBar from 'modules/boards/components/MainActionBar';
 import { ButtonGroup } from 'modules/boards/styles/header';
 import { IBoard, IPipeline } from 'modules/boards/types';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
 import SelectCompanies from 'modules/companies/containers/SelectCompanies';

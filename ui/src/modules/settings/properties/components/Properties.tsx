@@ -2,7 +2,7 @@ import Button from 'modules/common/components/Button';
 import DropdownToggle from 'modules/common/components/DropdownToggle';
 import EmptyState from 'modules/common/components/EmptyState';
 import HeaderDescription from 'modules/common/components/HeaderDescription';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { Title } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';

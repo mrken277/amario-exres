@@ -1,7 +1,7 @@
 import { IStage } from 'modules/boards/types';
 import Button from 'modules/common/components/Button';
 import FormControl from 'modules/common/components/form/Control';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import { colors } from 'modules/common/styles';
 import { StageItemContainer } from 'modules/settings/boards/styles';

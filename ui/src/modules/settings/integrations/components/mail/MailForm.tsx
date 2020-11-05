@@ -3,7 +3,7 @@ import Button from 'modules/common/components/Button';
 import { SmallLoader } from 'modules/common/components/ButtonMutate';
 import FormControl from 'modules/common/components/form/Control';
 import { Label } from 'modules/common/components/form/styles';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import EditorCK from 'modules/common/containers/EditorCK';
 import { __, Alert, uploadHandler } from 'modules/common/utils';

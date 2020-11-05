@@ -1,7 +1,7 @@
 import client from 'apolloClient';
 import gql from 'graphql-tag';
 import { SmallLoader } from 'modules/common/components/ButtonMutate';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import { __, Alert } from 'modules/common/utils';
 import { IVideoCallData } from 'modules/inbox/types';

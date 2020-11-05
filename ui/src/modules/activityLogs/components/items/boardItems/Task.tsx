@@ -22,7 +22,7 @@ import Button from 'modules/common/components/Button';
 import FormControl from 'modules/common/components/form/Control';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
 import SelectTeamMembers from 'modules/settings/team/containers/SelectTeamMembers';

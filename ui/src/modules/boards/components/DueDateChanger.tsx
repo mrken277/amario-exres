@@ -1,5 +1,5 @@
 import Datetime from '@nateradebaugh/react-datetime';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { rgba } from 'modules/common/styles/color';
 import colors from 'modules/common/styles/colors';
 import * as React from 'react';

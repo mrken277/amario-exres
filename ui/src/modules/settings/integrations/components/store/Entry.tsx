@@ -1,5 +1,5 @@
 import { formatText } from 'modules/activityLogs/utils';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { __ } from 'modules/common/utils';
 import NylasForm from 'modules/settings/integrations/containers/mail/Form';

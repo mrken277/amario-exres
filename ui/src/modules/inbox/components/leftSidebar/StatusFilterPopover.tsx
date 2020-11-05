@@ -1,6 +1,6 @@
 import client from 'apolloClient';
 import gql from 'graphql-tag';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Spinner from 'modules/common/components/Spinner';
 import { __, Alert, router } from 'modules/common/utils';
 import { queries } from 'modules/inbox/graphql';

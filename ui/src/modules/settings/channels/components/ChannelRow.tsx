@@ -1,6 +1,6 @@
 import { IUser } from 'modules/auth/types';
 import Button from 'modules/common/components/Button';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import Tip from 'modules/common/components/Tip';
 import { IButtonMutateProps } from 'modules/common/types';

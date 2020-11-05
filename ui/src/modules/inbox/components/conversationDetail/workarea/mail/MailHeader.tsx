@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import DropdownToggle from 'modules/common/components/DropdownToggle';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Avatar from 'modules/common/components/nameCard/Avatar';
 import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';

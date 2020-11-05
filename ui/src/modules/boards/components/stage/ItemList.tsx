@@ -1,7 +1,7 @@
 import client from 'apolloClient';
 import gql from 'graphql-tag';
 import EmptyState from 'modules/common/components/EmptyState';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { IRouterProps } from 'modules/common/types';
 import routerUtils from 'modules/common/utils/router';
 import { mutations as notificationMutations } from 'modules/notifications/graphql';

@@ -1,5 +1,5 @@
 import { IPipeline } from 'modules/boards/types';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { __ } from 'modules/common/utils';
 import * as React from 'react';
 import { HeaderButton } from '../styles/header';

@@ -1,6 +1,6 @@
 import Box from 'modules/common/components/Box';
 import EmptyState from 'modules/common/components/EmptyState';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import NameCard from 'modules/common/components/nameCard/NameCard';
 import { __, renderFullName } from 'modules/common/utils';
 import { ICompany } from 'modules/companies/types';

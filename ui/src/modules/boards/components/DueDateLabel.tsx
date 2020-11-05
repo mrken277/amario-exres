@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { CloseDateLabel } from 'modules/boards/styles/popup';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import * as React from 'react';
 import { generateButtonClass } from '../utils';
 

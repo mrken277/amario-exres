@@ -1,5 +1,5 @@
 import PriorityIndicator from 'modules/boards/components/editForm/PriorityIndicator';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { FunnelContent, Title } from 'modules/growthHacks/styles';
 import { IGrowthHack } from 'modules/growthHacks/types';
 import React from 'react';

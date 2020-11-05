@@ -1,4 +1,4 @@
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { darken, lighten } from 'modules/common/styles/color';
 import colors from 'modules/common/styles/colors';
 import dimensions from 'modules/common/styles/dimensions';

@@ -2,7 +2,7 @@ import { Content } from 'modules/boards/styles/item';
 import Attachment from 'modules/common/components/Attachment';
 import Button from 'modules/common/components/Button';
 import DropdownToggle from 'modules/common/components/DropdownToggle';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { InfoWrapper } from 'modules/common/styles/main';
 import { IAttachment } from 'modules/common/types';

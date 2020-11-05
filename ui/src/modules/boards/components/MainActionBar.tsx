@@ -1,6 +1,6 @@
 import DropdownToggle from 'modules/common/components/DropdownToggle';
 import EmptyState from 'modules/common/components/EmptyState';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
 import Participators from 'modules/inbox/components/conversationDetail/workarea/Participators';

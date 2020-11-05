@@ -1,5 +1,5 @@
 import { IStage } from 'modules/boards/types';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import SortableList from 'modules/common/components/SortableList';
 import { __ } from 'modules/common/utils';
 import { LinkButton } from 'modules/settings/team/styles';

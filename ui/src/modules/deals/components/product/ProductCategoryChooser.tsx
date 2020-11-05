@@ -1,4 +1,4 @@
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { __ } from 'modules/common/utils';
 import { CategoryContainer } from 'modules/deals/styles';
 import { IProductCategory } from 'modules/settings/productService/types';

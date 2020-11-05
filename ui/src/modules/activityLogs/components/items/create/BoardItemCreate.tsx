@@ -5,7 +5,7 @@ import {
   FlexCenterContent
 } from 'modules/activityLogs/styles';
 import { IActivityLog } from 'modules/activityLogs/types';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import { renderUserFullName } from 'modules/common/utils';
 import React from 'react';

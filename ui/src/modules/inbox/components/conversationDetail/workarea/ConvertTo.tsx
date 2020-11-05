@@ -1,6 +1,6 @@
 import Button from 'modules/common/components/Button';
 import DropdownToggle from 'modules/common/components/DropdownToggle';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { __ } from 'modules/common/utils';
 import DealConvertTrigger from 'modules/deals/components/DealConvertTrigger';
 import { IConversation } from 'modules/inbox/types';

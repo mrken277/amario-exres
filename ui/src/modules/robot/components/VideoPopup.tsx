@@ -1,4 +1,4 @@
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import colors from 'modules/common/styles/colors';
 import * as React from 'react';

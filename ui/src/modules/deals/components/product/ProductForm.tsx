@@ -1,6 +1,6 @@
 import Button from 'modules/common/components/Button';
 import EmptyState from 'modules/common/components/EmptyState';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Table from 'modules/common/components/table';
 import { Tabs, TabTitle } from 'modules/common/components/tabs';
 import { ModalFooter } from 'modules/common/styles/main';

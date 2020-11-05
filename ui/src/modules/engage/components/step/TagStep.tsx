@@ -1,4 +1,4 @@
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { IButtonMutateProps } from 'modules/common/types';
 import { TagAdd, TargetCount } from 'modules/engage/types';
 import { ITag } from 'modules/tags/types';

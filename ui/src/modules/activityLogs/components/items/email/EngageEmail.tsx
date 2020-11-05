@@ -8,7 +8,7 @@ import {
   FlexCenterContent
 } from 'modules/activityLogs/styles';
 import { ControlLabel } from 'modules/common/components/form';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Label from 'modules/common/components/Label';
 import Tip from 'modules/common/components/Tip';
 import { IEngageEmail, IEngageMessage } from 'modules/engage/types';

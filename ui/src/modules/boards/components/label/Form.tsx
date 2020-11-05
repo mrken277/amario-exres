@@ -6,7 +6,7 @@ import {
   FormGroup
 } from 'modules/common/components/form';
 import Form from 'modules/common/components/form/Form';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { IButtonMutateProps, IFormProps } from 'modules/common/types';
 import { BackgroundSelector } from 'modules/leads/components/step/style';
 import * as React from 'react';

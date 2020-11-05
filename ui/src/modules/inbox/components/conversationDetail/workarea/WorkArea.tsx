@@ -1,7 +1,7 @@
 import asyncComponent from 'modules/common/components/AsyncComponent';
 import Button from 'modules/common/components/Button';
 import { AvatarImg } from 'modules/common/components/filterableList/styles';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Label from 'modules/common/components/Label';
 import Tags from 'modules/common/components/Tags';
 import { IAttachmentPreview } from 'modules/common/types';

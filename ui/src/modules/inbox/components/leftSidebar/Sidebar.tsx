@@ -1,7 +1,7 @@
 import { IUser } from 'modules/auth/types';
 import asyncComponent from 'modules/common/components/AsyncComponent';
 import Button from 'modules/common/components/Button';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { __ } from 'modules/common/utils';
 import { ScrollContent } from 'modules/growthHacks/styles';
 import { CONVERSATION_STATUSES } from 'modules/inbox/constants';

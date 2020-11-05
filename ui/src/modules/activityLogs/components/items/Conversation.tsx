@@ -13,7 +13,7 @@ import {
   Header
 } from 'modules/activityLogs/styles';
 import { formatText, getIconAndColor } from 'modules/activityLogs/utils';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import { __, renderFullName } from 'modules/common/utils';
 import Message from 'modules/inbox/components/conversationDetail/workarea/conversation/messages/Message';

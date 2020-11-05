@@ -1,4 +1,4 @@
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { IButtonMutateProps } from 'modules/common/types';
 import { TargetCount } from 'modules/engage/types';
 import { IBrand } from 'modules/settings/brands/types';

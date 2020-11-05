@@ -1,5 +1,5 @@
 import { IConversionStage } from 'modules/boards/types';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import * as React from 'react';
 import {
   Content,

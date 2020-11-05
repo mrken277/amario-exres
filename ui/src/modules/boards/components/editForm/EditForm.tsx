@@ -1,5 +1,5 @@
 import { ArchiveStatus } from 'modules/boards/styles/item';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { CloseModal } from 'modules/common/styles/main';
 import { __ } from 'modules/common/utils';
 import React from 'react';

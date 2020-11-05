@@ -3,7 +3,7 @@ import { IUser } from 'modules/auth/types';
 import Button from 'modules/common/components/Button';
 import ControlLabel from 'modules/common/components/form/Label';
 import HeaderDescription from 'modules/common/components/HeaderDescription';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Table from 'modules/common/components/table';
 import Tip from 'modules/common/components/Tip';
 import { IButtonMutateProps } from 'modules/common/types';

@@ -1,5 +1,5 @@
 import DropdownToggle from 'modules/common/components/DropdownToggle';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { dimensions } from 'modules/common/styles';
 import colors from 'modules/common/styles/colors';
 import { IOption } from 'modules/common/types';

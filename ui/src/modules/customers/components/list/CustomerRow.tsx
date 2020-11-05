@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import FormControl from 'modules/common/components/form/Control';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import NameCard from 'modules/common/components/nameCard/NameCard';
 import Tags from 'modules/common/components/Tags';
 import TextInfo from 'modules/common/components/TextInfo';

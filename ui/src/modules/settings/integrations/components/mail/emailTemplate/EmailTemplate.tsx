@@ -5,7 +5,7 @@ import {
   PopoverFooter,
   PopoverList
 } from 'modules/common/components/filterableList/styles';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
 import { ResponseTemplateStyled as EmailTemplateStyled } from 'modules/inbox/styles';

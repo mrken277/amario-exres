@@ -3,7 +3,7 @@ import FormControl from 'modules/common/components/form/Control';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
 import HelpPopover from 'modules/common/components/HelpPopover';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { FlexItem, FlexPad } from 'modules/common/components/step/styles';
 import Tip from 'modules/common/components/Tip';
 import Uploader from 'modules/common/components/Uploader';

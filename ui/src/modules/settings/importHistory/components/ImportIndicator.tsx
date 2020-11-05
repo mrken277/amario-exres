@@ -1,4 +1,4 @@
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import ProgressBar from 'modules/common/components/ProgressBar';
 import { __ } from 'modules/common/utils';
 import React from 'react';

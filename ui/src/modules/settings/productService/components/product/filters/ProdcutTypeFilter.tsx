@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 
 import Box from 'modules/common/components/Box';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { IRouterProps } from 'modules/common/types';
 import { __, router } from 'modules/common/utils';
 import { FieldStyle, SidebarList } from 'modules/layout/styles';

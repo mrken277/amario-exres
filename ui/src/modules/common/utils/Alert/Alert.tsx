@@ -1,4 +1,4 @@
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { colors, dimensions, typography } from 'modules/common/styles';
 import { darken } from 'modules/common/styles/color';
 import { slideDown } from 'modules/common/utils/animations';

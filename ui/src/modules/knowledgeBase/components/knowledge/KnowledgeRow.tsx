@@ -1,5 +1,5 @@
 import DropdownToggle from 'modules/common/components/DropdownToggle';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { DropIcon } from 'modules/common/styles/main';
 import { IButtonMutateProps } from 'modules/common/types';

@@ -1,4 +1,4 @@
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { colors } from 'modules/common/styles';
 import { INotification } from 'modules/notifications/types';
 import React from 'react';

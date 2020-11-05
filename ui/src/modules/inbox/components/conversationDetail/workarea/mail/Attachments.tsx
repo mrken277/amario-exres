@@ -1,5 +1,5 @@
 import { getEnv } from 'apolloClient';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
 import { IMailAttachment } from 'modules/inbox/types';

@@ -1,6 +1,6 @@
 import { AddNew } from 'modules/boards/styles/stage';
 import EmptyState from 'modules/common/components/EmptyState';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { colors } from 'modules/common/styles';
 import { IDateColumn } from 'modules/common/types';
 import { __ } from 'modules/common/utils';
