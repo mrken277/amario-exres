@@ -3,7 +3,7 @@ const { filePath, downloadLatesVersion, startBackendServices, startUI, log } = r
 
 module.exports = async function(program) {
   try {
-    if (!program.ignoreDownload) {
+    if (program && !program.ignoreDownload) {
       // download the latest build
       await downloadLatesVersion();
     }
