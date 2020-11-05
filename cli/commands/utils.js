@@ -65,8 +65,8 @@ const runCommand = (command, args, options) => {
   return execa(command, args, options).stdout.pipe(process.stdout);
 }
 
-module.exports.startBackendServices = async (configs) => {
-  log('Starting backend services using pm2 ...');
+module.exports.startServices = async (configs) => {
+  log('Starting services using pm2 ...');
 
   const {
     JWT_TOKEN_SECRET,
@@ -106,90 +106,86 @@ module.exports.startBackendServices = async (configs) => {
     ...configs.API || {}
   }
 
-  log('Starting main api ...');
-
-  await runCommand("pm2", ["start", filePath('build/api')], {
-    env: {
-      ...commonEnv,
-      ...optionalDbConfigs,
-      DEBUG: 'erxes-api:*', 
+  const apps = [
+    {
+      name: 'api',
+      script: filePath('build/api'),
+      env: {
+        ...commonEnv,
+        ...optionalDbConfigs,
+        DEBUG: 'erxes-api:*', 
+      }
+    },
+    {
+      name: 'cronjobs',
+      script: filePath('build/api/cronJobs'),
+      env: {
+        ...commonEnv,
+        PROCESS_NAME: 'crons',
+        ...optionalDbConfigs,
+        DEBUG: 'erxes-crons:*', 
+      }
+    },
+    {
+      name: 'workers',
+      script: filePath('build/api/workers'),
+      env: {
+        ...commonEnv,
+        ...optionalDbConfigs,
+        DEBUG: 'erxes-workers:*', 
+      }
+    },
+    {
+      name: 'integrations',
+      script: filePath('build/integrations'),
+      env: {
+        NODE_ENV: 'production',
+        DEBUG: 'erxes-integrations:*',
+        DOMAIN: INTEGRATIONS_API_DOMAIN,
+        MAIN_APP_DOMAIN: DOMAIN,
+        MAIN_API_DOMAIN: API_DOMAIN,
+        MONGO_URL: `${MONGO_URL || ''}/erxes_integrations`,
+        ...optionalDbConfigs,
+        ...configs.INTEGRATIONS || {}
+      }
+    },
+    {
+      name: 'engages',
+      script: filePath('build/engages'),
+      env: {
+        NODE_ENV: 'production',
+        DEBUG: 'erxes-engages:*',
+        DOMAIN: INTEGRATIONS_API_DOMAIN,
+        MAIN_API_DOMAIN: API_DOMAIN,
+        MONGO_URL: `${MONGO_URL || ''}/erxes_engages`,
+        ...optionalDbConfigs,
+        ...configs.ENGAGES || {}
+      }
+    },
+    {
+      name: 'logger',
+      script: filePath('build/logger'),
+      env: {
+        NODE_ENV: 'production',
+        DEBUG: 'erxes-logs:*',
+        DOMAIN: INTEGRATIONS_API_DOMAIN,
+        MAIN_API_DOMAIN: API_DOMAIN,
+        MONGO_URL: `${MONGO_URL || ''}/erxes_logger`,
+        ...optionalDbConfigs,
+        ...configs.LOGGER || {}
+      }
+    },
+    {
+      name: 'email-verifier',
+      script: filePath('build/email-verifier'),
+      env: {
+        NODE_ENV: 'production',
+        DEBUG: 'erxes-email-verifier:*',
+        MONGO_URL: `${MONGO_URL || ''}/erxes_email_verifier`,
+        ...configs.EMAIL_VERIFIER || {}
+      }
     }
-  });
-
-  log('Starting crons ...');
-
-  await runCommand("pm2", ["start", filePath('build/api/cronJobs')], {
-    env: {
-      ...commonEnv,
-      PROCESS_NAME: 'crons',
-      ...optionalDbConfigs,
-      DEBUG: 'erxes-crons:*', 
-    }
-  });
-
-  log('Starting workers ...');
-
-  await runCommand("pm2", ["start", filePath('build/api/workers')], {
-    env: {
-      ...commonEnv,
-      ...optionalDbConfigs,
-      DEBUG: 'erxes-workers:*', 
-    }
-  });
-
-  log('Starting integrations ...');
-
-  await runCommand("pm2", ["start", filePath('build/integrations')], {
-    env: {
-      NODE_ENV: 'production',
-      DEBUG: 'erxes-integrations:*',
-      DOMAIN: INTEGRATIONS_API_DOMAIN,
-      MAIN_APP_DOMAIN: DOMAIN,
-      MAIN_API_DOMAIN: API_DOMAIN,
-      MONGO_URL: `${MONGO_URL || ''}/erxes_integrations`,
-      ...optionalDbConfigs,
-      ...configs.INTEGRATIONS || {}
-    }
-  });
-
-  log('Starting engages ...');
-
-  await runCommand("pm2", ["start", filePath('build/engages')], {
-    env: {
-      NODE_ENV: 'production',
-      DEBUG: 'erxes-engages:*',
-      DOMAIN: INTEGRATIONS_API_DOMAIN,
-      MAIN_API_DOMAIN: API_DOMAIN,
-      MONGO_URL: `${MONGO_URL || ''}/erxes_engages`,
-      ...optionalDbConfigs,
-      ...configs.ENGAGES || {}
-    }
-  });
-
-  log('Starting logger ...');
-
-  await runCommand("pm2", ["start", filePath('build/logger')], {
-    env: {
-      NODE_ENV: 'production',
-      DEBUG: 'erxes-logs:*',
-      DOMAIN: INTEGRATIONS_API_DOMAIN,
-      MAIN_API_DOMAIN: API_DOMAIN,
-      MONGO_URL: `${MONGO_URL || ''}/erxes_logger`,
-      ...optionalDbConfigs,
-      ...configs.LOGGER || {}
-    }
-  });
-
-  log('Starting email verifier ...');
-
-  await runCommand("pm2", ["start", filePath('build/email-verifier')], {
-    env: {
-      NODE_ENV: 'production',
-      DEBUG: 'erxes-email-verifier:*',
-      MONGO_URL: `${MONGO_URL || ''}/erxes_email_verifier`,
-      ...configs.EMAIL_VERIFIER || {}
-    }
-  });
+  ];
 
   if (ELK_SYNCER) {
     log('Starting elkSyncer ...');
@@ -197,41 +193,46 @@ module.exports.startBackendServices = async (configs) => {
     await runCommand('apt', ['install', '-y', 'python3-pip']);
     await runCommand('pip3', ['install', '-y', '-r', 'build/elkSyncer/requirements.txt']);
 
-    await runCommand("pm2", ["start", filePath('build/elkSyncer/main.py'), '--interpreter', '/usr/bin/python3'], {
+    apps.push({
+      name: 'elkSyncer',
+      script: filePath('build/elkSyncer/main.py'),
+      interpreter: '/usr/bin/python3',
       env: {
         MONGO_URL,
         ELASTICSEARCH_URL
       }
-    });
+    })
   }
-}
 
-module.exports.startUI = async (configs) => {
   const uiConfigs = configs.UI || {};
-
-  if (uiConfigs.disableServe) {
-    return log('Default serve is disabled. Please serve using services like nginx, aws s3 ...', 'yellow');
-  }
-
-  log('Serving ui...');
-
-  const { API_DOMAIN, WIDGETS_DOMAIN } = configs;
   const subscriptionsUrl = `${API_DOMAIN.includes('https') ? 'wss' : 'ws'}//${API_DOMAIN}/subscriptions`;
 
-  await fs.promises.writeFile(filePath('build/ui/js/env.js'), `
-    window.env = {
-      NODE_ENV: "production",
-      REACT_APP_API_URL: "${API_DOMAIN}",
-      REACT_APP_API_SUBSCRIPTION_URL: "${subscriptionsUrl}",
-      REACT_APP_CDN_HOST: "${WIDGETS_DOMAIN}"
-    }
-  `);
+  if (uiConfigs.disableServe) {
+    log('Default serve is disabled. Please serve using services like nginx, aws s3 ...', 'yellow');
+  } else {
+    await fs.promises.writeFile(filePath('build/ui/js/env.js'), `
+      window.env = {
+        NODE_ENV: "production",
+        REACT_APP_API_URL: "${API_DOMAIN}",
+        REACT_APP_API_SUBSCRIPTION_URL: "${subscriptionsUrl}",
+        REACT_APP_CDN_HOST: "${WIDGETS_DOMAIN}"
+      }
+    `);
 
-  runCommand("pm2", ["serve", "--name", "ui", "--spa", filePath('build/ui'), uiConfigs.PORT]);
+    apps.push({
+      name: 'ui',
+      script: 'serve',
+      env: {
+        PM2_SERVE_PATH: filePath('build/ui'),
+        PM2_SERVE_PORT: uiConfigs.PORT,
+        PM2_SERVE_SPA: 'true',
+      }
+    })
+  }
 
-  log('Starting widgets ...');
-
-  runCommand("pm2", ["--name", "widgets", "start", filePath('build/widgets/dist')], {
+  apps.push({
+    name: 'widgets',
+    script: filePath('build/widgets/dist'),
     env: {
       ...configs.WIDGETS || {},
       NODE_ENV: 'production',
@@ -240,4 +241,16 @@ module.exports.startUI = async (configs) => {
       API_SUBSCRIPTIONS_URL: subscriptionsUrl,
     }
   });
+
+  // create ecosystem
+  await fse.writeFile(
+    filePath('ecosystem.config.js'),
+    `
+      module.exports = {
+        apps: ${JSON.stringify(apps)}
+      }
+    `
+  );
+
+  return runCommand("pm2", ["start", filePath('ecosystem.config.js')]);
 }

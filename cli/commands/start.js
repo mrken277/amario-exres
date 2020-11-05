@@ -1,5 +1,5 @@
 const fse = require("fs-extra");
-const { filePath, downloadLatesVersion, startBackendServices, startUI, log } = require('./utils');
+const { filePath, downloadLatesVersion, startServices, log } = require('./utils');
 
 module.exports = async function(program) {
   try {
@@ -11,8 +11,7 @@ module.exports = async function(program) {
     // create configs file
     const configs = await fse.readJSON(filePath('configs.json'));
 
-    await startBackendServices(configs);
-    await startUI(configs);
+    await startServices(configs);
 
     log('Done  ...');
   } catch (e) {
