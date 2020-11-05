@@ -4,7 +4,7 @@ const tar = require("tar");
 const fs = require('fs');
 const fse = require("fs-extra");
 const { resolve } = require("path");
-const { config } = require('process');
+const exec = require('child_process').exec;
 
 const filePath = (pathName) => {
   if (pathName) {
@@ -12,6 +12,21 @@ const filePath = (pathName) => {
   }
 
   return resolve(process.cwd());
+}
+
+const execCurl = (url, output) => {
+  return new Promise((resolve, reject) => {
+    exec(`curl -L ${url} --output ${output}`, (error, stdout, stderr) => {
+      if(error !== null) {
+        return reject(error);
+      }
+
+      console.log(stdout);
+      console.log(stderr);
+
+      return resolve('done')
+    });
+  });
 }
 
 const log = (msg, color='green') => {
@@ -26,20 +41,21 @@ module.exports.downloadLatesVersion = async () => {
   log('Downloading erxes ...');
 
   // download the latest build
-  await fse.copy(
-    resolve("/Users/batamar/Downloads/build.tar"),
-    filePath('build.tar')
-  );
+  await execCurl('https://api.github.com/repos/battulgadavaajamts/erxes/releases/latest', 'gitInfo.json')
+
+  const gitInfo = await fse.readJSON(filePath('gitInfo.json'));
+
+  await execCurl(`https://github.com/battulgadavaajamts/erxes/releases/download/${gitInfo.tag_name}/erxes-${gitInfo.tag_name}.tar.gz`, 'build.tar.gz')
 
   process.chdir(filePath());
 
   log('Extracting tar ...');
 
-  await tar.x({ file: "build.tar" });
+  await tar.x({ file: "build.tar.gz" });
 
   log('Removing temp files ...');
 
-  await fse.remove(filePath('build.tar'));
+  await fse.remove(filePath('build.tar.gz'));
 }
 
 const runCommand = (command, args, options) => {
