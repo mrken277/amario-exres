@@ -284,10 +284,10 @@ const generateNginxConf = async ({ DOMAIN }) => {
             error_log /var/log/nginx/erxes.error.log;
             access_log /var/log/nginx/erxes.access.log;
 
+            # ui widgets is running on 3000 port.
             location / {
-                    root ${join(rootPath, 'build/ui')};
-                    index index.html;
-                    try_files $uri /index.html;
+                    proxy_pass http://127.0.0.1:3000/;
+                    ${commonConfig}
             }
 
             # widgets is running on 3200 port.
