@@ -1,6 +1,5 @@
 const chalk = require('chalk');
 const execa = require("execa");
-const tar = require("tar");
 const fs = require('fs');
 const fse = require("fs-extra");
 const { resolve } = require("path");
@@ -14,9 +13,9 @@ const filePath = (pathName) => {
   return resolve(process.cwd());
 }
 
-const execCurl = (url, output) => {
+const execCommand = (command) => {
   return new Promise((resolve, reject) => {
-    exec(`curl -L ${url} --output ${output}`, (error, stdout, stderr) => {
+    exec(command, (error, stdout, stderr) => {
       if(error !== null) {
         return reject(error);
       }
@@ -27,6 +26,10 @@ const execCurl = (url, output) => {
       return resolve('done')
     });
   });
+}
+
+const execCurl = (url, output) => {
+  return execCommand(`curl -L ${url} --output ${output}`);
 }
 
 const log = (msg, color='green') => {
@@ -51,7 +54,7 @@ module.exports.downloadLatesVersion = async () => {
 
   log('Extracting tar ...');
 
-  await tar.x({ file: "build.tar.gz" });
+  await execCommand(`tar -xf build.tar.gz`)
 
   log('Removing temp files ...');
 
