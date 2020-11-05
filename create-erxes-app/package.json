@@ -1,6 +1,6 @@
 {
   "name": "create-erxes-app",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Generate a new Erxes application.",
   "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://erxes.io",
@@ -21,6 +21,8 @@
   ],
   "dependencies": {
     "commander": "6.1.0",
+    "execa": "^4.1.0",
+    "fs-extra": "^9.0.1",
     "inquirer": "^7.3.3"
   },
   "repository": {
