@@ -74,7 +74,7 @@ module.exports.startServices = async (configs) => {
     API_DOMAIN,
     WIDGETS_DOMAIN,
     INTEGRATIONS_API_DOMAIN,
-    MONGO_URL,
+    MONGO_URL='',
     ELASTICSEARCH_URL,
     ELK_SYNCER,
 
@@ -96,10 +96,18 @@ module.exports.startServices = async (configs) => {
     optionalDbConfigs.REDIS_PASSWORD = REDIS_PASSWORD;
   }
 
+  const generateMongoUrl = (dbName) => {
+    if (MONGO_URL.includes('authSource')) {
+      return MONGO_URL.replace('erxes?', `${dbName}?`);
+    }
+
+    return `${MONGO_URL}/${dbName}`;
+  }
+
   const commonEnv = {
     NODE_ENV: 'production',
     JWT_TOKEN_SECRET: JWT_TOKEN_SECRET || '',
-    MONGO_URL: `${MONGO_URL || ''}/erxes`,
+    MONGO_URL: generateMongoUrl('erxes'),
     MAIN_APP_DOMAIN: DOMAIN,
     WIDGETS_DOMAIN: WIDGETS_DOMAIN,
     INTEGRATIONS_API_DOMAIN: INTEGRATIONS_API_DOMAIN,
@@ -144,7 +152,7 @@ module.exports.startServices = async (configs) => {
         DOMAIN: INTEGRATIONS_API_DOMAIN,
         MAIN_APP_DOMAIN: DOMAIN,
         MAIN_API_DOMAIN: API_DOMAIN,
-        MONGO_URL: `${MONGO_URL || ''}/erxes_integrations`,
+        MONGO_URL: generateMongoUrl('erxes_integrations'),
         ...optionalDbConfigs,
         ...configs.INTEGRATIONS || {}
       }
@@ -157,7 +165,7 @@ module.exports.startServices = async (configs) => {
         DEBUG: 'erxes-engages:*',
         DOMAIN: INTEGRATIONS_API_DOMAIN,
         MAIN_API_DOMAIN: API_DOMAIN,
-        MONGO_URL: `${MONGO_URL || ''}/erxes_engages`,
+        MONGO_URL: generateMongoUrl('erxes_engages'),
         ...optionalDbConfigs,
         ...configs.ENGAGES || {}
       }
@@ -170,7 +178,7 @@ module.exports.startServices = async (configs) => {
         DEBUG: 'erxes-logs:*',
         DOMAIN: INTEGRATIONS_API_DOMAIN,
         MAIN_API_DOMAIN: API_DOMAIN,
-        MONGO_URL: `${MONGO_URL || ''}/erxes_logger`,
+        MONGO_URL: generateMongoUrl('erxes_logger'),
         ...optionalDbConfigs,
         ...configs.LOGGER || {}
       }
@@ -181,7 +189,7 @@ module.exports.startServices = async (configs) => {
       env: {
         NODE_ENV: 'production',
         DEBUG: 'erxes-email-verifier:*',
-        MONGO_URL: `${MONGO_URL || ''}/erxes_email_verifier`,
+        MONGO_URL: generateMongoUrl('erxes_email_verifier'),
         ...configs.EMAIL_VERIFIER || {}
       }
     }
