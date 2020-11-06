@@ -109,8 +109,12 @@ module.exports.downloadLatesVersion = async () => {
   await fse.remove(filePath('build.tar.gz'));
 }
 
-const runCommand = (command, args, options) => {
-  return execa(command, args, options).stdout.pipe(process.stdout);
+const runCommand = (command, args, pipe) => {
+  if (pipe) {
+    return execa(command, args).stdout.pipe(process.stdout);
+  }
+
+  return execa(command, args);
 }
 
 module.exports.startServices = async (configs) => {
@@ -308,5 +312,5 @@ module.exports.startServices = async (configs) => {
     `
   );
 
-  return runCommand("pm2", ["start", filePath('ecosystem.config.js')]);
+  return runCommand("pm2", ["start", filePath('ecosystem.config.js')], false);
 }

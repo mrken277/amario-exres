@@ -23,6 +23,7 @@
     "cli-progress": "^3.8.2",
     "commander": "^6.2.0",
     "execa": "^4.1.0",
+    "figlet": "^1.5.0",
     "fs-extra": "^9.0.1",
     "kill-port": "^1.6.1",
     "lodash": "^4.17.20",

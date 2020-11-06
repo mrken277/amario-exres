@@ -1,4 +1,5 @@
 const fse = require("fs-extra");
+const figlet = require('figlet');
 const { filePath, downloadLatesVersion, startServices, log } = require('./utils');
 
 module.exports = async function(program) {
@@ -13,7 +14,7 @@ module.exports = async function(program) {
 
     await startServices(configs);
 
-    log('Done  ...');
+    console.log(figlet.textSync('Welcome to Erxes'));
   } catch (e) {
     console.log(e);
   }
