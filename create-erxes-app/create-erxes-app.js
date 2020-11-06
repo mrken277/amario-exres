@@ -19,7 +19,9 @@ let projectName;
 program
   .version(packageJson.version)
   .arguments('<directory>')
-  .option('--debug', 'Display database connection error')
+  .option('--domain <domain>', 'Domain')
+  .option('--mongoUrl <mongoUrl>', 'Mongo url')
+  .option('--elasticsearchUrl <elasticsearchUrl>', 'Elasticsearch url')
   .option('--quickStart', 'Not going to ask a lot of configurations')
   .description('create a new application')
   .action(directory => {
@@ -67,12 +69,16 @@ const generate = async () => {
 
   await fs.promises.mkdir(rootPath);
 
-  let maindomain = 'http://localhost:3000';
+  let maindomain = program.domain || 'http://localhost:3000';
   let apiDomain = 'http://localhost:3300';
   let integrationsApiDomain = 'http://localhost:3300';
   let widgetsDomain = 'http://localhost:3400';
 
   if (domain !== 'localhost') {
+    if (!domain.includes('http')) {
+      domain = `https://${domain}`;
+    }
+
     maindomain = domain;
     apiDomain = `${domain}/api`;
     integrationsApiDomain = `${domain}/integrations`;
@@ -81,8 +87,8 @@ const generate = async () => {
 
   const configs = {
     "JWT_TOKEN_SECRET": Math.random().toString(),
-    "MONGO_URL": "mongodb://localhost",
-    "ELASTICSEARCH_URL": elasticsearchUrl,
+    "MONGO_URL": program.mongoUrl || "mongodb://localhost",
+    "ELASTICSEARCH_URL": program.elasticsearchUrl || elasticsearchUrl,
     "ELK_SYNCER": elkSyncer,
     "DOMAIN": maindomain,
     "API_DOMAIN": apiDomain,
@@ -168,15 +174,15 @@ const askQuestion = (question) => {
 }
 
 module.exports = async function() {
+  if (program.quickStart) {
+    await generate();
+    return readline.close();
+  }
+
   const inputDomain = await askQuestion('Please enter your domain (localhost): ')
 
   if (inputDomain) {
     domain = inputDomain;
-  }
-
-  if (program.quickStart) {
-    await generate();
-    return readline.close();
   }
 
   const rabbitmqHostInput = await askQuestion('Are you using rabbitmq then enter rabbitmq host (optional): ')
