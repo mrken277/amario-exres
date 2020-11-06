@@ -69,7 +69,7 @@ const generate = async () => {
 
   await fs.promises.mkdir(rootPath);
 
-  let maindomain = program.domain || 'http://localhost:3000';
+  let maindomain = 'http://localhost:3000';
   let apiDomain = 'http://localhost:3300';
   let integrationsApiDomain = 'http://localhost:3300';
   let widgetsDomain = 'http://localhost:3400';
@@ -152,7 +152,7 @@ const generate = async () => {
   execa('yarn', ['install'], { cwd: rootPath}).stdout.pipe(process.stdout);
 }
 
-let domain = 'localhost';
+let domain = program.domain || 'localhost';
 let rabbitmqHost;
 let redisHost;
 let redisPort=6379;
