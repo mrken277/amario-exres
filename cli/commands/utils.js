@@ -1,9 +1,13 @@
 const chalk = require('chalk');
 const execa = require("execa");
 const fs = require('fs');
+const ora = require('ora');
+const cliProgress = require('cli-progress');
+const request = require('request');
 const fse = require("fs-extra");
 const { resolve } = require("path");
 const exec = require('child_process').exec;
+const colors = require('colors');
 
 const filePath = (pathName) => {
   if (pathName) {
@@ -11,6 +15,50 @@ const filePath = (pathName) => {
   }
 
   return resolve(process.cwd());
+}
+
+function downloadFile(file_url , targetPath){
+  return new Promise((resolve, reject) => {
+    // create a new progress bar instance and use shades_classic theme
+    const bar = new cliProgress.SingleBar({}, {
+      format: colors.green(' {bar}') + ' {percentage}% | ETA: {eta}s | {value}/{total} | Speed: {speed} kbit',
+      barCompleteChar: '\u2588',
+      barIncompleteChar: '\u2591'
+    });
+ 
+    bar.start();
+
+    // Save variable to know progress
+    var received_bytes = 0;
+    var total_bytes = 0;
+    var req = request({
+        method: 'GET',
+        uri: file_url
+    });
+
+    var out = fs.createWriteStream(targetPath);
+    req.pipe(out);
+
+    req.on('response', function ( data ) {
+        // Change the total bytes value to get progress later.
+        total_bytes = parseInt(data.headers['content-length' ]);
+    });
+
+    req.on('data', function(chunk) {
+        // Update the received bytes
+        received_bytes += chunk.length;
+
+        var percentage = (received_bytes * 100) / total_bytes;
+
+        bar.update(percentage);
+    });
+
+    req.on('end', function() {
+        bar.stop();
+
+        resolve("File succesfully downloaded");
+    });
+  })
 }
 
 const execCommand = (command) => {
@@ -48,7 +96,7 @@ module.exports.downloadLatesVersion = async () => {
 
   const gitInfo = await fse.readJSON(filePath('gitInfo.json'));
 
-  await execCurl(`https://github.com/battulgadavaajamts/erxes/releases/download/${gitInfo.tag_name}/erxes-${gitInfo.tag_name}.tar.gz`, 'build.tar.gz')
+  await downloadFile(`https://github.com/battulgadavaajamts/erxes/releases/download/${gitInfo.tag_name}/erxes-${gitInfo.tag_name}.tar.gz`, 'build.tar.gz')
 
   process.chdir(filePath());
 
