@@ -10,7 +10,7 @@ const fse = require('fs-extra');
 const commander = require('commander');
 const execa = require('execa');
 
-const packageJson = require('./package.json');
+const packageJson = require('../package.json');
 
 const program = new commander.Command(packageJson.name);
 

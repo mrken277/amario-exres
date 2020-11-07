@@ -1,6 +1,6 @@
 {
   "name": "create-erxes-app",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Generate a new Erxes application.",
   "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://erxes.io",
@@ -12,8 +12,11 @@
     "erxes"
   ],
   "main": "./index.js",
+  "directories": {
+    "bin": "./bin"
+  },
   "bin": {
-    "create-erxes-app": "./index.js"
+    "create-erxes-app": "./bin/create-erxes-app.js"
   },
   "files": [
     "create-erxes-app.js",
