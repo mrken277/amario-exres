@@ -1,7 +1,6 @@
 const chalk = require('chalk');
 const execa = require("execa");
 const fs = require('fs');
-const ora = require('ora');
 const cliProgress = require('cli-progress');
 const request = require('request');
 const fse = require("fs-extra");
