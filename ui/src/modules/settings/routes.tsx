@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
+import ActivateInstallation from './activateInstallation/routes';
 import BoardRoutes from './boards/routes';
 import BrandsRoutes from './brands/routes';
 import ChannelsRoutes from './channels/routes';
@@ -45,6 +46,7 @@ const routes = () => (
     <EmailDeliveryRoutes key="EmailDeliveryRoutes" />
     <GrowthHackRoutes key="GrowthHackRoutes" />
     <WebhookRoutes key="WebhookRoutes" />
+    <ActivateInstallation key="ActivateInstallation" />
   </React.Fragment>
 );
 
