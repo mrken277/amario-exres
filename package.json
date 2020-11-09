@@ -11,6 +11,7 @@
     "apollo",
     "react"
   ],
+  "license": "GNU General Public License v3.0 with Commons Clause",
   "lint-staged": {
     "linters": {
       "@(ui|widgets)/src/**/*.{ts,tsx,json,css}": [
