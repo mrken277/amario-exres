@@ -1,9 +1,9 @@
 import Button from 'modules/common/components/Button';
 import EmptyState from 'modules/common/components/EmptyState';
 import FormControl from 'modules/common/components/form/Control';
-import Icon from 'modules/common/components/Icon';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
 import { __ } from 'modules/common/utils';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { ICompany } from 'modules/companies/types';
 import { ICustomer } from 'modules/customers/types';
 import React from 'react';
@@ -211,7 +211,12 @@ class CommonChooser extends React.Component<Props, State> {
               content={renderForm}
             />
             <div>
-              <Button btnStyle="simple" uppercase={false} onClick={closeModal} icon="times-circle">
+              <Button
+                btnStyle="simple"
+                uppercase={false}
+                onClick={closeModal}
+                icon="times-circle"
+              >
                 Cancel
               </Button>
               <Button

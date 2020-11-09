@@ -1,3 +1,4 @@
+import Icon from 'erxes-common-ui/lib/components/icon';
 import React from 'react';
 import Select from 'react-select-plus';
 import styled from 'styled-components';
@@ -5,7 +6,6 @@ import { IFormProps } from '../types';
 import { __, Alert } from '../utils';
 import Button from './Button';
 import FormControl from './form/Control';
-import Icon from './Icon';
 
 const Wrapper = styled.div`
   display: flex;

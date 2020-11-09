@@ -2,12 +2,12 @@ import client from 'apolloClient';
 import gql from 'graphql-tag';
 import * as _ from 'lodash';
 import debounce from 'lodash/debounce';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import React, { useCallback, useEffect, useState } from 'react';
 import Select from 'react-select-plus';
 import styled from 'styled-components';
 import { __, Alert } from '../utils';
 import Button from './Button';
-import Icon from './Icon';
 
 const Wrapper = styled.div`
   display: flex;

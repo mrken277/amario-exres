@@ -4982,10 +4982,10 @@ error-ex@^1.2.0, error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
-erxes-common-ui@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/erxes-common-ui/-/erxes-common-ui-0.1.6.tgz#a23ebfe35a3b0b2103f9e8912497e3f7a6fde804"
-  integrity sha512-gys0DTGeoAnChRUWqfeQUvSEIIk8N7u5xmyfbRXZj016P8D5oR+hTJZyKqPgzdBoW1vdZH19Dg4QPZa9iCWeCw==
+erxes-common-ui@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/erxes-common-ui/-/erxes-common-ui-0.1.7.tgz#8dc94dbfe7abf92c271883eb16d51afe50e743de"
+  integrity sha512-ZVCtI3mbytWjVXWIheEhwQsArMOQYHExxyM8IYxK37tjhXBuljQwTSK3ta/NboHRyyIYVolpT6u545dC0Y4+Nw==
   dependencies:
     "@nateradebaugh/react-datetime" "4.1.0"
     "@types/node" "^14.14.6"

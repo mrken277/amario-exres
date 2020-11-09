@@ -1,7 +1,7 @@
-import ActionButtons from 'modules/common/components/ActionButtons';
 import Button from 'modules/common/components/Button';
 import EmptyState from 'modules/common/components/EmptyState';
 import ModalTrigger from 'modules/common/components/ModalTrigger';
+import ActionButtons from 'erxes-common-ui/lib/components/actionButtons';
 import Table from 'modules/common/components/table';
 import Toggle from 'modules/common/components/Toggle';
 import { __, Alert, confirm } from 'modules/common/utils';

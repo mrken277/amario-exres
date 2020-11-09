@@ -4,8 +4,8 @@ import {
 } from 'modules/inbox/components/conversationDetail/sidebar/styles';
 import { getConfig, setConfig } from 'modules/inbox/utils';
 import Sidebar from 'modules/layout/components/Sidebar';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import React from 'react';
-import Icon from './Icon';
 
 type BoxProps = {
   title: string;

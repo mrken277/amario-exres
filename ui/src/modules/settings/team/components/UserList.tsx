@@ -1,6 +1,5 @@
 import { AppConsumer } from 'appContext';
 import { IUser } from 'modules/auth/types';
-import ActionButtons from 'modules/common/components/ActionButtons';
 import Button from 'modules/common/components/Button';
 import { FormControl } from 'modules/common/components/form';
 import ControlLabel from 'modules/common/components/form/Label';
@@ -12,6 +11,7 @@ import Table from 'modules/common/components/table';
 import TextInfo from 'modules/common/components/TextInfo';
 import Tip from 'modules/common/components/Tip';
 import Toggle from 'modules/common/components/Toggle';
+import ActionButtons from 'erxes-common-ui/lib/components/actionButtons';
 import { IButtonMutateProps } from 'modules/common/types';
 import { router } from 'modules/common/utils';
 import { __ } from 'modules/common/utils';

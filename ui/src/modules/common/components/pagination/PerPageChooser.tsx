@@ -1,5 +1,5 @@
 import DropdownToggle from 'modules/common/components/DropdownToggle';
-import Icon from 'modules/common/components/Icon';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import { IRouterProps } from 'modules/common/types';
 import { __, router } from 'modules/common/utils';
 import React from 'react';

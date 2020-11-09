@@ -2,13 +2,13 @@ import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import debounce from 'lodash/debounce';
 import { Avatar, SelectOption, SelectValue } from 'modules/boards/styles/item';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import Select from 'react-select-plus';
 import styled from 'styled-components';
 import { IOption } from '../types';
 import { __, confirm, readFile, withProps } from '../utils';
-import Icon from './Icon';
 
 const SelectWrapper = styled.div`
   position: relative;

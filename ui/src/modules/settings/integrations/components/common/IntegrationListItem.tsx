@@ -1,6 +1,6 @@
 import { getEnv } from 'apolloClient';
-import ActionButtons from 'modules/common/components/ActionButtons';
 import Button from 'modules/common/components/Button';
+import ActionButtons from 'erxes-common-ui/lib/components/actionButtons';
 import Icon from 'erxes-common-ui/lib/components/icon';
 import Label from 'modules/common/components/Label';
 import ModalTrigger from 'modules/common/components/ModalTrigger';

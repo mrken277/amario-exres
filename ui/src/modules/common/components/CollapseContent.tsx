@@ -1,10 +1,10 @@
+import Icon from 'erxes-common-ui/lib/components/icon';
 import React, { useState } from 'react';
 import Collapse from 'react-bootstrap/Collapse';
 import styled, { css } from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { rgba } from '../styles/color';
 import colors from '../styles/colors';
-import Icon from './Icon';
 
 const Title = styledTS<{
   compact?: boolean;

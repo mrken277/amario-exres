@@ -1,8 +1,8 @@
 import { colors } from 'modules/common/styles';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import React from 'react';
 import styled from 'styled-components';
 import { Alert, readFile, uploadHandler } from '../utils';
-import Icon from './Icon';
 import Spinner from './Spinner';
 
 const Avatar = styled.div`

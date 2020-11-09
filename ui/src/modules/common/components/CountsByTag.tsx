@@ -1,6 +1,6 @@
 import FilterByParams from 'modules/common/components/FilterByParams';
-import Icon from 'modules/common/components/Icon';
 import { __, router } from 'modules/common/utils';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Link } from 'react-router-dom';

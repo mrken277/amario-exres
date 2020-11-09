@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
 import gql from 'graphql-tag';
 import Button from 'modules/common/components/Button';
-import Icon from 'modules/common/components/Icon';
 import { __, Alert, router } from 'modules/common/utils';
 import { PopoverButton } from 'modules/inbox/styles';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import React from 'react';
 import { withApollo } from 'react-apollo';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';

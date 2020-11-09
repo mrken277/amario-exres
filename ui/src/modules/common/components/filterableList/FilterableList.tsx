@@ -1,7 +1,7 @@
+import Icon from 'erxes-common-ui/lib/components/icon';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import EmptyState from '../EmptyState';
-import Icon from '../Icon';
 import Spinner from '../Spinner';
 import Filter from './Filter';
 import {

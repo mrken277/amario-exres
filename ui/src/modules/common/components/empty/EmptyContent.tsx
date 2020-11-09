@@ -1,8 +1,8 @@
 import Button from 'modules/common/components/Button';
 import { __ } from 'modules/common/utils';
+import Icon from 'erxes-common-ui/lib/components/icon';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Icon from '../Icon';
 import { ITEM_COLORS } from './constants';
 import { Action, Container, ItemContent, Items } from './styles';
 
