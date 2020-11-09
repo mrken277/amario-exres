@@ -18,21 +18,8 @@
     "url": "https://opencollective.com/erxes",
     "logo": "https://opencollective.com/opencollective/logo.txt"
   },
-  "lint-staged": {
-    "linters": {
-      "@(ui|widgets)/src/**/*.{ts,tsx,json,css}": [
-        "prettier --single-quote --write",
-        "git add"
-      ],
-      "@(api|integrations|email-verifier|engages-email-sender|logger)/src/**/*.ts": [
-        "prettier --single-quote --write",
-        "git add"
-      ]
-    }
-  },
   "scripts": {
     "format": "prettier --single-quote --write '@(api|integrations|email-verifier|engages-email-sender|logger)/src/**/*.ts' && prettier --single-quote --write '@(ui|widgets)/src/**/*.@(ts|tsx|json|css)'",
-    "precommit": "lint-staged",
     "lint": "func () { if [ -z \"$1\" ]; then tslint '@(api|integrations|email-verifier|engages-email-sender|logger|ui|widgets)/src/**/*.ts?(x)'; else echo \"${1}/src/**/*.ts?(x)\" && tslint ${1}'/src/**/*.ts?(x)'; fi ;}; func",
     "postinstall": "opencollective postinstall",
     "generateVersion": "node commands/generateVersion.js",
