@@ -1,0 +1,32 @@
+{
+  "name": "draft-js-export-html",
+  "version": "1.2.0",
+  "description": "DraftJS: Export ContentState to HTML",
+  "main": "lib/main.js",
+  "typings": "typings/index.d.ts",
+  "scripts": {
+    "build": "babel src --out-dir lib --ignore \"_*\"",
+    "watch": "babel src --watch --out-dir lib --ignore \"_*\""
+  },
+  "dependencies": {
+    "draft-js-utils": "^1.2.0"
+  },
+  "peerDependencies": {
+    "draft-js": ">=0.10.0",
+    "immutable": "3.x.x"
+  },
+  "devDependencies": {
+    "@types/draft-js": "^0.7.33"
+  },
+  "keywords": [
+    "draft-js",
+    "export-html"
+  ],
+  "author": "sstur@me.com",
+  "license": "ISC",
+  "repository": "https://github.com/sstur/draft-js-utils/tree/master/packages/draft-js-export-html",
+  "bugs": {
+    "url": "https://github.com/sstur/draft-js-utils/issues"
+  },
+  "homepage": "https://github.com/sstur/draft-js-utils/blob/master/packages/draft-js-export-html/README.md"
+}

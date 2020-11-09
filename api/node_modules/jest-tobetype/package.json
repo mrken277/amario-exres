@@ -1,0 +1,38 @@
+{
+  "name": "jest-tobetype",
+  "version": "1.2.3",
+  "description": "A jest matcher that allows you to test the expected type of a value",
+  "main": "index-cjs.js",
+  "module": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/abritinthebay/jest-tobetype.git"
+  },
+  "keywords": [
+    "jest",
+    "typeof",
+    "type",
+    "matcher",
+    "expects",
+    "tdd",
+    "testing",
+    "test",
+    "bdd"
+  ],
+  "author": "Gregory Wild-Smith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/abritinthebay/jest-tobetype/issues"
+  },
+  "homepage": "https://github.com/abritinthebay/jest-tobetype#readme",
+  "devDependencies": {
+    "jest": "^24.7.1"
+  },
+  "dependencies": {
+    "jest-get-type": "^24.3.0",
+    "jest-matcher-utils": "^24.7.0"
+  }
+}
