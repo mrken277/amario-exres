@@ -1,6 +1,6 @@
 const fse = require("fs-extra");
 const figlet = require('figlet');
-const { filePath, downloadLatesVersion, startServices, log } = require('./utils');
+const { filePath, downloadLatesVersion, startServices } = require('./utils');
 
 module.exports = async function(program) {
   try {
