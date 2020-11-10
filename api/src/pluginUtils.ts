@@ -4,7 +4,15 @@ import * as path from 'path';
 import { can, registerModule } from './data/permissions/utils';
 import { checkLogin } from './data/permissions/wrappers';
 
-export const pluginsRabbitMQ = {};
+export const pluginsRabbitMQ: {
+  consumers: any;
+  allModels: any;
+  allConstants: any;
+} = {
+  consumers: null,
+  allModels: null,
+  allConstants: null
+};
 
 export const execInEveryPlugin = (callback) => {
   const pluginsPath = path.resolve(__dirname, '../../plugins');
@@ -55,7 +63,7 @@ export const execInEveryPlugin = (callback) => {
         }
 
         if (fs.existsSync(messageBrokersPath)) {
-          messageBrokers = require(messageBrokersPath).default.messageBrokers;
+          messageBrokers = require(messageBrokersPath).default;
         }
 
         if (fs.existsSync(modelsPath)) {
@@ -146,8 +154,8 @@ export const extendViaPlugins = (app, resolvers, typeDefDetails): Promise<any> =
     if (constants.length) {
       for (const key of Object.keys(constants)) {
         let all = [];
-        if (allConstants[key] && allConstants[key]['ALL']) {
-          all = allConstants[key]['ALL'].concat(constants[key]['ALL']);
+        if (allConstants[key] && allConstants[key].ALL) {
+          all = allConstants[key].ALL.concat(constants[key].ALL);
         }
         allConstants[key] = { ...allConstants[key], ...constants[key], ...{ ALL: all } };
       }
@@ -221,9 +229,9 @@ export const extendViaPlugins = (app, resolvers, typeDefDetails): Promise<any> =
     }
 
     if (isLastIteration) {
-      pluginsRabbitMQ['allModels'] = allModels
-      pluginsRabbitMQ['allConstants'] = allConstants
-      pluginsRabbitMQ['consumers'] = rqPlugins
+      pluginsRabbitMQ.allModels = allModels
+      pluginsRabbitMQ.allConstants = allConstants
+      pluginsRabbitMQ.consumers = rqPlugins
       return resolve({ types, queries, mutations })
     }
   });

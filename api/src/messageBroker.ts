@@ -40,13 +40,13 @@ export const initBroker = async (server?) => {
     await receiveEngagesNotification(data);
   });
 
-  for (const channel of Object.keys(pluginsRabbitMQ['consumers'])){
-    const mbroker = pluginsRabbitMQ['consumers'][channel]
+  for (const channel of Object.keys(pluginsRabbitMQ.consumers)){
+    const mbroker = pluginsRabbitMQ.consumers[channel]
     if (mbroker.method === "RPCQueue") {
       consumeRPCQueue(
         channel.concat(prefix),
         async msg => mbroker.handler(
-          msg, { models: pluginsRabbitMQ['allModels'], constants: pluginsRabbitMQ['allConstants'] }
+          msg, { models: pluginsRabbitMQ.allModels, constants: pluginsRabbitMQ.allConstants }
         )
       );
     } else {
@@ -54,7 +54,7 @@ export const initBroker = async (server?) => {
         channel.concat(prefix),
         async msg => {
           await mbroker.handler(
-            msg, { models: pluginsRabbitMQ['allModels'], constants: pluginsRabbitMQ['allConstants'] }
+            msg, { models: pluginsRabbitMQ.allModels, constants: pluginsRabbitMQ.allConstants }
           )
         }
       );
