@@ -4,87 +4,110 @@ import * as path from 'path';
 import { can, registerModule } from './data/permissions/utils';
 import { checkLogin } from './data/permissions/wrappers';
 
+export const pluginsRabbitMQ = {};
+
 export const execInEveryPlugin = (callback) => {
-    const pluginsPath = path.resolve(__dirname, '../../plugins');
+  const pluginsPath = path.resolve(__dirname, '../../plugins');
 
-    if (fs.existsSync(pluginsPath)) {
-        fs.readdir(pluginsPath, (_error, plugins) => {
-            const pluginsCount = plugins.length;
+  if (fs.existsSync(pluginsPath)) {
+    fs.readdir(pluginsPath, (_error, plugins) => {
+      const pluginsCount = plugins.length;
 
-            plugins.forEach((plugin, index) => {
-                let routes = [];
-                let models = [];
-                let graphqlQueries = [];
-                let graphqlMutations = [];
+      plugins.forEach((plugin, index) => {
+        let routes = [];
+        let messageBrokers = [];
+        let models = [];
+        let graphqlQueries = [];
+        let graphqlResolvers = [];
+        let graphqlMutations = [];
+        let constants = {};
 
-                const graphqlSchema = {
-                    types: '',
-                    queries: '',
-                    mutations: '',
-                }
+        const graphqlSchema = {
+          types: '',
+          queries: '',
+          mutations: '',
+        }
 
-                const ext = process.env.NODE_ENV === 'production' ? 'js' : 'ts';
+        const ext = process.env.NODE_ENV === 'production' ? 'js' : 'ts';
 
-                const permissionsPath = `${pluginsPath}/${plugin}/api/permissions.${ext}`
-                const routesPath = `${pluginsPath}/${plugin}/api/routes.${ext}`
-                const graphqlSchemaPath = `${pluginsPath}/${plugin}/api/graphql/schema.${ext}`
-                const graphqlQueriesPath = `${pluginsPath}/${plugin}/api/graphql/queries.${ext}`
-                const graphqlMutationsPath = `${pluginsPath}/${plugin}/api/graphql/mutations.${ext}`
-                const modelsPath = `${pluginsPath}/${plugin}/api/models.${ext}`
+        const permissionsPath = `${pluginsPath}/${plugin}/api/permissions.${ext}`
+        const routesPath = `${pluginsPath}/${plugin}/api/routes.${ext}`
+        const messageBrokersPath = `${pluginsPath}/${plugin}/api/messageBrokers.${ext}`
+        const graphqlSchemaPath = `${pluginsPath}/${plugin}/api/graphql/schema.${ext}`
+        const graphqlQueriesPath = `${pluginsPath}/${plugin}/api/graphql/queries.${ext}`
+        const graphqlResolversPath = `${pluginsPath}/${plugin}/api/graphql/resolvers.${ext}`
+        const graphqlMutationsPath = `${pluginsPath}/${plugin}/api/graphql/mutations.${ext}`
+        const modelsPath = `${pluginsPath}/${plugin}/api/models.${ext}`
+        const constantsPath = `${pluginsPath}/${plugin}/api/constants.${ext}`
 
-                if (fs.existsSync(permissionsPath)) {
-                  registerModule({
-                    [plugin]: {
-                      name: plugin,
-                      description: plugin,
-                      actions: require(permissionsPath).default
-                    }
-                  })
-                }
+        if (fs.existsSync(permissionsPath)) {
+          registerModule({
+            [plugin]: {
+              name: plugin,
+              description: plugin,
+              actions: require(permissionsPath).default
+            }
+          })
+        }
 
-                if (fs.existsSync(routesPath)) {
-                    routes = require(routesPath).default.routes;
-                }
+        if (fs.existsSync(routesPath)) {
+          routes = require(routesPath).default.routes;
+        }
 
-                if (fs.existsSync(modelsPath)) {
-                    models = require(modelsPath).default;
-                }
+        if (fs.existsSync(messageBrokersPath)) {
+          messageBrokers = require(messageBrokersPath).default.messageBrokers;
+        }
 
-                if (fs.existsSync(graphqlQueriesPath)) {
-                    graphqlQueries = require(graphqlQueriesPath).default;
-                }
+        if (fs.existsSync(modelsPath)) {
+          models = require(modelsPath).default;
+        }
 
-                if (fs.existsSync(graphqlMutationsPath)) {
-                    graphqlMutations = require(graphqlMutationsPath).default;
-                }
+        if (fs.existsSync(constantsPath)) {
+          constants = require(constantsPath).default;
+        }
 
-                if (fs.existsSync(graphqlSchemaPath)) {
-                    const { types, queries, mutations } = require(graphqlSchemaPath);
+        if (fs.existsSync(graphqlResolversPath)) {
+          graphqlResolvers = require(graphqlResolversPath).default;
+        }
 
-                    if (types) {
-                        graphqlSchema.types = types;
-                    }
+        if (fs.existsSync(graphqlQueriesPath)) {
+          graphqlQueries = require(graphqlQueriesPath).default;
+        }
 
-                    if (queries) {
-                        graphqlSchema.queries = queries;
-                    }
+        if (fs.existsSync(graphqlMutationsPath)) {
+          graphqlMutations = require(graphqlMutationsPath).default;
+        }
 
-                    if (mutations) {
-                        graphqlSchema.mutations = mutations;
-                    }
-                }
-                
-                callback({
-                    isLastIteration: pluginsCount === index + 1,
-                    routes,
-                    graphqlSchema,
-                    graphqlQueries,
-                    graphqlMutations,
-                    models
-                })
-            })
+        if (fs.existsSync(graphqlSchemaPath)) {
+          const { types, queries, mutations } = require(graphqlSchemaPath);
+
+          if (types) {
+            graphqlSchema.types = types;
+          }
+
+          if (queries) {
+            graphqlSchema.queries = queries;
+          }
+
+          if (mutations) {
+            graphqlSchema.mutations = mutations;
+          }
+        }
+
+        callback({
+          isLastIteration: pluginsCount === index + 1,
+          routes,
+          messageBrokers,
+          graphqlSchema,
+          graphqlResolvers,
+          graphqlQueries,
+          graphqlMutations,
+          models,
+          constants
         })
-    }
+      })
+    })
+  }
 }
 
 const checkPermission = async (actionName, user) => {
@@ -99,19 +122,36 @@ const checkPermission = async (actionName, user) => {
 
 export const extendViaPlugins = (app, resolvers, typeDefDetails): Promise<any> => new Promise((resolve) => {
   let { types, queries, mutations } = typeDefDetails;
+  const rqPlugins = {}
 
-  execInEveryPlugin(({ isLastIteration, graphqlSchema, graphqlQueries, graphqlMutations, routes, models }) => {
+  execInEveryPlugin(async ({ constants, isLastIteration, graphqlSchema, graphqlResolvers, graphqlQueries, graphqlMutations, routes, models, messageBrokers }) => {
     const allModels = require('./db/models');
+    const defConstants = require('./db/models/definitions/constants');
+    const dataConstants = require('./data/constants')
+
+    const allConstants = { ...dataConstants, ...defConstants }
 
     routes.forEach(route => {
       app[route.method.toLowerCase()](route.path, (req, res) => {
-        return res.send(route.handler({ req, models: allModels }));
+        return res.send(route.handler({ req, models: allModels, constants: allConstants }));
       })
     });
 
-    models.forEach(model => {
-      allModels[model.name] = mongoose.model(model.name.toLowerCase(), model.schema);
-    });
+    if (models.length) {
+      models.forEach(model => {
+        allModels[model.name] = mongoose.model(model.name.replace(/([a-z])([A-Z])/g, "$1_$2").toLowerCase(), model.schema);
+      });
+    }
+
+    if (constants.length) {
+      for (const key of Object.keys(constants)) {
+        let all = [];
+        if (allConstants[key] && allConstants[key]['ALL']) {
+          all = allConstants[key]['ALL'].concat(constants[key]['ALL']);
+        }
+        allConstants[key] = { ...allConstants[key], ...constants[key], ...{ ALL: all } };
+      }
+    }
 
     if (graphqlSchema.types) {
       types = `
@@ -137,6 +177,7 @@ export const extendViaPlugins = (app, resolvers, typeDefDetails): Promise<any> =
     const generateCtx = context => {
       return {
         ...context,
+        constants: allConstants,
         models: allModels,
         checkLogin,
         checkPermission,
@@ -159,7 +200,30 @@ export const extendViaPlugins = (app, resolvers, typeDefDetails): Promise<any> =
       }
     }
 
+    if (graphqlResolvers) {
+      for (const resolver of graphqlResolvers) {
+        if (!Object.keys(resolvers).includes(resolver.type)) {
+          resolvers[resolver.type] = {}
+        }
+        resolvers[resolver.type][resolver.field] = (_root, _args, context) => {
+          return resolver.handler(_root, _args, generateCtx(context));
+        }
+      }
+    }
+
+    if (messageBrokers.length) {
+      messageBrokers.forEach(async (mbroker) => {
+        if (!Object.keys(rqPlugins).includes(mbroker.channel)) {
+          rqPlugins[mbroker.channel] = {}
+        }
+        rqPlugins[mbroker.channel] = mbroker
+      });
+    }
+
     if (isLastIteration) {
+      pluginsRabbitMQ['allModels'] = allModels
+      pluginsRabbitMQ['allConstants'] = allConstants
+      pluginsRabbitMQ['consumers'] = rqPlugins
       return resolve({ types, queries, mutations })
     }
   });
