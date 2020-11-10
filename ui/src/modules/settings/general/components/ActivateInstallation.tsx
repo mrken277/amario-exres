@@ -4,11 +4,11 @@ import {
   FormControl,
   FormGroup
 } from 'modules/common/components/form';
+import Info from 'modules/common/components/Info';
 import { Alert } from 'modules/common/utils';
-import Wrapper from 'modules/layout/components/Wrapper';
 import React, { useEffect, useState } from 'react';
 
-const Home = () => {
+const ActivateInstallation = () => {
   const options: any = {
     method: 'post',
     headers: {
@@ -55,37 +55,33 @@ const Home = () => {
     setToken(e.target.value);
   };
 
-  const content = () => {
-    if (activated) {
-      return <div>Already activated</div>;
-    }
-
-    return (
-      <form onSubmit={onSubmit}>
-        <FormGroup>
-          <ControlLabel required={true}>Token</ControlLabel>
-
-          <FormControl
-            onChange={onChange}
-            value={token}
-            name="token"
-            required={true}
-            autoFocus={true}
-          />
-
-          <Button type="submit">Activate</Button>
-        </FormGroup>
-      </form>
-    );
-  };
+  if (activated) {
+    return <Info>Already activated</Info>;
+  }
 
   return (
-    <Wrapper
-      header={<Wrapper.Header title="Activate installation" />}
-      center={true}
-      content={content()}
-    />
+    <form onSubmit={onSubmit}>
+      <FormGroup>
+        <ControlLabel required={true}>Token</ControlLabel>
+
+        <FormControl
+          onChange={onChange}
+          value={token}
+          name="token"
+          required={true}
+          autoFocus={true}
+        />
+      </FormGroup>
+      <Button
+        uppercase={false}
+        btnStyle="success"
+        type="submit"
+        icon="check-circle"
+      >
+        Activate
+      </Button>
+    </form>
   );
 };
 
-export default Home;
+export default ActivateInstallation;

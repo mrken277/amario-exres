@@ -208,12 +208,6 @@ class Settings extends React.PureComponent {
               '/settings/webhooks',
               ''
             )}
-            {this.renderBox(
-              'Activate installation',
-              '/images/icons/erxes-11.svg',
-              '/settings/activate-installation',
-              ''
-            )}
           </div>
         </Row>
         <Divider />
