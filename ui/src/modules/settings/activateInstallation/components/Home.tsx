@@ -6,63 +6,84 @@ import {
 } from 'modules/common/components/form';
 import { Alert } from 'modules/common/utils';
 import Wrapper from 'modules/layout/components/Wrapper';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Home = () => {
+  const options: any = {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+    }
+  };
+
   const [token, setToken] = useState('');
+  const [activated, setActivated] = useState(false);
+
+  useEffect(() => {
+    fetch('http://localhost:3500/check-activate-installation', options).then(
+      response => {
+        if (response.ok) {
+          setActivated(true);
+        }
+      }
+    );
+  }, [options]);
 
   const onSubmit = e => {
     e.preventDefault();
 
-    const url = `http://localhost:3500/activate-installation`;
-    const options = {
-      method: 'post',
-      body: JSON.stringify({
-        token
-      }),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8'
-      },
-      cors: 'no-cors'
-    };
+    options.body = JSON.stringify({
+      token
+    });
 
-    fetch(url, options)
-      .then(resp => resp.json())
-      .then(res => {
-        Alert.success(res);
-      })
-      .catch((error: any) => {
-        Alert.error(error);
-      });
+    fetch('http://localhost:3500/activate-installation', options).then(
+      async response => {
+        const jsonRes = await response.json();
+
+        if (!response.ok) {
+          return Alert.error(jsonRes.message);
+        }
+
+        setActivated(true);
+
+        return Alert.success(jsonRes.message);
+      }
+    );
   };
 
   const onChange = e => {
     setToken(e.target.value);
   };
 
-  const content = (
-    <form onSubmit={onSubmit}>
-      <FormGroup>
-        <ControlLabel required={true}>Token</ControlLabel>
+  const content = () => {
+    if (activated) {
+      return <div>Already activated</div>;
+    }
 
-        <FormControl
-          onChange={onChange}
-          value={token}
-          name="token"
-          required={true}
-          autoFocus={true}
-        />
+    return (
+      <form onSubmit={onSubmit}>
+        <FormGroup>
+          <ControlLabel required={true}>Token</ControlLabel>
 
-        <Button type="submit">Activate</Button>
-      </FormGroup>
-    </form>
-  );
+          <FormControl
+            onChange={onChange}
+            value={token}
+            name="token"
+            required={true}
+            autoFocus={true}
+          />
+
+          <Button type="submit">Activate</Button>
+        </FormGroup>
+      </form>
+    );
+  };
 
   return (
     <Wrapper
       header={<Wrapper.Header title="Activate installation" />}
       center={true}
-      content={content}
+      content={content()}
     />
   );
 };
