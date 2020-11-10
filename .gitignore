@@ -16,6 +16,6 @@ static
 .env.production.local
 package-lock.json
 dump.rdb
-/plugins
-ui/src/plugins.ts
+# /plugins
+# ui/src/plugins.ts
 oplog.timestamp
