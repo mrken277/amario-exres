@@ -45,7 +45,6 @@
     "opencollective": "^1.0.3"
   },
   "dependencies": {
-    "bad-words": "^3.0.3",
     "fs-extra": "^9.0.1"
   }
 }
