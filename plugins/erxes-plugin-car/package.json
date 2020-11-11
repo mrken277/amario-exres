@@ -4,7 +4,6 @@
   "main": "ui/index.js",
   "dependencies": {
     "bad-words": "^3.0.3",
-    "chalk": "^4.1.0",
-    "erxes-api-common-utils": "^0.0.2"
+    "chalk": "^4.1.0"
   }
 }
