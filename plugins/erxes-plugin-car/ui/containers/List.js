@@ -2,6 +2,10 @@ import * as compose from 'lodash.flowright';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import React from 'react';
+import badWords from 'bad-words';
+
+console.log(badWords);
+
 import '../style.css';
 
 const List = (props) => {

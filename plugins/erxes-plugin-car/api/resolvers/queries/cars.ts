@@ -1,4 +1,5 @@
 import { getCar } from "../utils";
+import * as badWords from 'bad-words';
 
 const generateFilter = async (models, params, commonQuerySelector) => {
   const filter: any = commonQuerySelector;
@@ -44,6 +45,8 @@ const carQueries = [
       //   page: params.page,
       //   perPage: params.perPage
       // });
+      console.log('mmmmmmmm', badWords)
+
       return models.Cars.find(await generateFilter(models, params, commonQuerySelector));
     }
   },
