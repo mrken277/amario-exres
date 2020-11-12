@@ -3,7 +3,7 @@ export default {
     {
       method: "POST",
       path: "/test",
-      handler: async ({ _req, models }) => {
+      handler: async ({ models }) => {
         console.log('sssss', await models.Cars.find());
       }
     }

@@ -21,10 +21,14 @@ export default [
     channel: "mobile_backend_rpc_to_api",
     handler: async (msg, { models }) => {
       const { action, data } = msg;
-      let customer = null;
+      let customer: any = null;
       let filter = {};
-      let car = null;
+      let car: any = null;
       let dealIdsOfCustomer = [];
+
+      if (!customer || !car) {
+        return;
+      }
 
       try {
         switch (action) {
@@ -482,7 +486,11 @@ export default [
     channel: "mobile_backend_to_api",
     handler: async (msg, { models }) => {
       const { action, data } = msg;
-      let customer = null;
+      let customer: any = null;
+
+      if (!customer) {
+        return;
+      }
 
       switch (action) {
         case "createCustomer":

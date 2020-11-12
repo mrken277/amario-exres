@@ -23,7 +23,7 @@ const carMutations = [
    */
   {
     name: 'carsEdit',
-    handler: async (_root, { _id, ...doc }, { user, models }) => {
+    handler: async (_root, { _id, ...doc }, { models }) => {
       await getCar(models, _id);
       const updated = await updateCar(models, _id, doc);
 
@@ -46,8 +46,8 @@ const carMutations = [
    */
   {
     name: 'carsRemove',
-    handler: async (_root, { carIds }: { carIds: string[] }, { user, models }) => {
-      const cars = await models.Cars.find({ _id: { $in: carIds } }).lean();
+    handler: async (_root, { carIds }: { carIds: string[] }, { models }) => {
+      await models.Cars.find({ _id: { $in: carIds } }).lean();
 
       await removeCars(models, carIds);
 
@@ -75,7 +75,7 @@ const carMutations = [
    */
   {
     name: 'carCategoriesAdd',
-    handler: async (_root, doc, { user, docModifier, models }) => {
+    handler: async (_root, doc, { docModifier, models }) => {
       const carCategory = await createCarCategory(models, docModifier(doc));
 
       // await putCreateLog(
@@ -98,7 +98,7 @@ const carMutations = [
    */
   {
     name: 'carCategoriesEdit',
-    handler: async (_root, { _id, ...doc }, { user, models }) => {
+    handler: async (_root, { _id, ...doc }, { models }) => {
       // const carCategory = await getCarCatogery(models, { _id });
       const updated = await updateCarCategory(models, _id, doc);
 
@@ -122,8 +122,8 @@ const carMutations = [
    */
   {
     name: 'carCategoriesRemove',
-    handler: async (_root, { _id }: { _id: string }, { user, models }) => {
-      const carCategory = await getCarCatogery(models, { _id });
+    handler: async (_root, { _id }: { _id: string }, { models }) => {
+      await getCarCatogery(models, { _id });
       const removed = await createCarCategory(models, _id);
 
       // await putDeleteLog({ type: MODULE_NAMES.CAR_CATEGORY, object: carCategory }, user);

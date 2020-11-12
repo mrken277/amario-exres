@@ -58,10 +58,6 @@ const fillSearchText = (doc) => {
   return value.substring(0, 511);
 }
 
-const getCarName = (car) => {
-  return car.plateNumber || car.vinNumber || 'Unknown';
-}
-
 /**
  * Retreives car
  */
