@@ -20,7 +20,7 @@ const ActivateInstallation = () => {
   const [activated, setActivated] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:3500/check-activate-installation', options).then(
+    fetch('https://erxes.io/check-activate-installation', options).then(
       response => {
         if (response.ok) {
           setActivated(true);
@@ -36,7 +36,7 @@ const ActivateInstallation = () => {
       token
     });
 
-    fetch('http://localhost:3500/activate-installation', options).then(
+    fetch('https://erxes.io/activate-installation', options).then(
       async response => {
         const jsonRes = await response.json();
 
