@@ -15,7 +15,7 @@ export const pluginsRabbitMQ: {
 };
 
 export const execInEveryPlugin = (callback) => {
-  const pluginsPath = path.resolve(__dirname, '../../plugins');
+  const pluginsPath = path.resolve(__dirname, process.env.NODE_ENV === 'production' ? './plugins' : '../../plugins');
 
   if (fs.existsSync(pluginsPath)) {
     fs.readdir(pluginsPath, (_error, plugins) => {
