@@ -10,10 +10,10 @@ const packageNames = Object.keys(packageJson.dependencies);
 
 const filePath = (pathName) => {
   if (pathName) {
-    return resolve(process.cwd(), pathName);
+    return resolve(__dirname, '..', pathName);
   }
 
-  return resolve(process.cwd());
+  return resolve(__dirname, '..');
 }
 
 const execCommand = (command) => {
@@ -31,51 +31,64 @@ const execCommand = (command) => {
   });
 }
 
-for (const packageName of packageNames) {
-    if (packageName.startsWith('erxes')) {
-        const pkgFilePath = getPkgPath(packageName);
+var main = async () => {
+  for (const packageName of packageNames) {
+      if (packageName.startsWith('erxes')) {
+          const pkgFilePath = getPkgPath(packageName);
 
-        fs.copy(path.resolve(pkgFilePath), path.resolve(__dirname, '../plugins', packageName))
-    }
+          await fs.copy(path.resolve(pkgFilePath), path.resolve(__dirname, '../plugins', packageName))
+      }
 
-    // creating plugin.js
-    const pluginsPath = path.resolve(__dirname, '../plugins');
+      // creating plugin.js
+      const pluginsPath = path.resolve(__dirname, '../plugins');
 
-    fs.readdir(pluginsPath, (_error, pluginNames) => {
-        let pluginImports = '';
+      const pluginNames = fs.readdirSync(pluginsPath);
 
-        for (const pluginName of pluginNames) {
-            if (pluginName === '.DS_Store' || !fs.existsSync(filePath(`plugins/${pluginName}/ui`))) {
-                continue;
+      let pluginImports = '';
+
+      for (const pluginName of pluginNames) {
+          if (pluginName === '.DS_Store') {
+              continue;
+          }
+
+          try {
+            process.chdir(filePath(`plugins/${pluginName}/api`));
+
+            await execCommand('yarn install');
+
+          } catch (e) {
+            if (!(e.message.includes("no such file") || e.message.includes('not a directory'))) {
+              throw e;
             }
+          }
 
+          if (fs.existsSync(filePath(`plugins/${pluginName}/ui`))) {
             pluginImports = `
                 ${pluginImports}
                 '${pluginName}': require('../../plugins/${pluginName}/ui').default,
             `;
 
-            fs.readJSON(filePath(`plugins/${pluginName}/ui/packages.json`))
-              .then((json) => {
-                  var promises = [];
+            try {
+                var json = await fs.readJSON(filePath(`plugins/${pluginName}/ui/packages.json`))
 
-                  for (const name of Object.keys(json)) {
-                      process.chdir(filePath('ui'));
-                      promises.push(execCommand(`yarn add ${name}@${json[name]}`));
-                  }
-
-                  return Promise.all(promises);
-              })
-              .catch((e) => {
-                if (!(e.message.includes("no such file") || e.message.includes('not a directory'))) {
-                  console.log(e.message);
+                for (const name of Object.keys(json)) {
+                    process.chdir(filePath('ui'));
+                    await execCommand(`yarn add ${name}@${json[name]}`);
                 }
-              });
-        }
+            } catch(e) {
+              if (!(e.message.includes("no such file") || e.message.includes('not a directory'))) {
+                throw e;
+              }
+            };
+          }
+      }
 
-        fs.writeFileSync(path.resolve(__dirname, '../ui/src/plugins.ts'), `
-            export default {
-                ${pluginImports}
-            }
-        `)
-    });
+      fs.writeFileSync(path.resolve(__dirname, '../ui/src/plugins.ts'), `
+          export default {
+              ${pluginImports}
+          }
+      `)
+  }
 }
+
+main();
