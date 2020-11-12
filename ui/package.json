@@ -25,7 +25,6 @@
     "apollo-link-http": "^1.5.16",
     "apollo-link-ws": "^1.0.8",
     "apollo-utilities": "^1.0.5",
-    "bad-words": "^3.0.3",
     "bat-draft-js-mention-plugin": "^2.0.1",
     "ckeditor4-react": "^1.0.0",
     "classnames": "^2.2.5",
