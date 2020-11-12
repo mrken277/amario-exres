@@ -26,15 +26,15 @@ if (NODE_ENV !== 'production') {
       'tracing.hideTracingResponse': true,
       'editor.fontSize': 14,
       'editor.fontFamily': `'Source Code Pro', 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace`,
-      'request.credentials': 'include',
-    },
+      'request.credentials': 'include'
+    }
   };
 }
 
 const generateDataSources = () => {
   return {
     EngagesAPI: new EngagesAPI(),
-    IntegrationsAPI: new IntegrationsAPI(),
+    IntegrationsAPI: new IntegrationsAPI()
   };
 };
 
@@ -128,7 +128,7 @@ export const initApolloServer = async (app) => {
         userBrandIdsSelector,
         user,
         res,
-        requestInfo,
+        requestInfo
       };
     },
     subscriptions: {

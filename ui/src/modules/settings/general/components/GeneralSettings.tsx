@@ -20,6 +20,7 @@ import {
   SERVICE_TYPES
 } from '../constants';
 import { IConfigsMap } from '../types';
+import ActivateInstallation from './ActivateInstallation';
 import Header from './Header';
 import Sidebar from './Sidebar';
 
@@ -196,7 +197,7 @@ class GeneralSettings extends React.Component<Props, State> {
           <Info>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/system-config#file-upload"
+              href="https://erxes.org/administrator/system-config#file-upload"
               rel="noopener noreferrer"
             >
               {__('Learn how to set file uploading') + '.'}
@@ -261,7 +262,7 @@ class GeneralSettings extends React.Component<Props, State> {
           <Info>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/system-config#google-cloud-storage"
+              href="https://erxes.org/administrator/system-config#google-cloud-storage"
               rel="noopener noreferrer"
             >
               {__(
@@ -279,7 +280,7 @@ class GeneralSettings extends React.Component<Props, State> {
           <Info>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/system-config#aws-s3"
+              href="https://erxes.org/administrator/system-config#aws-s3"
               rel="noopener noreferrer"
             >
               {__('Learn how to set AWS S3 Variables')}
@@ -305,7 +306,7 @@ class GeneralSettings extends React.Component<Props, State> {
             </p>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/system-config#aws-ses"
+              href="https://erxes.org/administrator/system-config#aws-ses"
               rel="noopener noreferrer"
             >
               {__('Learn how to set Amazon SES variables')}
@@ -321,7 +322,7 @@ class GeneralSettings extends React.Component<Props, State> {
           <Info>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/system-config#google"
+              href="https://erxes.org/administrator/system-config#google"
               rel="noopener noreferrer"
             >
               {__('Learn how to set Google variables')}
@@ -345,7 +346,7 @@ class GeneralSettings extends React.Component<Props, State> {
           <Info>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/system-config#common-mail-config"
+              href="https://erxes.org/administrator/system-config#common-mail-config"
               rel="noopener noreferrer"
             >
               {__('Learn more about Email Settings')}
@@ -363,7 +364,7 @@ class GeneralSettings extends React.Component<Props, State> {
           <Info>
             <a
               target="_blank"
-              href="https://docs.erxes.io/administrator/system-config#custom-mail-service"
+              href="https://erxes.org/administrator/system-config#custom-mail-service"
               rel="noopener noreferrer"
             >
               {__('Learn the case of custom email service')}
@@ -380,6 +381,10 @@ class GeneralSettings extends React.Component<Props, State> {
           {this.renderConstant('sex_choices')}
           {this.renderConstant('company_industry_types')}
           {this.renderConstant('social_links')}
+        </CollapseContent>
+
+        <CollapseContent title={__('Connectivity Services')}>
+          <ActivateInstallation />
         </CollapseContent>
       </ContentBox>
     );

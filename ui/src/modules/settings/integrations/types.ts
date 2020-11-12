@@ -64,6 +64,7 @@ export interface IMessages {
 
 export interface IMessengerData {
   botEndpointUrl?: string;
+  botShowInitialMessage?: boolean;
   messages?: IMessages;
   notifyCustomer?: boolean;
   supporterIds?: string[];
@@ -140,7 +141,6 @@ export interface IIntegration {
   websiteMessengerApps?: IWebsiteMessengerApp[];
   knowledgeBaseMessengerApps?: ITopicMessengerApp[];
 }
-
 
 export interface IAccount {
   _id: string;
@@ -260,37 +260,33 @@ export type SendGmailMutationVariables = {
 };
 
 export type SendGmailMutationResponse = {
-  integrationsSendGmail: (
-    params: {
-      variables: SendGmailMutationVariables;
-    }
-  ) => Promise<any>;
+  integrationsSendGmail: (params: {
+    variables: SendGmailMutationVariables;
+  }) => Promise<any>;
 };
 
 export type SaveMessengerMutationResponse = {
-  saveMessengerMutation: (
-    params: {
-      variables: SaveMessengerMutationVariables;
-    }
-  ) => Promise<any>;
+  saveMessengerMutation: (params: {
+    variables: SaveMessengerMutationVariables;
+  }) => Promise<any>;
 };
 
 export type SaveMessengerAppearanceMutationResponse = {
-  saveAppearanceMutation: (
-    params: { variables: { _id: string; uiOptions: IUiOptions } }
-  ) => Promise<any>;
+  saveAppearanceMutation: (params: {
+    variables: { _id: string; uiOptions: IUiOptions };
+  }) => Promise<any>;
 };
 
 export type SaveMessengerAppsMutationResponse = {
-  messengerAppSaveMutation: (
-    params: { variables: { integrationId: string; messengerApps: IMessengerApps } }
-  ) => Promise<any>;
+  messengerAppSaveMutation: (params: {
+    variables: { integrationId: string; messengerApps: IMessengerApps };
+  }) => Promise<any>;
 };
 
 export type SaveMessengerConfigsMutationResponse = {
-  saveConfigsMutation: (
-    params: { variables: { _id: string; messengerData: IMessengerData } }
-  ) => any;
+  saveConfigsMutation: (params: {
+    variables: { _id: string; messengerData: IMessengerData };
+  }) => any;
 };
 
 export type EditMessengerMutationVariables = {
@@ -302,11 +298,9 @@ export type EditMessengerMutationVariables = {
 };
 
 export type EditMessengerMutationResponse = {
-  editMessengerMutation: (
-    params: {
-      variables: EditMessengerMutationVariables;
-    }
-  ) => any;
+  editMessengerMutation: (params: {
+    variables: EditMessengerMutationVariables;
+  }) => any;
 };
 
 export type IntegrationMutationVariables = {
@@ -323,11 +317,9 @@ export type AddIntegrationMutationVariables = {
 } & IntegrationMutationVariables;
 
 export type AddIntegrationMutationResponse = {
-  addIntegrationMutation: (
-    params: {
-      variables: AddIntegrationMutationVariables;
-    }
-  ) => Promise<any>;
+  addIntegrationMutation: (params: {
+    variables: AddIntegrationMutationVariables;
+  }) => Promise<any>;
 };
 
 export type EditIntegrationMutationVariables = {
@@ -338,11 +330,9 @@ export type EditIntegrationMutationVariables = {
 } & IntegrationMutationVariables;
 
 export type EditIntegrationMutationResponse = {
-  editIntegrationMutation: (
-    params: {
-      variables: EditIntegrationMutationVariables;
-    }
-  ) => Promise<void>;
+  editIntegrationMutation: (params: {
+    variables: EditIntegrationMutationVariables;
+  }) => Promise<void>;
 };
 
 export type RemoveMutationResponse = {
@@ -354,23 +344,21 @@ export type RemoveAccountMutationResponse = {
 };
 
 export type ArchiveIntegrationResponse = {
-  archiveIntegration: (
-    params: { variables: { _id: string; status: boolean } }
-  ) => Promise<any>;
+  archiveIntegration: (params: {
+    variables: { _id: string; status: boolean };
+  }) => Promise<any>;
 };
 
 export type CommonFieldsEditResponse = {
-  editCommonFields: (
-    params: {
-      variables: {
-        _id: string;
-        name: string;
-        brandId: string;
-        channelIds?: string[];
-        data: any;
-      };
-    }
-  ) => Promise<any>;
+  editCommonFields: (params: {
+    variables: {
+      _id: string;
+      name: string;
+      brandId: string;
+      channelIds?: string[];
+      data: any;
+    };
+  }) => Promise<any>;
 };
 
 export type ProviderFormInput = (
@@ -393,6 +381,6 @@ export type SendSmsMutationVariables = {
   to: string;
 };
 
-export type SendSmsMutationResponse = (
-  { variables: SendSmsMutationVariables }
-) => Promise<any>;
+export type SendSmsMutationResponse = ({
+  variables: SendSmsMutationVariables
+}) => Promise<any>;

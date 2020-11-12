@@ -3,7 +3,7 @@ import messageBroker from 'erxes-message-broker';
 import {
   receiveEngagesNotification,
   receiveIntegrationsNotification,
-  receiveRpcMessage,
+  receiveRpcMessage
 } from './data/modules/integrations/receiveMessage';
 import { getEnv } from './data/utils';
 import { pluginsRabbitMQ } from './pluginUtils';
@@ -17,7 +17,7 @@ export const initBroker = async (server?) => {
   client = await messageBroker({
     name: 'api',
     server,
-    envs: process.env,
+    envs: process.env
   });
 
   const prefix = getEnv({ name: 'MESSAGE_BROKER_PREFIX' })
@@ -25,7 +25,9 @@ export const initBroker = async (server?) => {
   const { consumeQueue, consumeRPCQueue } = client;
 
   // listen for rpc queue =========
-  consumeRPCQueue('rpc_queue:integrations_to_api'.concat(prefix), async data => receiveRpcMessage(data));
+  consumeRPCQueue('rpc_queue:integrations_to_api', async data =>
+    receiveRpcMessage(data)
+  );
 
   // graphql subscriptions call =========
   consumeQueue('callPublish'.concat(prefix), params => {

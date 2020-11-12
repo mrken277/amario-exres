@@ -1,13 +1,14 @@
+import { PassThrough } from 'stream';
 import {
   conversationFactory,
   conversationMessageFactory,
   customerFactory,
   engageDataFactory,
-  userFactory,
+  engageMessageFactory,
+  userFactory
 } from '../db/factories';
 import { ConversationMessages, Conversations, Users } from '../db/models';
 import { CONVERSATION_STATUSES } from '../db/models/definitions/constants';
-
 import './setup.ts';
 
 describe('Conversation db', () => {
@@ -22,7 +23,7 @@ describe('Conversation db', () => {
     _conversationMessage = await conversationMessageFactory({
       conversationId: _conversation._id,
       internal: false,
-      content: 'content',
+      content: 'content'
     });
 
     _user = await userFactory({});
@@ -46,7 +47,9 @@ describe('Conversation db', () => {
       expect(e.message).toBe('Conversation message not found');
     }
 
-    const response = await ConversationMessages.getMessage(_conversationMessage._id);
+    const response = await ConversationMessages.getMessage(
+      _conversationMessage._id
+    );
 
     expect(response).toBeDefined();
   });
@@ -71,7 +74,7 @@ describe('Conversation db', () => {
       assignedUserId: _user._id,
       participatedUserIds: [_user._id],
       readUserIds: [_user._id],
-      status: CONVERSATION_STATUSES.NEW,
+      status: CONVERSATION_STATUSES.NEW
     });
 
     expect(conversation).toBeDefined();
@@ -84,7 +87,10 @@ describe('Conversation db', () => {
   });
 
   test('Check conversation existance', async () => {
-    const { selector, conversations } = await Conversations.checkExistanceConversations([_conversation._id]);
+    const {
+      selector,
+      conversations
+    } = await Conversations.checkExistanceConversations([_conversation._id]);
 
     expect(conversations[0]._id).toBe(_conversation._id);
     expect(selector).toEqual({ _id: { $in: [_conversation._id] } });
@@ -107,7 +113,7 @@ describe('Conversation db', () => {
 
     // checking updated conversation
     const updatedConversation = await Conversations.findOne({
-      _id: _doc.conversationId,
+      _id: _doc.conversationId
     });
 
     if (!updatedConversation) {
@@ -123,15 +129,21 @@ describe('Conversation db', () => {
 
     expect(messageObj.content).toBe(_conversationMessage.content);
     expect(messageObj.attachments.length).toBe(0);
-    expect(messageObj.mentionedUserIds[0]).toBe(_conversationMessage.mentionedUserIds[0]);
+    expect(messageObj.mentionedUserIds[0]).toBe(
+      _conversationMessage.mentionedUserIds[0]
+    );
 
     expect(messageObj.conversationId).toBe(_conversation._id);
     expect(messageObj.internal).toBe(_conversationMessage.internal);
     expect(messageObj.customerId).toBe(_conversationMessage.customerId);
     expect(messageObj.isCustomerRead).toBe(_conversationMessage.isCustomerRead);
 
-    expect(messageObj.engageData.toJSON()).toEqual(_conversationMessage.engageData.toJSON());
-    expect(messageObj.formWidgetData).toEqual(_conversationMessage.formWidgetData);
+    expect(messageObj.engageData.toJSON()).toEqual(
+      _conversationMessage.engageData.toJSON()
+    );
+    expect(messageObj.formWidgetData).toEqual(
+      _conversationMessage.formWidgetData
+    );
 
     expect(messageObj.userId).toBe(_user._id);
 
@@ -154,7 +166,7 @@ describe('Conversation db', () => {
 
     // get messageCount after add message
     const afterConversationObj = await Conversations.findOne({
-      _id: messageObj.conversationId,
+      _id: messageObj.conversationId
     });
 
     if (!afterConversationObj) {
@@ -167,7 +179,9 @@ describe('Conversation db', () => {
     }
 
     // check participated users
-    expect(afterConversationObj.participatedUserIds).toContain(messageObj.userId);
+    expect(afterConversationObj.participatedUserIds).toContain(
+      messageObj.userId
+    );
 
     // check if message count increase
     expect(afterConversationObj.messageCount).toBe(2);
@@ -193,7 +207,7 @@ describe('Conversation db', () => {
     await Conversations.assignUserConversation([_conversation._id], _user.id);
 
     const conversationObj = await Conversations.findOne({
-      _id: _conversation._id,
+      _id: _conversation._id
     });
 
     if (!conversationObj) {
@@ -204,7 +218,10 @@ describe('Conversation db', () => {
 
     // without assign user
     try {
-      await Conversations.assignUserConversation([_conversation._id], undefined);
+      await Conversations.assignUserConversation(
+        [_conversation._id],
+        undefined
+      );
     } catch (e) {
       expect(e.message).toEqual('User not found with id undefined');
     }
@@ -218,7 +235,7 @@ describe('Conversation db', () => {
     await Conversations.unassignUserConversation([_conversation._id]);
 
     const conversationObj = await Conversations.findOne({
-      _id: _conversation._id,
+      _id: _conversation._id
     });
 
     if (!conversationObj) {
@@ -238,7 +255,7 @@ describe('Conversation db', () => {
     const customerStatusMessages = await Conversations.changeCustomerStatus(
       'left',
       _conversation.customerId,
-      _conversation.integrationId,
+      _conversation.integrationId
     );
     expect(customerStatusMessages.length).toEqual(1);
     for (const row of customerStatusMessages) {
@@ -251,7 +268,7 @@ describe('Conversation db', () => {
     await Conversations.changeStatusConversation([_conversation._id], 'closed');
 
     let conversationObj = await Conversations.findOne({
-      _id: _conversation._id,
+      _id: _conversation._id
     });
 
     if (!conversationObj) {
@@ -280,7 +297,7 @@ describe('Conversation db', () => {
     const updated = await Conversations.resolveAllConversation({}, _user._id);
 
     const conversationObj = await Conversations.findOne({
-      _id: _conversation._id,
+      _id: _conversation._id
     });
 
     if (!conversationObj) {
@@ -302,7 +319,7 @@ describe('Conversation db', () => {
     await Conversations.markAsReadConversation(_conversation._id, _user._id);
 
     const conversationObj = await Conversations.findOne({
-      _id: _conversation._id,
+      _id: _conversation._id
     });
 
     if (!conversationObj || !conversationObj.readUserIds) {
@@ -320,7 +337,10 @@ describe('Conversation db', () => {
     const secondUser = await userFactory({});
 
     // multiple users read conversation
-    await Conversations.markAsReadConversation(_conversation._id, secondUser._id);
+    await Conversations.markAsReadConversation(
+      _conversation._id,
+      secondUser._id
+    );
 
     try {
       // without conversation
@@ -331,20 +351,27 @@ describe('Conversation db', () => {
   });
 
   test('Conversation message', async () => {
-    await conversationMessageFactory({ conversationId: _conversation._id, internal: false });
+    await conversationMessageFactory({
+      conversationId: _conversation._id,
+      internal: false
+    });
 
     // non answered messages =========
-    const nonAnweredMessage = await ConversationMessages.getNonAsnweredMessage(_conversation._id);
+    const nonAnweredMessage = await ConversationMessages.getNonAsnweredMessage(
+      _conversation._id
+    );
 
     expect(nonAnweredMessage._id).toBeDefined();
 
     // admin messages =========
     await ConversationMessages.updateMany(
       { conversationId: _conversation._id },
-      { $set: { isCustomerRead: false, internal: false } },
+      { $set: { isCustomerRead: false, internal: false } }
     );
 
-    const adminMessages = await ConversationMessages.getAdminMessages(_conversation._id);
+    const adminMessages = await ConversationMessages.getAdminMessages(
+      _conversation._id
+    );
 
     expect(adminMessages.length).toBe(2);
 
@@ -352,13 +379,13 @@ describe('Conversation db', () => {
     await ConversationMessages.updateMany(
       { conversationId: _conversation._id },
       { $unset: { isCustomerRead: 1 } },
-      { multi: true },
+      { multi: true }
     );
 
     await ConversationMessages.markSentAsReadMessages(_conversation._id);
 
     const messagesMarkAsRead = await ConversationMessages.find({
-      conversationId: _conversation._id,
+      conversationId: _conversation._id
     });
 
     for (const message of messagesMarkAsRead) {
@@ -375,7 +402,7 @@ describe('Conversation db', () => {
       status: 'closed',
       closedAt: new Date(),
       closedUserId: 'DFAFSAFDSFSFSAFD',
-      readUserIds: ['DFJAKSFJDKFJSDF'],
+      readUserIds: ['DFJAKSFJDKFJSDF']
     });
 
     const updatedConversation = await Conversations.reopen(conversation._id);
@@ -395,20 +422,25 @@ describe('Conversation db', () => {
     const newCustomer = await customerFactory({});
 
     await conversationFactory({
-      customerId: customer._id,
+      customerId: customer._id
     });
 
-    const updatedConversation = await Conversations.changeCustomer(newCustomer._id, [customer._id]);
+    const updatedConversation = await Conversations.changeCustomer(
+      newCustomer._id,
+      [customer._id]
+    );
 
     const conversationMessages = await ConversationMessages.find({
-      customerId: { $in: [customer._id] },
+      customerId: { $in: [customer._id] }
     });
 
     for (const conversation of updatedConversation) {
       expect(conversation.customerId).toBe(newCustomer._id);
     }
 
-    expect(await Conversations.find({ customerId: { $in: [customer._id] } })).toHaveLength(0);
+    expect(
+      await Conversations.find({ customerId: { $in: [customer._id] } })
+    ).toHaveLength(0);
     expect(conversationMessages).toHaveLength(0);
   });
 
@@ -416,17 +448,21 @@ describe('Conversation db', () => {
     const customer = await customerFactory({});
 
     const conversation = await conversationFactory({
-      customerId: customer._id,
+      customerId: customer._id
     });
 
     await conversationFactory({
-      customerId: customer._id,
+      customerId: customer._id
     });
 
     await Conversations.removeCustomersConversations([customer._id]);
 
-    expect(await Conversations.find({ customerId: customer._id })).toHaveLength(0);
-    expect(await ConversationMessages.find({ conversationId: conversation._id })).toHaveLength(0);
+    expect(await Conversations.find({ customerId: customer._id })).toHaveLength(
+      0
+    );
+    expect(
+      await ConversationMessages.find({ conversationId: conversation._id })
+    ).toHaveLength(0);
   });
 
   test('forceReadCustomerPreviousEngageMessages', async () => {
@@ -436,15 +472,17 @@ describe('Conversation db', () => {
     await conversationMessageFactory({
       customerId,
       engageData: engageDataFactory({ messageId: '_id' }),
-      isCustomerRead: false,
+      isCustomerRead: false
     });
 
-    await ConversationMessages.forceReadCustomerPreviousEngageMessages(customerId);
+    await ConversationMessages.forceReadCustomerPreviousEngageMessages(
+      customerId
+    );
 
     let messages = await ConversationMessages.find({
       customerId,
       engageData: { $exists: true },
-      isCustomerRead: true,
+      isCustomerRead: true
     });
 
     expect(messages.length).toBe(1);
@@ -454,15 +492,17 @@ describe('Conversation db', () => {
 
     await conversationMessageFactory({
       customerId,
-      engageData: engageDataFactory({ messageId: '_id' }),
+      engageData: engageDataFactory({ messageId: '_id' })
     });
 
-    await ConversationMessages.forceReadCustomerPreviousEngageMessages(customerId);
+    await ConversationMessages.forceReadCustomerPreviousEngageMessages(
+      customerId
+    );
 
     messages = await ConversationMessages.find({
       customerId,
       engageData: { $exists: true },
-      isCustomerRead: true,
+      isCustomerRead: true
     });
 
     expect(messages.length).toBe(1);
@@ -471,25 +511,54 @@ describe('Conversation db', () => {
   test('widgetsUnreadMessagesQuery', async () => {
     const conversation = await conversationFactory({});
 
-    const response = await Conversations.widgetsUnreadMessagesQuery([conversation]);
+    const response = await Conversations.widgetsUnreadMessagesQuery([
+      conversation
+    ]);
 
     expect(JSON.stringify(response)).toBe(
       JSON.stringify({
         conversationId: { $in: [conversation._id] },
         userId: { $exists: true },
         internal: false,
-        isCustomerRead: { $ne: true },
-      }),
+        isCustomerRead: { $ne: true }
+      })
     );
   });
 
   test('updateConversation', async () => {
     const conversation = await conversationFactory({});
 
-    await Conversations.updateConversation(conversation._id, { content: 'updated' });
+    await Conversations.updateConversation(conversation._id, {
+      content: 'updated'
+    });
 
     const updated = await Conversations.findOne({ _id: conversation._id });
 
     expect(updated && updated.content).toBe('updated');
+  });
+
+  test('removeEngageConversations', async () => {
+    const engageMessage = await engageMessageFactory({ kind: 'visitorAuto' });
+    const conversation = await conversationFactory({});
+
+    await conversationMessageFactory({
+      conversationId: conversation._id,
+      engageData: {
+        engageKind: engageMessage.kind,
+        messageId: engageMessage._id
+      }
+    });
+
+    const streamMock = new PassThrough();
+
+    await Conversations.removeEngageConversations(engageMessage._id);
+
+    streamMock.end();
+
+    expect(
+      await ConversationMessages.find({ conversationId: conversation._id })
+    ).toHaveLength(0);
+
+    streamMock.destroy();
   });
 });

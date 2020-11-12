@@ -2,6 +2,7 @@ import { IUser } from 'modules/auth/types';
 import Button from 'modules/common/components/Button';
 import { SmallLoader } from 'modules/common/components/ButtonMutate';
 import FormControl from 'modules/common/components/form/Control';
+import ConditionsRule from 'modules/common/components/rule/ConditionsRule';
 import { Step, Steps } from 'modules/common/components/step';
 import {
   StepWrapper,
@@ -15,7 +16,7 @@ import { IEmailTemplate } from 'modules/settings/emailTemplates/types';
 import { IConfig } from 'modules/settings/general/types';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IBreadCrumbItem } from '../../common/types';
+import { IBreadCrumbItem, IConditionsRule } from '../../common/types';
 import { METHODS } from '../constants';
 import {
   IEngageEmail,
@@ -65,6 +66,7 @@ type State = {
   email?: IEngageEmail;
   scheduleDate: IEngageScheduleDate;
   shortMessage?: IEngageSms;
+  rules: IConditionsRule[];
 };
 
 class AutoAndManualForm extends React.Component<Props, State> {
@@ -76,6 +78,10 @@ class AutoAndManualForm extends React.Component<Props, State> {
     const email = message.email || {};
 
     let content = email.content || '';
+
+    const rules = messenger.rules
+      ? messenger.rules.map(rule => ({ ...rule }))
+      : [];
 
     if (messenger.content && messenger.content !== '') {
       content = messenger.content;
@@ -94,7 +100,8 @@ class AutoAndManualForm extends React.Component<Props, State> {
       messenger: message.messenger,
       email: message.email,
       scheduleDate: message.scheduleDate,
-      shortMessage: message.shortMessage
+      shortMessage: message.shortMessage,
+      rules
     };
   }
 
@@ -106,7 +113,8 @@ class AutoAndManualForm extends React.Component<Props, State> {
     this.setState({
       segmentIds: [],
       brandIds: [],
-      tagIds: []
+      tagIds: [],
+      rules: []
     });
   };
 
@@ -141,7 +149,8 @@ class AutoAndManualForm extends React.Component<Props, State> {
         brandId: messenger.brandId || '',
         kind: messenger.kind || '',
         sentAs: messenger.sentAs || '',
-        content: this.state.content
+        content: this.state.content,
+        rules: this.state.rules
       };
     }
     if (this.state.method === METHODS.SMS) {
@@ -176,7 +185,7 @@ class AutoAndManualForm extends React.Component<Props, State> {
 
     const cancelButton = (
       <Link to="/engage">
-        <Button btnStyle="simple" size="small" icon="cancel-1">
+        <Button btnStyle="simple" uppercase={false} icon="times-circle">
           Cancel
         </Button>
       </Link>
@@ -189,7 +198,7 @@ class AutoAndManualForm extends React.Component<Props, State> {
             <Button
               disabled={isActionLoading}
               btnStyle="warning"
-              size="small"
+              uppercase={false}
               icon={isActionLoading ? undefined : 'file-alt'}
               onClick={this.handleSubmit.bind(this, 'draft')}
             >
@@ -198,8 +207,8 @@ class AutoAndManualForm extends React.Component<Props, State> {
             <Button
               disabled={isActionLoading}
               btnStyle="success"
-              size="small"
-              icon={isActionLoading ? undefined : 'checked-1'}
+              uppercase={false}
+              icon={isActionLoading ? undefined : 'check-circle'}
               onClick={this.handleSubmit.bind(this, 'live')}
             >
               Send & Live
@@ -212,9 +221,9 @@ class AutoAndManualForm extends React.Component<Props, State> {
         <Button
           disabled={isActionLoading}
           btnStyle="success"
-          size="small"
-          icon={isActionLoading ? undefined : 'checked-1'}
+          icon={isActionLoading ? undefined : 'check-circle'}
           onClick={this.handleSubmit.bind(this, 'live')}
+          uppercase={false}
         >
           {isActionLoading && <SmallLoader />}
           Send
@@ -293,6 +302,23 @@ class AutoAndManualForm extends React.Component<Props, State> {
     );
   }
 
+  renderRule() {
+    const { method } = this.state;
+
+    if (method !== METHODS.MESSENGER) {
+      return <div />;
+    }
+
+    return (
+      <Step img="/images/icons/erxes-02.svg" title="Rule">
+        <ConditionsRule
+          rules={this.state.rules || []}
+          onChange={this.changeState}
+        />
+      </Step>
+    );
+  }
+
   renderPreviewContent() {
     const { content, email, method } = this.state;
 
@@ -363,6 +389,7 @@ class AutoAndManualForm extends React.Component<Props, State> {
             />
           </Step>
 
+          {this.renderRule()}
           {this.renderMessageContent()}
           {this.renderPreviewContent()}
         </Steps>

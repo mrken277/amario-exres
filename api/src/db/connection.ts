@@ -18,7 +18,7 @@ export const connectionOptions = {
   useNewUrlParser: true,
   useCreateIndex: true,
   autoReconnect: true,
-  useFindAndModify: false,
+  useFindAndModify: false
 };
 
 mongoose.Promise = global.Promise;
@@ -39,7 +39,7 @@ mongoose.connection
 export const connect = async (URL?: string, options?) => {
   return mongoose.connect(URL || MONGO_URL, {
     ...connectionOptions,
-    ...(options || { poolSize: 100 }),
+    ...(options || { poolSize: 100 })
   });
 };
 
@@ -78,14 +78,19 @@ const typeDefs = gql(`
 
 const schema = makeExecutableSchema({
   typeDefs,
-  resolvers,
+  resolvers
 });
 
-export const graphqlRequest = async (source: string = '', name: string = '', args?: any, context: any = {}) => {
+export const graphqlRequest = async (
+  source: string = '',
+  name: string = '',
+  args?: any,
+  context: any = {}
+) => {
   const res = {
     cookie: () => {
       return 'cookie';
-    },
+    }
   };
 
   const finalContext: any = {};
@@ -101,7 +106,13 @@ export const graphqlRequest = async (source: string = '', name: string = '', arg
 
   const rootValue = {};
 
-  const response: any = await graphql(schema, source, rootValue, finalContext, args);
+  const response: any = await graphql(
+    schema,
+    source,
+    rootValue,
+    finalContext,
+    args
+  );
 
   if (response.errors || !response.data) {
     throw response.errors;
